@@ -1,0 +1,81 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace TechMed.DL.Models
+{
+    public partial class UserMaster
+    {
+        public UserMaster()
+        {
+            CdssguidelineMasterCreatedByNavigations = new HashSet<CdssguidelineMaster>();
+            CdssguidelineMasterUpdatedByNavigations = new HashSet<CdssguidelineMaster>();
+            ClusterMasterCreatedByNavigations = new HashSet<ClusterMaster>();
+            ClusterMasterUpdatedByNavigations = new HashSet<ClusterMaster>();
+            DoctorMasterCreatedByNavigations = new HashSet<DoctorMaster>();
+            DoctorMasterUpdatedByNavigations = new HashSet<DoctorMaster>();
+            DoctorMasterUsers = new HashSet<DoctorMaster>();
+            InverseCreatedByNavigation = new HashSet<UserMaster>();
+            InverseUpdatedByNavigation = new HashSet<UserMaster>();
+            NotificationFromUserNavigations = new HashSet<Notification>();
+            NotificationToUserNavigations = new HashSet<Notification>();
+            PageMasterCreatedByNavigations = new HashSet<PageMaster>();
+            PageMasterUpdatedByNavigations = new HashSet<PageMaster>();
+            PatientCaseCreatedByNavigations = new HashSet<PatientCase>();
+            PatientCaseUpdatedByNavigations = new HashSet<PatientCase>();
+            PatientMasterCreatedByNavigations = new HashSet<PatientMaster>();
+            PatientMasterUpdatedByNavigations = new HashSet<PatientMaster>();
+            PatientQueues = new HashSet<PatientQueue>();
+            PhcmasterCreatedByNavigations = new HashSet<Phcmaster>();
+            PhcmasterUpdatedByNavigations = new HashSet<Phcmaster>();
+            PhcmasterUsers = new HashSet<Phcmaster>();
+            UserDetailCreatedByNavigations = new HashSet<UserDetail>();
+            UserDetailUpdatedByNavigations = new HashSet<UserDetail>();
+            UserDetailUsers = new HashSet<UserDetail>();
+            ZoneMasterCreatedByNavigations = new HashSet<ZoneMaster>();
+            ZoneMasterUpdatedByNavigations = new HashSet<ZoneMaster>();
+        }
+
+        public int Id { get; set; }
+        public string Email { get; set; } = null!;
+        public string Mobile { get; set; } = null!;
+        public string Name { get; set; } = null!;
+        public string HashPassword { get; set; } = null!;
+        public int? LoginAttempts { get; set; }
+        public DateTime? LastLoginAt { get; set; }
+        public bool? IsPasswordChanged { get; set; }
+        public bool IsActive { get; set; }
+        public int? CreatedBy { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public int? UpdatedBy { get; set; }
+        public DateTime UpdatedOn { get; set; }
+
+        public virtual UserMaster? CreatedByNavigation { get; set; }
+        public virtual UserMaster? UpdatedByNavigation { get; set; }
+        public virtual ICollection<CdssguidelineMaster> CdssguidelineMasterCreatedByNavigations { get; set; }
+        public virtual ICollection<CdssguidelineMaster> CdssguidelineMasterUpdatedByNavigations { get; set; }
+        public virtual ICollection<ClusterMaster> ClusterMasterCreatedByNavigations { get; set; }
+        public virtual ICollection<ClusterMaster> ClusterMasterUpdatedByNavigations { get; set; }
+        public virtual ICollection<DoctorMaster> DoctorMasterCreatedByNavigations { get; set; }
+        public virtual ICollection<DoctorMaster> DoctorMasterUpdatedByNavigations { get; set; }
+        public virtual ICollection<DoctorMaster> DoctorMasterUsers { get; set; }
+        public virtual ICollection<UserMaster> InverseCreatedByNavigation { get; set; }
+        public virtual ICollection<UserMaster> InverseUpdatedByNavigation { get; set; }
+        public virtual ICollection<Notification> NotificationFromUserNavigations { get; set; }
+        public virtual ICollection<Notification> NotificationToUserNavigations { get; set; }
+        public virtual ICollection<PageMaster> PageMasterCreatedByNavigations { get; set; }
+        public virtual ICollection<PageMaster> PageMasterUpdatedByNavigations { get; set; }
+        public virtual ICollection<PatientCase> PatientCaseCreatedByNavigations { get; set; }
+        public virtual ICollection<PatientCase> PatientCaseUpdatedByNavigations { get; set; }
+        public virtual ICollection<PatientMaster> PatientMasterCreatedByNavigations { get; set; }
+        public virtual ICollection<PatientMaster> PatientMasterUpdatedByNavigations { get; set; }
+        public virtual ICollection<PatientQueue> PatientQueues { get; set; }
+        public virtual ICollection<Phcmaster> PhcmasterCreatedByNavigations { get; set; }
+        public virtual ICollection<Phcmaster> PhcmasterUpdatedByNavigations { get; set; }
+        public virtual ICollection<Phcmaster> PhcmasterUsers { get; set; }
+        public virtual ICollection<UserDetail> UserDetailCreatedByNavigations { get; set; }
+        public virtual ICollection<UserDetail> UserDetailUpdatedByNavigations { get; set; }
+        public virtual ICollection<UserDetail> UserDetailUsers { get; set; }
+        public virtual ICollection<ZoneMaster> ZoneMasterCreatedByNavigations { get; set; }
+        public virtual ICollection<ZoneMaster> ZoneMasterUpdatedByNavigations { get; set; }
+    }
+}
