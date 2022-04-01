@@ -6,13 +6,18 @@ using System.Text;
 using TechMed.BL.Mapper;
 using TechMedAPI.JwtInfra;
 using AutoMapper;
-
+using TechMed.DL.Models;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<TeleMedecineContext>(
+    options => options.UseSqlServer(connectionString)
+    );
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAutoMapper(typeof(MappingMaster));

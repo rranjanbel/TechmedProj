@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using TechMed.BL.DTOMaster;
 using TechMed.BL.ModelMaster;
+using TechMed.DL.Models;
 
 namespace TechMed.API.Controllers
 {
@@ -11,18 +12,19 @@ namespace TechMed.API.Controllers
     public class UserMasterController : ControllerBase
     {
         private readonly IMapper _mapper;
-        UserBusinessMaster userBusinessMaster = new UserBusinessMaster();
-        public UserMasterController( IMapper mapper)
+        UserBusinessMaster userBusinessMaster;
+        public UserMasterController(IMapper mapper, TeleMedecineContext teleMedecineContext)
         {
-           this._mapper = mapper;
+            this._mapper = mapper;
+            userBusinessMaster = new UserBusinessMaster(teleMedecineContext);
         }
         [HttpGet]
-        [ProducesResponseType(200,Type = typeof(List<UserLoginDTO>))]
+        [ProducesResponseType(200, Type = typeof(List<UserLoginDTO>))]
         public IActionResult GetUsers()
         {
             var userList = userBusinessMaster.GetUserMasters();
             var userDTOList = new List<UserLoginDTO>();
-            if(userList != null)
+            if (userList != null)
             {
                 foreach (var user in userList)
                 {
@@ -34,7 +36,7 @@ namespace TechMed.API.Controllers
             {
                 return BadRequest();
             }
-            
+
         }
     }
 }

@@ -3,17 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TechMed.BL.Adapters;
 using TechMed.DL.Models;
 
 namespace TechMed.BL.ModelMaster
 {
-    public class UserBusinessMaster
+    public class UserBusinessMaster:BaseAdapter
     {
-        TeleMedecineContext context = new TeleMedecineContext();
+      
+
+        public UserBusinessMaster(TeleMedecineContext teleMedecineContext) : base(teleMedecineContext)
+        {
+        }
+
         public List<UserMaster> GetUserMasters()
         {
             List<UserMaster> users = new List<UserMaster>();
-            users = context.UserMasters.ToList();
+            users = teleMedecineContext.UserMasters.ToList();
             return users;
         }
     }
