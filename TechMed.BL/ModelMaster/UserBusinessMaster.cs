@@ -11,8 +11,6 @@ namespace TechMed.BL.ModelMaster
 {
     public class UserBusinessMaster:BaseAdapter
     {
-      
-
         public UserBusinessMaster(TeleMedecineContext teleMedecineContext, IMapper mapper) : base(teleMedecineContext, mapper)
         {
         }
