@@ -7,11 +7,11 @@ using TechMed.DL.Models;
 
 namespace TechMed.BL.Adapters
 {
-    public class DoctorAdapter : BaseAdapter
+    public class DoctorAdapter /*: BaseAdapter*/
     {
-        public DoctorAdapter(TeleMedecineContext teleMedecineContext) : base(teleMedecineContext)
-        {
-        }
+        //public DoctorAdapter(TeleMedecineContext teleMedecineContext) : base(teleMedecineContext)
+        //{
+        //}
         //public GetDoctorDetailResponse GetDoctorDetails(GetDoctorDetailRequest getDoctorDetailRequest)
         //{
         //    GetDoctorDetailResponse getDoctorDetailResponse = new GetDoctorDetailResponse();

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoMapper;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +13,7 @@ namespace TechMed.BL.ModelMaster
     {
       
 
-        public UserBusinessMaster(TeleMedecineContext teleMedecineContext) : base(teleMedecineContext)
+        public UserBusinessMaster(TeleMedecineContext teleMedecineContext, IMapper mapper) : base(teleMedecineContext, mapper)
         {
         }
 

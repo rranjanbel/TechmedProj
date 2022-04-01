@@ -16,7 +16,7 @@ namespace TechMed.API.Controllers
         public UserMasterController(IMapper mapper, TeleMedecineContext teleMedecineContext)
         {
             this._mapper = mapper;
-            userBusinessMaster = new UserBusinessMaster(teleMedecineContext);
+            userBusinessMaster = new UserBusinessMaster(teleMedecineContext, mapper);
         }
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(List<UserLoginDTO>))]
