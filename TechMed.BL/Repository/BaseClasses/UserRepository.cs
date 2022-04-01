@@ -71,7 +71,7 @@ namespace TechMed.BL.Repository.BaseClasses
             if (existingUser != null)
             {
 
-                existingUser.HashPassword = EncodeAndDecordPassword.EncodePassword("123");
+                existingUser.HashPassword = EncodeAndDecordPassword.EncodePassword("12345");
                 _teleMedecineContext.SaveChanges();
                 return true;
             }
@@ -99,7 +99,10 @@ namespace TechMed.BL.Repository.BaseClasses
             removeUser.IsActive = false;
             var status = _teleMedecineContext.SaveChanges();
             if (status > 0)
+            {
                 return true;
+            }
+                
             return false;
         }
 
