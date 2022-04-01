@@ -17,6 +17,7 @@ namespace TechMed.BL.Repository.BaseClasses
         public UserRepository(TeleMedecineContext teleMedecineContext):base(teleMedecineContext) 
         {
             this._teleMedecineContext = teleMedecineContext;
+            //comment
         }
         public UserMaster UserAuthentication(LoginVM login)
         {
