@@ -9,16 +9,20 @@ using TechMed.DL.Models;
 
 namespace TechMed.BL.ModelMaster
 {
-    public class UserBusinessMaster:BaseAdapter
+    public class UserBusinessMaster : BaseAdapter
     {
+        private readonly IMapper _mapper;
+        private readonly TeleMedecineContext _teleMedecineContext;       
         public UserBusinessMaster(TeleMedecineContext teleMedecineContext, IMapper mapper) : base(teleMedecineContext, mapper)
         {
+            this._mapper = mapper;
+            this._teleMedecineContext = teleMedecineContext;
         }
 
         public List<UserMaster> GetUserMasters()
         {
             List<UserMaster> users = new List<UserMaster>();
-            users = teleMedecineContext.UserMasters.ToList();
+            users = _teleMedecineContext.UserMasters.ToList();
             return users;
         }
     }

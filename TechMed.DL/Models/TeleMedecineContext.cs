@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -7,12 +8,12 @@ namespace TechMed.DL.Models
 {
     public partial class TeleMedecineContext : DbContext
     {
+        private readonly IHttpContextAccessor _httpContextAccessor;
         public TeleMedecineContext()
         {
         }
 
-        public TeleMedecineContext(DbContextOptions<TeleMedecineContext> options)
-            : base(options)
+        public TeleMedecineContext(DbContextOptions<TeleMedecineContext> options): base(options)
         {
         }
 
@@ -58,7 +59,7 @@ namespace TechMed.DL.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
                 optionsBuilder.UseSqlServer("Server=20.219.126.193;Database=TeleMedecine;User Id= rroshan; Password= Te!e#2002;");
             }
         }
