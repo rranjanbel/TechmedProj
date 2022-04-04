@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,10 +16,16 @@ namespace TechMed.BL.Repository.BaseClasses
 {
     public class UserRepository : Repository<UserMaster>, IUserRepository
     {
-        private readonly TeleMedecineContext _teleMedecineContext;       
-        public UserRepository(TeleMedecineContext teleMedecineContext):base(teleMedecineContext) 
+        private readonly TeleMedecineContext _teleMedecineContext;
+        private readonly IMapper _mapper;
+        private readonly ILogger<UserRepository> _logger;
+        public UserRepository(ILogger<UserRepository> logger, TeleMedecineContext teleMedecineContext, IMapper mapper) : base(teleMedecineContext)
         {
             this._teleMedecineContext = teleMedecineContext;
+            this._mapper = mapper;
+            this._logger = logger;
+
+
         }
         public async Task<UserLoginDTO> UserAuthentication(LoginVM login)
         {
@@ -26,18 +33,19 @@ namespace TechMed.BL.Repository.BaseClasses
             try
             {
 
-                var user = await _teleMedecineContext.UserMasters.Where(x => x.Email == login.Email && x.IsActive == true).FirstOrDefaultAsync();              
+                var user = await _teleMedecineContext.UserMasters.Where(x => x.Email == login.Email && x.IsActive == true).FirstOrDefaultAsync();
                 if (user != null)
                 {
-                    userMaster.Id = user.Id;
-                    userMaster.Name = user.Name;
-                    userMaster.HashPassword = user.HashPassword;
-                    userMaster.Email = user.Email;
-                    userMaster.Mobile = user.Mobile;
-                    userMaster.LastLoginAt = DateTime.Now;
-                    userMaster.IsActive = user.IsActive;
-                    userMaster.LoginAttempts = user.LoginAttempts;
-                    userMaster.IsPasswordChanged = user.IsPasswordChanged;
+                    userMaster = _mapper.Map<UserLoginDTO>(user);
+                    //userMaster.Id = user.Id;
+                    //userMaster.Name = user.Name;
+                    //userMaster.HashPassword = user.HashPassword;
+                    //userMaster.Email = user.Email;
+                    //userMaster.Mobile = user.Mobile;
+                    //userMaster.LastLoginAt = DateTime.Now;
+                    //userMaster.IsActive = user.IsActive;
+                    //userMaster.LoginAttempts = user.LoginAttempts;
+                    //userMaster.IsPasswordChanged = user.IsPasswordChanged;
                     //if (EncodeAndDecordPassword.MatchPassword(login.Password, user.HashPassword))
                     //{
                     //    userMaster.Id = user.Id;
@@ -69,13 +77,13 @@ namespace TechMed.BL.Repository.BaseClasses
                     return userMaster;
                 }
                 else
-                {                                  
+                {
                     return userMaster;
                 }
             }
             catch (Exception ex)
             {
-                userMaster = new UserLoginDTO ();
+                userMaster = new UserLoginDTO();
                 return userMaster;
             }
 
@@ -130,7 +138,7 @@ namespace TechMed.BL.Repository.BaseClasses
             {
                 return true;
             }
-                
+
             return false;
         }
 
@@ -229,7 +237,7 @@ namespace TechMed.BL.Repository.BaseClasses
             {
                 return false;
             }
-        }     
+        }
 
         public bool ChangeUserPassword(ChangePassword changePassword)
         {

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -8,12 +7,12 @@ namespace TechMed.DL.Models
 {
     public partial class TeleMedecineContext : DbContext
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
         public TeleMedecineContext()
         {
         }
 
-        public TeleMedecineContext(DbContextOptions<TeleMedecineContext> options): base(options)
+        public TeleMedecineContext(DbContextOptions<TeleMedecineContext> options)
+            : base(options)
         {
         }
 
@@ -48,6 +47,7 @@ namespace TechMed.DL.Models
         public virtual DbSet<StateMaster> StateMasters { get; set; } = null!;
         public virtual DbSet<SubSpecializationMaster> SubSpecializationMasters { get; set; } = null!;
         public virtual DbSet<SymptomsMaster> SymptomsMasters { get; set; } = null!;
+        public virtual DbSet<TitleMaster> TitleMasters { get; set; } = null!;
         public virtual DbSet<UserDetail> UserDetails { get; set; } = null!;
         public virtual DbSet<UserMaster> UserMasters { get; set; } = null!;
         public virtual DbSet<UserTypeMaster> UserTypeMasters { get; set; } = null!;
@@ -59,7 +59,7 @@ namespace TechMed.DL.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
                 optionsBuilder.UseSqlServer("Server=20.219.126.193;Database=TeleMedecine;User Id= rroshan; Password= Te!e#2002;");
             }
         }
@@ -216,7 +216,7 @@ namespace TechMed.DL.Models
                     .IsUnicode(false);
 
                 entity.Property(e => e.Qualification)
-                    .HasMaxLength(250)
+                    .HasMaxLength(500)
                     .IsUnicode(false);
 
                 entity.Property(e => e.RegistrationNumber)
@@ -619,6 +619,14 @@ namespace TechMed.DL.Models
 
                 entity.Property(e => e.Id).HasColumnName("ID");
 
+                entity.Property(e => e.Address)
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.City)
+                    .HasMaxLength(250)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.CountryId).HasColumnName("CountryID");
 
                 entity.Property(e => e.CreatedOn).HasColumnType("datetime");
@@ -785,14 +793,32 @@ namespace TechMed.DL.Models
 
                 entity.Property(e => e.Id).HasColumnName("ID");
 
+                entity.Property(e => e.Address)
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.ClusterId).HasColumnName("ClusterID");
 
                 entity.Property(e => e.CreatedOn).HasColumnType("datetime");
+
+                entity.Property(e => e.MailId)
+                    .HasMaxLength(150)
+                    .IsUnicode(false)
+                    .HasColumnName("MailID");
 
                 entity.Property(e => e.Moname)
                     .HasMaxLength(150)
                     .IsUnicode(false)
                     .HasColumnName("MOName");
+
+                entity.Property(e => e.Phcname)
+                    .HasMaxLength(150)
+                    .IsUnicode(false)
+                    .HasColumnName("PHCName");
+
+                entity.Property(e => e.PhoneNo)
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
 
@@ -907,6 +933,17 @@ namespace TechMed.DL.Models
                     .IsUnicode(false);
             });
 
+            modelBuilder.Entity<TitleMaster>(entity =>
+            {
+                entity.ToTable("TitleMaster");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.Title)
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+            });
+
             modelBuilder.Entity<UserDetail>(entity =>
             {
                 entity.ToTable("UserDetail");
@@ -938,12 +975,27 @@ namespace TechMed.DL.Models
                     .IsUnicode(false);
 
                 entity.Property(e => e.FirstName)
-                    .HasMaxLength(50)
+                    .HasMaxLength(150)
                     .IsUnicode(false);
 
                 entity.Property(e => e.GenderId).HasColumnName("GenderID");
 
+                entity.Property(e => e.IdproofNumber)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasColumnName("IDProofNumber");
+
+                entity.Property(e => e.IdproofTypeId).HasColumnName("IDProofTypeID");
+
                 entity.Property(e => e.LastName)
+                    .HasMaxLength(150)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.MiddleName)
+                    .HasMaxLength(150)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Occupation)
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
@@ -957,9 +1009,7 @@ namespace TechMed.DL.Models
 
                 entity.Property(e => e.StateId).HasColumnName("StateID");
 
-                entity.Property(e => e.Title)
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
+                entity.Property(e => e.TitleId).HasColumnName("TitleID");
 
                 entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
 
@@ -982,11 +1032,22 @@ namespace TechMed.DL.Models
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_UserDetail_GenderMaster");
 
+                entity.HasOne(d => d.IdproofType)
+                    .WithMany(p => p.UserDetails)
+                    .HasForeignKey(d => d.IdproofTypeId)
+                    .HasConstraintName("FK_UserDetail_IDProofTypeMaster");
+
                 entity.HasOne(d => d.State)
                     .WithMany(p => p.UserDetails)
                     .HasForeignKey(d => d.StateId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_UserDetail_StateMaster");
+
+                entity.HasOne(d => d.Title)
+                    .WithMany(p => p.UserDetails)
+                    .HasForeignKey(d => d.TitleId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_UserDetail_TitleMaster");
 
                 entity.HasOne(d => d.UpdatedByNavigation)
                     .WithMany(p => p.UserDetailUpdatedByNavigations)
