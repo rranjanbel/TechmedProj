@@ -14,7 +14,9 @@ namespace TechMed.BL.Mapper
         public MappingMaster()
         {
             CreateMap<UserMaster, UserLoginDTO>().ReverseMap();
-
+            CreateMap<Notification, NotificationDTO>().ReverseMap();
+            CreateMap<CdssguidelineMaster, CdssguidelineMasterDTO>().ReverseMap();
+            
         }
     }
 }
