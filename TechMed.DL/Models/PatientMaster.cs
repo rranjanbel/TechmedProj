@@ -18,12 +18,13 @@ namespace TechMed.DL.Models
         public int IdproofId { get; set; }
         public string IdproofNumber { get; set; } = null!;
         public int GenderId { get; set; }
+        public string? Address { get; set; }
         public int CountryId { get; set; }
         public int StateId { get; set; }
         public int DistrictId { get; set; }
+        public string? City { get; set; }
         public string PinCode { get; set; } = null!;
-        public string Snap { get; set; } = null!;
-        public string Photo { get; set; } = null!;
+        public string? Photo { get; set; }
         public DateTime Dob { get; set; }
         public string EmailId { get; set; } = null!;
         public string MobileNo { get; set; } = null!;
