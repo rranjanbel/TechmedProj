@@ -7,8 +7,9 @@ namespace TechMed.DL.Models
     {
         public int Id { get; set; }
         public int UserId { get; set; }
-        public string Title { get; set; } = null!;
+        public int TitleId { get; set; }
         public string FirstName { get; set; } = null!;
+        public string? MiddleName { get; set; }
         public string LastName { get; set; } = null!;
         public DateTime Dob { get; set; }
         public int GenderId { get; set; }
@@ -35,6 +36,7 @@ namespace TechMed.DL.Models
         public virtual GenderMaster Gender { get; set; } = null!;
         public virtual IdproofTypeMaster? IdproofType { get; set; }
         public virtual StateMaster State { get; set; } = null!;
+        public virtual TitleMaster Title { get; set; } = null!;
         public virtual UserMaster? UpdatedByNavigation { get; set; }
         public virtual UserMaster User { get; set; } = null!;
     }

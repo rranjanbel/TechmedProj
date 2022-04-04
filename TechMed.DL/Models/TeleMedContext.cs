@@ -47,6 +47,7 @@ namespace TechMed.DL.Models
         public virtual DbSet<StateMaster> StateMasters { get; set; } = null!;
         public virtual DbSet<SubSpecializationMaster> SubSpecializationMasters { get; set; } = null!;
         public virtual DbSet<SymptomsMaster> SymptomsMasters { get; set; } = null!;
+        public virtual DbSet<TitleMaster> TitleMasters { get; set; } = null!;
         public virtual DbSet<UserDetail> UserDetails { get; set; } = null!;
         public virtual DbSet<UserMaster> UserMasters { get; set; } = null!;
         public virtual DbSet<UserTypeMaster> UserTypeMasters { get; set; } = null!;
@@ -215,7 +216,7 @@ namespace TechMed.DL.Models
                     .IsUnicode(false);
 
                 entity.Property(e => e.Qualification)
-                    .HasMaxLength(250)
+                    .HasMaxLength(500)
                     .IsUnicode(false);
 
                 entity.Property(e => e.RegistrationNumber)
@@ -932,6 +933,17 @@ namespace TechMed.DL.Models
                     .IsUnicode(false);
             });
 
+            modelBuilder.Entity<TitleMaster>(entity =>
+            {
+                entity.ToTable("TitleMaster");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.Title)
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+            });
+
             modelBuilder.Entity<UserDetail>(entity =>
             {
                 entity.ToTable("UserDetail");
@@ -963,7 +975,7 @@ namespace TechMed.DL.Models
                     .IsUnicode(false);
 
                 entity.Property(e => e.FirstName)
-                    .HasMaxLength(50)
+                    .HasMaxLength(150)
                     .IsUnicode(false);
 
                 entity.Property(e => e.GenderId).HasColumnName("GenderID");
@@ -976,7 +988,11 @@ namespace TechMed.DL.Models
                 entity.Property(e => e.IdproofTypeId).HasColumnName("IDProofTypeID");
 
                 entity.Property(e => e.LastName)
-                    .HasMaxLength(50)
+                    .HasMaxLength(150)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.MiddleName)
+                    .HasMaxLength(150)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Occupation)
@@ -993,9 +1009,7 @@ namespace TechMed.DL.Models
 
                 entity.Property(e => e.StateId).HasColumnName("StateID");
 
-                entity.Property(e => e.Title)
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
+                entity.Property(e => e.TitleId).HasColumnName("TitleID");
 
                 entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
 
@@ -1028,6 +1042,12 @@ namespace TechMed.DL.Models
                     .HasForeignKey(d => d.StateId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_UserDetail_StateMaster");
+
+                entity.HasOne(d => d.Title)
+                    .WithMany(p => p.UserDetails)
+                    .HasForeignKey(d => d.TitleId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_UserDetail_TitleMaster");
 
                 entity.HasOne(d => d.UpdatedByNavigation)
                     .WithMany(p => p.UserDetailUpdatedByNavigations)

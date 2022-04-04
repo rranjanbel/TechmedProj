@@ -18,6 +18,10 @@ namespace TechMed.BL.ModelMaster
         {
 
         }
+        public void AddDoctorDetails()
+        {
+
+        }
         public void GetDoctorDetails()
         {
 
