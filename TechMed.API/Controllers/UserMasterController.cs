@@ -4,6 +4,11 @@ using AutoMapper;
 using TechMed.BL.DTOMaster;
 using TechMed.BL.ModelMaster;
 using TechMed.DL.Models;
+using TechMed.DL.ViewModel;
+using TechMed.BL.Repository;
+using TechMed.BL.Repository.Interfaces;
+using TechMed.BL.Repository.BaseClasses;
+using System.Net;
 
 namespace TechMed.API.Controllers
 {
@@ -13,10 +18,12 @@ namespace TechMed.API.Controllers
     {
         private readonly IMapper _mapper;
         UserBusinessMaster userBusinessMaster;
-        public UserMasterController(IMapper mapper, TeleMedecineContext teleMedecineContext)
+        private readonly IUserRepository _userRepository;
+        public UserMasterController(IMapper mapper, TeleMedecineContext teleMedecineContext, IUserRepository userRepository)
         {
             this._mapper = mapper;
             userBusinessMaster = new UserBusinessMaster(teleMedecineContext, mapper);
+            this._userRepository = userRepository;
         }
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(List<UserLoginDTO>))]
@@ -38,5 +45,13 @@ namespace TechMed.API.Controllers
             }
 
         }
+
+        [HttpPost]
+        public async Task<UserMaster> GetAuthenticatedUser(LoginVM login)
+        {
+            //UserMaster user = new UserMaster();
+            return await _userRepository.UserAuthentication(login);
+        }
+
     }
 }

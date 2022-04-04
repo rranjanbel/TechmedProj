@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,37 +19,54 @@ namespace TechMed.BL.Repository.BaseClasses
         {
             this._teleMedecineContext = teleMedecineContext;
         }
-        public UserMaster UserAuthentication(LoginVM login)
+        public async Task<UserMaster> UserAuthentication(LoginVM login)
         {
+            UserMaster userMaster = new UserMaster();
             try
             {
-                var user = _teleMedecineContext.UserMasters.FirstOrDefault(x => x.Email == login.Email && x.IsActive == true);
-                UserMaster userMaster = new UserMaster();
+
+                var user = await _teleMedecineContext.UserMasters.Where(x => x.Email == login.Email && x.IsActive == true).FirstOrDefaultAsync();              
                 if (user != null)
                 {
-                    //if (EncodeAndDecordPassword.MatchPassword(login.Password, user.HashPassword))
-                    //{
-                    //    userMaster.Id = user.Id;
-                    //    userMaster.UserName = user.UserName;                   
-                    //    userMaster.UserTypeId = user.UserTypeId;
+                    if (EncodeAndDecordPassword.MatchPassword(login.Password, user.HashPassword))
+                    {
+                        userMaster.Id = user.Id;
+                        userMaster.Name = user.Name; 
+                        userMaster.HashPassword = user.HashPassword;
+                        userMaster.Email = user.Email;
+                        userMaster.Mobile = user.Mobile;
+                        userMaster.LastLoginAt = DateTime.Now;
+                        userMaster.IsActive = user.IsActive;
+                        userMaster.LoginAttempts = user.LoginAttempts;
+                        userMaster.IsPasswordChanged= user.IsPasswordChanged;
 
-                    //    return userMaster;
-                    //}
-                    //else
-                    //{
-                    //    return userMaster;
-                    //}
+                        return userMaster;
+                    }
+                    else
+                    {
+                        userMaster.Id = user.Id;
+                        userMaster.Name = user.Name;
+                        userMaster.HashPassword = "not matched";
+                        userMaster.Email = user.Email;
+                        userMaster.Mobile = user.Mobile;
+                        userMaster.LastLoginAt = DateTime.Now;
+                        userMaster.IsActive = user.IsActive;
+                        userMaster.LoginAttempts = user.LoginAttempts;
+                        userMaster.IsPasswordChanged = user.IsPasswordChanged;                      
+                        return userMaster;
+                    }
 
-                    return userMaster;
+                  
                 }
                 else
-                {
+                {                                  
                     return userMaster;
                 }
             }
             catch (Exception ex)
             {
-                throw ex;
+                userMaster = new UserMaster();
+                return userMaster;
             }
 
         }

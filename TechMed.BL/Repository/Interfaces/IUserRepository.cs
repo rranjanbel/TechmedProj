@@ -10,7 +10,7 @@ namespace TechMed.BL.Repository.Interfaces
 {
     public interface IUserRepository : IRepository<UserMaster>
     {
-        UserMaster UserAuthentication(LoginVM login);
+       Task<UserMaster> UserAuthentication(LoginVM login);
         bool ChangeUserPassword(ChangePassword changePassword);
         bool ResetUserPassword(long UserId);
         bool DeleteUser(long UserId);
