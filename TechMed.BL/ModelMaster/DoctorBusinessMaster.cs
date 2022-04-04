@@ -11,6 +11,7 @@ using TechMed.DL.ViewModel;
 
 namespace TechMed.BL.ModelMaster
 {
+    
     public class DoctorBusinessMaster : BaseAdapter
     {
         public DoctorBusinessMaster(TeleMedecineContext teleMedecineContext, IMapper mapper) : base(teleMedecineContext, mapper)
@@ -59,7 +60,15 @@ namespace TechMed.BL.ModelMaster
         }
         public void GetTodayesPatients()
         {
+            //List<Notification> notifications = teleMedecineContext.PatientCases.Where(o => o..Email.ToLower() == getListOfNotificationVM.UserEmail.ToLower()).ToList();
+            //var DTOList = new List<NotificationDTO>();
 
+            //foreach (var Notification in notifications)
+            //{
+            //    NotificationDTO mapdata = mapper.Map<NotificationDTO>(Notification);
+            //    DTOList.Add(mapdata);
+            //}
+            //return DTOList;
         }
         public void GetCompletedConsultationPatientsHistory()
         {
