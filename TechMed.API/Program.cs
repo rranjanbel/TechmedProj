@@ -9,6 +9,8 @@ using AutoMapper;
 using TechMed.DL.Models;
 using Microsoft.EntityFrameworkCore;
 using TechMed.API.Services;
+using TechMed.BL.Repository.Interfaces;
+using TechMed.BL.Repository.BaseClasses;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,6 +50,7 @@ builder.Services.AddAuthentication(x =>
 builder.Services.AddSingleton<IJwtAuthManager, JwtAuthManager>();
 builder.Services.AddHostedService<JwtRefreshTokenCache>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "TechMed API", Version = "v1" });

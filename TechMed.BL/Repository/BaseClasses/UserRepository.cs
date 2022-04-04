@@ -28,35 +28,44 @@ namespace TechMed.BL.Repository.BaseClasses
                 var user = await _teleMedecineContext.UserMasters.Where(x => x.Email == login.Email && x.IsActive == true).FirstOrDefaultAsync();              
                 if (user != null)
                 {
-                    if (EncodeAndDecordPassword.MatchPassword(login.Password, user.HashPassword))
-                    {
-                        userMaster.Id = user.Id;
-                        userMaster.Name = user.Name; 
-                        userMaster.HashPassword = user.HashPassword;
-                        userMaster.Email = user.Email;
-                        userMaster.Mobile = user.Mobile;
-                        userMaster.LastLoginAt = DateTime.Now;
-                        userMaster.IsActive = user.IsActive;
-                        userMaster.LoginAttempts = user.LoginAttempts;
-                        userMaster.IsPasswordChanged= user.IsPasswordChanged;
+                    userMaster.Id = user.Id;
+                    userMaster.Name = user.Name;
+                    userMaster.HashPassword = user.HashPassword;
+                    userMaster.Email = user.Email;
+                    userMaster.Mobile = user.Mobile;
+                    userMaster.LastLoginAt = DateTime.Now;
+                    userMaster.IsActive = user.IsActive;
+                    userMaster.LoginAttempts = user.LoginAttempts;
+                    userMaster.IsPasswordChanged = user.IsPasswordChanged;
+                    //if (EncodeAndDecordPassword.MatchPassword(login.Password, user.HashPassword))
+                    //{
+                    //    userMaster.Id = user.Id;
+                    //    userMaster.Name = user.Name; 
+                    //    userMaster.HashPassword = user.HashPassword;
+                    //    userMaster.Email = user.Email;
+                    //    userMaster.Mobile = user.Mobile;
+                    //    userMaster.LastLoginAt = DateTime.Now;
+                    //    userMaster.IsActive = user.IsActive;
+                    //    userMaster.LoginAttempts = user.LoginAttempts;
+                    //    userMaster.IsPasswordChanged= user.IsPasswordChanged;
 
-                        return userMaster;
-                    }
-                    else
-                    {
-                        userMaster.Id = user.Id;
-                        userMaster.Name = user.Name;
-                        userMaster.HashPassword = "not matched";
-                        userMaster.Email = user.Email;
-                        userMaster.Mobile = user.Mobile;
-                        userMaster.LastLoginAt = DateTime.Now;
-                        userMaster.IsActive = user.IsActive;
-                        userMaster.LoginAttempts = user.LoginAttempts;
-                        userMaster.IsPasswordChanged = user.IsPasswordChanged;                      
-                        return userMaster;
-                    }
+                    //    return userMaster;
+                    //}
+                    //else
+                    //{
+                    //    userMaster.Id = user.Id;
+                    //    userMaster.Name = user.Name;
+                    //    userMaster.HashPassword = "not matched";
+                    //    userMaster.Email = user.Email;
+                    //    userMaster.Mobile = user.Mobile;
+                    //    userMaster.LastLoginAt = DateTime.Now;
+                    //    userMaster.IsActive = user.IsActive;
+                    //    userMaster.LoginAttempts = user.LoginAttempts;
+                    //    userMaster.IsPasswordChanged = user.IsPasswordChanged;                      
+                    //    return userMaster;
+                    //}
 
-                  
+                    return userMaster;
                 }
                 else
                 {                                  
