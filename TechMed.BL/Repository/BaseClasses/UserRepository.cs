@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TechMed.BL.CommanClassesAndFunctions;
+using TechMed.BL.DTOMaster;
 using TechMed.BL.Repository.Interfaces;
 using TechMed.DL.Models;
 using TechMed.DL.ViewModel;
@@ -19,9 +20,9 @@ namespace TechMed.BL.Repository.BaseClasses
         {
             this._teleMedecineContext = teleMedecineContext;
         }
-        public async Task<UserMaster> UserAuthentication(LoginVM login)
+        public async Task<UserLoginDTO> UserAuthentication(LoginVM login)
         {
-            UserMaster userMaster = new UserMaster();
+            UserLoginDTO userMaster = new UserLoginDTO();
             try
             {
 
@@ -74,7 +75,7 @@ namespace TechMed.BL.Repository.BaseClasses
             }
             catch (Exception ex)
             {
-                userMaster = new UserMaster();
+                userMaster = new UserLoginDTO ();
                 return userMaster;
             }
 

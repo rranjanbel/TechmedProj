@@ -9,11 +9,13 @@ using TechMed.BL.Repository;
 using TechMed.BL.Repository.Interfaces;
 using TechMed.BL.Repository.BaseClasses;
 using System.Net;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TechMed.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UserMasterController : ControllerBase
     {
         private readonly IMapper _mapper;
@@ -47,7 +49,7 @@ namespace TechMed.API.Controllers
         }
 
         [HttpPost]
-        public async Task<UserMaster> GetAuthenticatedUser(LoginVM login)
+        public async Task<UserLoginDTO> GetAuthenticatedUser(LoginVM login)
         {
             //UserMaster user = new UserMaster();
             return await _userRepository.UserAuthentication(login);
