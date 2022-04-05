@@ -20,7 +20,7 @@ namespace TechMed.DL.Models
         public string RegistrationNumber { get; set; } = null!;
         public string Qualification { get; set; } = null!;
         public string PhoneNumber { get; set; } = null!;
-        public byte[] DigitalSignature { get; set; } = null!;
+        public string DigitalSignature { get; set; } = null!;
         public string Panno { get; set; } = null!;
         public string BankName { get; set; } = null!;
         public string BranchName { get; set; } = null!;

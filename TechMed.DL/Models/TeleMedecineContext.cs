@@ -188,6 +188,10 @@ namespace TechMed.DL.Models
 
                 entity.Property(e => e.CreatedOn).HasColumnType("datetime");
 
+                entity.Property(e => e.DigitalSignature)
+                    .HasMaxLength(150)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.IdproofNumber)
                     .HasMaxLength(50)
                     .IsUnicode(false)

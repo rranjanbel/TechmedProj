@@ -13,21 +13,6 @@ namespace TechMed.BL.DTOMaster
         public int ClusterId { get; set; }
         public int UserId { get; set; }
 
-
-        public int TitleId { get; set; }
-        public string FirstName { get; set; } = null!;
-        public string? MiddleName { get; set; }
-        public string LastName { get; set; } = null!;
-        public DateTime Dob { get; set; }
-        public int GenderId { get; set; }
-        public string EmailId { get; set; } = null!;
-        public int CountryId { get; set; }
-        public int StateId { get; set; }
-        public string City { get; set; } = null!;
-        public string? PinCode { get; set; }
-        public string Photo { get; set; } = null!;
-
-
         public int SpecializationId { get; set; }
         public int? SubSpecializationId { get; set; }
         public string Mciid { get; set; } = null!;
@@ -46,5 +31,20 @@ namespace TechMed.BL.DTOMaster
         //public DateTime? CreatedOn { get; set; }
         //public int? UpdatedBy { get; set; }
         //public DateTime? UpdatedOn { get; set; }
+    }
+    public class DetailsDTO
+    {
+        public int TitleId { get; set; }
+        public string FirstName { get; set; } = null!;
+        public string? MiddleName { get; set; }
+        public string LastName { get; set; } = null!;
+        public DateTime Dob { get; set; }
+        public int GenderId { get; set; }
+        public string EmailId { get; set; } = null!;
+        public int CountryId { get; set; }
+        public int StateId { get; set; }
+        public string City { get; set; } = null!;
+        public string? PinCode { get; set; }
+        public string Photo { get; set; } = null!;
     }
 }
