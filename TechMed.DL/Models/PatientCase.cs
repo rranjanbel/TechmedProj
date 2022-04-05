@@ -17,7 +17,7 @@ namespace TechMed.DL.Models
         public long Id { get; set; }
         public int PatientId { get; set; }
         public string CaseFileNumber { get; set; } = null!;
-        public string Label { get; set; } = null!;
+        public string CaseHeading { get; set; } = null!;
         public string? Observation { get; set; }
         public string? Allergies { get; set; }
         public string? FamilyHistory { get; set; }

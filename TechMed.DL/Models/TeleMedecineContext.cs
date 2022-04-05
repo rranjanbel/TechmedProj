@@ -447,6 +447,10 @@ namespace TechMed.DL.Models
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
+                entity.Property(e => e.CaseHeading)
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.CreatedOn).HasColumnType("datetime");
 
                 entity.Property(e => e.Diagnosis)
@@ -459,10 +463,6 @@ namespace TechMed.DL.Models
 
                 entity.Property(e => e.Instruction)
                     .HasMaxLength(500)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Label)
-                    .HasMaxLength(50)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Observation)
