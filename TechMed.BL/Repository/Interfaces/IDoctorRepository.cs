@@ -15,8 +15,8 @@ namespace TechMed.BL.Repository.Interfaces
         void GetDoctorDetails(GetDoctorDetailVM getDoctorDetailVM);
         void UpdateDoctorDetails();
         void GetListOfPHCHospital();
-        Task<List<NotificationDTO>> GetListOfNotification(GetListOfNotificationVM getListOfNotificationVM);
-        Task<CdssguidelineMasterDTO> GetCDSSGuideLines();
+        public Task<List<NotificationDTO>> GetListOfNotification(GetListOfNotificationVM getListOfNotificationVM);
+        public Task<CdssguidelineMasterDTO> GetCDSSGuideLines();
         void GetYesterdayPatientsHistory();
         void GetAfterYesterdayPatientsHistory();
         public void GetTodayesPatients();

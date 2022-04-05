@@ -47,11 +47,6 @@ namespace TechMed.BL.Repository.BaseClasses
             throw new NotImplementedException();
         }
 
-        public CdssguidelineMasterDTO GetCDSSGuideLines()
-        {
-            throw new NotImplementedException();
-        }
-
         public void GetCompletedConsultationPatientsHistory()
         {
             throw new NotImplementedException();
@@ -62,14 +57,27 @@ namespace TechMed.BL.Repository.BaseClasses
             throw new NotImplementedException();
         }
 
+        public void GetDoctorDetails(GetDoctorDetailVM getDoctorDetailVM)
+        {
+            throw new NotImplementedException();
+        }
+
         public void GetListOfMedicine()
         {
             throw new NotImplementedException();
         }
 
-        public List<NotificationDTO> GetListOfNotification(GetListOfNotificationVM getListOfNotificationVM)
+        public async Task<List<NotificationDTO>> GetListOfNotification(GetListOfNotificationVM getListOfNotificationVM)
         {
-            throw new NotImplementedException();
+            List<Notification> notifications = await _teleMedecineContext.Notifications.Where(o => o.ToUserNavigation.Email.ToLower() == getListOfNotificationVM.UserEmail.ToLower()).ToListAsync();
+            var DTOList = new List<NotificationDTO>();
+
+            foreach (var Notification in notifications)
+            {
+                NotificationDTO mapdata = _mapper.Map<NotificationDTO>(Notification);
+                DTOList.Add(mapdata);
+            }
+            return DTOList;
         }
 
         public void GetListOfPHCHospital()
@@ -146,6 +154,16 @@ namespace TechMed.BL.Repository.BaseClasses
         {
             throw new NotImplementedException();
         }
+
+        public async Task<CdssguidelineMasterDTO> GetCDSSGuideLines()
+        {
+            CdssguidelineMaster cdssguidelineMaster = await _teleMedecineContext.CdssguidelineMasters.FirstOrDefaultAsync();
+            var DTOList = new List<NotificationDTO>();
+            CdssguidelineMasterDTO mapdata = _mapper.Map<CdssguidelineMasterDTO>(cdssguidelineMaster);
+            return mapdata;
+        }
+
+      
         //public void AddDoctorDetails()
         //{
 
