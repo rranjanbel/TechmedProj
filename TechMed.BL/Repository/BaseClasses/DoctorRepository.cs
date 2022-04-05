@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ using TechMed.DL.ViewModel;
 
 namespace TechMed.BL.Repository.BaseClasses
 {
-    public class DoctorRepository :Repository<DoctorMaster>, IDoctorRepository
+    public class DoctorRepository : Repository<DoctorMaster>, IDoctorRepository
     {
         private readonly TeleMedecineContext _teleMedecineContext;
         private readonly IMapper _mapper;

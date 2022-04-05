@@ -51,6 +51,7 @@ builder.Services.AddSingleton<IJwtAuthManager, JwtAuthManager>();
 builder.Services.AddHostedService<JwtRefreshTokenCache>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 builder.Services.AddSwaggerGen(c =>
 {

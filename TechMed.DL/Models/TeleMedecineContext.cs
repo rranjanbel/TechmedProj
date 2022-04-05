@@ -1007,6 +1007,11 @@ namespace TechMed.DL.Models
                     .HasMaxLength(150)
                     .IsUnicode(false);
 
+                entity.Property(e => e.PinCode)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
                 entity.Property(e => e.StateId).HasColumnName("StateID");
 
                 entity.Property(e => e.TitleId).HasColumnName("TitleID");
