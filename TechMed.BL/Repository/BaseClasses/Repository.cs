@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -16,72 +17,164 @@ namespace TechMed.BL.Repository.BaseClasses
 
         public Repository(TeleMedecineContext context)
         {
-            Context = context;
+            //Context = context;
+            this.Context = context ?? throw new ArgumentNullException("Context");
         }
 
-        public virtual IQueryable<T> Add(T entity)
+        /// <summary>
+        /// Gets the model list.
+        /// </summary>
+        /// <returns>
+        /// The model list.
+        /// </returns>
+        public async Task<IEnumerable<T>> Get()
         {
-            Context.Set<T>().Add(entity);
-            Context.SaveChanges();
-            var result = Context.Set<T>().Where(GetDynamicExpresion("Id", GetPropertyValue(entity, "Id"))).AsQueryable<T>();
-            return result;
+            var entities = await this.Context.Set<T>().ToListAsync();
+            return entities;
         }
 
-        public virtual int Delete(int id)
+        /// <summary>
+        /// Gets the model.
+        /// </summary>
+        /// <param name="id">The model identifier.</param>
+        /// <returns>
+        /// The model
+        /// </returns>
+        //public async Task<T> Get(int id)
+        //{
+        //    var entity = await this.Context.Set<T>().SingleOrDefaultAsync(e => e.ID == id);
+        //    return entity;
+        //    //return Context.Set<T>().FirstOrDefault(GetDynamicExpresion("ID", id));
+        //    //var entity = await this.Context.Set<T>().SingleOrDefaultAsync(GetDynamicExpresion("ID", id));
+        //    //return entity;
+
+
+        //}
+
+        /// <summary>
+        /// Gets the many.
+        /// </summary>
+        /// <param name="where">The where.</param>
+        /// <returns>
+        /// Entity
+        /// </returns>
+        public async Task<IEnumerable<T>> Get(Func<T, bool> where)
         {
-            var existing = Context.Set<T>().Where(GetDynamicExpresion("Id", id));
-            if (existing != null)
+            var entities = await Task.Run(() => this.Context.Set<T>().Where(where).AsEnumerable());
+            return entities;
+        }
+
+        /// <summary>
+        /// Creates the model.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        /// <returns>The task</returns>
+        public async Task<T> Create(T model)
+        {
+            if (model == null)
             {
-                Context.Set<T>().Remove(existing.First());
+                throw new ArgumentException("model");
             }
-            return Context.SaveChanges();
+
+            //model.IsDeleted = false;
+            //if (model.Created == DateTimeOffset.MinValue)
+            //{
+            //    model.Created = DateTimeOffset.UtcNow;
+            //}
+
+            try
+            {
+                this.Context.Add(model);
+
+                await this.Context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                throw;
+            }
+
+            return model;
         }
 
-        public virtual int Deactivate(int id)
+        /// <summary>
+        /// Updates the model.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        /// <returns>
+        /// The task
+        /// </returns>
+        public async Task<T> Update(T model)
         {
-            byte? setValue = 0;
-            var existing = Context.Set<T>().FirstOrDefault(GetDynamicExpresion("Id", id));
-            if (existing != null)
+            if (model == null)
             {
-                SetPropertyValue(existing, "Activo", setValue.GetType(), setValue);
+                throw new ArgumentException("model");
             }
-            return Context.SaveChanges();
+
+            /*model.Updated = DateTimeOffset.UtcNow*/;
+
+            try
+            {
+                this.Context.Entry(model).State = EntityState.Modified;
+                await this.Context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                throw;
+            }
+
+            return model;
         }
 
-        private bool disposed = false;
-
-        protected virtual void Dispose(bool disposing)
+        /// <summary>
+        /// Deletes the model.
+        /// </summary>
+        /// <param name="id">The model identifier.</param>
+        /// <returns>
+        /// The task
+        /// </returns>
+        public async Task Delete(int id)
         {
-            if (!this.disposed && disposing)
+            if (id < 1)
             {
-                Context.Dispose();
+                throw new ArgumentOutOfRangeException("id");
             }
-            this.disposed = true;
+
+            var entity = await this.Get(id);
+            //entity.IsDeleted = true;
+
+            this.Context.Entry(entity).State = EntityState.Modified;
+            await this.Context.SaveChangesAsync();
+        }
+
+        public async Task<T> UpdateOnly(T model)
+        {
+            if (model == null)
+            {
+                throw new ArgumentException("model");
+            }
+
+            //model.UpdateBy = DateTimeOffset.UtcNow;
+
+            try
+            {
+                this.Context.Entry(model).State = EntityState.Modified;
+                await this.Context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                throw;
+            }
+
+            return model;
         }
 
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        public virtual IQueryable<T> Get()
-        {
-            return Context.Set<T>().AsQueryable<T>();
-        }
-
-        public virtual T Get(int id)
-        {
-            return Context.Set<T>().FirstOrDefault(GetDynamicExpresion("Id", id));
-        }
-
-        public virtual IQueryable<T> Update(T entity)
-        {
-            T existing = Context.Set<T>().FirstOrDefault(GetDynamicExpresion("Id", GetPropertyValue(entity, "Id")));
-            Context.Entry(existing).CurrentValues.SetValues(entity);
-            Context.SaveChanges();
-            var result = Context.Set<T>().Where(GetDynamicExpresion("Id", GetPropertyValue(entity, "Id"))).AsQueryable<T>();
-            return result;
+              this.Context.Dispose();
+              GC.SuppressFinalize(this);
         }
 
         private static Func<T, bool> GetDynamicExpresion(string propertyName, int val)
@@ -94,7 +187,6 @@ namespace TechMed.BL.Repository.BaseClasses
             var final = Expression.Lambda<Func<T, bool>>(body: body, parameters: param);
             return final.Compile();
         }
-
         private static UnaryExpression GetValueExpression(string propertyName, int val, ParameterExpression param)
         {
             var member = Expression.Property(param, propertyName);
@@ -103,31 +195,122 @@ namespace TechMed.BL.Repository.BaseClasses
             return Expression.Convert(constant, propertyType);
         }
 
-        private int GetPropertyValue(T entity, string propertyName)
+        public Task<T> Get(int id)
         {
-            int returnVal = 0;
-
-            PropertyInfo propInfo = entity.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public)
-            .FirstOrDefault(x => x.Name.Equals(propertyName, StringComparison.OrdinalIgnoreCase));
-
-            if (propInfo != null)
-            {
-                returnVal = Convert.ToInt32(propInfo.GetValue(entity));
-            }
-            return returnVal;
+            throw new NotImplementedException();
         }
 
-        private void SetPropertyValue(T entity, string propertyName, Type type, object value)
-        {
 
-            PropertyInfo propInfo = entity.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public)
-            .FirstOrDefault(x => x.Name.Equals(propertyName, StringComparison.OrdinalIgnoreCase));
 
-            if (propInfo != null)
-            {
-                propInfo.SetValue(entity, Convert.ChangeType(value, type), null);
+        //public virtual IQueryable<T> Add(T entity)
+        //{
+        //    Context.Set<T>().Add(entity);
+        //    Context.SaveChanges();
+        //    var result = Context.Set<T>().Where(GetDynamicExpresion("Id", GetPropertyValue(entity, "Id"))).AsQueryable<T>();
+        //    return result;
+        //}
 
-            }
-        }
+        //public virtual int Delete(int id)
+        //{
+        //    var existing = Context.Set<T>().Where(GetDynamicExpresion("Id", id));
+        //    if (existing != null)
+        //    {
+        //        Context.Set<T>().Remove(existing.First());
+        //    }
+        //    return Context.SaveChanges();
+        //}
+
+        //public virtual int Deactivate(int id)
+        //{
+        //    byte? setValue = 0;
+        //    var existing = Context.Set<T>().FirstOrDefault(GetDynamicExpresion("Id", id));
+        //    if (existing != null)
+        //    {
+        //        SetPropertyValue(existing, "Activo", setValue.GetType(), setValue);
+        //    }
+        //    return Context.SaveChanges();
+        //}
+
+        //private bool disposed = false;
+
+        //protected virtual void Dispose(bool disposing)
+        //{
+        //    if (!this.disposed && disposing)
+        //    {
+        //        Context.Dispose();
+        //    }
+        //    this.disposed = true;
+        //}
+
+        //public void Dispose()
+        //{
+        //    Dispose(true);
+        //    GC.SuppressFinalize(this);
+        //}
+
+        //public virtual IQueryable<T> Get()
+        //{
+        //    return Context.Set<T>().AsQueryable<T>();
+        //}
+
+        //public virtual T Get(int id)
+        //{
+        //    return Context.Set<T>().FirstOrDefault(GetDynamicExpresion("Id", id));
+        //}
+
+        //public virtual IQueryable<T> Update(T entity)
+        //{
+        //    T existing = Context.Set<T>().FirstOrDefault(GetDynamicExpresion("Id", GetPropertyValue(entity, "Id")));
+        //    Context.Entry(existing).CurrentValues.SetValues(entity);
+        //    Context.SaveChanges();
+        //    var result = Context.Set<T>().Where(GetDynamicExpresion("Id", GetPropertyValue(entity, "Id"))).AsQueryable<T>();
+        //    return result;
+        //}
+
+        //private static Func<T, bool> GetDynamicExpresion(string propertyName, int val)
+        //{
+        //    var param = Expression.Parameter(typeof(T), "x");
+        //    MemberExpression member = Expression.Property(param, propertyName);
+        //    UnaryExpression valueExpression = GetValueExpression(propertyName, val, param);
+
+        //    Expression body = Expression.Equal(member, valueExpression);
+        //    var final = Expression.Lambda<Func<T, bool>>(body: body, parameters: param);
+        //    return final.Compile();
+        //}
+
+        //private static UnaryExpression GetValueExpression(string propertyName, int val, ParameterExpression param)
+        //{
+        //    var member = Expression.Property(param, propertyName);
+        //    var propertyType = ((PropertyInfo)member.Member).PropertyType;
+        //    var constant = Expression.Constant(val);
+        //    return Expression.Convert(constant, propertyType);
+        //}
+
+        //private int GetPropertyValue(T entity, string propertyName)
+        //{
+        //    int returnVal = 0;
+
+        //    PropertyInfo propInfo = entity.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public)
+        //    .FirstOrDefault(x => x.Name.Equals(propertyName, StringComparison.OrdinalIgnoreCase));
+
+        //    if (propInfo != null)
+        //    {
+        //        returnVal = Convert.ToInt32(propInfo.GetValue(entity));
+        //    }
+        //    return returnVal;
+        //}
+
+        //private void SetPropertyValue(T entity, string propertyName, Type type, object value)
+        //{
+
+        //    PropertyInfo propInfo = entity.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public)
+        //    .FirstOrDefault(x => x.Name.Equals(propertyName, StringComparison.OrdinalIgnoreCase));
+
+        //    if (propInfo != null)
+        //    {
+        //        propInfo.SetValue(entity, Convert.ChangeType(value, type), null);
+
+        //    }
+        //}
     }
 }

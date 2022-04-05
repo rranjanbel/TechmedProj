@@ -8,15 +8,58 @@ namespace TechMed.BL.Repository.Interfaces
 {
     public interface IRepository<T> : IDisposable where T : class
     {
-        IQueryable<T> Get();
+        //IQueryable<T> Get();
 
-        T Get(int id);
+        //T Get(int id);
 
-        IQueryable<T> Add(T entity);
+        //IQueryable<T> Add(T entity);
 
-        int Delete(int id);
+        //int Delete(int id);
 
-        IQueryable<T> Update(T entity);
-        int Deactivate(int id);
+        //IQueryable<T> Update(T entity);
+        //int Deactivate(int id);
+
+        /// <summary>
+        /// Gets the model list.
+        /// </summary>
+        /// <returns>The model list.</returns>
+        Task<IEnumerable<T>> Get();
+
+        /// <summary>
+        /// Gets the model.
+        /// </summary>
+        /// <param name="id">The model identifier.</param>
+        /// <returns>The model</returns>
+        Task<T> Get(int id);
+
+        /// <summary>
+        /// Gets the specified where.
+        /// </summary>
+        /// <param name="where">The where.</param>
+        /// <returns>The model</returns>
+        Task<IEnumerable<T>> Get(Func<T, bool> where);
+
+        /// <summary>
+        /// Creates the model.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        /// <returns>The task</returns>
+        Task<T> Create(T model);
+
+        /// <summary>
+        /// Updates the model.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        /// <returns>The task</returns>
+        Task<T> Update(T model);
+
+        /// <summary>
+        /// Deletes the model.
+        /// </summary>
+        /// <param name="id">The model identifier.</param>
+        /// <returns>Task</returns>
+        Task Delete(int id);
+
+        Task<T> UpdateOnly(T model);
     }
 }

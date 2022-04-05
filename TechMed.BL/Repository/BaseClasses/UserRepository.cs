@@ -142,89 +142,89 @@ namespace TechMed.BL.Repository.BaseClasses
             return false;
         }
 
-        public override IQueryable<UserMaster> Add(UserMaster entity)
-        {
-            var existuser = _teleMedecineContext.UserMasters.Where(x => x.Email.ToUpper() == entity.Email.ToUpper()).ToList();
-            if (existuser.Any())
-            {
-                var result = Context.Set<UserMaster>().Where(x => x.Id == entity.Id).AsQueryable<UserMaster>();
-                return result;
-            }
-            else
-            {
+        //public override IQueryable<UserMaster> Add(UserMaster entity)
+        //{
+        //    var existuser = _teleMedecineContext.UserMasters.Where(x => x.Email.ToUpper() == entity.Email.ToUpper()).ToList();
+        //    if (existuser.Any())
+        //    {
+        //        var result = Context.Set<UserMaster>().Where(x => x.Id == entity.Id).AsQueryable<UserMaster>();
+        //        return result;
+        //    }
+        //    else
+        //    {
 
-                _teleMedecineContext.UserMasters.Add(entity);
-                _teleMedecineContext.SaveChanges();
+        //        _teleMedecineContext.UserMasters.Add(entity);
+        //        _teleMedecineContext.SaveChanges();
 
-                var result = Context.Set<UserMaster>().Where(x => x.Id == entity.Id).AsQueryable<UserMaster>();
-                return result;
-            }
-        }
-        public override IQueryable<UserMaster> Update(UserMaster entity)
-        {
-            var existuser = _teleMedecineContext.UserMasters.Find(entity.Id);
-            if (existuser != null)
-            {
-                //if (entity.FirstName != null)
-                //{
-                //    existuser.FirstName = entity.FirstName;
-                //}
-                //if (entity.MiddleName != null)
-                //{
-                //    existuser.MiddleName = entity.MiddleName;
-                //}
-                //if (entity.LastName != null)
-                //{
-                //    existuser.LastName = entity.LastName;
-                //}
-                //if (entity.FatherName != null)
-                //{
-                //    existuser.FatherName = entity.FatherName;
-                //}
-                //if (entity.MotherName != null)
-                //{
-                //    existuser.MotherName = entity.MotherName;
-                //}
-                //if (entity.MobileNo > 0 && entity.MobileNo <= 12)
-                //{
-                //    existuser.MobileNo = entity.MobileNo;
-                //}
-                //if (entity.WhatsAppNo > 0 && entity.WhatsAppNo <= 12)
-                //{
-                //    existuser.WhatsAppNo = entity.WhatsAppNo;
-                //}
-                //if (entity.Address != null)
-                //{
-                //    existuser.Address = entity.Address;
-                //}
-                //if (entity.BlockId != null)
-                //{
-                //    existuser.BlockId = entity.BlockId;
-                //}
-                //if (entity.CountryId > 0)
-                //{
-                //    existuser.CountryId = entity.CountryId;
-                //}
-                //if (entity.StateId > 0)
-                //{
-                //    existuser.StateId = entity.StateId;
-                //}
-                //if (entity.DistrictId > 0)
-                //{
-                //    existuser.DistrictId = entity.DistrictId;
-                //}
+        //        var result = Context.Set<UserMaster>().Where(x => x.Id == entity.Id).AsQueryable<UserMaster>();
+        //        return result;
+        //    }
+        //}
+        //public override IQueryable<UserMaster> Update(UserMaster entity)
+        //{
+        //    var existuser = _teleMedecineContext.UserMasters.Find(entity.Id);
+        //    if (existuser != null)
+        //    {
+        //        //if (entity.FirstName != null)
+        //        //{
+        //        //    existuser.FirstName = entity.FirstName;
+        //        //}
+        //        //if (entity.MiddleName != null)
+        //        //{
+        //        //    existuser.MiddleName = entity.MiddleName;
+        //        //}
+        //        //if (entity.LastName != null)
+        //        //{
+        //        //    existuser.LastName = entity.LastName;
+        //        //}
+        //        //if (entity.FatherName != null)
+        //        //{
+        //        //    existuser.FatherName = entity.FatherName;
+        //        //}
+        //        //if (entity.MotherName != null)
+        //        //{
+        //        //    existuser.MotherName = entity.MotherName;
+        //        //}
+        //        //if (entity.MobileNo > 0 && entity.MobileNo <= 12)
+        //        //{
+        //        //    existuser.MobileNo = entity.MobileNo;
+        //        //}
+        //        //if (entity.WhatsAppNo > 0 && entity.WhatsAppNo <= 12)
+        //        //{
+        //        //    existuser.WhatsAppNo = entity.WhatsAppNo;
+        //        //}
+        //        //if (entity.Address != null)
+        //        //{
+        //        //    existuser.Address = entity.Address;
+        //        //}
+        //        //if (entity.BlockId != null)
+        //        //{
+        //        //    existuser.BlockId = entity.BlockId;
+        //        //}
+        //        //if (entity.CountryId > 0)
+        //        //{
+        //        //    existuser.CountryId = entity.CountryId;
+        //        //}
+        //        //if (entity.StateId > 0)
+        //        //{
+        //        //    existuser.StateId = entity.StateId;
+        //        //}
+        //        //if (entity.DistrictId > 0)
+        //        //{
+        //        //    existuser.DistrictId = entity.DistrictId;
+        //        //}
 
 
-                _teleMedecineContext.SaveChanges();
-                var result = Context.Set<UserMaster>().Where(x => x.Id == entity.Id).AsQueryable<UserMaster>();
-                return result;
-            }
-            else
-            {
-                var result = Context.Set<UserMaster>().Where(x => x.Id == entity.Id).AsQueryable<UserMaster>();
-                return result;
-            }
-        }
+        //        _teleMedecineContext.SaveChanges();
+        //        var result = Context.Set<UserMaster>().Where(x => x.Id == entity.Id).AsQueryable<UserMaster>();
+        //        return result;
+        //    }
+        //    else
+        //    {
+        //        var result = Context.Set<UserMaster>().Where(x => x.Id == entity.Id).AsQueryable<UserMaster>();
+        //        return result;
+        //    }
+        //}
 
         public bool IsduplicateUser(string UserEmail)
         {
