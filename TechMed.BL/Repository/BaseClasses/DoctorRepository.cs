@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ using TechMed.DL.ViewModel;
 
 namespace TechMed.BL.Repository.BaseClasses
 {
-    public class DoctorRepository :Repository<DoctorMaster>, IDoctorRepository
+    public class DoctorRepository : Repository<DoctorMaster>, IDoctorRepository
     {
         private readonly TeleMedecineContext _teleMedecineContext;
         private readonly IMapper _mapper;
@@ -24,7 +25,7 @@ namespace TechMed.BL.Repository.BaseClasses
         {
 
         }
-        public void GetDoctorDetails()
+        public void GetDoctorDetails(GetDoctorDetailVM getDoctorDetailVM)
         {
 
         }
@@ -35,9 +36,9 @@ namespace TechMed.BL.Repository.BaseClasses
         public void GetListOfPHCHospital()
         {
         }
-        public List<NotificationDTO> GetListOfNotification(GetListOfNotificationVM getListOfNotificationVM)
+        public async Task<List<NotificationDTO>> GetListOfNotification(GetListOfNotificationVM getListOfNotificationVM)
         {
-            List<Notification> notifications = _teleMedecineContext.Notifications.Where(o => o.ToUserNavigation.Email.ToLower() == getListOfNotificationVM.UserEmail.ToLower()).ToList();
+            List<Notification> notifications = await _teleMedecineContext.Notifications.Where(o => o.ToUserNavigation.Email.ToLower() == getListOfNotificationVM.UserEmail.ToLower()).ToListAsync();
             var DTOList = new List<NotificationDTO>();
 
             foreach (var Notification in notifications)
@@ -48,9 +49,9 @@ namespace TechMed.BL.Repository.BaseClasses
             return DTOList;
 
         }
-        public CdssguidelineMasterDTO GetCDSSGuideLines()
+        public async Task<CdssguidelineMasterDTO> GetCDSSGuideLines()
         {
-            CdssguidelineMaster cdssguidelineMaster = _teleMedecineContext.CdssguidelineMasters.FirstOrDefault();
+            CdssguidelineMaster cdssguidelineMaster =await _teleMedecineContext.CdssguidelineMasters.FirstOrDefaultAsync();
             var DTOList = new List<NotificationDTO>();
             CdssguidelineMasterDTO mapdata = _mapper.Map<CdssguidelineMasterDTO>(cdssguidelineMaster);
             return mapdata;

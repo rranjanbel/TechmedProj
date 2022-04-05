@@ -20,6 +20,7 @@ namespace TechMed.DL.Models
         public int StateId { get; set; }
         public string City { get; set; } = null!;
         public string Address { get; set; } = null!;
+        public string? PinCode { get; set; }
         public string Photo { get; set; } = null!;
         public string? Occupation { get; set; }
         public bool? IsMarried { get; set; }

@@ -6,7 +6,7 @@ using TechMed.BL.DTOMaster;
 using TechMed.BL.ModelMaster;
 using TechMed.DL.Models;
 using TechMed.DL.ViewModel;
-
+using TechMed.BL.Repository.Interfaces;
 namespace TechMed.API.Controllers
 {
     [Route("api/[controller]")]
@@ -16,26 +16,24 @@ namespace TechMed.API.Controllers
     {
         DoctorBusinessMaster doctorBusinessMaster;
         private readonly IMapper _mapper;
-        public DoctorController(IMapper mapper, TeleMedecineContext teleMedecineContext)
+        private readonly IDoctorRepository _doctorRepository;
+        public DoctorController(IMapper mapper, TeleMedecineContext teleMedecineContext, IDoctorRepository doctorRepository)
         {
 
             doctorBusinessMaster = new DoctorBusinessMaster(teleMedecineContext, mapper);
+            _doctorRepository = doctorRepository;
         }
         [Route("GetListOfNotification")]
         [HttpPost]
-        [ProducesResponseType(200, Type = typeof(List<NotificationDTO>))]
-        public IActionResult GetListOfNotification(GetListOfNotificationVM getListOfNotificationVM)
+        public async Task<List<NotificationDTO>> GetListOfNotification(GetListOfNotificationVM getListOfNotificationVM)
         {
-            var listOfNotification = doctorBusinessMaster.GetListOfNotification(getListOfNotificationVM);
-            return Ok(listOfNotification);
+            return await _doctorRepository.GetListOfNotification(getListOfNotificationVM);
         }
         [Route("GetCDSSGuideLines")]
         [HttpGet]
-        [ProducesResponseType(200, Type = typeof(CdssguidelineMasterDTO))]
-        public IActionResult GetCDSSGuideLines()
+        public async Task<CdssguidelineMasterDTO> GetCDSSGuideLines()
         {
-            var responseData = doctorBusinessMaster.GetCDSSGuideLines();
-            return Ok(responseData);
+            return await _doctorRepository.GetCDSSGuideLines();
         }
     }
 }
