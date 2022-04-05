@@ -25,8 +25,7 @@ namespace TechMed.BL.DTOMaster
         public string BranchName { get; set; } = null!;
         public string AccountNumber { get; set; } = null!;
         public string Ifsccode { get; set; } = null!;
-        public int IdproofTypeId { get; set; }
-        public string IdproofNumber { get; set; } = null!;
+   
         //public int? CreatedBy { get; set; }
         //public DateTime? CreatedOn { get; set; }
         //public int? UpdatedBy { get; set; }
@@ -46,5 +45,7 @@ namespace TechMed.BL.DTOMaster
         public string City { get; set; } = null!;
         public string? PinCode { get; set; }
         public string Photo { get; set; } = null!;
+        public int IdproofTypeId { get; set; }
+        public string IdproofNumber { get; set; } = null!;
     }
 }

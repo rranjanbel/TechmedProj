@@ -7,7 +7,6 @@ namespace TechMed.DL.Models
     {
         public IdproofTypeMaster()
         {
-            DoctorMasters = new HashSet<DoctorMaster>();
             PatientMasters = new HashSet<PatientMaster>();
             UserDetails = new HashSet<UserDetail>();
         }
@@ -15,7 +14,6 @@ namespace TechMed.DL.Models
         public int Id { get; set; }
         public string IdproofType { get; set; } = null!;
 
-        public virtual ICollection<DoctorMaster> DoctorMasters { get; set; }
         public virtual ICollection<PatientMaster> PatientMasters { get; set; }
         public virtual ICollection<UserDetail> UserDetails { get; set; }
     }

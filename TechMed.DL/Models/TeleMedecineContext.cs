@@ -192,13 +192,6 @@ namespace TechMed.DL.Models
                     .HasMaxLength(150)
                     .IsUnicode(false);
 
-                entity.Property(e => e.IdproofNumber)
-                    .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("IDProofNumber");
-
-                entity.Property(e => e.IdproofTypeId).HasColumnName("IDProofTypeID");
-
                 entity.Property(e => e.Ifsccode)
                     .HasMaxLength(15)
                     .IsUnicode(false)
@@ -247,12 +240,6 @@ namespace TechMed.DL.Models
                     .WithMany(p => p.DoctorMasterCreatedByNavigations)
                     .HasForeignKey(d => d.CreatedBy)
                     .HasConstraintName("FK_DoctorMaster_UserMasterCreatedBy");
-
-                entity.HasOne(d => d.IdproofType)
-                    .WithMany(p => p.DoctorMasters)
-                    .HasForeignKey(d => d.IdproofTypeId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_DoctorMaster_IDProofTypeMaster");
 
                 entity.HasOne(d => d.Specialization)
                     .WithMany(p => p.DoctorMasters)

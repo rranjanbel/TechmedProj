@@ -26,8 +26,6 @@ namespace TechMed.DL.Models
         public string BranchName { get; set; } = null!;
         public string AccountNumber { get; set; } = null!;
         public string Ifsccode { get; set; } = null!;
-        public int IdproofTypeId { get; set; }
-        public string IdproofNumber { get; set; } = null!;
         public int? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
         public int? UpdatedBy { get; set; }
@@ -35,7 +33,6 @@ namespace TechMed.DL.Models
 
         public virtual ClusterMaster Cluster { get; set; } = null!;
         public virtual UserMaster? CreatedByNavigation { get; set; }
-        public virtual IdproofTypeMaster IdproofType { get; set; } = null!;
         public virtual SpecializationMaster Specialization { get; set; } = null!;
         public virtual SubSpecializationMaster? SubSpecialization { get; set; }
         public virtual UserMaster? UpdatedByNavigation { get; set; }
