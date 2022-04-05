@@ -471,8 +471,6 @@ namespace TechMed.DL.Models
 
                 entity.Property(e => e.PatientId).HasColumnName("PatientID");
 
-                entity.Property(e => e.QueueId).HasColumnName("QueueID");
-
                 entity.Property(e => e.Test)
                     .HasMaxLength(500)
                     .IsUnicode(false);
