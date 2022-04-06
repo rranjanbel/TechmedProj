@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using TechMed.API.Services;
 using TechMed.BL.Repository.Interfaces;
 using TechMed.BL.Repository.BaseClasses;
+using TechMed.API.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -92,6 +93,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
     app.UseDeveloperExceptionPage();
 }
+app.UseMiddleware<ExceptionMiddleware>();
+
 app.UseRouting();
 
 app.UseHttpsRedirection();
