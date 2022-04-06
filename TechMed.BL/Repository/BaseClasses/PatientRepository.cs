@@ -98,6 +98,12 @@ namespace TechMed.BL.Repository.BaseClasses
             throw new NotImplementedException();
         }
 
+        public bool IsPatientExist(PatientMaster patientMaster)
+        {
+            bool result = _teleMedecineContext.PatientMasters.Any(a => a.FirstName == patientMaster.FirstName && a.LastName == patientMaster.LastName && a.MobileNo == patientMaster.MobileNo);  
+            return result;
+        }
+
         public Task<PatientMaster> UpdatePatient(int Id)
         {
             throw new NotImplementedException();
