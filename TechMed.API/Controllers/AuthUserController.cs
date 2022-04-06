@@ -21,14 +21,14 @@ namespace TechMed.API.Controllers
         }
         [AllowAnonymous]
         [HttpPost("api/generatetoken")]
-        public ActionResult GenerateToken([FromBody] LoginRequest request)
+        public async Task<ActionResult> GenerateToken([FromBody] LoginRequest request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
 
-            if (!_userService.IsValidUserCredentials(request.UserName, request.Password))
+            if (! await _userService.IsValidUserCredentials(request.UserName, request.Password))
             {
                 return Unauthorized("Unauthorized User");
             }
