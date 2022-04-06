@@ -15,7 +15,7 @@ namespace TechMed.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class UserMasterController : ControllerBase
     {
         private readonly IMapper _mapper;
@@ -49,10 +49,30 @@ namespace TechMed.API.Controllers
         }
 
         [HttpPost]
-        public async Task<UserLoginDTO> GetAuthenticatedUser(LoginVM login)
-        {
-            //UserMaster user = new UserMaster();
-            return await _userRepository.UserAuthentication(login);
+        [Route("LogedUserDetails")]
+        public async Task<UserLoginDTO> LogedUserDetails(string userEmail)
+        { 
+           
+            if (userEmail == null)
+            {
+                throw new ArgumentNullException("userEmail");
+            }
+            if (string.IsNullOrEmpty(userEmail))
+            {
+                throw new ArgumentNullException("userEmail");
+            }
+            var userLoginDTO = new UserLoginDTO();
+            userLoginDTO = await _userRepository.LogedUserDetails(userEmail);
+            if(userLoginDTO.Id > 0)
+            {
+                return userLoginDTO;
+            }
+            else
+            {
+                throw new ArgumentException("User email is not correct");
+            }
+            
+
         }
 
     }

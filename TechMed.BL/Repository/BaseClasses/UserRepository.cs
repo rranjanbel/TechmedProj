@@ -27,13 +27,13 @@ namespace TechMed.BL.Repository.BaseClasses
 
 
         }
-        public async Task<UserLoginDTO> UserAuthentication(LoginVM login)
+        public async Task<UserLoginDTO> LogedUserDetails(string userEmail)
         {
             UserLoginDTO userMaster = new UserLoginDTO();
             try
             {
 
-                var user = await _teleMedecineContext.UserMasters.Where(x => x.Email == login.Email && x.IsActive == true).FirstOrDefaultAsync();
+                var user = await _teleMedecineContext.UserMasters.Where(x => x.Email == userEmail && x.IsActive == true).FirstOrDefaultAsync();
                 if (user != null)
                 {
                     userMaster = _mapper.Map<UserLoginDTO>(user);
