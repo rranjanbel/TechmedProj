@@ -172,7 +172,12 @@ namespace TechMed.BL.Repository.BaseClasses
             return mapdata;
         }
 
-      
+        Task<List<UserMaster>> IRepository<UserMaster>.GetAll()
+        {
+            throw new NotImplementedException();
+        }
+
+
         //public void AddDoctorDetails()
         //{
 

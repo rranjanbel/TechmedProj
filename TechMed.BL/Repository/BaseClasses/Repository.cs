@@ -32,6 +32,11 @@ namespace TechMed.BL.Repository.BaseClasses
             var entities = await this.Context.Set<T>().ToListAsync();
             return entities;
         }
+        public async Task<List<T>> GetAll()
+        {
+            var entities = await this.Context.Set<T>().ToListAsync();
+            return entities;
+        }
 
         /// <summary>
         /// Gets the model.
