@@ -9,7 +9,7 @@ using TechMed.DL.Models;
 
 namespace TechMed.BL.Mapper
 {
-    public class MappingMaster :Profile
+    public class MappingMaster : Profile
     {
         public MappingMaster()
         {
@@ -17,7 +17,13 @@ namespace TechMed.BL.Mapper
             CreateMap<Notification, NotificationDTO>().ReverseMap();
             CreateMap<CdssguidelineMaster, CdssguidelineMasterDTO>().ReverseMap();
             CreateMap<PatientMaster, PatientMasterDTO>().ReverseMap();
-
+            CreateMap<DoctorMaster, DoctorDTO>().ReverseMap();
+            CreateMap<UserDetail, DetailsDTO>().ReverseMap();
+            CreateMap<MedicineMaster, MedicineMasterDTO>().ReverseMap();
+            CreateMap<VitalMaster, VitalMasterDTO>().ReverseMap();
+            CreateMap<Phcmaster, PHCHospitalDTO>().ReverseMap();
+            CreateMap<SpecializationMaster, SpecializationDTO>().ReverseMap();
+            CreateMap<SubSpecializationMaster, SubSpecializationDTO>().ReverseMap();
         }
     }
 }

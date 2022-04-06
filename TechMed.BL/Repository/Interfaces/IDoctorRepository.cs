@@ -12,17 +12,19 @@ namespace TechMed.BL.Repository.Interfaces
     public interface IDoctorRepository : IRepository<UserMaster>
     {
         void AddDoctorDetails();
-        void GetDoctorDetails(GetDoctorDetailVM getDoctorDetailVM);
+        public Task<DoctorDTO> GetDoctorDetails(GetDoctorDetailVM getDoctorDetailVM);
         void UpdateDoctorDetails();
-        void GetListOfPHCHospital();
+        public Task<List<PHCHospitalDTO>> GetListOfPHCHospital();
         public Task<List<NotificationDTO>> GetListOfNotification(GetListOfNotificationVM getListOfNotificationVM);
         public Task<CdssguidelineMasterDTO> GetCDSSGuideLines();
         void GetYesterdayPatientsHistory();
         void GetAfterYesterdayPatientsHistory();
         public void GetTodayesPatients();
         void GetCompletedConsultationPatientsHistory();
-        void GetListOfVital();
-        void GetListOfMedicine();
+        public Task<List<VitalMasterDTO>> GetListOfVital();
+        public Task<List<MedicineMasterDTO>> GetListOfMedicine();
+        public Task<List<SpecializationDTO>> GetListOfSpecializationMaster();
+        public Task<List<SubSpecializationDTO>> GetListOfSubSpecializationMaster(int SpecializationID);
         void PostTreatmentPlan();
         void PatientAbsent();
         void ReferHigherFacilityAbsent();

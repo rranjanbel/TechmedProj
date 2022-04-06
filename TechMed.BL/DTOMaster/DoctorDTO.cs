@@ -18,18 +18,15 @@ namespace TechMed.BL.DTOMaster
         public string Mciid { get; set; } = null!;
         public string RegistrationNumber { get; set; } = null!;
         public string Qualification { get; set; } = null!;
+        public string Designation { get; set; } = null!;
         public string PhoneNumber { get; set; } = null!;
-        public byte[]? DigitalSignature { get; set; } = null!;
+        public string DigitalSignature { get; set; } = null!;
         public string PanNo { get; set; } = null!;
         public string BankName { get; set; } = null!;
         public string BranchName { get; set; } = null!;
         public string AccountNumber { get; set; } = null!;
         public string Ifsccode { get; set; } = null!;
-   
-        //public int? CreatedBy { get; set; }
-        //public DateTime? CreatedOn { get; set; }
-        //public int? UpdatedBy { get; set; }
-        //public DateTime? UpdatedOn { get; set; }
+        public DetailsDTO detailsDTO { get; set; } = null!;
     }
     public class DetailsDTO
     {

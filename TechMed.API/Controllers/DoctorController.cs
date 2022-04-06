@@ -11,7 +11,7 @@ namespace TechMed.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class DoctorController : ControllerBase
     {
         DoctorBusinessMaster doctorBusinessMaster;
@@ -22,6 +22,7 @@ namespace TechMed.API.Controllers
 
             doctorBusinessMaster = new DoctorBusinessMaster(teleMedecineContext, mapper);
             _doctorRepository = doctorRepository;
+            _mapper = mapper;
         }
         [Route("GetListOfNotification")]
         [HttpPost]
@@ -34,6 +35,44 @@ namespace TechMed.API.Controllers
         public async Task<CdssguidelineMasterDTO> GetCDSSGuideLines()
         {
             return await _doctorRepository.GetCDSSGuideLines();
+        }
+        [Route("GetDoctorDetails")]
+        [HttpPost]
+        public async Task<DoctorDTO> GetDoctorDetails(GetDoctorDetailVM getDoctorDetailVM)
+        {
+            return await _doctorRepository.GetDoctorDetails(getDoctorDetailVM);
+        }
+        [Route("GetListOfMedicine")]
+        [HttpPost]
+        public async Task<List<MedicineMasterDTO>> GetListOfMedicine()
+        {
+            return await _doctorRepository.GetListOfMedicine();
+        }
+        [Route("GetListOfVital")]
+        [HttpPost]
+        public async Task<List<VitalMasterDTO>> GetListOfVital()
+        {
+            return await _doctorRepository.GetListOfVital();
+        }
+        [Route("GetListOfPHCHospital")]
+        [HttpPost]
+        public async Task<List<PHCHospitalDTO>> GetListOfPHCHospital()
+        {
+            return await _doctorRepository.GetListOfPHCHospital();
+        }
+
+        [Route("GetListOfSpecializationMaster")]
+        [HttpPost]
+        public async Task<List<SpecializationDTO>> GetListOfSpecializationMaster()
+        {
+            return await _doctorRepository.GetListOfSpecializationMaster();
+        }
+
+        [Route("GetListOfSubSpecializationMaster")]
+        [HttpPost]
+        public async Task<List<SubSpecializationDTO>> GetListOfSubSpecializationMaster(int SpecializationId)
+        {
+            return await _doctorRepository.GetListOfSubSpecializationMaster(SpecializationId);
         }
     }
 }
