@@ -19,6 +19,7 @@ namespace TechMed.DL.Models
         public string Mciid { get; set; } = null!;
         public string RegistrationNumber { get; set; } = null!;
         public string Qualification { get; set; } = null!;
+        public string Designation { get; set; } = null!;
         public string PhoneNumber { get; set; } = null!;
         public string DigitalSignature { get; set; } = null!;
         public string Panno { get; set; } = null!;
