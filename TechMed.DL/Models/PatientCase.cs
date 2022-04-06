@@ -28,7 +28,6 @@ namespace TechMed.DL.Models
         public DateTime CreatedOn { get; set; }
         public int? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
-        public long QueueId { get; set; }
 
         public virtual UserMaster CreatedByNavigation { get; set; } = null!;
         public virtual PatientMaster Patient { get; set; } = null!;

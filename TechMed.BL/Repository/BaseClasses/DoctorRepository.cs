@@ -59,7 +59,16 @@ namespace TechMed.BL.Repository.BaseClasses
 
         public void GetDoctorDetails(GetDoctorDetailVM getDoctorDetailVM)
         {
-            throw new NotImplementedException();
+            //
+            //DoctorMaster doctorMaster  = await _teleMedecineContext.DoctorMasters.Where(o => o.ToUserNavigation.Email.ToLower() == getListOfNotificationVM.UserEmail.ToLower()).ToListAsync();
+            //var DTOList = new List<NotificationDTO>();
+
+            //foreach (var Notification in notifications)
+            //{
+            //    NotificationDTO mapdata = _mapper.Map<NotificationDTO>(Notification);
+            //    DTOList.Add(mapdata);
+            //}
+            //return DTOList;
         }
 
         public void GetListOfMedicine()
