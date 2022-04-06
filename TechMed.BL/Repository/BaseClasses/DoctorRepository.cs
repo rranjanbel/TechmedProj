@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,10 +17,12 @@ namespace TechMed.BL.Repository.BaseClasses
     {
         private readonly TeleMedecineContext _teleMedecineContext;
         private readonly IMapper _mapper;
-        public DoctorRepository(TeleMedecineContext teleMedecineContext, IMapper mapper) : base(teleMedecineContext)
+        private readonly ILogger<UserRepository> _logger;
+        public DoctorRepository(ILogger<UserRepository> logger, TeleMedecineContext teleMedecineContext, IMapper mapper) : base(teleMedecineContext)
         {
             this._teleMedecineContext = teleMedecineContext;
             this._mapper = mapper;
+            this._logger = logger;
         }
 
         public void AddDoctorDetails()
@@ -237,16 +240,19 @@ namespace TechMed.BL.Repository.BaseClasses
             throw new NotImplementedException();
         }
 
-        Task<IEnumerable<UserMaster>> IRepository<UserMaster>.Get()
+        Task<IEnumerable<DoctorMaster>> IRepository<DoctorMaster>.Get()
         {
             throw new NotImplementedException();
         }
 
-        Task<UserMaster> IRepository<UserMaster>.Get(int id)
+        Task<DoctorMaster> IRepository<DoctorMaster>.Get(int id)
         {
             throw new NotImplementedException();
         }
 
-
+        Task<List<DoctorMaster>> IRepository<DoctorMaster>.GetAll()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

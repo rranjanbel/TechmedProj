@@ -9,7 +9,7 @@ using TechMed.DL.ViewModel;
 
 namespace TechMed.BL.Repository.Interfaces
 {
-    public interface IDoctorRepository : IRepository<UserMaster>
+    public interface IDoctorRepository : IRepository<DoctorMaster>
     {
         void AddDoctorDetails();
         public Task<DoctorDTO> GetDoctorDetails(GetDoctorDetailVM getDoctorDetailVM);
