@@ -15,7 +15,7 @@ namespace TechMed.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class UserMasterController : ControllerBase
     {
         private readonly IMapper _mapper;
@@ -48,28 +48,53 @@ namespace TechMed.API.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("", "User list not found");
+                    ModelState.AddModelError("GetUsers", "User list not found");
                     return StatusCode(404, ModelState);
                 }
             }
             catch (Exception ex)
             {
 
-                ModelState.AddModelError("", $"Something went wrong when create park {ex.Message}");
+                ModelState.AddModelError("GetUsers", $"Something went wrong when create park {ex.Message}");
                 return StatusCode(500, ModelState);
             }
            
 
         }
+      
 
-        [HttpGet]
+        [HttpPost]
         [Route("IsValidUser")]
-        public async Task<bool> IsValidUser(LoginVM login)
+        [ProducesResponseType(200, Type = typeof(bool))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> IsValidUser(LoginVM login)
         {
-            return await this._userRepository.IsValidUser(login);
+            bool response = false;
+            try
+            {
+                response = await this._userRepository.IsValidUser(login);
+                if (response)
+                {
+                    return Ok(response);
+                }
+                else
+                {
+                    ModelState.AddModelError("IsValidUser", $"User validation fail for email : {login.Email}");
+                    return StatusCode(404, ModelState);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("IsValidUser", $"Something went wrong when create park {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+
         }
 
-       
+
+
         [HttpGet]
         [Route("LogedUserDetails")]
         [ProducesResponseType(200, Type = typeof(UserLoginDTO))]
@@ -91,14 +116,14 @@ namespace TechMed.API.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("", $"User email did not match");
+                    ModelState.AddModelError("LogedUserDetails", $"User email did not match");
                     return StatusCode(404,ModelState);
                 }
             }
             catch (Exception ex)
             {
 
-                ModelState.AddModelError("", $"Something went wrong when create park {ex.Message}");
+                ModelState.AddModelError("LogedUserDetails", $"Something went wrong when create park {ex.Message}");
                 return StatusCode(500, ModelState);
             }
            

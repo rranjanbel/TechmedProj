@@ -14,6 +14,7 @@ namespace TechMed.BL.Repository.Interfaces
         Task<PatientMaster> GetPatientByID(int Id);
         Task<PatientMaster> UpdatePatient(int Id);
         Task<bool> DeletePatient(int Id);
+        bool IsPatientExist(PatientMaster patientMaster);
         Task<List<PatientMaster>> GetTodaysPatientList(int Id);
         Task<List<PatientMaster>> GetCheckedPatientList(int Id);
         Task<List<PatientMaster>> GetUnCheckedPatientList(int Id);

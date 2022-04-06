@@ -16,17 +16,13 @@ namespace TechMed.BL.DTOMaster
         public string LastName { get; set; }
         [Required]
         public long PatientId { get; set; }
-        public string PhoneNumber { get; set; }
-        [Required]
-        public int IdproofId { get; set; }
-        [Required]
+        public string PhoneNumber { get; set; }       
+        public int IdproofId { get; set; }       
         public string IdproofNumber { get; set; }
         [Required]
         public int GenderId { get; set; }
-        public string? Address { get; set; }
-        [Required]
-        public int CountryId { get; set; }
-        [Required]
+        public string? Address { get; set; }      
+        public int CountryId { get; set; }        
         public int StateId { get; set; }
         public int DistrictId { get; set; }
         public string? City { get; set; }
