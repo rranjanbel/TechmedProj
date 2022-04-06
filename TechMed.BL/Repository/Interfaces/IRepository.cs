@@ -7,23 +7,15 @@ using System.Threading.Tasks;
 namespace TechMed.BL.Repository.Interfaces
 {
     public interface IRepository<T> : IDisposable where T : class
-    {
-        //IQueryable<T> Get();
-
-        //T Get(int id);
-
-        //IQueryable<T> Add(T entity);
-
-        //int Delete(int id);
-
-        //IQueryable<T> Update(T entity);
-        //int Deactivate(int id);
+    {       
 
         /// <summary>
         /// Gets the model list.
         /// </summary>
         /// <returns>The model list.</returns>
         Task<IEnumerable<T>> Get();
+
+        Task<List<T>> GetAll();
 
         /// <summary>
         /// Gets the model.

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,10 +17,12 @@ namespace TechMed.BL.Repository.BaseClasses
     {
         private readonly TeleMedecineContext _teleMedecineContext;
         private readonly IMapper _mapper;
-        public DoctorRepository(TeleMedecineContext teleMedecineContext, IMapper mapper) : base(teleMedecineContext)
+        private readonly ILogger<UserRepository> _logger;
+        public DoctorRepository(ILogger<UserRepository> logger, TeleMedecineContext teleMedecineContext, IMapper mapper) : base(teleMedecineContext)
         {
             this._teleMedecineContext = teleMedecineContext;
             this._mapper = mapper;
+            this._logger = logger;
         }
 
         public void AddDoctorDetails()
@@ -40,24 +43,13 @@ namespace TechMed.BL.Repository.BaseClasses
         {
             throw new NotImplementedException();
         }
-
-        public void GetAfterYesterdayPatientsHistory()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void GetCompletedConsultationPatientsHistory()
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<DoctorDTO> GetDoctorDetails(GetDoctorDetailVM getDoctorDetailVM)
         {
             //
             DoctorMaster doctorMaster = await _teleMedecineContext.DoctorMasters.Where(o => o.User.Email.ToLower() == getDoctorDetailVM.UserEmailID.ToLower()).FirstOrDefaultAsync();
             UserDetail userDetail = await _teleMedecineContext.UserDetails.Where(o => o.UserId == doctorMaster.UserId).FirstOrDefaultAsync();
             var DTO = new DoctorDTO();
-            DTO= _mapper.Map<DoctorDTO>(doctorMaster);
+            DTO = _mapper.Map<DoctorDTO>(doctorMaster);
             DTO.detailsDTO = _mapper.Map<DetailsDTO>(userDetail);
             return DTO;
         }
@@ -126,7 +118,7 @@ namespace TechMed.BL.Repository.BaseClasses
         }
         public async Task<List<SubSpecializationDTO>> GetListOfSubSpecializationMaster(int SpecializationId)
         {
-            List<SubSpecializationMaster> masters = await _teleMedecineContext.SubSpecializationMasters.Where(a=>a.SpecializationId== SpecializationId).ToListAsync();
+            List<SubSpecializationMaster> masters = await _teleMedecineContext.SubSpecializationMasters.Where(a => a.SpecializationId == SpecializationId).ToListAsync();
             var DTOList = new List<SubSpecializationDTO>();
             foreach (var item in masters)
             {
@@ -135,7 +127,79 @@ namespace TechMed.BL.Repository.BaseClasses
             }
             return DTOList;
         }
-        public void UpdateDoctorDetails()
+        public async Task<bool> UpdateDoctorDetails(DoctorDTO doctorDTO)
+        {
+            if (doctorDTO != null)
+            {
+                DoctorMaster masters = await _teleMedecineContext.DoctorMasters.Where(a => a.Id == doctorDTO.Id).FirstOrDefaultAsync();
+                //public int Id { get; set; }
+                //public int ZoneId { get; set; }
+                //public int ClusterId { get; set; }
+                //masters.UserId { get; set; }
+                masters.SpecializationId = doctorDTO.SpecializationId;
+                masters.SubSpecializationId = doctorDTO.SpecializationId;
+                masters.Mciid = doctorDTO.Mciid;
+                masters.RegistrationNumber = doctorDTO.RegistrationNumber;
+                masters.Qualification = doctorDTO.Qualification;
+                masters.Designation = doctorDTO.Designation;
+                masters.PhoneNumber = doctorDTO.PhoneNumber;
+                masters.DigitalSignature = doctorDTO.DigitalSignature;
+                masters.Panno = doctorDTO.PanNo;
+                masters.BankName = doctorDTO.BankName;
+                masters.BranchName = doctorDTO.BranchName;
+                masters.AccountNumber = doctorDTO.AccountNumber;
+                masters.Ifsccode = doctorDTO.Ifsccode;
+                //masters.CreatedBy { get; set; }
+                //masters.CreatedOn { get; set; }
+                masters.UpdatedBy = doctorDTO.UpdatedBy;
+                masters.UpdatedOn = DateTime.Now;
+                await _teleMedecineContext.SaveChangesAsync();
+
+                if (doctorDTO.detailsDTO != null)
+                {
+                    UserDetail userDetail = await _teleMedecineContext.UserDetails.Where(a => a.UserId == doctorDTO.UserId).FirstOrDefaultAsync();
+                    userDetail.TitleId = doctorDTO.detailsDTO.TitleId;
+                    userDetail.FirstName = doctorDTO.detailsDTO.FirstName;
+                    userDetail.MiddleName= doctorDTO.detailsDTO.MiddleName;
+                    userDetail.LastName = doctorDTO.detailsDTO.LastName;
+                    userDetail.Dob= doctorDTO.detailsDTO.Dob;
+                    userDetail.GenderId = doctorDTO.detailsDTO.GenderId;
+                    userDetail.EmailId= doctorDTO.detailsDTO.EmailId;
+                    userDetail.PhoneNumber ="";
+                    userDetail.FatherName = "";
+                    userDetail.CountryId = doctorDTO.detailsDTO.CountryId;
+                    userDetail.StateId = doctorDTO.detailsDTO.StateId;
+                    userDetail.City= doctorDTO.detailsDTO.City;
+                    userDetail.Address = "";
+                    userDetail.PinCode =doctorDTO.detailsDTO.PinCode;
+                    //userDetail.Photo { get; set; } = null!;
+                    //userDetail.Occupation { get; set; }
+                    //userDetail.IsMarried { get; set; }
+                    //userDetail.NoOfChildren { get; set; }
+                    //userDetail.IdproofTypeId { get; set; }
+                    //userDetail.IdproofNumber { get; set; }
+                    userDetail.UpdatedBy = doctorDTO.UpdatedBy;
+                    userDetail.UpdatedOn = DateTime.Now;
+                    await _teleMedecineContext.SaveChangesAsync();
+                }
+            }
+            else
+            {
+
+            }
+            return true;
+        }
+        public void GetTodayesPatients()
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public void GetPastPatientsHistory()
+        {
+            throw new NotImplementedException();
+        }
+        public void GetCompletedConsultationPatientsHistory()
         {
             throw new NotImplementedException();
         }
@@ -147,10 +211,6 @@ namespace TechMed.BL.Repository.BaseClasses
         {
             throw new NotImplementedException();
         }
-        public void GetTodayesPatients()
-        {
-            throw new NotImplementedException();
-        }
         public void GetYesterdayPatientsHistory()
         {
             throw new NotImplementedException();
@@ -159,18 +219,16 @@ namespace TechMed.BL.Repository.BaseClasses
         {
             throw new NotImplementedException();
         }
-
         public void PostTreatmentPlan()
         {
             throw new NotImplementedException();
         }
-
         public void ReferHigherFacilityAbsent()
         {
             throw new NotImplementedException();
         }
 
-    
+
 
         public Task<UserMaster> Update(UserMaster model)
         {
@@ -182,16 +240,19 @@ namespace TechMed.BL.Repository.BaseClasses
             throw new NotImplementedException();
         }
 
-        Task<IEnumerable<UserMaster>> IRepository<UserMaster>.Get()
+        Task<IEnumerable<DoctorMaster>> IRepository<DoctorMaster>.Get()
         {
             throw new NotImplementedException();
         }
 
-        Task<UserMaster> IRepository<UserMaster>.Get(int id)
+        Task<DoctorMaster> IRepository<DoctorMaster>.Get(int id)
         {
             throw new NotImplementedException();
         }
 
-        
+        Task<List<DoctorMaster>> IRepository<DoctorMaster>.GetAll()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

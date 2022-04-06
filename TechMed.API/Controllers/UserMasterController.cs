@@ -19,58 +19,90 @@ namespace TechMed.API.Controllers
     public class UserMasterController : ControllerBase
     {
         private readonly IMapper _mapper;
-        UserBusinessMaster userBusinessMaster;
+        //UserBusinessMaster userBusinessMaster;
         private readonly IUserRepository _userRepository;
         public UserMasterController(IMapper mapper, TeleMedecineContext teleMedecineContext, IUserRepository userRepository)
         {
             this._mapper = mapper;
-            userBusinessMaster = new UserBusinessMaster(teleMedecineContext, mapper);
+            //userBusinessMaster = new UserBusinessMaster(teleMedecineContext, mapper);
             this._userRepository = userRepository;
         }
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(List<UserLoginDTO>))]
-        public IActionResult GetUsers()
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetUsers()
         {
-            var userList = userBusinessMaster.GetUserMasters();
-            var userDTOList = new List<UserLoginDTO>();
-            if (userList != null)
+            try
             {
-                foreach (var user in userList)
+                List<UserMaster> userList = new List<UserMaster>();
+                userList = await _userRepository.GetAll();
+                var userDTOList = new List<UserLoginDTO>();
+                if (userList != null)
                 {
-                    userDTOList.Add(_mapper.Map<UserLoginDTO>(user));
+                    foreach (var user in userList)
+                    {
+                        userDTOList.Add(_mapper.Map<UserLoginDTO>(user));
+                    }
+                    return Ok(userDTOList);
                 }
-                return Ok(userDTOList);
+                else
+                {
+                    ModelState.AddModelError("", "User list not found");
+                    return StatusCode(404, ModelState);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return BadRequest();
+
+                ModelState.AddModelError("", $"Something went wrong when create park {ex.Message}");
+                return StatusCode(500, ModelState);
             }
+           
 
         }
 
-        [HttpPost]
+        [HttpGet]
+        [Route("IsValidUser")]
+        public async Task<bool> IsValidUser(LoginVM login)
+        {
+            return await this._userRepository.IsValidUser(login);
+        }
+
+       
+        [HttpGet]
         [Route("LogedUserDetails")]
-        public async Task<UserLoginDTO> LogedUserDetails(string userEmail)
-        { 
+        [ProducesResponseType(200, Type = typeof(UserLoginDTO))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> LogedUserDetails(string userEmail)
+        {
+            try
+            {
+                if (userEmail == null)
+                {
+                    return BadRequest(ModelState);
+                }
+                var userLoginDTO = new UserLoginDTO();
+                userLoginDTO = await _userRepository.LogedUserDetails(userEmail);
+                if (userLoginDTO.Id > 0)
+                {
+                    return Ok(userLoginDTO);
+                }
+                else
+                {
+                    ModelState.AddModelError("", $"User email did not match");
+                    return StatusCode(404,ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError("", $"Something went wrong when create park {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
            
-            if (userEmail == null)
-            {
-                throw new ArgumentNullException("userEmail");
-            }
-            if (string.IsNullOrEmpty(userEmail))
-            {
-                throw new ArgumentNullException("userEmail");
-            }
-            var userLoginDTO = new UserLoginDTO();
-            userLoginDTO = await _userRepository.LogedUserDetails(userEmail);
-            if(userLoginDTO.Id > 0)
-            {
-                return userLoginDTO;
-            }
-            else
-            {
-                throw new ArgumentException("User email is not correct");
-            }
+            
             
 
         }

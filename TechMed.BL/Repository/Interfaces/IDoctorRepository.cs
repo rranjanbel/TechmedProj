@@ -9,16 +9,16 @@ using TechMed.DL.ViewModel;
 
 namespace TechMed.BL.Repository.Interfaces
 {
-    public interface IDoctorRepository : IRepository<UserMaster>
+    public interface IDoctorRepository : IRepository<DoctorMaster>
     {
         void AddDoctorDetails();
         public Task<DoctorDTO> GetDoctorDetails(GetDoctorDetailVM getDoctorDetailVM);
-        void UpdateDoctorDetails();
+        public Task<bool> UpdateDoctorDetails(DoctorDTO doctorDTO);
         public Task<List<PHCHospitalDTO>> GetListOfPHCHospital();
         public Task<List<NotificationDTO>> GetListOfNotification(GetListOfNotificationVM getListOfNotificationVM);
         public Task<CdssguidelineMasterDTO> GetCDSSGuideLines();
         void GetYesterdayPatientsHistory();
-        void GetAfterYesterdayPatientsHistory();
+        void GetPastPatientsHistory();
         public void GetTodayesPatients();
         void GetCompletedConsultationPatientsHistory();
         public Task<List<VitalMasterDTO>> GetListOfVital();

@@ -12,6 +12,8 @@ namespace TechMed.BL.Repository.Interfaces
     public interface IUserRepository : IRepository<UserMaster>
     {
         Task<UserLoginDTO> LogedUserDetails(string userEmail);
+        Task<bool> IsValidUser(LoginVM login);
+        Task<bool> IsAnExistingUser(string userEmail);
         bool ChangeUserPassword(ChangePassword changePassword);
         bool ResetUserPassword(long UserId);
         bool DeleteUser(long UserId);

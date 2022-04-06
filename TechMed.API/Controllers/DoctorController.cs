@@ -11,7 +11,7 @@ namespace TechMed.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class DoctorController : ControllerBase
     {
         DoctorBusinessMaster doctorBusinessMaster;
@@ -26,53 +26,280 @@ namespace TechMed.API.Controllers
         }
         [Route("GetListOfNotification")]
         [HttpPost]
-        public async Task<List<NotificationDTO>> GetListOfNotification(GetListOfNotificationVM getListOfNotificationVM)
+        [ProducesResponseType(200, Type = typeof(List<NotificationDTO>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetListOfNotification(GetListOfNotificationVM getListOfNotificationVM)
         {
-            return await _doctorRepository.GetListOfNotification(getListOfNotificationVM);
+            try
+            {
+                if (getListOfNotificationVM == null)
+                {
+                    return BadRequest(ModelState);
+                }
+                var DTO = await _doctorRepository.GetListOfNotification(getListOfNotificationVM);
+                if (DTO.Count > 0)
+                {
+                    return Ok(DTO);
+                }
+                else
+                {
+                    ModelState.AddModelError("", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError("", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
         }
         [Route("GetCDSSGuideLines")]
         [HttpGet]
-        public async Task<CdssguidelineMasterDTO> GetCDSSGuideLines()
+        [ProducesResponseType(200, Type = typeof(CdssguidelineMasterDTO))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetCDSSGuideLines()
         {
-            return await _doctorRepository.GetCDSSGuideLines();
+            try
+            {
+                var DTO = await _doctorRepository.GetCDSSGuideLines();
+                if (DTO!=null)
+                {
+                    return Ok(DTO);
+                }
+                else
+                {
+                    ModelState.AddModelError("", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError("", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
         }
         [Route("GetDoctorDetails")]
         [HttpPost]
-        public async Task<DoctorDTO> GetDoctorDetails(GetDoctorDetailVM getDoctorDetailVM)
+        [ProducesResponseType(200, Type = typeof(DoctorDTO))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetDoctorDetails(GetDoctorDetailVM getDoctorDetailVM)
         {
-            return await _doctorRepository.GetDoctorDetails(getDoctorDetailVM);
+            try
+            {
+                if (getDoctorDetailVM == null)
+                {
+                    return BadRequest(ModelState);
+                }
+                var DTO = await _doctorRepository.GetDoctorDetails(getDoctorDetailVM);
+                if (DTO.Id>0)
+                {
+                    return Ok(DTO);
+                }
+                else
+                {
+                    ModelState.AddModelError("", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError("", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
         }
         [Route("GetListOfMedicine")]
         [HttpPost]
-        public async Task<List<MedicineMasterDTO>> GetListOfMedicine()
+        [ProducesResponseType(200, Type = typeof(List<MedicineMasterDTO>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetListOfMedicine()
         {
-            return await _doctorRepository.GetListOfMedicine();
+            try
+            {
+                //if (getListOfNotificationVM == null)
+                //{
+                //    return BadRequest(ModelState);
+                //}
+                var DTO = await _doctorRepository.GetListOfMedicine();
+                if (DTO.Count > 0)
+                {
+                    return Ok(DTO);
+                }
+                else
+                {
+                    ModelState.AddModelError("", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError("", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
         }
         [Route("GetListOfVital")]
         [HttpPost]
-        public async Task<List<VitalMasterDTO>> GetListOfVital()
+        [ProducesResponseType(200, Type = typeof(List<VitalMasterDTO>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetListOfVital()
         {
-            return await _doctorRepository.GetListOfVital();
+            try
+            {
+                //if (getListOfNotificationVM == null)
+                //{
+                //    return BadRequest(ModelState);
+                //}
+                var DTO = await _doctorRepository.GetListOfVital();
+                if (DTO.Count > 0)
+                {
+                    return Ok(DTO);
+                }
+                else
+                {
+                    ModelState.AddModelError("", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
         }
         [Route("GetListOfPHCHospital")]
         [HttpPost]
-        public async Task<List<PHCHospitalDTO>> GetListOfPHCHospital()
+        [ProducesResponseType(200, Type = typeof(List<PHCHospitalDTO>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetListOfPHCHospital()
         {
-            return await _doctorRepository.GetListOfPHCHospital();
+            try
+            {
+                //if (getListOfNotificationVM == null)
+                //{
+                //    return BadRequest(ModelState);
+                //}
+                var DTO = await _doctorRepository.GetListOfPHCHospital();
+                if (DTO.Count > 0)
+                {
+                    return Ok(DTO);
+                }
+                else
+                {
+                    ModelState.AddModelError("", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
         }
 
         [Route("GetListOfSpecializationMaster")]
         [HttpPost]
-        public async Task<List<SpecializationDTO>> GetListOfSpecializationMaster()
+        [ProducesResponseType(200, Type = typeof(List<SpecializationDTO>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetListOfSpecializationMaster()
         {
-            return await _doctorRepository.GetListOfSpecializationMaster();
+            try
+            {
+                //if (getListOfNotificationVM == null)
+                //{
+                //    return BadRequest(ModelState);
+                //}
+                var DTO = await _doctorRepository.GetListOfSpecializationMaster();
+                if (DTO.Count > 0)
+                {
+                    return Ok(DTO);
+                }
+                else
+                {
+                    ModelState.AddModelError("", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError("", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
         }
 
         [Route("GetListOfSubSpecializationMaster")]
         [HttpPost]
-        public async Task<List<SubSpecializationDTO>> GetListOfSubSpecializationMaster(int SpecializationId)
+        [ProducesResponseType(200, Type = typeof(List<SubSpecializationDTO>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetListOfSubSpecializationMaster(int SpecializationId)
         {
-            return await _doctorRepository.GetListOfSubSpecializationMaster(SpecializationId);
+            try
+            {
+                if (SpecializationId == 0)
+                {
+                    return BadRequest(ModelState);
+                }
+                var DTO = await _doctorRepository.GetListOfSubSpecializationMaster(SpecializationId);
+                if (DTO.Count > 0)
+                {
+                    return Ok(DTO);
+                }
+                else
+                {
+                    ModelState.AddModelError("", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError("", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
+
+        [Route("UpdateDoctorDetails")]
+        [HttpPost]
+        [ProducesResponseType(200, Type = typeof(bool))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdateDoctorDetails(DoctorDTO doctorDTO)
+        {
+            
+            try
+            {
+                if (doctorDTO == null|| doctorDTO.Id<1|| !ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                var DTO = await _doctorRepository.UpdateDoctorDetails(doctorDTO);
+                if (DTO)
+                {
+                    return Ok(DTO);
+                }
+                else
+                {
+                    ModelState.AddModelError("", $"Data not updated!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError("", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
         }
     }
 }
