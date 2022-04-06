@@ -74,5 +74,12 @@ namespace TechMed.API.Controllers
         {
             return await _doctorRepository.GetListOfSubSpecializationMaster(SpecializationId);
         }
+
+        [Route("UpdateDoctorDetails")]
+        [HttpPost]
+        public async Task<bool> UpdateDoctorDetails(DoctorDTO doctorDTO)
+        {
+            return await _doctorRepository.UpdateDoctorDetails(doctorDTO);
+        }
     }
 }
