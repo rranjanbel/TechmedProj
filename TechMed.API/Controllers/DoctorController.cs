@@ -11,7 +11,7 @@ namespace TechMed.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class DoctorController : ControllerBase
     {
         DoctorBusinessMaster doctorBusinessMaster;
@@ -312,7 +312,7 @@ namespace TechMed.API.Controllers
 
             try
             {
-                if (DoctorID == null || DoctorID< 1 || !ModelState.IsValid)
+                if (DoctorID > 0 || DoctorID< 1 || !ModelState.IsValid)
                 {
                     return BadRequest(DoctorID);
                 }
@@ -344,7 +344,7 @@ namespace TechMed.API.Controllers
 
             try
             {
-                if (DoctorID == null || DoctorID < 1 || !ModelState.IsValid)
+                if (DoctorID > 0 || DoctorID < 1 || !ModelState.IsValid)
                 {
                     return BadRequest(DoctorID);
                 }

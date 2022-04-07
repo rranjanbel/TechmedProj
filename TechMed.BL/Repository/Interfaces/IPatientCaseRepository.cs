@@ -7,9 +7,9 @@ using TechMed.DL.Models;
 
 namespace TechMed.BL.Repository.Interfaces
 {
-    public interface IPHCRepository : IRepository<Phcmaster>
+    public interface IPatientCaseRepository : IRepository<PatientCase>
     {
-        Task<Phcmaster> GetByID(int id);
-        Task<Phcmaster> GetByPHCUserID(int userId);
+        Task<PatientCase> GetByID(int id);
+        Task<PatientCase> GetByPHCUserID(int userId);
     }
 }

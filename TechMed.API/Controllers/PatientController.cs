@@ -59,21 +59,6 @@ namespace TechMed.API.Controllers
                 return StatusCode(500, ModelState);
             }  
         }
-        //[HttpPost]
-        //[Consumes(MediaTypeNames.Application.Json)]
-        //[ProducesResponseType(StatusCodes.Status201Created)]
-        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
-        //public async Task<IActionResult> CreatePatientAsync(PatientMaster patient)
-        //{
-        //    PatientMaster addedPatientMaster = new PatientMaster();
-        //    if (patient ==null)
-        //    {
-        //        return BadRequest();
-        //    }
-
-        //    addedPatientMaster = await _patientRepository.AddPatient(patient);
-
-        //    return CreatedAtAction(nameof(_patientRepository.GetPatientByID), new { Id = patient.Id }, patient);
-        //}
+      
     }
 }
