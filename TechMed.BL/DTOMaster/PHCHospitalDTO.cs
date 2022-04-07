@@ -17,6 +17,7 @@ namespace TechMed.BL.DTOMaster
         public string PhoneNo { get; set; } = null!;
         public string Moname { get; set; } = null!;
         public string? Address { get; set; }
-
+        public int CreatedBy { get; set; }
+        public int ModifyBy { get; set; }
     }
 }

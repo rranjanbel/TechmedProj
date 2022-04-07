@@ -19,32 +19,45 @@ namespace TechMed.API.Controllers
         {
             this._mapper = mapper;         
             this._patientRepository = patientRepository;
-        }
+        }        
         [HttpPost]
-        public async Task<PatientMaster> Post([FromBody] PatientMasterDTO patientdto)
+        [Route("AddPatient")]
+        [ProducesResponseType(201, Type = typeof(PatientMasterDTO))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Post([FromBody] PatientMasterDTO patientdto)
         {
-            if (patientdto == null)
+            PatientMaster newCreatedPatient = new PatientMaster();
+            try
             {
-                throw new ArgumentNullException("patient");
+                var patientDetails = _mapper.Map<PatientMaster>(patientdto);
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                if (_patientRepository.IsPatientExist(patientDetails))
+                {
+                    ModelState.AddModelError("AddPatient", "Patient name already in system");
+                    return StatusCode(404, ModelState);
+                }
+                newCreatedPatient = await this._patientRepository.Create(patientDetails);
+                if (newCreatedPatient == null)
+                {
+                    ModelState.AddModelError("AddPatient", $"Something went wrong when create Patient {patientdto.FirstName}");
+                    return StatusCode(404, ModelState);
+                }
+                else
+                {                  
+                    var createdPatient = _mapper.Map<PatientMasterDTO>(newCreatedPatient);
+                    return CreatedAtRoute(201, createdPatient);
+                }
             }
-
-            if (string.IsNullOrEmpty(patientdto.FirstName))
+            catch (Exception ex)
             {
-                throw new ArgumentNullException("FirstName");
-            }
-            if (!ModelState.IsValid)
-            {
-                throw new ArgumentNullException("Model state not valid");
-            }
 
-            var patientDetails = _mapper.Map<PatientMaster>(patientdto);
-            var createdPatient = await this._patientRepository.Create(patientDetails); 
-            if (createdPatient == null)
-            {                
-                throw new ArgumentNullException($"Something went wrong when create park {patientdto.FirstName}");
-            } 
-
-            return createdPatient;
+                ModelState.AddModelError("AddPatient", $"Something went wrong when create Patient {ex.Message}");
+                return StatusCode(500, ModelState);
+            }  
         }
         //[HttpPost]
         //[Consumes(MediaTypeNames.Application.Json)]
