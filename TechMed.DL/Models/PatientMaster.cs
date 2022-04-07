@@ -26,9 +26,11 @@ namespace TechMed.DL.Models
         public string PinCode { get; set; } = null!;
         public string? Photo { get; set; }
         public DateTime Dob { get; set; }
-        public string EmailId { get; set; } = null!;
+        public string? EmailId { get; set; }
         public string MobileNo { get; set; } = null!;
         public int PatientStatusId { get; set; }
+        public int Phcid { get; set; }
+        public bool? IsCaseCreated { get; set; }
         public int? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
         public int? UpdatedBy { get; set; }
@@ -40,6 +42,7 @@ namespace TechMed.DL.Models
         public virtual GenderMaster Gender { get; set; } = null!;
         public virtual IdproofTypeMaster Idproof { get; set; } = null!;
         public virtual PatientStatusMaster PatientStatus { get; set; } = null!;
+        public virtual Phcmaster Phc { get; set; } = null!;
         public virtual StateMaster State { get; set; } = null!;
         public virtual UserMaster? UpdatedByNavigation { get; set; }
         public virtual ICollection<PatientCase> PatientCases { get; set; }

@@ -19,8 +19,8 @@ namespace TechMed.BL.Repository.Interfaces
         public Task<CdssguidelineMasterDTO> GetCDSSGuideLines();
         void GetYesterdayPatientsHistory();
         void GetPastPatientsHistory();
-        public void GetTodayesPatients();
-        void GetCompletedConsultationPatientsHistory();
+        public Task<List<GetTodayesPatientsDTO>> GetTodayesPatients(long DoctorID);
+        public Task<List<GetTodayesPatientsDTO>> GetCompletedConsultationPatientsHistory(long DoctorID);
         public Task<List<VitalMasterDTO>> GetListOfVital();
         public Task<List<MedicineMasterDTO>> GetListOfMedicine();
         public Task<List<SpecializationDTO>> GetListOfSpecializationMaster();

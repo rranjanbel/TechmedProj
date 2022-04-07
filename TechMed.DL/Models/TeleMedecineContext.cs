@@ -42,6 +42,7 @@ namespace TechMed.DL.Models
         public virtual DbSet<PatientStatusMaster> PatientStatusMasters { get; set; } = null!;
         public virtual DbSet<Phcmaster> Phcmasters { get; set; } = null!;
         public virtual DbSet<RoleMasterDelete> RoleMasterDeletes { get; set; } = null!;
+        public virtual DbSet<Setting> Settings { get; set; } = null!;
         public virtual DbSet<SpecialityMasterDelete> SpecialityMasterDeletes { get; set; } = null!;
         public virtual DbSet<SpecializationMaster> SpecializationMasters { get; set; } = null!;
         public virtual DbSet<StateMaster> StateMasters { get; set; } = null!;
@@ -466,6 +467,10 @@ namespace TechMed.DL.Models
 
                 entity.Property(e => e.PatientId).HasColumnName("PatientID");
 
+                entity.Property(e => e.Symptom)
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Test)
                     .HasMaxLength(500)
                     .IsUnicode(false);
@@ -660,6 +665,8 @@ namespace TechMed.DL.Models
 
                 entity.Property(e => e.PatientStatusId).HasColumnName("PatientStatusID");
 
+                entity.Property(e => e.Phcid).HasColumnName("PHCID");
+
                 entity.Property(e => e.PhoneNumber)
                     .HasMaxLength(10)
                     .IsUnicode(false);
@@ -711,6 +718,12 @@ namespace TechMed.DL.Models
                     .HasForeignKey(d => d.PatientStatusId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_PatientMaster_PatientStatusMaster");
+
+                entity.HasOne(d => d.Phc)
+                    .WithMany(p => p.PatientMasters)
+                    .HasForeignKey(d => d.Phcid)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PatientMaster_PHCMaster");
 
                 entity.HasOne(d => d.State)
                     .WithMany(p => p.PatientMasters)
@@ -859,6 +872,11 @@ namespace TechMed.DL.Models
                 entity.Property(e => e.Role)
                     .HasMaxLength(50)
                     .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<Setting>(entity =>
+            {
+                entity.ToTable("Setting");
             });
 
             modelBuilder.Entity<SpecialityMasterDelete>(entity =>
