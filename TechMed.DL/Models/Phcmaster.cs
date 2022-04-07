@@ -5,6 +5,11 @@ namespace TechMed.DL.Models
 {
     public partial class Phcmaster
     {
+        public Phcmaster()
+        {
+            PatientMasters = new HashSet<PatientMaster>();
+        }
+
         public int Id { get; set; }
         public int ZoneId { get; set; }
         public int ClusterId { get; set; }
@@ -24,5 +29,6 @@ namespace TechMed.DL.Models
         public virtual UserMaster? UpdatedByNavigation { get; set; }
         public virtual UserMaster User { get; set; } = null!;
         public virtual ZoneMaster Zone { get; set; } = null!;
+        public virtual ICollection<PatientMaster> PatientMasters { get; set; }
     }
 }

@@ -467,6 +467,10 @@ namespace TechMed.DL.Models
 
                 entity.Property(e => e.PatientId).HasColumnName("PatientID");
 
+                entity.Property(e => e.Symptom)
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Test)
                     .HasMaxLength(500)
                     .IsUnicode(false);
@@ -661,6 +665,8 @@ namespace TechMed.DL.Models
 
                 entity.Property(e => e.PatientStatusId).HasColumnName("PatientStatusID");
 
+                entity.Property(e => e.Phcid).HasColumnName("PHCID");
+
                 entity.Property(e => e.PhoneNumber)
                     .HasMaxLength(10)
                     .IsUnicode(false);
@@ -712,6 +718,12 @@ namespace TechMed.DL.Models
                     .HasForeignKey(d => d.PatientStatusId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_PatientMaster_PatientStatusMaster");
+
+                entity.HasOne(d => d.Phc)
+                    .WithMany(p => p.PatientMasters)
+                    .HasForeignKey(d => d.Phcid)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PatientMaster_PHCMaster");
 
                 entity.HasOne(d => d.State)
                     .WithMany(p => p.PatientMasters)

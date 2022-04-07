@@ -192,14 +192,24 @@ namespace TechMed.BL.Repository.BaseClasses
         }
         public async Task<List<GetTodayesPatientsDTO>> GetTodayesPatients(long DoctorID)
         {
-            List<PatientQueue> masters = await _teleMedecineContext.PatientQueues.Include(d=>d.PatientCase.Patient.Gender).Include(c=>c.AssignedByNavigation).Include(a=>a.PatientCase).Include(b=>b.PatientCase.Patient).Where(a => a.CaseFileStatusId == 4 && a.AssignedDoctorId == DoctorID).ToListAsync();
+
+            List<PatientQueue> masters = await _teleMedecineContext.PatientQueues
+                .Include(d => d.PatientCase.Patient.Gender)
+                .Include(c => c.AssignedByNavigation)
+                .Include(a => a.PatientCase)
+                .Include(b => b.PatientCase.Patient)
+                .Where(a => a.CaseFileStatusId == 4 && a.AssignedDoctorId == DoctorID
+                && a.AssignedOn.Year == DateTime.Now.Year
+                && a.AssignedOn.Month == DateTime.Now.Month
+                && a.AssignedOn.Day == DateTime.Now.Day
+                ).ToListAsync();
 
             var DTOList = new List<GetTodayesPatientsDTO>();
             foreach (var item in masters)
             {
                 //GetTodayesPatientsDTO mapdata = _mapper.Map<GetTodayesPatientsDTO>(item);
-                GetTodayesPatientsDTO mapdata=new GetTodayesPatientsDTO();
-                mapdata.PatientName= item.PatientCase.Patient.FirstName+" "+ item.PatientCase.Patient.LastName;
+                GetTodayesPatientsDTO mapdata = new GetTodayesPatientsDTO();
+                mapdata.PatientName = item.PatientCase.Patient.FirstName + " " + item.PatientCase.Patient.LastName;
                 mapdata.PhoneNumber = item.PatientCase.Patient.PhoneNumber;
                 mapdata.ReferredbyPHCName = item.AssignedByNavigation.Name;
                 mapdata.Age = CommanFunction.GetAge(item.PatientCase.Patient.Dob);
@@ -210,16 +220,42 @@ namespace TechMed.BL.Repository.BaseClasses
             }
             return DTOList;
         }
-        public Task<List<GetTodayesPatientsDTO>> GetCompletedConsultationPatientsHistory(long DoctorID)
+        public async Task<List<GetTodayesPatientsDTO>> GetCompletedConsultationPatientsHistory(long DoctorID)
         {
-            throw new NotImplementedException();
+            var today = DateTime.Today;
+            List<PatientQueue> masters = await _teleMedecineContext.PatientQueues
+                .Include(d => d.PatientCase.Patient.Gender)
+                .Include(c => c.AssignedByNavigation)
+                .Include(a => a.PatientCase)
+                .Include(b => b.PatientCase.Patient)
+                .Where(a => a.CaseFileStatusId == 5 && a.AssignedDoctorId == DoctorID
+                 && a.AssignedOn.Year == today.Year
+                && a.AssignedOn.Month == today.Month
+                && a.AssignedOn.Date == today.Date
+                ).ToListAsync();
+
+            var DTOList = new List<GetTodayesPatientsDTO>();
+            foreach (var item in masters)
+            {
+                //GetTodayesPatientsDTO mapdata = _mapper.Map<GetTodayesPatientsDTO>(item);
+                GetTodayesPatientsDTO mapdata = new GetTodayesPatientsDTO();
+                mapdata.PatientName = item.PatientCase.Patient.FirstName + " " + item.PatientCase.Patient.LastName;
+                mapdata.PhoneNumber = item.PatientCase.Patient.PhoneNumber;
+                mapdata.ReferredbyPHCName = item.AssignedByNavigation.Name;
+                mapdata.Age = CommanFunction.GetAge(item.PatientCase.Patient.Dob);
+                mapdata.Gender = item.PatientCase.Patient.Gender.Gender;
+                mapdata.PatientID = item.PatientCase.Patient.PatientId;
+                //mapdata.status = item.PatientCase.Patient.PatientStatus.PatientStatus;
+                DTOList.Add(mapdata);
+            }
+            return DTOList;
         }
 
         public void GetPastPatientsHistory()
         {
             throw new NotImplementedException();
         }
-     
+
         public void GetPatientCaseDetails()
         {
             throw new NotImplementedException();

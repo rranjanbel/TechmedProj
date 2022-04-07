@@ -334,5 +334,37 @@ namespace TechMed.API.Controllers
                 return StatusCode(500, ModelState);
             }
         }
+        [Route("GetCompletedConsultationPatientsHistory")]
+        [HttpPost]
+        [ProducesResponseType(200, Type = typeof(List<GetTodayesPatientsDTO>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetCompletedConsultationPatientsHistory(long DoctorID)
+        {
+
+            try
+            {
+                if (DoctorID == null || DoctorID < 1 || !ModelState.IsValid)
+                {
+                    return BadRequest(DoctorID);
+                }
+                var DTO = await _doctorRepository.GetCompletedConsultationPatientsHistory(DoctorID);
+                if (DTO.Count > 0)
+                {
+                    return Ok(DTO);
+                }
+                else
+                {
+                    ModelState.AddModelError("", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError("", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
     }
 }
