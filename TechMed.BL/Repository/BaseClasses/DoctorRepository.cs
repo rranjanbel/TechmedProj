@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TechMed.BL.CommanClassesAndFunctions;
 using TechMed.BL.DTOMaster;
 using TechMed.BL.Repository.Interfaces;
 using TechMed.DL.Models;
@@ -160,18 +161,18 @@ namespace TechMed.BL.Repository.BaseClasses
                     UserDetail userDetail = await _teleMedecineContext.UserDetails.Where(a => a.UserId == doctorDTO.UserId).FirstOrDefaultAsync();
                     userDetail.TitleId = doctorDTO.detailsDTO.TitleId;
                     userDetail.FirstName = doctorDTO.detailsDTO.FirstName;
-                    userDetail.MiddleName= doctorDTO.detailsDTO.MiddleName;
+                    userDetail.MiddleName = doctorDTO.detailsDTO.MiddleName;
                     userDetail.LastName = doctorDTO.detailsDTO.LastName;
-                    userDetail.Dob= doctorDTO.detailsDTO.Dob;
+                    userDetail.Dob = doctorDTO.detailsDTO.Dob;
                     userDetail.GenderId = doctorDTO.detailsDTO.GenderId;
-                    userDetail.EmailId= doctorDTO.detailsDTO.EmailId;
-                    userDetail.PhoneNumber ="";
+                    userDetail.EmailId = doctorDTO.detailsDTO.EmailId;
+                    userDetail.PhoneNumber = "";
                     userDetail.FatherName = "";
                     userDetail.CountryId = doctorDTO.detailsDTO.CountryId;
                     userDetail.StateId = doctorDTO.detailsDTO.StateId;
-                    userDetail.City= doctorDTO.detailsDTO.City;
+                    userDetail.City = doctorDTO.detailsDTO.City;
                     userDetail.Address = "";
-                    userDetail.PinCode =doctorDTO.detailsDTO.PinCode;
+                    userDetail.PinCode = doctorDTO.detailsDTO.PinCode;
                     //userDetail.Photo { get; set; } = null!;
                     //userDetail.Occupation { get; set; }
                     //userDetail.IsMarried { get; set; }
@@ -189,20 +190,36 @@ namespace TechMed.BL.Repository.BaseClasses
             }
             return true;
         }
-        public void GetTodayesPatients()
+        public async Task<List<GetTodayesPatientsDTO>> GetTodayesPatients(long DoctorID)
+        {
+            List<PatientQueue> masters = await _teleMedecineContext.PatientQueues.Include(d=>d.PatientCase.Patient.Gender).Include(c=>c.AssignedByNavigation).Include(a=>a.PatientCase).Include(b=>b.PatientCase.Patient).Where(a => a.CaseFileStatusId == 4 && a.AssignedDoctorId == DoctorID).ToListAsync();
+
+            var DTOList = new List<GetTodayesPatientsDTO>();
+            foreach (var item in masters)
+            {
+                //GetTodayesPatientsDTO mapdata = _mapper.Map<GetTodayesPatientsDTO>(item);
+                GetTodayesPatientsDTO mapdata=new GetTodayesPatientsDTO();
+                mapdata.PatientName= item.PatientCase.Patient.FirstName+" "+ item.PatientCase.Patient.LastName;
+                mapdata.PhoneNumber = item.PatientCase.Patient.PhoneNumber;
+                mapdata.ReferredbyPHCName = item.AssignedByNavigation.Name;
+                mapdata.Age = CommanFunction.GetAge(item.PatientCase.Patient.Dob);
+                mapdata.Gender = item.PatientCase.Patient.Gender.Gender;
+                mapdata.PatientID = item.PatientCase.Patient.PatientId;
+                //mapdata.status = item.PatientCase.Patient.PatientStatus.PatientStatus;
+                DTOList.Add(mapdata);
+            }
+            return DTOList;
+        }
+        public Task<List<GetTodayesPatientsDTO>> GetCompletedConsultationPatientsHistory(long DoctorID)
         {
             throw new NotImplementedException();
         }
-
 
         public void GetPastPatientsHistory()
         {
             throw new NotImplementedException();
         }
-        public void GetCompletedConsultationPatientsHistory()
-        {
-            throw new NotImplementedException();
-        }
+     
         public void GetPatientCaseDetails()
         {
             throw new NotImplementedException();

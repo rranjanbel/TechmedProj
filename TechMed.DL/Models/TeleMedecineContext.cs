@@ -42,6 +42,7 @@ namespace TechMed.DL.Models
         public virtual DbSet<PatientStatusMaster> PatientStatusMasters { get; set; } = null!;
         public virtual DbSet<Phcmaster> Phcmasters { get; set; } = null!;
         public virtual DbSet<RoleMasterDelete> RoleMasterDeletes { get; set; } = null!;
+        public virtual DbSet<Setting> Settings { get; set; } = null!;
         public virtual DbSet<SpecialityMasterDelete> SpecialityMasterDeletes { get; set; } = null!;
         public virtual DbSet<SpecializationMaster> SpecializationMasters { get; set; } = null!;
         public virtual DbSet<StateMaster> StateMasters { get; set; } = null!;
@@ -859,6 +860,11 @@ namespace TechMed.DL.Models
                 entity.Property(e => e.Role)
                     .HasMaxLength(50)
                     .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<Setting>(entity =>
+            {
+                entity.ToTable("Setting");
             });
 
             modelBuilder.Entity<SpecialityMasterDelete>(entity =>

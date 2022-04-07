@@ -11,7 +11,7 @@ namespace TechMed.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class DoctorController : ControllerBase
     {
         DoctorBusinessMaster doctorBusinessMaster;
@@ -291,6 +291,39 @@ namespace TechMed.API.Controllers
                 else
                 {
                     ModelState.AddModelError("", $"Data not updated!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError("", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
+
+        [Route("GetTodayesPatients")]
+        [HttpPost]
+        [ProducesResponseType(200, Type = typeof(List<GetTodayesPatientsDTO>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetTodayesPatients(long DoctorID)
+        {
+
+            try
+            {
+                if (DoctorID == null || DoctorID< 1 || !ModelState.IsValid)
+                {
+                    return BadRequest(DoctorID);
+                }
+                var DTO = await _doctorRepository.GetTodayesPatients(DoctorID);
+                if (DTO.Count>0)
+                {
+                    return Ok(DTO);
+                }
+                else
+                {
+                    ModelState.AddModelError("", $"Data not found!");
                     return StatusCode(404, ModelState);
                 }
             }

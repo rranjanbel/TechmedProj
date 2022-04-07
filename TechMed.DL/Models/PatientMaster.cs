@@ -26,7 +26,7 @@ namespace TechMed.DL.Models
         public string PinCode { get; set; } = null!;
         public string? Photo { get; set; }
         public DateTime Dob { get; set; }
-        public string EmailId { get; set; } = null!;
+        public string? EmailId { get; set; }
         public string MobileNo { get; set; } = null!;
         public int PatientStatusId { get; set; }
         public int? CreatedBy { get; set; }
