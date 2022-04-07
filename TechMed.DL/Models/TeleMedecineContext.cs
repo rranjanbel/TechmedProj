@@ -56,6 +56,7 @@ namespace TechMed.DL.Models
         public virtual DbSet<VitalMaster> VitalMasters { get; set; } = null!;
         public virtual DbSet<ZoneMaster> ZoneMasters { get; set; } = null!;
 
+       /* 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -64,6 +65,7 @@ namespace TechMed.DL.Models
                 optionsBuilder.UseSqlServer("Server=20.219.126.193;Database=TeleMedecine;User Id= rroshan; Password= Te!e#2002;");
             }
         }
+       */
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

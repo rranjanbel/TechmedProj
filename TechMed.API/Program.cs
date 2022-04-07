@@ -18,7 +18,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionString = builder.Configuration.GetConnectionString("TeliMedConn");
 builder.Services.AddDbContext<TeleMedecineContext>(
     options => options.UseSqlServer(connectionString)
     );
