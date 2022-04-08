@@ -4,11 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using TechMed.BL.DTOMaster;
 using TechMed.BL.Repository.Interfaces;
 using TechMed.DL.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TechMed.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    //[Authorize]
     public class PHCController : ControllerBase
     {
         private readonly IMapper _mapper;       
@@ -23,18 +25,19 @@ namespace TechMed.API.Controllers
 
         [HttpGet]
         [Route("GetPHCDetailsByID")]
-        [ProducesResponseType(200, Type = typeof(List<PHCHospitalDTO>))]
+        //[HttpGet("{id:int}", Name = "GetPHCDetailsByID")]
+        [ProducesResponseType(200, Type = typeof(PHCHospitalDTO))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetPHCDetailsByID(int Id)
+        public async Task<IActionResult> GetPHCDetailsByID(int id)
         {
             try
             {               
-                var phcmaster = await _phcRepository.GetByID(Id);              
+                var phcmaster = await _phcRepository.GetByID(id);              
                 if (phcmaster != null)
-                {                    
-                    var phcMasterDTO = _mapper.Map<PHCHospitalDTO>(phcmaster);               
-                    return Ok(phcMasterDTO);
+                {
+                    var phcMasterDTO = _mapper.Map<PHCHospitalDTO>(phcmaster);
+                    return Ok(phcmaster);
                 }
                 else
                 {
@@ -51,7 +54,7 @@ namespace TechMed.API.Controllers
 
         [HttpGet]
         [Route("GetPHCDetailsByUserID")]
-        [ProducesResponseType(200, Type = typeof(List<PHCHospitalDTO>))]
+        [ProducesResponseType(200, Type = typeof(PHCHospitalDTO))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetPHCDetailsByUserID(int userId)
