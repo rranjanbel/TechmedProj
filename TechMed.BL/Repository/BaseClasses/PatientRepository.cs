@@ -27,16 +27,26 @@ namespace TechMed.BL.Repository.BaseClasses
         public async Task<PatientMaster> AddPatient(PatientMaster patientMaster)
         {
             PatientMaster updatedPatientMaster = new PatientMaster(); 
+            //Setting setting = new Setting(); 
             if(patientMaster != null)
             {
-                patientMaster.CreatedBy = 2;
-                patientMaster.UpdatedBy = 2;
+                if (patientMaster.CreatedBy == 0)
+                    patientMaster.CreatedBy = 2;
+                if (patientMaster.UpdatedBy == 0)
+                    patientMaster.UpdatedBy = 2;
                 patientMaster.CreatedOn = DateTime.Now;
                 patientMaster.UpdatedOn = DateTime.Now;
-                if(patientMaster.Id ==0)
+                //patientMaster.PatientId = setting.PatientNumber();
+
+                if (patientMaster.Id ==0)
                 {
                     _teleMedecineContext.Add(patientMaster);
                     int i = await _teleMedecineContext.SaveChangesAsync();
+                    if(i > 0)
+                    {
+                        _logger.LogInformation($"Add Patient : Patient added successfully");
+                    }
+                        
                     updatedPatientMaster = patientMaster;
                     return updatedPatientMaster;
                 }

@@ -5,12 +5,13 @@ using TechMed.BL.DTOMaster;
 using TechMed.BL.Repository.Interfaces;
 using TechMed.DL.Models;
 using Microsoft.AspNetCore.Authorization;
+using TechMed.BL.ViewModels;
 
 namespace TechMed.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class PHCController : ControllerBase
     {
         private readonly IMapper _mapper;       
@@ -41,7 +42,7 @@ namespace TechMed.API.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("GetPHCDetailsByID", "User list not found");
+                    ModelState.AddModelError("GetPHCDetailsByID", "PHC detail did not find");
                     return StatusCode(404, ModelState);
                 }
             }
@@ -69,14 +70,97 @@ namespace TechMed.API.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("GetPHCDetailsByUserID", "User list not found");
+                    ModelState.AddModelError("GetPHCDetailsByUserID", "PHC detail did not find");
                     return StatusCode(404, ModelState);
                 }
             }
             catch (Exception ex)
             {
 
-                ModelState.AddModelError("GetPHCDetailsByUserID", $"Something went wrong when GetPHCDetails {ex.Message}");
+                ModelState.AddModelError("GetPHCDetailsByUserID", $"Something went wrong when GetPHCDetailsByUserID {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
+
+        [HttpGet]
+        [Route("GetPHCDetails")]
+        [ProducesResponseType(200, Type = typeof(PHCDetailsVM))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetPHCDetails(int userId)
+        {
+            try
+            {
+                PHCDetailsVM phcDetails = await _phcRepository.GetPHCDetailByUserID(userId);
+                if (phcDetails != null)
+                {                    
+                    return Ok(phcDetails);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetPHCDetails", "PHC details did not find");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError("GetPHCDetails", $"Something went wrong when GetPHCDetails:  {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
+
+        [HttpPost]
+        [Route("AddPHC")]
+        [ProducesResponseType(201, Type = typeof(PHCDetailsVM))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Post([FromBody] PHCHospitalDTO phcdto)
+        {
+            Phcmaster newCreatedPHC = new Phcmaster();
+            try
+            {
+                var phcMaster = _mapper.Map<Phcmaster>(phcdto);
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                if (_phcRepository.IsPHCExit(phcdto.Phcname))
+                {
+                    ModelState.AddModelError("AddPHC", "Same name of PHC is already in system");
+                    return StatusCode(404, ModelState);
+                }
+                if(phcMaster != null)
+                { 
+                    //Need to get here data from database runtime when not supplied by GUI
+                    if (phcMaster.CreatedBy == 0)
+                        phcMaster.CreatedBy = 2; 
+                    if (phcMaster.UpdatedBy == 0)
+                        phcMaster.UpdatedBy = 2;
+                    if (phcMaster.UserId == 0)
+                        phcMaster.UserId = 4;
+                    phcMaster.CreatedOn = DateTime.Now;
+                    phcMaster.UpdatedOn = DateTime.Now;
+
+                    newCreatedPHC = await this._phcRepository.Create(phcMaster);
+                }
+               
+                if (newCreatedPHC == null)
+                {
+                    ModelState.AddModelError("AddPHC", $"Something went wrong when create PHC {phcdto.Phcname}");
+                    return StatusCode(404, ModelState);
+                }
+                else
+                {
+                    //var createdPHC = _mapper.Map<PHCHospitalDTO>(newCreatedPHC);
+                    PHCDetailsVM phcDetails = await _phcRepository.GetPHCDetailByUserID(newCreatedPHC.UserId);
+                    return CreatedAtRoute(201, phcDetails);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError("AddPHC", $"Something went wrong when create PHC {ex.Message}");
                 return StatusCode(500, ModelState);
             }
         }
