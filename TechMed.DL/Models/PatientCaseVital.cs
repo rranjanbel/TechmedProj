@@ -8,7 +8,7 @@ namespace TechMed.DL.Models
         public long Id { get; set; }
         public long PatientCaseId { get; set; }
         public string Vital { get; set; } = null!;
-        public decimal Value { get; set; }
+        public string Value { get; set; } = null!;
         public string Unit { get; set; } = null!;
         public DateTime? Date { get; set; }
 

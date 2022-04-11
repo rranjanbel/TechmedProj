@@ -457,6 +457,10 @@ namespace TechMed.DL.Models
                     .HasMaxLength(500)
                     .IsUnicode(false);
 
+                entity.Property(e => e.Finding)
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Instruction)
                     .HasMaxLength(500)
                     .IsUnicode(false);
@@ -598,7 +602,9 @@ namespace TechMed.DL.Models
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Value).HasColumnType("decimal(18, 2)");
+                entity.Property(e => e.Value)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Vital)
                     .HasMaxLength(50)

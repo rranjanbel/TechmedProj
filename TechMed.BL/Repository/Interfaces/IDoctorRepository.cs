@@ -17,20 +17,21 @@ namespace TechMed.BL.Repository.Interfaces
         public Task<List<PHCHospitalDTO>> GetListOfPHCHospital();
         public Task<List<NotificationDTO>> GetListOfNotification(GetListOfNotificationVM getListOfNotificationVM);
         public Task<CdssguidelineMasterDTO> GetCDSSGuideLines();
-        void GetYesterdayPatientsHistory();
-        void GetPastPatientsHistory();
-        public Task<List<GetTodayesPatientsDTO>> GetTodayesPatients(long DoctorID);
-        public Task<List<GetTodayesPatientsDTO>> GetCompletedConsultationPatientsHistory(long DoctorID);
+        public Task<List<GetTodayesPatientsDTO>> GetYesterdayPatientsHistory(DoctorVM doctorVM);
+        public Task<List<GetTodayesPatientsDTO>> GetPastPatientsHistory(DoctorVM doctorVM);
+        public Task<List<GetTodayesPatientsDTO>> GetTodayesPatients(DoctorVM doctorVM);
+        public Task<List<GetTodayesPatientsDTO>> GetCompletedConsultationPatientsHistory(DoctorVM doctorVM);
         public Task<List<VitalMasterDTO>> GetListOfVital();
         public Task<List<MedicineMasterDTO>> GetListOfMedicine();
         public Task<List<SpecializationDTO>> GetListOfSpecializationMaster();
         public Task<List<SubSpecializationDTO>> GetListOfSubSpecializationMaster(int SpecializationID);
-        void PostTreatmentPlan();
+        public Task<bool> DeleteNotification(long NotificationID);
+        public Task<bool> PostTreatmentPlan(TreatmentVM treatmentVM);
+        public Task<GetEHRDTO> GetEHR(GetEHRVM getEHRVM);
         void PatientAbsent();
         void ReferHigherFacilityAbsent();
         void CallPHC();
-        void GetPatientCaseDetails();
-        void GetPatientCaseFiles();
+        public Task<GetPatientCaseDetailsDTO> GetPatientCaseDetailsAsync(GetPatientCaseDetailsVM vm);
 
     }
 }

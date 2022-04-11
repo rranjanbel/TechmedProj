@@ -36,7 +36,7 @@ namespace TechMed.BL.Repository.BaseClasses
             throw new NotImplementedException();
         }
 
-        public Task<UserMaster> Create(UserMaster model)
+        public Task<DoctorMaster> Create(DoctorMaster model)
         {
             throw new NotImplementedException();
         }
@@ -190,7 +190,7 @@ namespace TechMed.BL.Repository.BaseClasses
             }
             return true;
         }
-        public async Task<List<GetTodayesPatientsDTO>> GetTodayesPatients(long DoctorID)
+        public async Task<List<GetTodayesPatientsDTO>> GetTodayesPatients(DoctorVM doctorVM)
         {
 
             List<PatientQueue> masters = await _teleMedecineContext.PatientQueues
@@ -198,7 +198,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 .Include(c => c.AssignedByNavigation)
                 .Include(a => a.PatientCase)
                 .Include(b => b.PatientCase.Patient)
-                .Where(a => a.CaseFileStatusId == 4 && a.AssignedDoctorId == DoctorID
+                .Where(a => a.CaseFileStatusId == 4 && a.AssignedDoctorId == doctorVM.DoctorID
                 && a.AssignedOn.Year == DateTime.Now.Year
                 && a.AssignedOn.Month == DateTime.Now.Month
                 && a.AssignedOn.Day == DateTime.Now.Day
@@ -220,7 +220,7 @@ namespace TechMed.BL.Repository.BaseClasses
             }
             return DTOList;
         }
-        public async Task<List<GetTodayesPatientsDTO>> GetCompletedConsultationPatientsHistory(long DoctorID)
+        public async Task<List<GetTodayesPatientsDTO>> GetCompletedConsultationPatientsHistory(DoctorVM doctorVM)
         {
             var today = DateTime.Today;
             List<PatientQueue> masters = await _teleMedecineContext.PatientQueues
@@ -228,7 +228,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 .Include(c => c.AssignedByNavigation)
                 .Include(a => a.PatientCase)
                 .Include(b => b.PatientCase.Patient)
-                .Where(a => a.CaseFileStatusId == 5 && a.AssignedDoctorId == DoctorID
+                .Where(a => a.CaseFileStatusId == 5 && a.AssignedDoctorId == doctorVM.DoctorID
                  && a.AssignedOn.Year == today.Year
                 && a.AssignedOn.Month == today.Month
                 && a.AssignedOn.Date == today.Date
@@ -250,29 +250,220 @@ namespace TechMed.BL.Repository.BaseClasses
             }
             return DTOList;
         }
+        public async Task<List<GetTodayesPatientsDTO>> GetYesterdayPatientsHistory(DoctorVM doctorVM)
+        {
+            var today = DateTime.Today.AddDays(-1);
+            List<PatientQueue> masters = await _teleMedecineContext.PatientQueues
+                .Include(d => d.PatientCase.Patient.Gender)
+                .Include(c => c.AssignedByNavigation)
+                .Include(a => a.PatientCase)
+                .Include(b => b.PatientCase.Patient)
+                .Where(a => a.CaseFileStatusId == 5 && a.AssignedDoctorId == doctorVM.DoctorID
+                 && a.AssignedOn.Year == today.Year
+                && a.AssignedOn.Month == today.Month
+                && a.AssignedOn.Date == today.Date
+                ).ToListAsync();
 
-        public void GetPastPatientsHistory()
+            var DTOList = new List<GetTodayesPatientsDTO>();
+            foreach (var item in masters)
+            {
+                //GetTodayesPatientsDTO mapdata = _mapper.Map<GetTodayesPatientsDTO>(item);
+                GetTodayesPatientsDTO mapdata = new GetTodayesPatientsDTO();
+                mapdata.PatientName = item.PatientCase.Patient.FirstName + " " + item.PatientCase.Patient.LastName;
+                mapdata.PhoneNumber = item.PatientCase.Patient.PhoneNumber;
+                mapdata.ReferredbyPHCName = item.AssignedByNavigation.Name;
+                mapdata.Age = CommanFunction.GetAge(item.PatientCase.Patient.Dob);
+                mapdata.Gender = item.PatientCase.Patient.Gender.Gender;
+                mapdata.PatientID = item.PatientCase.Patient.PatientId;
+                //mapdata.status = item.PatientCase.Patient.PatientStatus.PatientStatus;
+                DTOList.Add(mapdata);
+            }
+            return DTOList;
+        }
+        public async Task<List<GetTodayesPatientsDTO>> GetPastPatientsHistory(DoctorVM doctorVM)
         {
-            throw new NotImplementedException();
+            var today = DateTime.Today.AddDays(-1);
+            List<PatientQueue> masters = await _teleMedecineContext.PatientQueues
+                .Include(d => d.PatientCase.Patient.Gender)
+                .Include(c => c.AssignedByNavigation)
+                .Include(a => a.PatientCase)
+                .Include(b => b.PatientCase.Patient)
+                .Where(a => a.CaseFileStatusId == 5 && a.AssignedDoctorId == doctorVM.DoctorID
+                 && a.AssignedOn.Year <= today.Year
+                && a.AssignedOn.Month <= today.Month
+                && a.AssignedOn.Date < today.Date
+                ).ToListAsync();
+
+            var DTOList = new List<GetTodayesPatientsDTO>();
+            foreach (var item in masters)
+            {
+                //GetTodayesPatientsDTO mapdata = _mapper.Map<GetTodayesPatientsDTO>(item);
+                GetTodayesPatientsDTO mapdata = new GetTodayesPatientsDTO();
+                mapdata.PatientName = item.PatientCase.Patient.FirstName + " " + item.PatientCase.Patient.LastName;
+                mapdata.PhoneNumber = item.PatientCase.Patient.PhoneNumber;
+                mapdata.ReferredbyPHCName = item.AssignedByNavigation.Name;
+                mapdata.Age = CommanFunction.GetAge(item.PatientCase.Patient.Dob);
+                mapdata.Gender = item.PatientCase.Patient.Gender.Gender;
+                mapdata.PatientID = item.PatientCase.Patient.PatientId;
+                //mapdata.status = item.PatientCase.Patient.PatientStatus.PatientStatus;
+                DTOList.Add(mapdata);
+            }
+            return DTOList;
+        }
+        public async Task<GetPatientCaseDetailsDTO> GetPatientCaseDetailsAsync(GetPatientCaseDetailsVM vm)
+        {
+            GetPatientCaseDetailsDTO getPatientCaseDetails = new GetPatientCaseDetailsDTO();
+            getPatientCaseDetails.getPatientCaseDocumentDTOs = new List<GetPatientCaseDocumentDTO>();
+            getPatientCaseDetails.getPatientCaseVitalsDTOs = new List<GetPatientCaseVitalsDTO>();
+            PatientQueue patientQueue = await _teleMedecineContext.PatientQueues
+                .Include(d => d.PatientCase.Patient.Gender)
+                .Include(c => c.AssignedByNavigation)
+                .Include(a => a.PatientCase)
+                .Include(b => b.PatientCase.Patient)
+                .Where(a => a.CaseFileStatusId == 4 && a.PatientCaseId == vm.PatientCaseID
+                //&& a.AssignedOn.Year <= today.Year
+                //&& a.AssignedOn.Month <= today.Month
+                //&& a.AssignedOn.Date < today.Date
+                ).FirstOrDefaultAsync();
+
+            List<PatientCaseVital> vitalMasters = await _teleMedecineContext.PatientCaseVitals
+                .Where(a => a.PatientCaseId == vm.PatientCaseID).ToListAsync();
+
+
+            List<PatientCaseDocument> patientCaseDocuments = await _teleMedecineContext.PatientCaseDocuments
+                .Where(a => a.PatientCaseId == vm.PatientCaseID).ToListAsync();
+
+            getPatientCaseDetails.PatientName = patientQueue.PatientCase.Patient.FirstName + " " + patientQueue.PatientCase.Patient.LastName;
+            getPatientCaseDetails.PatientId = patientQueue.PatientCase.Patient.PatientId;
+            getPatientCaseDetails.CaseFileNumber = patientQueue.PatientCase.CaseFileNumber;
+            getPatientCaseDetails.CaseHeading = patientQueue.PatientCase.CaseHeading;
+            getPatientCaseDetails.Symptom = patientQueue.PatientCase.Symptom;
+            getPatientCaseDetails.Observation = patientQueue.PatientCase.Observation;
+            getPatientCaseDetails.Allergies = patientQueue.PatientCase.Allergies;
+            getPatientCaseDetails.FamilyHistory = patientQueue.PatientCase.FamilyHistory;
+            getPatientCaseDetails.UpdatedBy = patientQueue.PatientCase.UpdatedBy;
+            getPatientCaseDetails.UpdatedOn = patientQueue.PatientCase.UpdatedOn;
+            getPatientCaseDetails.CreatedBy = patientQueue.PatientCase.CreatedBy;
+            getPatientCaseDetails.CreatedOn = patientQueue.PatientCase.CreatedOn;
+
+            foreach (var item in patientCaseDocuments)
+            {
+                getPatientCaseDetails.getPatientCaseDocumentDTOs.Add(
+                    new GetPatientCaseDocumentDTO
+                    {
+                        Description = item.Description,
+                        DocumentName = item.DocumentName,
+                        DocumentPath = item.DocumentPath,
+                        Id = item.Id,
+                    }
+                    );
+            }
+            foreach (var item in vitalMasters)
+            {
+                getPatientCaseDetails.getPatientCaseVitalsDTOs.Add(
+                    new GetPatientCaseVitalsDTO
+                    {
+                        Date = item.Date,
+                        Unit = item.Unit,
+                        Value = item.Value,
+                        Vital = item.Vital
+                    }
+                    );
+            }
+
+            return getPatientCaseDetails;
+        }
+        public async Task<bool> PostTreatmentPlan(TreatmentVM treatmentVM)
+        {
+            //check caseid
+            PatientQueue patientQueue = await _teleMedecineContext.PatientQueues
+              .Include(d => d.PatientCase.Patient.Gender)
+              .Include(c => c.AssignedByNavigation)
+              .Include(a => a.PatientCase)
+              .Include(b => b.PatientCase.Patient)
+              .Where(a => a.CaseFileStatusId == 4 && a.PatientCaseId == treatmentVM.PatientCaseID
+              ).FirstOrDefaultAsync();
+            if (patientQueue != null)
+            {
+                //update case table
+                var patientCase = patientQueue.PatientCase;
+                patientCase.Diagnosis = treatmentVM.Diagnosis;
+                patientCase.Instruction = treatmentVM.Instruction;
+                patientCase.Test = treatmentVM.Test;
+                patientCase.Finding = treatmentVM.Findings;
+                //add in medicine 
+                //delete medicine
+
+                var patientCaseMedicine = await _teleMedecineContext.PatientCaseMedicines.Where(m => m.PatientCaseId == treatmentVM.PatientCaseID).ToListAsync();
+                foreach (var item in patientCaseMedicine)
+                {
+                    _teleMedecineContext.Remove(item);
+                }
+                foreach (var item in treatmentVM.medicineVMs)
+                {
+                    _teleMedecineContext.PatientCaseMedicines.Add(
+                        new PatientCaseMedicine
+                        {
+                            Dose = item.Dose,
+                            Medicine = item.Medicine,
+                            PatientCaseId = treatmentVM.PatientCaseID
+                        });
+                }
+                _teleMedecineContext.SaveChanges();
+                return true;
+
+            }
+            return false;
+        }
+        public async Task<bool> DeleteNotification(long NotificationID)
+        {
+            Notification notification = await _teleMedecineContext.Notifications.Where(a => a.Id == NotificationID).FirstOrDefaultAsync();
+            if (notification != null)
+            {
+                _teleMedecineContext.Notifications.Remove(notification);
+                _teleMedecineContext.SaveChanges();
+                return true;
+            }
+            return false;
+        }
+        public async Task<GetEHRDTO> GetEHR(GetEHRVM getEHRVM)
+        {
+            PatientQueue masters = await _teleMedecineContext.PatientQueues
+                .Include(d => d.PatientCase.Patient.Gender)
+                .Include(c => c.AssignedByNavigation)
+                .Include(c => c.AssignedDoctor)
+                .Include(a => a.PatientCase)
+                .Include(b => b.PatientCase.Patient)
+                .Where(a => a.PatientCaseId == getEHRVM.PatientCaseID
+                ).FirstOrDefaultAsync();
+            GetEHRDTO getEHRDTO = new GetEHRDTO
+            {
+                Age = CommanFunction.GetAge(masters.PatientCase.Patient.Dob),
+                Diagnosis = masters.PatientCase.Diagnosis,
+                PatientName = masters.PatientCase.Patient.FirstName + " " + masters.PatientCase.Patient.LastName,
+                Prescription = masters.PatientCase.Finding,
+                PriviousCaseDate = masters.PatientCase.CreatedOn,
+                PriviousCaseLable = masters.PatientCase.CaseHeading,
+                PriviousDoctor = masters.AssignedDoctor.User.Name,
+
+            };
+            var medicne = await _teleMedecineContext.PatientCaseMedicines
+                .Where(a => a.PatientCaseId == getEHRVM.PatientCaseID).ToArrayAsync();
+            foreach (var item in medicne)
+            {
+                getEHRDTO.medicineVMs.Add(new MedicineDTO
+                {
+                    Dose = item.Dose,
+                    Medicine = item.Medicine,
+
+                });
+            }
+            return getEHRDTO;
+
         }
 
-        public void GetPatientCaseDetails()
-        {
-            throw new NotImplementedException();
-        }
-        public void GetPatientCaseFiles()
-        {
-            throw new NotImplementedException();
-        }
-        public void GetYesterdayPatientsHistory()
-        {
-            throw new NotImplementedException();
-        }
+
         public void PatientAbsent()
-        {
-            throw new NotImplementedException();
-        }
-        public void PostTreatmentPlan()
         {
             throw new NotImplementedException();
         }
@@ -280,15 +471,14 @@ namespace TechMed.BL.Repository.BaseClasses
         {
             throw new NotImplementedException();
         }
+        //search patient
 
-
-
-        public Task<UserMaster> Update(UserMaster model)
+        public Task<DoctorMaster> Update(DoctorMaster model)
         {
             throw new NotImplementedException();
         }
 
-        public Task<UserMaster> UpdateOnly(UserMaster model)
+        public Task<DoctorMaster> UpdateOnly(DoctorMaster model)
         {
             throw new NotImplementedException();
         }
