@@ -74,7 +74,7 @@ namespace TechMed.BL.Repository.BaseClasses
             throw new NotImplementedException();
         }
 
-        public async Task<List<TodaysPatientVM>> GetCheckedPatientList()
+        public async Task<List<TodaysPatientVM>> GetCheckedPatientList(int phcID)
         {
             int currentYear = DateTime.Now.Year;
             int currentMonth = DateTime.Now.Month;
@@ -91,7 +91,7 @@ namespace TechMed.BL.Repository.BaseClasses
                                from doc in dm.DefaultIfEmpty()
                                join u in _teleMedecineContext.UserMasters on doc.UserId equals u.Id into um
                                from ud in um.DefaultIfEmpty()
-
+                               where phc.Id == phcID
                                select new TodaysPatientVM
                                {
                                    //Age = GetAge(pm.Dob),
@@ -141,7 +141,7 @@ namespace TechMed.BL.Repository.BaseClasses
             throw new NotImplementedException();
         }
 
-        public async Task<List<TodaysPatientVM>> GetTodaysPatientList()
+        public async Task<List<TodaysPatientVM>> GetTodaysPatientList(int phcID)
         {
             int currentYear = DateTime.Now.Year;
             int currentMonth = DateTime.Now.Month;
@@ -159,7 +159,7 @@ namespace TechMed.BL.Repository.BaseClasses
                                from doc in dm.DefaultIfEmpty()
                                join u in _teleMedecineContext.UserMasters on doc.UserId equals u.Id into um
                                from ud in um.DefaultIfEmpty()
-
+                               where phc.Id == phcID
                                select new TodaysPatientVM
                                {
                                    //Age = GetAge(pm.Dob),

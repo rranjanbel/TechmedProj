@@ -68,12 +68,12 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<TodaysPatientVM>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetTodaysPatient()
+        public async Task<IActionResult> GetTodaysPatient(int phcID)
         {
             List<TodaysPatientVM> todaysPatientList = new List<TodaysPatientVM>();
             try
             {
-                todaysPatientList = await this._patientRepository.GetTodaysPatientList();
+                todaysPatientList = await this._patientRepository.GetTodaysPatientList(phcID);
                 if (todaysPatientList == null)
                 {
                     ModelState.AddModelError("GetTodaysPatient", $"Something went wrong when get today's patient list");
@@ -97,12 +97,12 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<TodaysPatientVM>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetConsultedPatient()
+        public async Task<IActionResult> GetConsultedPatient(int phcID)
         {
             List<TodaysPatientVM> todaysPatientList = new List<TodaysPatientVM>();
             try
             {
-                todaysPatientList = await this._patientRepository.GetCheckedPatientList();
+                todaysPatientList = await this._patientRepository.GetCheckedPatientList(phcID);
                 if (todaysPatientList == null)
                 {
                     ModelState.AddModelError("GetConsultedPatient", $"Something went wrong when get today's patient list");
