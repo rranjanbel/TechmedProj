@@ -73,9 +73,35 @@ namespace TechMed.BL.Repository.BaseClasses
             throw new NotImplementedException();
         }
 
-        public Task<List<PatientMaster>> GetCheckedPatientList(int Id)
+        public async Task<List<TodaysPatientVM>> GetCheckedPatientList()
         {
-            throw new NotImplementedException();
+            int currentYear = DateTime.Now.Year;
+            int currentMonth = DateTime.Now.Month;
+            int currentDay = DateTime.Now.Day;           
+            List<TodaysPatientVM> todaysPatientList = new List<TodaysPatientVM>();
+            var patientList = (from pm in _teleMedecineContext.PatientMasters where pm.CreatedOn.Value.Year == currentYear && pm.CreatedOn.Value.Month == currentMonth && pm.CreatedOn.Value.Day == currentDay
+                              join pc in _teleMedecineContext.PatientCases on pm.Id equals pc.PatientId into patientcase
+                              from pci in patientcase.DefaultIfEmpty()
+                              join pcq in _teleMedecineContext.PatientQueues on pci.Id equals pcq.Id into pcqd
+                              from pq in pcqd.DefaultIfEmpty()
+                              select new TodaysPatientVM
+                              {
+                               Age = GetAge(pm.Dob),
+                               PatientName = pm.FirstName + " " + pm.LastName,
+                               ID = pm.Id,
+                               PhoneNumber = pm.PhoneNumber,
+                               PatientID = pm.PatientId,
+                               PHCUserID = 0,
+                               PHCUserName = "",
+                               ReferredByPHCID = 0,
+                               ReferredByPHCName = "",
+                               DocterID = 0,
+                               DoctorName = "",
+                               Gender = (pm.GenderId == 1 ? "Male" : "Female")            
+                               }).ToListAsync();
+            todaysPatientList = await patientList;
+
+            return todaysPatientList;
         }
 
         public async Task<PatientMaster> GetPatientByID(int Id)
