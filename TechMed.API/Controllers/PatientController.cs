@@ -121,6 +121,35 @@ namespace TechMed.API.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("GetTodaysPatientCount")]
+        [ProducesResponseType(200, Type = typeof(PHCPatientCount))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetTodaysPatientCount(int phcID)
+        {
+            PHCPatientCount patientCount = new PHCPatientCount();
+            try
+            {
+                patientCount = await this._patientRepository.GetPatientCount(phcID);
+                if (patientCount == null)
+                {
+                    ModelState.AddModelError("GetPatientCount", $"Something went wrong when get today's patient count");
+                    return StatusCode(404, ModelState);
+                }
+                else
+                {
+                    return StatusCode(200, patientCount);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError("GetPatientCount", $"Something went wrong when get today's patient count {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
+
 
     }
 }

@@ -20,5 +20,6 @@ namespace TechMed.BL.Repository.Interfaces
         Task<List<TodaysPatientVM>> GetCheckedPatientList();
         Task<List<PatientMaster>> GetUnCheckedPatientList(int Id);
         Task<List<PatientMaster>> GetPendingPatientList(int Id);
+        Task<PHCPatientCount> GetPatientCount(int phcID);
     }
 }
