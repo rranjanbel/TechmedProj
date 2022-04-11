@@ -264,6 +264,45 @@ namespace TechMed.BL.Repository.BaseClasses
             return pHCPatientCount;
         }
 
+        public async Task<List<TodaysPatientVM>> GetSearchedTodaysPatientList(string patientName)
+        {
+            int currentYear = DateTime.Now.Year;
+            int currentMonth = DateTime.Now.Month;
+            int currentDay = DateTime.Now.Day;
+            List<TodaysPatientVM> todaysPatientList = new List<TodaysPatientVM>();           
+            var patientList = (from pm in _teleMedecineContext.PatientMasters
+                               where pm.CreatedOn.Value.Year == currentYear && pm.CreatedOn.Value.Month == currentMonth && pm.CreatedOn.Value.Day == currentDay && pm.FirstName.Contains(patientName) || pm.LastName.Contains(patientName)
+                               join phc in _teleMedecineContext.Phcmasters on pm.Phcid equals phc.Id
+                               join pc in _teleMedecineContext.PatientCases on pm.Id equals pc.PatientId into patientcase
+                               from pci in patientcase.DefaultIfEmpty()
+                               join pcq in _teleMedecineContext.PatientQueues on pci.Id equals pcq.Id into pcqd
+                               from pq in pcqd.DefaultIfEmpty()
+                               join d in _teleMedecineContext.DoctorMasters on pq.AssignedDoctorId equals d.Id into dm
+                               from doc in dm.DefaultIfEmpty()
+                               join u in _teleMedecineContext.UserMasters on doc.UserId equals u.Id into um
+                               from ud in um.DefaultIfEmpty()
+                               //where pm.FirstName.Contains(patientName) || pm.LastName.Contains(patientName)
+                               select new TodaysPatientVM
+                               {
+                                   //Age = GetAge(pm.Dob),
+                                   Age = UtilityMaster.GetAgeOfPatient(pm.Dob),
+                                   PatientName = pm.FirstName + " " + pm.LastName,
+                                   ID = pm.Id,
+                                   PhoneNumber = pm.PhoneNumber,
+                                   PatientID = pm.PatientId,
+                                   PHCUserID = pm.Phcid,
+                                   PHCUserName = phc.Phcname,
+                                   ReferredByPHCID = pm.Phcid,
+                                   ReferredByPHCName = phc.Phcname,
+                                   DocterID = pq.AssignedDoctorId > 0 ? pq.AssignedDoctorId : 0,
+                                   DoctorName = ud.Name,
+                                   Gender = (pm.GenderId == 1 ? "Male" : "Female")
+                               }).ToListAsync();
+            todaysPatientList = await patientList;         
+
+            return todaysPatientList;
+        }
+
         public int GetAge(DateTime dateofbirth)
         {
             DateTime dtToday = DateTime.Now.Date;

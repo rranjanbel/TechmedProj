@@ -150,6 +150,35 @@ namespace TechMed.API.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("GetTodaysSearchedPatients")]
+        [ProducesResponseType(200, Type = typeof(List<TodaysPatientVM>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetTodaysSearchedPatients(string patientName)
+        {
+            List<TodaysPatientVM> todaysPatientList = new List<TodaysPatientVM>();
+            try
+            {
+                todaysPatientList = await this._patientRepository.GetSearchedTodaysPatientList(patientName);
+                if (todaysPatientList == null)
+                {
+                    ModelState.AddModelError("GetTodaysPatient", $"Something went wrong when get today's patient list");
+                    return StatusCode(404, ModelState);
+                }
+                else
+                {
+                    return StatusCode(200, todaysPatientList);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError("GetTodaysPatient", $"Something went wrong when get today's patient list {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
+
 
     }
 }

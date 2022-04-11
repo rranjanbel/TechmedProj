@@ -37,6 +37,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 if (user != null)
                 {
                     userMaster = _mapper.Map<UserLoginDTO>(user);
+                    userMaster.HashPassword = "";
                     //userMaster.Id = user.Id;
                     //userMaster.Name = user.Name;
                     //userMaster.HashPassword = user.HashPassword;
@@ -155,22 +156,36 @@ namespace TechMed.BL.Repository.BaseClasses
             }
         }
 
-        public bool ChangeUserPassword(ChangePassword changePassword)
+        public async Task<UserMaster> ChangeUserPassword(ChangePassword changePassword)
         {
-            var existingUser = _teleMedecineContext.UserMasters.FirstOrDefault(x => x.Id == changePassword.UserId && x.IsActive == true);
-            if (existingUser != null)
+            UserMaster userMaster = new UserMaster();
+            userMaster = _teleMedecineContext.UserMasters.FirstOrDefault(x => x.Id == changePassword.UserId && x.IsActive == true);
+            if (userMaster != null)
             {
-                existingUser.HashPassword = EncodeAndDecordPassword.EncodePassword(changePassword.NewPassword);
-                _teleMedecineContext.SaveChanges();
-                return true;
+                userMaster.HashPassword = EncodeAndDecordPassword.EncodePassword(changePassword.NewPassword);
+                userMaster = await  Update(userMaster);  
+                if(userMaster != null)
+                return userMaster;
+                else
+                    return userMaster;
             }
-            return false;
+            return userMaster;
         }
 
         public async Task<bool> IsValidUser(LoginVM login)
-        {           
-            var isValidUser = await _teleMedecineContext.UserMasters.AnyAsync(a => a.Email == login.Email && a.HashPassword == login.Password && a.IsActive == true);
-            return isValidUser;
+        {
+            string hashPwd = _teleMedecineContext.UserMasters.FirstOrDefault(a => a.Email == login.Email).HashPassword;            
+            bool resrult = EncodeAndDecordPassword.MatchPassword(login.Password, hashPwd);
+            if (resrult)
+            {
+                var isValidUser = await _teleMedecineContext.UserMasters.AnyAsync(a => a.Email == login.Email && a.IsActive == true);
+                return isValidUser;
+            }
+            else
+            {
+                return false;
+            }
+           
         }
 
         public Task<bool> IsLoggedIn()
