@@ -1,16 +1,19 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 using TechMed.BL.DTOMaster;
 using TechMed.BL.ModelMaster;
 using TechMed.BL.Repository.Interfaces;
+using TechMed.BL.ViewModels;
 using TechMed.DL.Models;
 
 namespace TechMed.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class PatientController : ControllerBase
     {
         private readonly IMapper _mapper;       
@@ -59,21 +62,65 @@ namespace TechMed.API.Controllers
                 return StatusCode(500, ModelState);
             }  
         }
-        //[HttpPost]
-        //[Consumes(MediaTypeNames.Application.Json)]
-        //[ProducesResponseType(StatusCodes.Status201Created)]
-        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
-        //public async Task<IActionResult> CreatePatientAsync(PatientMaster patient)
-        //{
-        //    PatientMaster addedPatientMaster = new PatientMaster();
-        //    if (patient ==null)
-        //    {
-        //        return BadRequest();
-        //    }
 
-        //    addedPatientMaster = await _patientRepository.AddPatient(patient);
+        [HttpGet]
+        [Route("GetTodaysPatient")]
+        [ProducesResponseType(200, Type = typeof(List<TodaysPatientVM>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetTodaysPatient()
+        {
+            List<TodaysPatientVM> todaysPatientList = new List<TodaysPatientVM>();
+            try
+            {
+                todaysPatientList = await this._patientRepository.GetTodaysPatientList();
+                if (todaysPatientList == null)
+                {
+                    ModelState.AddModelError("GetTodaysPatient", $"Something went wrong when get today's patient list");
+                    return StatusCode(404, ModelState);
+                }
+                else
+                {                    
+                    return StatusCode(200, todaysPatientList);
+                }
+            }
+            catch (Exception ex)
+            {
 
-        //    return CreatedAtAction(nameof(_patientRepository.GetPatientByID), new { Id = patient.Id }, patient);
-        //}
+                ModelState.AddModelError("GetTodaysPatient", $"Something went wrong when get today's patient list {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
+
+        [HttpGet]
+        [Route("GetConsultedPatient")]
+        [ProducesResponseType(200, Type = typeof(List<TodaysPatientVM>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetConsultedPatient()
+        {
+            List<TodaysPatientVM> todaysPatientList = new List<TodaysPatientVM>();
+            try
+            {
+                todaysPatientList = await this._patientRepository.GetCheckedPatientList();
+                if (todaysPatientList == null)
+                {
+                    ModelState.AddModelError("GetConsultedPatient", $"Something went wrong when get today's patient list");
+                    return StatusCode(404, ModelState);
+                }
+                else
+                {
+                    return StatusCode(200, todaysPatientList);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError("GetConsultedPatient", $"Something went wrong when get today's patient list {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
+
+
     }
 }

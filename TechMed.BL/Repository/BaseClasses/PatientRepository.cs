@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TechMed.BL.Repository.Interfaces;
+using TechMed.BL.ViewModels;
 using TechMed.DL.Models;
 
 namespace TechMed.BL.Repository.BaseClasses
@@ -27,16 +28,26 @@ namespace TechMed.BL.Repository.BaseClasses
         public async Task<PatientMaster> AddPatient(PatientMaster patientMaster)
         {
             PatientMaster updatedPatientMaster = new PatientMaster(); 
+            //Setting setting = new Setting(); 
             if(patientMaster != null)
             {
-                patientMaster.CreatedBy = 2;
-                patientMaster.UpdatedBy = 2;
+                if (patientMaster.CreatedBy == 0)
+                    patientMaster.CreatedBy = 2;
+                if (patientMaster.UpdatedBy == 0)
+                    patientMaster.UpdatedBy = 2;
                 patientMaster.CreatedOn = DateTime.Now;
                 patientMaster.UpdatedOn = DateTime.Now;
-                if(patientMaster.Id ==0)
+                //patientMaster.PatientId = setting.PatientNumber();
+
+                if (patientMaster.Id ==0)
                 {
                     _teleMedecineContext.Add(patientMaster);
                     int i = await _teleMedecineContext.SaveChangesAsync();
+                    if(i > 0)
+                    {
+                        _logger.LogInformation($"Add Patient : Patient added successfully");
+                    }
+                        
                     updatedPatientMaster = patientMaster;
                     return updatedPatientMaster;
                 }
@@ -62,9 +73,35 @@ namespace TechMed.BL.Repository.BaseClasses
             throw new NotImplementedException();
         }
 
-        public Task<List<PatientMaster>> GetCheckedPatientList(int Id)
+        public async Task<List<TodaysPatientVM>> GetCheckedPatientList()
         {
-            throw new NotImplementedException();
+            int currentYear = DateTime.Now.Year;
+            int currentMonth = DateTime.Now.Month;
+            int currentDay = DateTime.Now.Day;           
+            List<TodaysPatientVM> todaysPatientList = new List<TodaysPatientVM>();
+            var patientList = (from pm in _teleMedecineContext.PatientMasters where pm.CreatedOn.Value.Year == currentYear && pm.CreatedOn.Value.Month == currentMonth && pm.CreatedOn.Value.Day == currentDay
+                              join pc in _teleMedecineContext.PatientCases on pm.Id equals pc.PatientId into patientcase
+                              from pci in patientcase.DefaultIfEmpty()
+                              join pcq in _teleMedecineContext.PatientQueues on pci.Id equals pcq.Id into pcqd
+                              from pq in pcqd.DefaultIfEmpty()
+                              select new TodaysPatientVM
+                              {
+                               Age = GetAge(pm.Dob),
+                               PatientName = pm.FirstName + " " + pm.LastName,
+                               ID = pm.Id,
+                               PhoneNumber = pm.PhoneNumber,
+                               PatientID = pm.PatientId,
+                               PHCUserID = 0,
+                               PHCUserName = "",
+                               ReferredByPHCID = 0,
+                               ReferredByPHCName = "",
+                               DocterID = 0,
+                               DoctorName = "",
+                               Gender = (pm.GenderId == 1 ? "Male" : "Female")            
+                               }).ToListAsync();
+            todaysPatientList = await patientList;
+
+            return todaysPatientList;
         }
 
         public async Task<PatientMaster> GetPatientByID(int Id)
@@ -88,9 +125,37 @@ namespace TechMed.BL.Repository.BaseClasses
             throw new NotImplementedException();
         }
 
-        public Task<List<PatientMaster>> GetTodaysPatientList(int Id)
+        public async Task<List<TodaysPatientVM>> GetTodaysPatientList()
         {
-            throw new NotImplementedException();
+            List<PatientMaster> patientList = new List<PatientMaster>();
+            List<TodaysPatientVM> todaysPatientList = new List<TodaysPatientVM>();
+            TodaysPatientVM todaysPatientVM;
+            int currentYear = DateTime.Now.Year;
+            int currentMonth = DateTime.Now.Month;
+            int currentDay = DateTime.Now.Day;
+            int age = 0;           
+            patientList = await _teleMedecineContext.PatientMasters.Where(a => a.CreatedOn.Value.Year == currentYear && a.CreatedOn.Value.Month == currentMonth && a.CreatedOn.Value.Day == currentDay).ToListAsync();
+            foreach (var item in patientList)
+            {
+                todaysPatientVM = new TodaysPatientVM();
+                age = GetAge(item.Dob);
+               
+                todaysPatientVM.Age = age;
+                todaysPatientVM.PatientName = item.FirstName + " " + item.LastName;
+                todaysPatientVM.ID = item.Id;
+                todaysPatientVM.PhoneNumber = item.PhoneNumber;
+                todaysPatientVM.PatientID = item.PatientId;
+                todaysPatientVM.PHCUserID = 0;
+                todaysPatientVM.PHCUserName ="";
+                todaysPatientVM.ReferredByPHCID = 0;
+                todaysPatientVM.ReferredByPHCName = "";
+                todaysPatientVM.DocterID = 0;
+                todaysPatientVM.DoctorName = "";
+                todaysPatientVM.Gender = (item.GenderId == 1 ? "Male" : "Female");
+                todaysPatientList.Add(todaysPatientVM);
+            }
+           
+            return todaysPatientList;
         }
 
         public Task<List<PatientMaster>> GetUnCheckedPatientList(int Id)
@@ -107,6 +172,35 @@ namespace TechMed.BL.Repository.BaseClasses
         public Task<PatientMaster> UpdatePatient(int Id)
         {
             throw new NotImplementedException();
+        }
+
+        public int GetAge(DateTime dateofbirth)
+        {
+            DateTime dtToday = DateTime.Now.Date;
+            DateTime dtOfBirth = dateofbirth.Date;
+            TimeSpan diffResult = dtToday - dtToday;
+            double totalDays = diffResult.TotalDays;
+            if (diffResult != TimeSpan.Zero)
+            {
+                if (totalDays > 365)
+                {
+                    int year = (int)(totalDays / 365);
+                    return year;
+                }
+                else if (totalDays < 365)
+                {
+                    int month = (int)(totalDays / 12);
+                    return 365;
+                }
+                else
+                {
+                    return 0;
+                }
+
+            }
+            else
+                return 0;
+            
         }
     }
 }

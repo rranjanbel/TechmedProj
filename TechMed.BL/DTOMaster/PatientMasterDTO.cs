@@ -32,6 +32,7 @@ namespace TechMed.BL.DTOMaster
         public string EmailId { get; set; }
         [Required]
         public string MobileNo { get; set; }
+        public int Phcid { get; set; }
         public int PatientStatusId { get; set; }
         public int? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TechMed.BL.ViewModels;
 using TechMed.DL.Models;
 
 namespace TechMed.BL.Repository.Interfaces
@@ -15,8 +16,8 @@ namespace TechMed.BL.Repository.Interfaces
         Task<PatientMaster> UpdatePatient(int Id);
         Task<bool> DeletePatient(int Id);
         bool IsPatientExist(PatientMaster patientMaster);
-        Task<List<PatientMaster>> GetTodaysPatientList(int Id);
-        Task<List<PatientMaster>> GetCheckedPatientList(int Id);
+        Task<List<TodaysPatientVM>> GetTodaysPatientList();
+        Task<List<TodaysPatientVM>> GetCheckedPatientList();
         Task<List<PatientMaster>> GetUnCheckedPatientList(int Id);
         Task<List<PatientMaster>> GetPendingPatientList(int Id);
     }
