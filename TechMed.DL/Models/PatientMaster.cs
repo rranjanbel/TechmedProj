@@ -30,7 +30,6 @@ namespace TechMed.DL.Models
         public string MobileNo { get; set; } = null!;
         public int PatientStatusId { get; set; }
         public int Phcid { get; set; }
-        public bool? IsCaseCreated { get; set; }
         public int? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
         public int? UpdatedBy { get; set; }

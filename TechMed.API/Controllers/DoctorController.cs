@@ -312,7 +312,7 @@ namespace TechMed.API.Controllers
 
             try
             {
-                if (DoctorID > 0 || DoctorID< 1 || !ModelState.IsValid)
+                if (doctorVM.DoctorID > 0 || doctorVM.DoctorID < 1 || !ModelState.IsValid)
                 {
                     return BadRequest(doctorVM.DoctorID);
                 }
@@ -408,7 +408,7 @@ namespace TechMed.API.Controllers
 
             try
             {
-                if (DoctorID > 0 || DoctorID < 1 || !ModelState.IsValid)
+                if (doctorVM.DoctorID > 0 || doctorVM.DoctorID < 1 || !ModelState.IsValid)
                 {
                     return BadRequest(doctorVM.DoctorID);
                 }
