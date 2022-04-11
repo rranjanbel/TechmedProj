@@ -86,19 +86,20 @@ namespace TechMed.BL.Repository.BaseClasses
                               from pq in pcqd.DefaultIfEmpty()
                               select new TodaysPatientVM
                               {
-                               Age = GetAge(pm.Dob),
-                               PatientName = pm.FirstName + " " + pm.LastName,
-                               ID = pm.Id,
-                               PhoneNumber = pm.PhoneNumber,
-                               PatientID = pm.PatientId,
-                               PHCUserID = 0,
-                               PHCUserName = "",
-                               ReferredByPHCID = 0,
-                               ReferredByPHCName = "",
-                               DocterID = 0,
-                               DoctorName = "",
-                               Gender = (pm.GenderId == 1 ? "Male" : "Female")            
-                               }).ToListAsync();
+                                  //Age = GetAge(pm.Dob),
+                                  Age = 20,
+                                  PatientName = pm.FirstName + " " + pm.LastName,
+                                  ID = pm.Id,
+                                  PhoneNumber = pm.PhoneNumber,
+                                  PatientID = pm.PatientId,
+                                  PHCUserID = 0,
+                                  PHCUserName = "",
+                                  ReferredByPHCID = 0,
+                                  ReferredByPHCName = "",
+                                  DocterID = 0,
+                                  DoctorName = "",
+                                  Gender = (pm.GenderId == 1 ? "Male" : "Female")
+                              }).ToListAsync();
             todaysPatientList = await patientList;
 
             return todaysPatientList;
