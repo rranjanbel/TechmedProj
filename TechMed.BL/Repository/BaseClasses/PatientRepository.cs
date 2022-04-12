@@ -38,7 +38,8 @@ namespace TechMed.BL.Repository.BaseClasses
                     patientMaster.UpdatedBy = 2;
                 patientMaster.CreatedOn = DateTime.Now;
                 patientMaster.UpdatedOn = DateTime.Now;
-                patientMaster.PatientId = UtilityMaster.GetPatientNumber();
+                //patientMaster.PatientId = UtilityMaster.GetPatientNumber();
+                patientMaster.PatientId = GetPatientId();
 
                 if (patientMaster.Id == 0)
                 {
@@ -331,6 +332,35 @@ namespace TechMed.BL.Repository.BaseClasses
             else
                 return 0;
             
+        }
+
+        public long GetPatientId()
+        {
+            Setting setting = new Setting();
+            Int64 currentNo = 0;
+            Int64 patientSerNo = 0;
+            patientSerNo = _teleMedecineContext.Settings.Select(a => a.PatientNumber).FirstOrDefault();
+            if (patientSerNo > 0)
+            {
+                currentNo = patientSerNo;
+                setting = _teleMedecineContext.Settings.FirstOrDefault();
+                if (setting != null)
+                {
+                    setting.PatientNumber = currentNo + 1;
+                }
+                try
+                {
+                    _teleMedecineContext.Entry(setting).State = EntityState.Modified;
+                    var result = _teleMedecineContext.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                    throw;
+                }
+                return currentNo + 1;
+            }
+            return 0;
         }
     }
 }
