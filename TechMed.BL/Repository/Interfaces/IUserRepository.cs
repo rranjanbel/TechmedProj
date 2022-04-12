@@ -14,7 +14,7 @@ namespace TechMed.BL.Repository.Interfaces
         Task<UserLoginDTO> LogedUserDetails(string userEmail);
         Task<bool> IsValidUser(LoginVM login);
         Task<bool> IsAnExistingUser(string userEmail);
-        bool ChangeUserPassword(ChangePassword changePassword);
+        Task<UserMaster> ChangeUserPassword(ChangePassword changePassword);
         bool ResetUserPassword(long UserId);
         bool DeleteUser(long UserId);
         bool IsduplicateUser(string username);

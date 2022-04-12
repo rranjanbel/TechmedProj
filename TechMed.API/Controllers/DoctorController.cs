@@ -307,16 +307,16 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<GetTodayesPatientsDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetTodayesPatients(long DoctorID)
+        public async Task<IActionResult> GetTodayesPatients(DoctorVM doctorVM)
         {
 
             try
             {
-                if (DoctorID > 0 || DoctorID< 1 || !ModelState.IsValid)
+                if (doctorVM.DoctorID > 0 || doctorVM.DoctorID < 1 || !ModelState.IsValid)
                 {
-                    return BadRequest(DoctorID);
+                    return BadRequest(doctorVM.DoctorID);
                 }
-                var DTO = await _doctorRepository.GetTodayesPatients(DoctorID);
+                var DTO = await _doctorRepository.GetTodayesPatients(doctorVM);
                 if (DTO.Count>0)
                 {
                     return Ok(DTO);
@@ -339,16 +339,16 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<GetTodayesPatientsDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetCompletedConsultationPatientsHistory(long DoctorID)
+        public async Task<IActionResult> GetCompletedConsultationPatientsHistory(DoctorVM doctorVM)
         {
 
             try
             {
-                if (DoctorID > 0 || DoctorID < 1 || !ModelState.IsValid)
+                if (doctorVM.DoctorID == null || doctorVM.DoctorID < 1 || !ModelState.IsValid)
                 {
-                    return BadRequest(DoctorID);
+                    return BadRequest(doctorVM.DoctorID);
                 }
-                var DTO = await _doctorRepository.GetCompletedConsultationPatientsHistory(DoctorID);
+                var DTO = await _doctorRepository.GetCompletedConsultationPatientsHistory(doctorVM);
                 if (DTO.Count > 0)
                 {
                     return Ok(DTO);
@@ -362,6 +362,194 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
 
+                ModelState.AddModelError("", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
+        [Route("GetYesterdayPatientsHistory")]
+        [HttpPost]
+        [ProducesResponseType(200, Type = typeof(List<GetTodayesPatientsDTO>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetYesterdayPatientsHistory(DoctorVM doctorVM)
+        {
+
+            try
+            {
+                if (doctorVM.DoctorID == null || doctorVM.DoctorID < 1 || !ModelState.IsValid)
+                {
+                    return BadRequest(doctorVM.DoctorID);
+                }
+                var DTO = await _doctorRepository.GetYesterdayPatientsHistory(doctorVM);
+                if (DTO.Count > 0)
+                {
+                    return Ok(DTO);
+                }
+                else
+                {
+                    ModelState.AddModelError("", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError("", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
+        [Route("GetPastPatientsHistory")]
+        [HttpPost]
+        [ProducesResponseType(200, Type = typeof(List<GetTodayesPatientsDTO>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetPastPatientsHistory(DoctorVM doctorVM)
+        {
+
+            try
+            {
+                if (doctorVM.DoctorID > 0 || doctorVM.DoctorID < 1 || !ModelState.IsValid)
+                {
+                    return BadRequest(doctorVM.DoctorID);
+                }
+                var DTO = await _doctorRepository.GetPastPatientsHistory(doctorVM);
+                if (DTO.Count > 0)
+                {
+                    return Ok(DTO);
+                }
+                else
+                {
+                    ModelState.AddModelError("", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError("", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
+
+        [Route("GetPatientCaseDetailsAsync")]
+        [HttpPost]
+        [ProducesResponseType(200, Type = typeof(GetPatientCaseDetailsDTO))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetPatientCaseDetailsAsync(GetPatientCaseDetailsVM caseDetailsVM)
+        {
+            try
+            {
+                if (caseDetailsVM.PatientCaseID == null || caseDetailsVM.PatientCaseID < 1 || !ModelState.IsValid)
+                {
+                    return BadRequest(caseDetailsVM.PatientCaseID);
+                }
+                var DTO = await _doctorRepository.GetPatientCaseDetailsAsync(caseDetailsVM);
+                if (DTO.PatientId > 0)
+                {
+                    return Ok(DTO);
+                }
+                else
+                {
+                    ModelState.AddModelError("", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
+
+        [Route("PostTreatmentPlan")]
+        [HttpPost]
+        [ProducesResponseType(200, Type = typeof(bool))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> PostTreatmentPlan(TreatmentVM treatmentVM)
+        {
+            try
+            {
+                if (treatmentVM.PatientCaseID == null || treatmentVM.PatientCaseID < 1 || !ModelState.IsValid)
+                {
+                    return BadRequest(treatmentVM.PatientCaseID);
+                }
+                var DTO = await _doctorRepository.PostTreatmentPlan(treatmentVM);
+                if (DTO)
+                {
+                    return Ok(DTO);
+                }
+                else
+                {
+                    ModelState.AddModelError("", $"Data not updated!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
+
+        [Route("DeleteNotification")]
+        [HttpPost]
+        [ProducesResponseType(200, Type = typeof(bool))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> DeleteNotification(long NotificationID)
+        {
+            try
+            {
+                if (NotificationID == null || NotificationID < 1 || !ModelState.IsValid)
+                {
+                    return BadRequest(NotificationID);
+                }
+                var DTO = await _doctorRepository.DeleteNotification(NotificationID);
+                if (DTO)
+                {
+                    return Ok(DTO);
+                }
+                else
+                {
+                    ModelState.AddModelError("", $"Data not deleted!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
+
+        [HttpPost]
+        [Route("EHRdata")]
+        [ProducesResponseType(200, Type = typeof(GetEHRDTO))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> EHRdata(GetEHRVM getEHRVM)
+        {
+            try
+            {
+                if (getEHRVM.PatientCaseID < 1 || !ModelState.IsValid)
+                {
+                    return BadRequest(getEHRVM);
+                }
+                GetEHRDTO DTO = await _doctorRepository.GetEHR(getEHRVM);
+                if (DTO != null)
+                {
+                    return Ok(DTO);
+                }
+                else
+                {
+                    ModelState.AddModelError("", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
                 ModelState.AddModelError("", $"Something went wrong {ex.Message}");
                 return StatusCode(500, ModelState);
             }
