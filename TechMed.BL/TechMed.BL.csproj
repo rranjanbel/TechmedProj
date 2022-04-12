@@ -21,4 +21,8 @@
     <ProjectReference Include="..\TechMed.DL\TechMed.DL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Images\" />
+  </ItemGroup>
+
 </Project>

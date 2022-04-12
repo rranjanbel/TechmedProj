@@ -123,12 +123,44 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
 
-                ModelState.AddModelError("LogedUserDetails", $"Something went wrong when create park {ex.Message}");
+                ModelState.AddModelError("LogedUserDetails", $"Something went wrong when get Loged User Details {ex.Message}");
                 return StatusCode(500, ModelState);
             }
            
             
             
+
+        }
+
+        [HttpPost]
+        [Route("ChangePassword")]
+        [ProducesResponseType(200, Type = typeof(bool))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> ChangePassword(ChangePassword login)
+        {
+            bool response = false;
+            try
+            {
+                UserMaster userMaster = new UserMaster();
+                userMaster = await this._userRepository.ChangeUserPassword(login);
+                if (userMaster != null)
+                {
+                    response = true;
+                    return Ok(response);
+                }
+                else
+                {
+                    ModelState.AddModelError("ChangeUserPassword", $"User password change fail for user ID  : {login.UserId}");
+                    return StatusCode(404, ModelState);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("ChangeUserPassword", $"Something went wrong when change password {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
 
         }
 

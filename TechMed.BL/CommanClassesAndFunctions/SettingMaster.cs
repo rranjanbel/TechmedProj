@@ -11,11 +11,11 @@ namespace TechMed.BL.CommanClassesAndFunctions
 {
     public class SettingMaster 
     {        
-        private readonly TeleMedecineContext _teleMedecineContext;
-        public SettingMaster(TeleMedecineContext teleMedecineContext)
-        {
-            this._teleMedecineContext = teleMedecineContext;
-        }
+        private readonly TeleMedecineContext _teleMedecineContext = new TeleMedecineContext();
+        //public SettingMaster(TeleMedecineContext teleMedecineContext)
+        //{
+        //    this._teleMedecineContext = teleMedecineContext;
+        //}
         public long GetPatientNumber()
         {
             Setting setting = new Setting();
