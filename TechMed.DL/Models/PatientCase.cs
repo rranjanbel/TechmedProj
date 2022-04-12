@@ -26,6 +26,7 @@ namespace TechMed.DL.Models
         public string? Instruction { get; set; }
         public string? Test { get; set; }
         public string? Finding { get; set; }
+        public string? Prescription { get; set; }
         public int CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
         public int? UpdatedBy { get; set; }

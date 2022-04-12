@@ -7,9 +7,14 @@ using System.Threading.Tasks;
 
 namespace TechMed.DL.ViewModel
 {
-    public class GetPatientCaseDetailsVM
+    public class PatientAbsentVM
     {
         [Required]
-        public long PatientCaseID { get; set; }
+        public long CaseID { get; set; }
+        [Required]
+        public long DoctorID { get; set; }
+        //[Required]
+        public string Comment { get; set; }
+        
     }
 }
