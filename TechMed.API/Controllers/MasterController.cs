@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using TechMed.BL.DTOMaster;
 using TechMed.BL.Repository.Interfaces;
 using TechMed.DL.Models;
 
@@ -12,9 +13,9 @@ namespace TechMed.API.Controllers
     {
         private readonly IMapper _mapper;
         private readonly ISpecializationRepository _specializationRepository;
-        private readonly ILogger<PHCController> _logger;
+        private readonly ILogger<MasterController> _logger;
        
-        public MasterController(IMapper mapper, ISpecializationRepository specializationRepository, ILogger<PHCController> logger)
+        public MasterController(IMapper mapper, ISpecializationRepository specializationRepository, ILogger<MasterController> logger)
         {
             this._mapper = mapper;
             //this._phcRepository = phcRepository;
@@ -23,18 +24,26 @@ namespace TechMed.API.Controllers
         }
 
         [HttpGet]
-        [Route("GetAllSpecialization")]     
-        [ProducesResponseType(200, Type = typeof(List<SpecializationMaster>))]
+        [Route("GetAllSpecialization")]
+        [ProducesResponseType(200, Type = typeof(List<SpecializationDTO>))]      
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllSpecialization()
         {
+            SpecializationDTO mapdata = new SpecializationDTO();
             try
             {
-                var specializations = await _specializationRepository.Get();
-                if (specializations != null)
+               var spemasters = await _specializationRepository.Get();
+              
+                var DTOList = new List<SpecializationDTO>();
+                foreach (var item in spemasters)
+                {
+                    mapdata = _mapper.Map<SpecializationDTO>(item);
+                    DTOList.Add(mapdata);
+                }               
+                if (DTOList != null)
                 {                   
-                    return Ok(specializations);
+                    return Ok(DTOList);
                 }
                 else
                 {
