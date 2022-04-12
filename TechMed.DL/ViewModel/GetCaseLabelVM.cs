@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace TechMed.DL.ViewModel
 {
-    public class GetPatientCaseDetailsVM
+    public class GetCaseLabelVM
     {
         [Required]
-        public long PatientCaseID { get; set; }
+        public long PatientID { get; set; }
     }
 }

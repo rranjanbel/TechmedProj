@@ -15,6 +15,7 @@ namespace TechMed.BL.Repository.Interfaces
         public Task<DoctorDTO> GetDoctorDetails(GetDoctorDetailVM getDoctorDetailVM);
         public Task<bool> UpdateDoctorDetails(DoctorDTO doctorDTO);
         public Task<List<PHCHospitalDTO>> GetListOfPHCHospital();
+        public Task<List<PHCHospitalDTO>> GetListOfPHCHospitalZoneWise(GetListOfPHCHospitalVM getListOfPHCHospitalVM);
         public Task<List<NotificationDTO>> GetListOfNotification(GetListOfNotificationVM getListOfNotificationVM);
         public Task<CdssguidelineMasterDTO> GetCDSSGuideLines();
         public Task<List<GetTodayesPatientsDTO>> GetYesterdayPatientsHistory(DoctorVM doctorVM);
@@ -28,10 +29,13 @@ namespace TechMed.BL.Repository.Interfaces
         public Task<bool> DeleteNotification(long NotificationID);
         public Task<bool> PostTreatmentPlan(TreatmentVM treatmentVM);
         public Task<GetEHRDTO> GetEHR(GetEHRVM getEHRVM);
-        void PatientAbsent();
-        void ReferHigherFacilityAbsent();
+        public Task<bool> PatientAbsent(PatientAbsentVM patientAbsentVM);
+        public Task<bool> ReferHigherFacility(PatientAbsentVM patientAbsentVM);
+        public Task<List<GetCaseLabelDTO>> GetCaseLabel(GetCaseLabelVM getCaseLabelVM);
         void CallPHC();
         public Task<GetPatientCaseDetailsDTO> GetPatientCaseDetailsAsync(GetPatientCaseDetailsVM vm);
+        public Task<List<SearchPatientsDTO>> SearchPatientDrDashBoard(SearchPatientVM searchPatientVM);
+        public Task<List<SearchPatientsDTO>> SearchPatientDrHistory(SearchPatientVM searchPatientVM);
 
     }
 }

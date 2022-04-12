@@ -436,7 +436,7 @@ namespace TechMed.DL.Models
                 entity.Property(e => e.Id).HasColumnName("ID");
 
                 entity.Property(e => e.Allergies)
-                    .HasMaxLength(500)
+                    .HasMaxLength(2000)
                     .IsUnicode(false);
 
                 entity.Property(e => e.CaseFileNumber)
@@ -450,33 +450,35 @@ namespace TechMed.DL.Models
                 entity.Property(e => e.CreatedOn).HasColumnType("datetime");
 
                 entity.Property(e => e.Diagnosis)
-                    .HasMaxLength(500)
+                    .HasMaxLength(2000)
                     .IsUnicode(false);
 
                 entity.Property(e => e.FamilyHistory)
-                    .HasMaxLength(500)
+                    .HasMaxLength(2000)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Finding)
-                    .HasMaxLength(500)
+                    .HasMaxLength(2000)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Instruction)
-                    .HasMaxLength(500)
+                    .HasMaxLength(2000)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Observation)
-                    .HasMaxLength(500)
+                    .HasMaxLength(2000)
                     .IsUnicode(false);
 
                 entity.Property(e => e.PatientId).HasColumnName("PatientID");
 
+                entity.Property(e => e.Prescription).IsUnicode(false);
+
                 entity.Property(e => e.Symptom)
-                    .HasMaxLength(500)
+                    .HasMaxLength(2000)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Test)
-                    .HasMaxLength(500)
+                    .HasMaxLength(2000)
                     .IsUnicode(false);
 
                 entity.Property(e => e.UpdatedOn).HasColumnType("datetime");

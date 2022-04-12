@@ -11,7 +11,7 @@ namespace TechMed.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class DoctorController : ControllerBase
     {
         DoctorBusinessMaster doctorBusinessMaster;
@@ -65,7 +65,7 @@ namespace TechMed.API.Controllers
             try
             {
                 var DTO = await _doctorRepository.GetCDSSGuideLines();
-                if (DTO!=null)
+                if (DTO != null)
                 {
                     return Ok(DTO);
                 }
@@ -96,7 +96,7 @@ namespace TechMed.API.Controllers
                     return BadRequest(ModelState);
                 }
                 var DTO = await _doctorRepository.GetDoctorDetails(getDoctorDetailVM);
-                if (DTO.Id>0)
+                if (DTO.Id > 0)
                 {
                     return Ok(DTO);
                 }
@@ -114,7 +114,7 @@ namespace TechMed.API.Controllers
             }
         }
         [Route("GetListOfMedicine")]
-        [HttpPost]
+        [HttpGet]
         [ProducesResponseType(200, Type = typeof(List<MedicineMasterDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -145,7 +145,7 @@ namespace TechMed.API.Controllers
             }
         }
         [Route("GetListOfVital")]
-        [HttpPost]
+        [HttpGet]
         [ProducesResponseType(200, Type = typeof(List<VitalMasterDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -175,7 +175,7 @@ namespace TechMed.API.Controllers
             }
         }
         [Route("GetListOfPHCHospital")]
-        [HttpPost]
+        [HttpGet]
         [ProducesResponseType(200, Type = typeof(List<PHCHospitalDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -206,7 +206,7 @@ namespace TechMed.API.Controllers
         }
 
         [Route("GetListOfSpecializationMaster")]
-        [HttpPost]
+        [HttpGet]
         [ProducesResponseType(200, Type = typeof(List<SpecializationDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -238,7 +238,7 @@ namespace TechMed.API.Controllers
         }
 
         [Route("GetListOfSubSpecializationMaster")]
-        [HttpPost]
+        [HttpGet]
         [ProducesResponseType(200, Type = typeof(List<SubSpecializationDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -276,10 +276,10 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateDoctorDetails(DoctorDTO doctorDTO)
         {
-            
+
             try
             {
-                if (doctorDTO == null|| doctorDTO.Id<1|| !ModelState.IsValid)
+                if (doctorDTO == null || doctorDTO.Id < 1 || !ModelState.IsValid)
                 {
                     return BadRequest(ModelState);
                 }
@@ -317,7 +317,7 @@ namespace TechMed.API.Controllers
                     return BadRequest(doctorVM.DoctorID);
                 }
                 var DTO = await _doctorRepository.GetTodayesPatients(doctorVM);
-                if (DTO.Count>0)
+                if (DTO.Count > 0)
                 {
                     return Ok(DTO);
                 }
@@ -539,6 +539,219 @@ namespace TechMed.API.Controllers
                 }
                 GetEHRDTO DTO = await _doctorRepository.GetEHR(getEHRVM);
                 if (DTO != null)
+                {
+                    return Ok(DTO);
+                }
+                else
+                {
+                    ModelState.AddModelError("", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
+
+        [HttpPost]
+        [Route("PatientAbsent")]
+        [ProducesResponseType(200, Type = typeof(bool))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> PatientAbsent(PatientAbsentVM patientAbsentVM)
+        {
+            try
+            {
+                if (patientAbsentVM.CaseID < 1 || !ModelState.IsValid)
+                {
+                    return BadRequest(patientAbsentVM);
+                }
+                bool DTO = await _doctorRepository.PatientAbsent(patientAbsentVM);
+                if (DTO)
+                {
+                    return Ok(DTO);
+                }
+                else
+                {
+                    ModelState.AddModelError("", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("CaseID", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
+
+        [HttpPost]
+        [Route("ReferHigherFacility")]
+        [ProducesResponseType(200, Type = typeof(bool))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> ReferHigherFacility(PatientAbsentVM patientAbsentVM)
+        {
+            try
+            {
+                if (patientAbsentVM.CaseID < 1 || !ModelState.IsValid)
+                {
+                    return BadRequest(patientAbsentVM);
+                }
+                bool DTO = await _doctorRepository.ReferHigherFacility(patientAbsentVM);
+                if (DTO)
+                {
+                    return Ok(DTO);
+                }
+                else
+                {
+                    ModelState.AddModelError("", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("CaseID", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
+
+        [HttpPost]
+        [Route("GetCaseLabel")]
+        [ProducesResponseType(200, Type = typeof(List<GetCaseLabelDTO>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetCaseLabel(GetCaseLabelVM getCaseLabelVM)
+        {
+            try
+            {
+                if (getCaseLabelVM.PatientID < 1 || !ModelState.IsValid)
+                {
+                    return BadRequest(getCaseLabelVM);
+                }
+                List<GetCaseLabelDTO> DTO = await _doctorRepository.GetCaseLabel(getCaseLabelVM);
+                if (DTO!=null)
+                {
+                    if (DTO.Count > 0)
+                    {
+                        return Ok(DTO);
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", $"Data not found!");
+                        return StatusCode(404, ModelState);
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError("", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+              
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("CaseID", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
+
+        [HttpPost]
+        [Route("SearchPatientDrDashBoard")]
+        [ProducesResponseType(200, Type = typeof(List<SearchPatientsDTO>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> SearchPatientDrDashBoard(SearchPatientVM searchPatientVM)
+        {
+            try
+            {
+                if (searchPatientVM.DoctorID < 1 || !ModelState.IsValid)
+                {
+                    return BadRequest(searchPatientVM);
+                }
+                List<SearchPatientsDTO> DTO = await _doctorRepository.SearchPatientDrDashBoard(searchPatientVM);
+                if (DTO != null)
+                {
+                    if (DTO.Count > 0)
+                    {
+                        return Ok(DTO);
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", $"Data not found!");
+                        return StatusCode(404, ModelState);
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError("", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("CaseID", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
+
+        [HttpPost]
+        [Route("SearchPatientDrHistory")]
+        [ProducesResponseType(200, Type = typeof(List<SearchPatientsDTO>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> SearchPatientDrHistory(SearchPatientVM searchPatientVM)
+        {
+            try
+            {
+                if (searchPatientVM.DoctorID < 1 || !ModelState.IsValid)
+                {
+                    return BadRequest(searchPatientVM);
+                }
+                List<SearchPatientsDTO> DTO = await _doctorRepository.SearchPatientDrHistory(searchPatientVM);
+                if (DTO != null)
+                {
+                    if (DTO.Count > 0)
+                    {
+                        return Ok(DTO);
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", $"Data not found!");
+                        return StatusCode(404, ModelState);
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError("", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("CaseID", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
+
+        [Route("GetListOfPHCHospitalZoneWise")]
+        [HttpPost]
+        [ProducesResponseType(200, Type = typeof(List<PHCHospitalDTO>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetListOfPHCHospitalZoneWise(GetListOfPHCHospitalVM getListOfPHCHospitalVM)
+        {
+            try
+            {
+                if (getListOfPHCHospitalVM == null)
+                {
+                    return BadRequest(ModelState);
+                }
+                var DTO = await _doctorRepository.GetListOfPHCHospitalZoneWise(getListOfPHCHospitalVM);
+                if (DTO.Count > 0)
                 {
                     return Ok(DTO);
                 }
