@@ -44,14 +44,14 @@ namespace TechMed.BL.CommanClassesAndFunctions
         {
             Setting setting = new Setting();
             Int64 currentNo = 0;
-            var value = _teleMedecineContext.Settings.Select(a => a.PatientNumber);
-            if (value == null)
+            Int64 patientSerNo = 0;
+            patientSerNo = _teleMedecineContext.Settings.Select(a => a.PatientNumber).FirstOrDefault();
+            if (patientSerNo > 0)
             {
-                currentNo = Convert.ToInt64(value);
-                var setModel = _teleMedecineContext.Settings.FirstOrDefault();
-                if (setModel != null)
-                {
-                    setting = (Setting)setModel;
+                currentNo = patientSerNo;
+                setting = _teleMedecineContext.Settings.FirstOrDefault();
+                if (setting != null)
+                {                   
                     setting.PatientNumber = currentNo + 1;
                 }
                 try
@@ -72,15 +72,15 @@ namespace TechMed.BL.CommanClassesAndFunctions
         {
             Setting setting = new Setting();
             Int64 currentNo = 0;
-            var value = _teleMedecineContext.Settings.Select(a => a.CaseFileNumber);
-            if (value == null)
+            Int64 patientSerNo = 0;
+            patientSerNo = _teleMedecineContext.Settings.Select(a => a.CaseFileNumber).FirstOrDefault();
+            if (patientSerNo > 0)
             {
-                currentNo = Convert.ToInt64(value);
-                var setModel = _teleMedecineContext.Settings.FirstOrDefault();
-                if (setModel != null)
+                currentNo = patientSerNo;
+                setting = _teleMedecineContext.Settings.FirstOrDefault();
+                if (setting != null)
                 {
-                    setting = (Setting)setModel;
-                    setting.CaseFileNumber = currentNo + 1;
+                    setting.PatientNumber = currentNo + 1;
                 }
                 try
                 {

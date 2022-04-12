@@ -28,7 +28,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(201, Type = typeof(PatientMasterDTO))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Post([FromBody] PatientMasterDTO patientdto)
+        public async Task<IActionResult> AddPatient([FromBody] PatientMasterDTO patientdto)
         {
             PatientMaster newCreatedPatient = new PatientMaster();
             try
@@ -43,7 +43,8 @@ namespace TechMed.API.Controllers
                     ModelState.AddModelError("AddPatient", "Patient name already in system");
                     return StatusCode(404, ModelState);
                 }
-                newCreatedPatient = await this._patientRepository.Create(patientDetails);
+                //newCreatedPatient = await this._patientRepository.Create(patientDetails);
+                newCreatedPatient = await this._patientRepository.AddPatient(patientDetails);
                 if (newCreatedPatient == null)
                 {
                     ModelState.AddModelError("AddPatient", $"Something went wrong when create Patient {patientdto.FirstName}");

@@ -38,13 +38,14 @@ namespace TechMed.BL.Repository.BaseClasses
                     patientMaster.UpdatedBy = 2;
                 patientMaster.CreatedOn = DateTime.Now;
                 patientMaster.UpdatedOn = DateTime.Now;
-                //patientMaster.PatientId = setting.PatientNumber();
+                patientMaster.PatientId = UtilityMaster.GetPatientNumber();
 
                 if (patientMaster.Id == 0)
                 {
-                    _teleMedecineContext.Add(patientMaster);
-                    int i = await _teleMedecineContext.SaveChangesAsync();
-                    if (i > 0)
+                    //_teleMedecineContext.Add(patientMaster);
+                    //int i = await _teleMedecineContext.SaveChangesAsync();
+                    updatedPatientMaster = await Create(patientMaster);
+                    if (updatedPatientMaster.Id > 0)
                     {
                         _logger.LogInformation($"Add Patient : Patient added successfully");
                     }
