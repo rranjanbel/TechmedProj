@@ -679,7 +679,27 @@ namespace TechMed.BL.Repository.BaseClasses
             }
             return onlineDrList;
         }
+        public async Task<bool> UpdateIsDrOnlineByUserLoginName(UpdateIsDrOnlineByUserLoginNameVM updateIsOnlineDrVM)
+        {
 
+            UserMaster userMaster = await _teleMedecineContext.UserMasters.Where(a => a.Email.ToLower() == updateIsOnlineDrVM.UserLoginName.ToLower()).FirstOrDefaultAsync();
+            if (userMaster == null)
+            {
+                return false;
+            }
+            else
+            {
+                DoctorMaster doctorMaster = await _teleMedecineContext.DoctorMasters.Where(a => a.UserId == userMaster.Id).FirstOrDefaultAsync();
+                if (doctorMaster == null)
+                {
+                    return false;
+                }
+                doctorMaster.IsOnline = updateIsOnlineDrVM.IsOnline;
+                _teleMedecineContext.SaveChanges();
+                return true;
+            }
+        }
+    
 
         public Task<DoctorMaster> Create(DoctorMaster model)
         {
