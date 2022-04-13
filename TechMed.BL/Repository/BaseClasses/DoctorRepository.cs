@@ -631,6 +631,55 @@ namespace TechMed.BL.Repository.BaseClasses
             }
             return DTOList;
         }
+        public async Task<bool> UpdateIsDrOnline(UpdateIsDrOnlineVM updateIsOnlineDrVM)
+        {
+            DoctorMaster doctorMaster = await _teleMedecineContext.DoctorMasters.Where(a => a.Id == updateIsOnlineDrVM.DoctorID).FirstOrDefaultAsync();
+            if (doctorMaster == null)
+            {
+                return false;
+            }
+            else
+            {
+                doctorMaster.IsOnline = updateIsOnlineDrVM.IsOnline;
+                _teleMedecineContext.SaveChanges();
+                return true;
+            }
+        }
+        public async Task<bool> IsDrOnline(DoctorVM doctorVM)
+        {
+            DoctorMaster doctorMaster = await _teleMedecineContext.DoctorMasters.Where(a => a.Id == doctorVM.DoctorID).FirstOrDefaultAsync();
+            if (doctorMaster == null)
+            {
+                return false;
+            }
+            else
+            {
+                return doctorMaster.IsOnline;
+            }
+        }
+        public async Task<List<OnlineDrListDTO>> OnlineDrList(OnlineDrListVM doctorVM)
+        {
+            List<OnlineDrListDTO> onlineDrList = new List<OnlineDrListDTO>();
+            var doctorMaster = await _teleMedecineContext
+                .DoctorMasters
+                .Include(a => a.Specialization)
+                .Where(a => a.ZoneId == doctorVM.ZoneID).ToListAsync();
+            foreach (var item in doctorMaster)
+            {
+                UserDetail userDetail = _teleMedecineContext.UserDetails.Where(a => a.UserId == item.UserId).FirstOrDefault();
+                onlineDrList.Add(new OnlineDrListDTO
+                {
+                    DoctorID = item.Id,
+                    DoctorFName = userDetail.FirstName,
+                    DoctorMName = userDetail.MiddleName,
+                    DoctorLName = userDetail.LastName,
+                    Photo = userDetail.Photo,
+                    Specialty = item.Specialization.Specialization
+                });
+            }
+            return onlineDrList;
+        }
+
 
         public Task<DoctorMaster> Create(DoctorMaster model)
         {

@@ -1023,7 +1023,7 @@ namespace TechMed.DL.Models
                     .IsUnicode(false);
 
                 entity.Property(e => e.Photo)
-                    .HasMaxLength(150)
+                    .HasMaxLength(500)
                     .IsUnicode(false);
 
                 entity.Property(e => e.PinCode)
