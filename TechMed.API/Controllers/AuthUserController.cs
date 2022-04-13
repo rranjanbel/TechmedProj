@@ -5,6 +5,8 @@ using System.Security.Claims;
 using TechMed.API.Services;
 using TechMedAPI.JwtInfra;
 using Microsoft.IdentityModel.Tokens;
+using TechMed.BL.Repository.Interfaces;
+using TechMed.DL.ViewModel;
 
 namespace TechMed.API.Controllers
 {
@@ -13,11 +15,13 @@ namespace TechMed.API.Controllers
         private readonly ILogger<AuthUserController> _logger;
         private readonly IUserService _userService;
         private readonly IJwtAuthManager _jwtAuthManager;
-        public AuthUserController(ILogger<AuthUserController> logger, IUserService userService, IJwtAuthManager jwtAuthManager)
+        private readonly IDoctorRepository _doctorRepository;
+        public AuthUserController(ILogger<AuthUserController> logger, IDoctorRepository doctorRepository, IUserService userService, IJwtAuthManager jwtAuthManager)
         {
             _logger = logger;
             _userService = userService;
             _jwtAuthManager = jwtAuthManager;
+            _doctorRepository = doctorRepository;
         }
         [AllowAnonymous]
         [HttpPost("api/generatetoken")]
@@ -28,7 +32,7 @@ namespace TechMed.API.Controllers
                 return BadRequest();
             }
 
-            if (! await _userService.IsValidUserCredentials(request.UserName, request.Password))
+            if (!await _userService.IsValidUserCredentials(request.UserName, request.Password))
             {
                 return Unauthorized("Unauthorized User");
             }
@@ -51,9 +55,14 @@ namespace TechMed.API.Controllers
         [Authorize]
         public ActionResult Logout()
         {
-             var userName = User.Identity?.Name;
+            var userName = User.Identity?.Name;
             _jwtAuthManager.RemoveRefreshTokenByUserName(userName);
             _logger.LogInformation($"User [{userName}] logged out the system.");
+            //_doctorRepository.UpdateIsDrOnlineByUserLoginName(new UpdateIsDrOnlineByUserLoginNameVM
+            //{
+            //    IsOnline = false,
+            //    UserLoginName = userName
+            //});
             return Ok();
         }
         [HttpPost("api/refresh-token")]

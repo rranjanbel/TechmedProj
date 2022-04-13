@@ -18,6 +18,7 @@ namespace TechMed.DL.Models
         public int PatientId { get; set; }
         public string CaseFileNumber { get; set; } = null!;
         public string CaseHeading { get; set; } = null!;
+        public int SpecializationId { get; set; }
         public string? Symptom { get; set; }
         public string? Observation { get; set; }
         public string? Allergies { get; set; }
@@ -34,6 +35,7 @@ namespace TechMed.DL.Models
 
         public virtual UserMaster CreatedByNavigation { get; set; } = null!;
         public virtual PatientMaster Patient { get; set; } = null!;
+        public virtual SpecializationMaster Specialization { get; set; } = null!;
         public virtual UserMaster? UpdatedByNavigation { get; set; }
         public virtual ICollection<PatientCaseDocument> PatientCaseDocuments { get; set; }
         public virtual ICollection<PatientCaseFeedback> PatientCaseFeedbacks { get; set; }

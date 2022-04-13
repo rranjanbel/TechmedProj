@@ -473,6 +473,8 @@ namespace TechMed.DL.Models
 
                 entity.Property(e => e.Prescription).IsUnicode(false);
 
+                entity.Property(e => e.SpecializationId).HasColumnName("SpecializationID");
+
                 entity.Property(e => e.Symptom)
                     .HasMaxLength(2000)
                     .IsUnicode(false);
@@ -494,6 +496,12 @@ namespace TechMed.DL.Models
                     .HasForeignKey(d => d.PatientId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_PatientCase_PatientMaster");
+
+                entity.HasOne(d => d.Specialization)
+                    .WithMany(p => p.PatientCases)
+                    .HasForeignKey(d => d.SpecializationId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PatientCase_SpecializationMaster");
 
                 entity.HasOne(d => d.UpdatedByNavigation)
                     .WithMany(p => p.PatientCaseUpdatedByNavigations)
