@@ -32,38 +32,7 @@ namespace TechMed.BL.Repository.BaseClasses
         {
             int i = 0;
             int j = 0;
-            Phcmaster phcmasternew = new Phcmaster();
-            //using (var context = new TeleMedecineContext())
-            //{
-            //    using (DbContextTransaction transaction = (DbContextTransaction)context.Database.BeginTransaction())
-            //    {
-
-            //        try
-            //        {
-            //            var um = await context.UserMasters.AddAsync(userMaster);                      
-            //            i = await context.SaveChangesAsync();
-            //            if(i > 0 && userMaster.Id > 0)
-            //            {
-            //                phcmaster.UserId = userMaster.Id;
-            //                var pm = await context.Phcmasters.AddAsync(phcmaster);
-            //                j = await context.SaveChangesAsync(); ;
-            //            }
-            //          if( i > 0 && j > 0)
-            //            {
-            //                transaction.Commit();
-            //            }
-            //          else
-            //            {
-            //                 transaction.Rollback();
-            //            }
-            //        }
-            //        catch (Exception ex)
-            //        {
-            //            string excp = ex.Message;
-            //            transaction.Rollback();                       
-            //        }
-            //    }
-            //}
+            Phcmaster phcmasternew = new Phcmaster();            
 
             using (TeleMedecineContext context = new TeleMedecineContext())
             {
