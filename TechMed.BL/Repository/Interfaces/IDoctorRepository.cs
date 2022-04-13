@@ -36,6 +36,7 @@ namespace TechMed.BL.Repository.Interfaces
         public Task<GetPatientCaseDetailsDTO> GetPatientCaseDetailsAsync(GetPatientCaseDetailsVM vm);
         public Task<List<SearchPatientsDTO>> SearchPatientDrDashBoard(SearchPatientVM searchPatientVM);
         public Task<List<SearchPatientsDTO>> SearchPatientDrHistory(SearchPatientVM searchPatientVM);
+        public Task<List<GetTodayesPatientsDTO>> GetLatestReferred(DoctorVM doctorVM);
 
     }
 }
