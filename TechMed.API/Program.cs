@@ -54,6 +54,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 builder.Services.AddScoped<IPHCRepository, PHCRepository>();
+builder.Services.AddScoped<ISpecializationRepository, SpecializationRepository>();
 
 builder.Services.AddSwaggerGen(c =>
 {
