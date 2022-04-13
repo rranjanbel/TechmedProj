@@ -312,7 +312,7 @@ namespace TechMed.API.Controllers
 
             try
             {
-                if (doctorVM.DoctorID > 0 || doctorVM.DoctorID < 1 || !ModelState.IsValid)
+                if (doctorVM.DoctorID < 1 || !ModelState.IsValid)
                 {
                     return BadRequest(doctorVM.DoctorID);
                 }
@@ -408,7 +408,7 @@ namespace TechMed.API.Controllers
 
             try
             {
-                if (doctorVM.DoctorID > 0 || doctorVM.DoctorID < 1 || !ModelState.IsValid)
+                if (doctorVM.DoctorID < 1 || !ModelState.IsValid)
                 {
                     return BadRequest(doctorVM.DoctorID);
                 }
@@ -631,7 +631,7 @@ namespace TechMed.API.Controllers
                     return BadRequest(getCaseLabelVM);
                 }
                 List<GetCaseLabelDTO> DTO = await _doctorRepository.GetCaseLabel(getCaseLabelVM);
-                if (DTO!=null)
+                if (DTO != null)
                 {
                     if (DTO.Count > 0)
                     {
@@ -648,7 +648,7 @@ namespace TechMed.API.Controllers
                     ModelState.AddModelError("", $"Data not found!");
                     return StatusCode(404, ModelState);
                 }
-              
+
             }
             catch (Exception ex)
             {
@@ -752,6 +752,133 @@ namespace TechMed.API.Controllers
                 }
                 var DTO = await _doctorRepository.GetListOfPHCHospitalZoneWise(getListOfPHCHospitalVM);
                 if (DTO.Count > 0)
+                {
+                    return Ok(DTO);
+                }
+                else
+                {
+                    ModelState.AddModelError("", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
+
+        [Route("GetLatestReferred")]
+        [HttpPost]
+        [ProducesResponseType(200, Type = typeof(List<GetTodayesPatientsDTO>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetLatestReferred(DoctorVM doctorVM)
+        {
+            try
+            {
+                if (doctorVM.DoctorID < 1 || !ModelState.IsValid)
+                {
+                    return BadRequest(doctorVM.DoctorID);
+                }
+                var DTO = await _doctorRepository.GetLatestReferred(doctorVM);
+                if (DTO.Count > 0)
+                {
+                    return Ok(DTO);
+                }
+                else
+                {
+                    ModelState.AddModelError("", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
+
+
+        [Route("UpdateIsDrOnline")]
+        [HttpPost]
+        [ProducesResponseType(200, Type = typeof(List<bool>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdateIsDrOnline(UpdateIsDrOnlineVM doctorVM)
+        {
+            try
+            {
+                if (doctorVM.DoctorID < 1 || !ModelState.IsValid)
+                {
+                    return BadRequest(doctorVM.DoctorID);
+                }
+                var DTO = await _doctorRepository.UpdateIsDrOnline(doctorVM);
+                return Ok(DTO);
+                //if (DTO)
+                //{
+                //    return Ok(DTO);
+                //}
+                //else
+                //{
+                //    ModelState.AddModelError("", $"Data not found!");
+                //    return StatusCode(404, ModelState);
+                //}
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
+
+        [Route("IsDrOnline")]
+        [HttpPost]
+        [ProducesResponseType(200, Type = typeof(List<bool>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> IsDrOnline(DoctorVM doctorVM)
+        {
+            try
+            {
+                if (doctorVM.DoctorID < 1 || !ModelState.IsValid)
+                {
+                    return BadRequest(doctorVM.DoctorID);
+                }
+                var DTO = await _doctorRepository.IsDrOnline(doctorVM);
+                return Ok(DTO);
+                //if (DTO)
+                //{
+                //    return Ok(DTO);
+                //}
+                //else
+                //{
+                //    ModelState.AddModelError("", $"Data not found!");
+                //    return StatusCode(404, ModelState);
+                //}
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
+
+        [Route("OnlineDrList")]
+        [HttpPost]
+        [ProducesResponseType(200, Type = typeof(List<OnlineDrListDTO>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> OnlineDrList(OnlineDrListVM doctorVM)
+        {
+            try
+            {
+                if (doctorVM.ZoneID < 1 || !ModelState.IsValid)
+                {
+                    return BadRequest(doctorVM);
+                }
+                var DTO = await _doctorRepository.OnlineDrList(doctorVM);
+                if (DTO.Count>0)
                 {
                     return Ok(DTO);
                 }
