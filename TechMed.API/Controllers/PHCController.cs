@@ -115,7 +115,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(201, Type = typeof(PHCDetailsVM))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Post([FromBody] PHCHospitalDTO phcdto)
+        public async Task<IActionResult> AddPHC([FromBody] PHCHospitalDTO phcdto)
         {
             Phcmaster newCreatedPHC = new Phcmaster();
             try
@@ -142,7 +142,23 @@ namespace TechMed.API.Controllers
                     phcMaster.CreatedOn = DateTime.Now;
                     phcMaster.UpdatedOn = DateTime.Now;
 
-                    newCreatedPHC = await this._phcRepository.Create(phcMaster);
+                    UserMaster userMaster = new UserMaster();
+                    userMaster.Email = phcMaster.MailId;
+                    userMaster.Name = phcMaster.Moname;
+                    userMaster.Mobile = phcMaster.PhoneNo;
+                    userMaster.HashPassword = "phcmo@123";
+                    userMaster.LoginAttempts = 0;
+                    userMaster.LastLoginAt = DateTime.Now;
+                    userMaster.IsActive = true;
+                    userMaster.IsPasswordChanged = false;
+                    userMaster.CreatedBy = 2;
+                    userMaster.UpdatedBy = 2;
+                    userMaster.CreatedOn = DateTime.Now;
+                    userMaster.UpdatedOn = DateTime.Now;
+
+                    newCreatedPHC = await this._phcRepository.AddPHCUser(phcMaster, userMaster);
+
+                   // newCreatedPHC = await this._phcRepository.Create(phcMaster);
                 }
                
                 if (newCreatedPHC == null)
@@ -152,9 +168,9 @@ namespace TechMed.API.Controllers
                 }
                 else
                 {
-                    //var createdPHC = _mapper.Map<PHCHospitalDTO>(newCreatedPHC);
-                    PHCDetailsVM phcDetails = await _phcRepository.GetPHCDetailByUserID(newCreatedPHC.UserId);
-                    return CreatedAtRoute(201, phcDetails);
+                    var createdPHC = _mapper.Map<PHCHospitalDTO>(newCreatedPHC);
+                    //PHCDetailsVM phcDetails = await _phcRepository.GetPHCDetailByUserID(newCreatedPHC.UserId);
+                    return CreatedAtRoute(201, createdPHC);
                 }
             }
             catch (Exception ex)

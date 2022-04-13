@@ -38,8 +38,8 @@ namespace TechMed.BL.Repository.BaseClasses
                     patientMaster.UpdatedBy = 2;
                 patientMaster.CreatedOn = DateTime.Now;
                 patientMaster.UpdatedOn = DateTime.Now;
-                //patientMaster.PatientId = UtilityMaster.GetPatientNumber();
-                patientMaster.PatientId = GetPatientId();
+               // patientMaster.PatientId = UtilityMaster.GetPatientNumber();
+                //patientMaster.PatientId = GetPatientId();
 
                 if (patientMaster.Id == 0)
                 {
