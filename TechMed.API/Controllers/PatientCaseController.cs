@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TechMed.BL.Repository.Interfaces;
@@ -9,6 +10,7 @@ namespace TechMed.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class PatientCaseController : ControllerBase
     {
         private readonly IMapper _mapper;
@@ -46,7 +48,7 @@ namespace TechMed.API.Controllers
                     //Need to get here data from database runtime when not supplied by GUI
 
                     patientcase.CaseFileNumber = _patientCaeRepository.GetCaseFileNumber().ToString();
-                    patientcase.PatientId = 0;
+                    patientcase.PatientId = patientCasevm.PatientID;
                     patientcase.SpecializationId = patientCasevm.SpecializationID;
                     patientcase.CaseHeading = patientCasevm.CaseTitle;
                     patientcase.CreatedBy = patientCasevm.CreatedBy;
