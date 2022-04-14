@@ -6,6 +6,7 @@ using TechMed.BL.Repository.Interfaces;
 using TechMed.DL.Models;
 using Microsoft.AspNetCore.Authorization;
 using TechMed.BL.ViewModels;
+using TechMed.BL.CommanClassesAndFunctions;
 
 namespace TechMed.API.Controllers
 {
@@ -146,7 +147,7 @@ namespace TechMed.API.Controllers
                     userMaster.Email = phcMaster.MailId;
                     userMaster.Name = phcMaster.Moname;
                     userMaster.Mobile = phcMaster.PhoneNo;
-                    userMaster.HashPassword = "phcmo@123";
+                    userMaster.HashPassword = EncodeAndDecordPassword.EncodePassword("phcmo@123"); 
                     userMaster.LoginAttempts = 0;
                     userMaster.LastLoginAt = DateTime.Now;
                     userMaster.IsActive = true;
@@ -180,5 +181,6 @@ namespace TechMed.API.Controllers
                 return StatusCode(500, ModelState);
             }
         }
+       
     }
 }
