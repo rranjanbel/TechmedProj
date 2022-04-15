@@ -327,7 +327,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 //&& a.AssignedOn.Date < today.Date
                 ).FirstOrDefaultAsync();
 
-            List<PatientCaseVital> vitalMasters = await _teleMedecineContext.PatientCaseVitals
+            List<PatientCaseVital> vitalMasters = await _teleMedecineContext.PatientCaseVitals.Include(a=>a.Vital)
                 .Where(a => a.PatientCaseId == vm.PatientCaseID).ToListAsync();
 
 
@@ -365,9 +365,9 @@ namespace TechMed.BL.Repository.BaseClasses
                     new GetPatientCaseVitalsDTO
                     {
                         Date = item.Date,
-                        Unit = item.Unit,
+                        Unit = item.Vital.Unit,
                         Value = item.Value,
-                        Vital = item.Vital
+                        Vital = item.Vital.Vital
                     }
                     );
             }
