@@ -314,7 +314,7 @@ namespace TechMed.BL.Repository.BaseClasses
         public async Task<GetPatientCaseDetailsDTO> GetPatientCaseDetailsAsync(GetPatientCaseDetailsVM vm)
         {
             GetPatientCaseDetailsDTO getPatientCaseDetails = new GetPatientCaseDetailsDTO();
-            getPatientCaseDetails.getPatientCaseDocumentDTOs = new List<GetPatientCaseDocumentDTO>();
+            getPatientCaseDetails.getPatientCaseDocumentDTOs = new List<PatientCaseDocDTO>();
             getPatientCaseDetails.getPatientCaseVitalsDTOs = new List<GetPatientCaseVitalsDTO>();
             PatientQueue patientQueue = await _teleMedecineContext.PatientQueues
                 .Include(d => d.PatientCase.Patient.Gender)
@@ -327,7 +327,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 //&& a.AssignedOn.Date < today.Date
                 ).FirstOrDefaultAsync();
 
-            List<PatientCaseVital> vitalMasters = await _teleMedecineContext.PatientCaseVitals
+            List<PatientCaseVital> vitalMasters = await _teleMedecineContext.PatientCaseVitals.Include(a=>a.Vital)
                 .Where(a => a.PatientCaseId == vm.PatientCaseID).ToListAsync();
 
 
@@ -350,7 +350,7 @@ namespace TechMed.BL.Repository.BaseClasses
             foreach (var item in patientCaseDocuments)
             {
                 getPatientCaseDetails.getPatientCaseDocumentDTOs.Add(
-                    new GetPatientCaseDocumentDTO
+                    new PatientCaseDocDTO
                     {
                         Description = item.Description,
                         DocumentName = item.DocumentName,
@@ -365,9 +365,9 @@ namespace TechMed.BL.Repository.BaseClasses
                     new GetPatientCaseVitalsDTO
                     {
                         Date = item.Date,
-                        Unit = item.Unit,
+                        Unit = item.Vital.Unit,
                         Value = item.Value,
-                        Vital = item.Vital
+                        Vital = item.Vital.Vital
                     }
                     );
             }
@@ -490,7 +490,7 @@ namespace TechMed.BL.Repository.BaseClasses
             if (patientQueue != null)
             {
                 PatientCase patientCase = await _teleMedecineContext.PatientCases.Where(a => a.Id == patientAbsentVM.CaseID).FirstOrDefaultAsync();
-                CaseFileStatusMaster CaseFileStatus = await _teleMedecineContext.CaseFileStatusMasters.Where(a => a.FileStatus.ToLower() == "Close".ToLower()).FirstOrDefaultAsync();
+                CaseFileStatusMaster CaseFileStatus = await _teleMedecineContext.CaseFileStatusMasters.Where(a => a.FileStatus.ToLower() == "Closed".ToLower()).FirstOrDefaultAsync();
                 if (CaseFileStatus != null && patientQueue.AssignedDoctorId == patientAbsentVM.DoctorID)
                 {
                     patientQueue.StatusOn = DateTime.Now;

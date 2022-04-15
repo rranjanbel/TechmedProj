@@ -15,10 +15,11 @@ namespace TechMed.BL.Repository.Interfaces
         Task<bool> IsValidUser(LoginVM login);
         Task<bool> IsAnExistingUser(string userEmail);
         Task<UserMaster> ChangeUserPassword(ChangePassword changePassword);
-        bool ResetUserPassword(long UserId);
-        bool DeleteUser(long UserId);
+        bool ResetUserPassword(int UserId);
+        bool DeleteUser(int UserId);
         bool IsduplicateUser(string username);
-        bool SetUserPassword(long UserId, string Password);
+        bool SetUserPassword(int UserId, string Password);
+        Task<string> GetUserRole(int userId);
 
     }
 }

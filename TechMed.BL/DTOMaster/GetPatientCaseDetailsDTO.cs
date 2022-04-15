@@ -24,6 +24,6 @@ namespace TechMed.BL.DTOMaster
         public int? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
         public List<GetPatientCaseVitalsDTO> getPatientCaseVitalsDTOs { get; set; }
-        public List<GetPatientCaseDocumentDTO> getPatientCaseDocumentDTOs { get; set; }
+        public List<PatientCaseDocDTO> getPatientCaseDocumentDTOs { get; set; }
     }
 }

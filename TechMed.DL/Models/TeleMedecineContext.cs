@@ -612,23 +612,23 @@ namespace TechMed.DL.Models
 
                 entity.Property(e => e.PatientCaseId).HasColumnName("PatientCaseID");
 
-                entity.Property(e => e.Unit)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
                 entity.Property(e => e.Value)
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Vital)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
+                entity.Property(e => e.VitalId).HasColumnName("VitalID");
 
                 entity.HasOne(d => d.PatientCase)
                     .WithMany(p => p.PatientCaseVitals)
                     .HasForeignKey(d => d.PatientCaseId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_PatientCaseVital_PatientCase");
+
+                entity.HasOne(d => d.Vital)
+                    .WithMany(p => p.PatientCaseVitals)
+                    .HasForeignKey(d => d.VitalId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PatientCaseVital_VitalMaster");
             });
 
             modelBuilder.Entity<PatientMaster>(entity =>

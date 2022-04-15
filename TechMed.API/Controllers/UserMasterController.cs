@@ -164,5 +164,37 @@ namespace TechMed.API.Controllers
 
         }
 
+        [HttpGet]
+        [Route("GetUserRole")]
+        [ProducesResponseType(200, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetUserRole(int userId = 0)
+        {
+            try
+            {
+                if (userId == 0)
+                {
+                    return BadRequest(ModelState);
+                }
+                string userRole = string.Empty;
+                userRole = await _userRepository.GetUserRole(userId);
+                if (userRole != string.Empty)
+                {
+                    return Ok(userRole);
+                }
+                else
+                {
+                    ModelState.AddModelError("LogedUserDetails", $"User role not found.");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("LogedUserDetails", $"Something went wrong when get user role {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
+
     }
 }

@@ -90,5 +90,43 @@ namespace TechMed.API.Controllers
                 return StatusCode(500, ModelState);
             }
         }
+
+        [HttpGet]
+        [Route("GetPatientCaseDetails")]
+        [ProducesResponseType(200, Type = typeof(PatientCaseVM))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetPatientCaseDetails(int PHCUserId, int PHCId, int PatientId =0)
+        {
+            PatientCaseVM patientcase = new PatientCaseVM();          
+            try
+            {
+                if (PatientId == 0)
+                {
+                    ModelState.AddModelError("GetPatientCase", "Please check patient id.");
+                    return StatusCode(404, ModelState);
+                }               
+                patientcase = await _patientCaeRepository.GetPatientCaseDetails(PHCUserId, PHCId, PatientId);
+                if (patientcase != null)
+                {
+                    return StatusCode(200, patientcase);
+                }               
+                else
+                {
+                    ModelState.AddModelError("AddPHC", $"Something went wrong when get patient case {PatientId}");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError("AddPHC", $"Something went wrong when create PHC {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
+
+
+
+
     }
 }
