@@ -314,7 +314,7 @@ namespace TechMed.BL.Repository.BaseClasses
         public async Task<GetPatientCaseDetailsDTO> GetPatientCaseDetailsAsync(GetPatientCaseDetailsVM vm)
         {
             GetPatientCaseDetailsDTO getPatientCaseDetails = new GetPatientCaseDetailsDTO();
-            getPatientCaseDetails.getPatientCaseDocumentDTOs = new List<GetPatientCaseDocumentDTO>();
+            getPatientCaseDetails.getPatientCaseDocumentDTOs = new List<PatientCaseDocDTO>();
             getPatientCaseDetails.getPatientCaseVitalsDTOs = new List<GetPatientCaseVitalsDTO>();
             PatientQueue patientQueue = await _teleMedecineContext.PatientQueues
                 .Include(d => d.PatientCase.Patient.Gender)
@@ -350,7 +350,7 @@ namespace TechMed.BL.Repository.BaseClasses
             foreach (var item in patientCaseDocuments)
             {
                 getPatientCaseDetails.getPatientCaseDocumentDTOs.Add(
-                    new GetPatientCaseDocumentDTO
+                    new PatientCaseDocDTO
                     {
                         Description = item.Description,
                         DocumentName = item.DocumentName,
