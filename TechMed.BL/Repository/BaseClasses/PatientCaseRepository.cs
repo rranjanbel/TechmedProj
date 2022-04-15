@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TechMed.BL.CommanClassesAndFunctions;
+using TechMed.BL.DTOMaster;
 using TechMed.BL.Repository.Interfaces;
 using TechMed.BL.ViewModels;
 using TechMed.DL.Models;
@@ -70,6 +71,53 @@ namespace TechMed.BL.Repository.BaseClasses
             }
             return 0;
 
+        }
+
+        public async Task<PatientCaseVM> GetPatientCaseDetails(int PHCUserId, int PHCID, int PatientID)
+        {
+            PatientCaseVM patientCase = new PatientCaseVM();
+            List<VitalMasterDTO> vitals = new List<VitalMasterDTO>();
+            VitalMasterDTO vitaldto = new VitalMasterDTO();
+            var vitalMasters = _teleMedecineContext.VitalMasters.ToList();
+            foreach (var vital in vitalMasters)
+            {
+                vitaldto = _mapper.Map<VitalMasterDTO>(vital);
+                vitals.Add(vitaldto);
+            }
+            //List<PatientCaseDocumentDTO> patientDocuments = new List<PatientCaseDocumentDTO>();
+            //PatientCaseDocumentDTO patientDocument;
+            //var patientDocumentList = _teleMedecineContext.PatientCaseDocuments.ToList();
+            //foreach (var document in patientDocumentList)
+            //{
+            //    //patientDocument = _mapper.Map<PatientCaseDocumentDTO>(document);
+            //    patientDocument = new PatientCaseDocumentDTO();
+            //    patientDocument.Id = document.Id;
+            //    patientDocument.PatientCaseId = document.PatientCaseId;
+            //    patientDocument.DocumentPath = document.DocumentPath;
+            //    patientDocument.DocumentName = document.DocumentName;
+            //    patientDocument.Description = document.Description;
+            //    patientDocuments.Add(patientDocument);
+            //}
+
+            var phcresult = await(from pm in _teleMedecineContext.PatientMasters where pm.Id == PatientID
+                                  join pc in _teleMedecineContext.PatientCases on pm.Id equals pc.PatientId into pcase
+                                  from pcdet in pcase.DefaultIfEmpty()
+                                  join pd in _teleMedecineContext.PatientCaseDocuments on pcdet.Id equals pd.PatientCaseId into pdoc
+                                  from pcdoc in pdoc.DefaultIfEmpty()
+                                  select new PatientCaseVM
+                                  {
+                                      PatientID = pm.Id,
+                                      PHCId = PHCID,
+                                      PHCUserId = PHCUserId,
+                                      patientMaster = _mapper.Map<PatientMasterDTO>(pm),
+                                      patientCase = _mapper.Map<PatientCaseDTO>(pcdet),
+                                      vitals = vitals,
+                                      caseDocuments = _mapper.Map<PatientCaseDocDTO>(pcdoc)
+
+                                  }).FirstOrDefaultAsync();
+
+            patientCase = (PatientCaseVM)phcresult;
+            return patientCase;
         }
 
         public bool IsPatientCaseExist(PatientCaseCreateVM patientCase)

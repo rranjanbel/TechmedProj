@@ -102,7 +102,7 @@ namespace TechMed.BL.Repository.BaseClasses
         //    return false;
         //}
 
-        public bool ResetUserPassword(long UserID)
+        public bool ResetUserPassword(int UserID)
         {
             var existingUser = _teleMedecineContext.UserMasters.Where(x => x.Id == UserID).FirstOrDefault();
             if (existingUser != null)
@@ -114,7 +114,7 @@ namespace TechMed.BL.Repository.BaseClasses
             }
             return false;
         }
-        public bool SetUserPassword(long UserID, string Password)
+        public bool SetUserPassword(int UserID, string Password)
         {
             var existingUser = _teleMedecineContext.UserMasters.Where(x => x.Id == UserID).FirstOrDefault();
             if (existingUser != null)
@@ -126,7 +126,7 @@ namespace TechMed.BL.Repository.BaseClasses
             return false;
         }
 
-        public bool DeleteUser(long UserId)
+        public bool DeleteUser(int UserId)
         {
             if (UserId <= 0)
             {
@@ -197,6 +197,13 @@ namespace TechMed.BL.Repository.BaseClasses
         {
             var isValidUser = await _teleMedecineContext.UserMasters.AnyAsync(a => a.Email == userEmail && a.IsActive == true);
             return isValidUser;
+        }
+
+        public async Task<string> GetUserRole(int userId)
+        {
+            string user = string.Empty;
+            user = await _teleMedecineContext.UserUsertypes.Include(u => u.UserType).Where(a => a.UserId == userId).Select(s => s.UserType.UserType).FirstOrDefaultAsync();
+            return user;
         }
     }
 }

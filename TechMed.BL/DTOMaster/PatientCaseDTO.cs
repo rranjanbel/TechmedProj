@@ -13,6 +13,7 @@ namespace TechMed.BL.DTOMaster
         public string CaseFileNumber { get; set; } = null!;
         public string CaseHeading { get; set; } = null!;
         public string? Observation { get; set; }
+        public string? Symptom { get; set; }
         public string? Allergies { get; set; }
         public string? FamilyHistory { get; set; }
         public string? Diagnosis { get; set; }
