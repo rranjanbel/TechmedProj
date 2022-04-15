@@ -11,7 +11,7 @@ namespace TechMed.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class DoctorController : ControllerBase
     {
         DoctorBusinessMaster doctorBusinessMaster;
@@ -878,7 +878,7 @@ namespace TechMed.API.Controllers
                     return BadRequest(doctorVM);
                 }
                 var DTO = await _doctorRepository.OnlineDrList(doctorVM);
-                if (DTO.Count>0)
+                if (DTO.Count > 0)
                 {
                     return Ok(DTO);
                 }
@@ -891,6 +891,163 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
+
+
+        [HttpPost]
+        [Route("AddDoctor")]
+        [ProducesResponseType(200, Type = typeof(DoctorDTO))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> AddDoctor([FromBody] AddDoctorDTO doctorDTO)
+        {
+            DoctorMaster doctor = new DoctorMaster();
+            DoctorMaster doctorCreated = new DoctorMaster();
+            UserMaster userMaster = new UserMaster();
+            UserDetail userDetail = new UserDetail();
+            try
+            {
+                //check doctorPhone in doctor and user
+                //email in user and details
+                //"zoneId": 1,
+                //"clusterId": 1,
+                //"specializationId": 1,
+                //"subSpecializationId": null,
+                //"titleId": 1,
+                //"genderId": 1,
+                // "countryId": 1,
+                //"stateId": 1,
+                //"pinCode": "1222002",
+                //"idproofTypeId": 1,
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                string mobilechk = await _doctorRepository.CheckMobile(doctorDTO.PhoneNumber);
+                string emailchk = await _doctorRepository.CheckEmail(doctorDTO.detailsDTO.EmailId);
+                if (!string.IsNullOrEmpty(mobilechk))
+                {
+                    ModelState.AddModelError("phcdto", mobilechk);
+                    return StatusCode(404, ModelState);
+                }
+                if (!string.IsNullOrEmpty(emailchk))
+                {
+                    ModelState.AddModelError("phcdto", emailchk);
+                    return StatusCode(404, ModelState);
+                }
+                if (true)
+                {
+                    //Need to get here data from database runtime when not supplied by GUI
+
+                    doctor.ZoneId = doctorDTO.ZoneId;
+                    doctor.ClusterId = doctorDTO.ClusterId;
+                    doctor.SpecializationId = doctorDTO.SpecializationId;
+                    doctor.SubSpecializationId = doctorDTO.SubSpecializationId;
+                    doctor.Mciid = doctorDTO.Mciid;
+                    doctor.RegistrationNumber = doctorDTO.RegistrationNumber;
+                    doctor.Qualification = doctorDTO.Qualification;
+                    doctor.Designation = doctorDTO.Designation;
+                    doctor.PhoneNumber = doctorDTO.PhoneNumber;
+                    doctor.DigitalSignature = doctorDTO.DigitalSignature;
+                    doctor.Panno = doctorDTO.PanNo;
+                    doctor.BankName = doctorDTO.BankName;
+                    doctor.BranchName = doctorDTO.BranchName;
+                    doctor.AccountNumber = doctorDTO.AccountNumber;
+                    doctor.Ifsccode = doctorDTO.Ifsccode;
+                    doctor.IsOnline = false;
+                    doctor.CreatedBy = doctorDTO.CreatedBy;
+                    doctor.UpdatedBy = doctorDTO.CreatedBy;
+                    doctor.CreatedOn = DateTime.Now;
+                    doctor.UpdatedOn = DateTime.Now;
+
+                    userMaster.Email = doctorDTO.detailsDTO.EmailId;
+                    userMaster.Name = doctorDTO.detailsDTO.FirstName;
+                    userMaster.Mobile = doctorDTO.PhoneNumber;
+                    userMaster.HashPassword = "Doctot@123";
+                    userMaster.LoginAttempts = 0;
+                    userMaster.LastLoginAt = DateTime.Now;
+                    userMaster.IsActive = true;
+                    userMaster.IsPasswordChanged = false;
+                    userMaster.CreatedBy = doctorDTO.CreatedBy;
+                    userMaster.UpdatedBy = doctorDTO.CreatedBy;
+                    userMaster.CreatedOn = DateTime.Now;
+                    userMaster.UpdatedOn = DateTime.Now;
+
+                    userDetail.TitleId = doctorDTO.detailsDTO.TitleId;
+                    userDetail.FirstName = doctorDTO.detailsDTO.FirstName;
+                    userDetail.MiddleName = doctorDTO.detailsDTO.MiddleName;
+                    userDetail.LastName = doctorDTO.detailsDTO.LastName;
+                    userDetail.Dob = doctorDTO.detailsDTO.Dob;
+                    userDetail.GenderId = doctorDTO.detailsDTO.GenderId;
+                    userDetail.EmailId = doctorDTO.detailsDTO.EmailId;
+                    userDetail.PhoneNumber = doctorDTO.PhoneNumber.ToString();
+                    userDetail.CountryId = doctorDTO.detailsDTO.CountryId;
+                    userDetail.StateId = doctorDTO.detailsDTO.StateId;
+                    userDetail.City = doctorDTO.detailsDTO.City;
+                    userDetail.Address = doctorDTO.detailsDTO.Address;
+                    userDetail.PinCode = doctorDTO.detailsDTO.PinCode;
+                    userDetail.Photo = doctorDTO.detailsDTO.Photo;
+                    userDetail.IdproofTypeId = doctorDTO.detailsDTO.IdproofTypeId;
+                    userDetail.IdproofNumber = doctorDTO.detailsDTO.IdproofNumber;
+                    userDetail.CreatedBy = doctorDTO.CreatedBy;
+                    userDetail.CreatedOn = DateTime.Now;
+                    userDetail.UpdatedBy = doctorDTO.CreatedBy;
+                    userDetail.UpdatedOn = DateTime.Now;
+
+                    doctorCreated = await this._doctorRepository.AddDoctor(doctor, userMaster, userDetail);
+                }
+
+                if (doctorCreated == null)
+                {
+                    ModelState.AddModelError("Add Doctor", $"Something went wrong when create Doctor {doctorDTO}");
+                    return StatusCode(404, ModelState);
+                }
+                else
+                {
+                    DoctorDTO doctorDTO1 = new DoctorDTO();
+                    doctorDTO1.Id = doctorCreated.Id;
+                    doctorDTO1.ZoneId = doctorCreated.ZoneId;
+                    doctorDTO1.ClusterId = doctorCreated.ClusterId;
+                    doctorDTO1.UserId = doctorCreated.UserId;
+                    doctorDTO1.SpecializationId = doctorCreated.SpecializationId;
+                    doctorDTO1.SubSpecializationId = doctorCreated.SubSpecializationId;
+                    doctorDTO1.Mciid = doctorCreated.Mciid;
+                    doctorDTO1.RegistrationNumber = doctorCreated.RegistrationNumber;
+                    doctorDTO1.Qualification = doctorCreated.Qualification;
+                    doctorDTO1.Designation = doctorCreated.Designation;
+                    doctorDTO1.PhoneNumber = doctorCreated.PhoneNumber;
+                    doctorDTO1.DigitalSignature = doctorCreated.DigitalSignature;
+                    doctorDTO1.PanNo = doctorCreated.Panno;
+                    doctorDTO1.BankName = doctorCreated.BankName;
+                    doctorDTO1.BranchName = doctorCreated.BranchName;
+                    doctorDTO1.AccountNumber = doctorCreated.AccountNumber;
+                    doctorDTO1.Ifsccode = doctorCreated.Ifsccode;
+                    doctorDTO1.UpdatedBy = doctorCreated.UpdatedBy;
+
+                    doctorDTO1.detailsDTO.TitleId = userDetail.TitleId;
+                    doctorDTO1.detailsDTO.FirstName = userDetail.FirstName;
+                    doctorDTO1.detailsDTO.MiddleName = userDetail.MiddleName;
+                    doctorDTO1.detailsDTO.LastName = userDetail.LastName;
+                    doctorDTO1.detailsDTO.Dob = userDetail.Dob;
+                    doctorDTO1.detailsDTO.GenderId = userDetail.GenderId;
+                    doctorDTO1.detailsDTO.EmailId = userDetail.EmailId;
+                    doctorDTO1.detailsDTO.CountryId = userDetail.CountryId;
+                    doctorDTO1.detailsDTO.StateId = userDetail.StateId;
+                    doctorDTO1.detailsDTO.City = userDetail.City;
+                    doctorDTO1.detailsDTO.PinCode = userDetail.PinCode;
+                    doctorDTO1.detailsDTO.Photo = userDetail.Photo;
+                    doctorDTO1.detailsDTO.IdproofTypeId = userDetail.IdproofTypeId;
+                    doctorDTO1.detailsDTO.IdproofNumber = userDetail.IdproofNumber;
+                    doctorDTO1.detailsDTO.Address = userDetail.Address;
+                    return CreatedAtRoute(200, doctorDTO1);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError("AddPHC", $"Something went wrong when create PHC {ex.Message}");
                 return StatusCode(500, ModelState);
             }
         }

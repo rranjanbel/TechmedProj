@@ -641,6 +641,10 @@ namespace TechMed.BL.Repository.BaseClasses
             else
             {
                 doctorMaster.IsOnline = updateIsOnlineDrVM.IsOnline;
+                if (updateIsOnlineDrVM.IsOnline)
+                {
+                    doctorMaster.LastOnlineAt = DateTime.Now;
+                }
                 _teleMedecineContext.SaveChanges();
                 return true;
             }
@@ -699,8 +703,84 @@ namespace TechMed.BL.Repository.BaseClasses
                 return true;
             }
         }
-    
+        public async Task<DoctorMaster> AddDoctor(DoctorMaster doctorMaster, UserMaster userMaster, UserDetail userDetail)
+        {
+            int i = 0;
+            int j = 0;
+            int K = 0;
+            DoctorMaster doctor = new DoctorMaster();
+            using (TeleMedecineContext context = new TeleMedecineContext())
+            {
+                if (doctorMaster.SubSpecializationId==0)
+                {
+                    doctorMaster.SubSpecializationId = null;
+                }
 
+                using (var transaction = context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                       await context.UserMasters.AddAsync(userMaster);
+                        i = await context.SaveChangesAsync();
+                        if (i > 0 && userMaster.Id > 0)
+                        {
+                            doctorMaster.UserId = userMaster.Id;
+                            await context.DoctorMasters.AddAsync(doctorMaster);
+                            j = await context.SaveChangesAsync();
+
+                            userDetail.UserId = userMaster.Id;
+                            await context.UserDetails.AddAsync(userDetail);
+                            K = await context.SaveChangesAsync(); 
+                        }
+                        if (i > 0 && j > 0 && K > 0)
+                        {
+                            transaction.Commit();
+                            doctor = await context.DoctorMasters.FirstOrDefaultAsync(a => a.Id == doctorMaster.Id);
+                            //phcmasternew = (Phcmaster)newPHC;
+                        }
+                        else
+                        {
+                            transaction.Rollback();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        string excp = ex.Message;
+                        transaction.Rollback();
+                    }
+                }
+            }
+
+            return doctor;
+        }
+        public async Task<string> CheckEmail(string Email)
+        {
+            UserDetail userDetail=await _teleMedecineContext.UserDetails.FirstOrDefaultAsync(a => a.EmailId.ToLower() == Email.ToLower());
+            UserMaster userMaster = await _teleMedecineContext.UserMasters.FirstOrDefaultAsync(a => a.Email.ToLower() == Email.ToLower());
+            if (userDetail!=null)
+            {
+                return "Email already exists in UserDetail!";
+            }
+            if (userMaster!=null)
+            {
+                return "Email already exists in User!";
+            }
+            return "";
+        }
+        public async Task<string> CheckMobile(string Mobile)
+        {
+            UserDetail userDetail= await _teleMedecineContext.UserDetails.FirstOrDefaultAsync(a => a.PhoneNumber == Mobile);
+            UserMaster userMaster = await _teleMedecineContext.UserMasters.FirstOrDefaultAsync(a => a.Mobile == Mobile);
+            if (userDetail!=null)
+            {
+                return "Mobile already exists in UserDetail!";
+            }
+            if (userMaster!=null)
+            {
+                return "Mobile already exists in User!";
+            }
+            return "";
+        }
         public Task<DoctorMaster> Create(DoctorMaster model)
         {
             throw new NotImplementedException();
