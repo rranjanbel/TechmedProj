@@ -44,6 +44,7 @@ namespace TechMed.API.Controllers
                     return StatusCode(404, ModelState);
                 }
                 //newCreatedPatient = await this._patientRepository.Create(patientDetails);
+                patientDetails.PatientId = this._patientRepository.GetPatientId();
                 newCreatedPatient = await this._patientRepository.AddPatient(patientDetails);
                 if (newCreatedPatient == null)
                 {

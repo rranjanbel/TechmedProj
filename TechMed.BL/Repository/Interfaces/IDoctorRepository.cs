@@ -36,6 +36,15 @@ namespace TechMed.BL.Repository.Interfaces
         public Task<GetPatientCaseDetailsDTO> GetPatientCaseDetailsAsync(GetPatientCaseDetailsVM vm);
         public Task<List<SearchPatientsDTO>> SearchPatientDrDashBoard(SearchPatientVM searchPatientVM);
         public Task<List<SearchPatientsDTO>> SearchPatientDrHistory(SearchPatientVM searchPatientVM);
+        public Task<List<GetTodayesPatientsDTO>> GetLatestReferred(DoctorVM doctorVM);
+        public Task<bool> UpdateIsDrOnline(UpdateIsDrOnlineVM updateIsOnlineDrVM);
+        public Task<bool> UpdateIsDrOnlineByUserLoginName(UpdateIsDrOnlineByUserLoginNameVM updateIsOnlineDrVM);
+        public Task<bool> IsDrOnline(DoctorVM doctorVM);
+        public Task<List<OnlineDrListDTO>> OnlineDrList(OnlineDrListVM doctorVM);
+        public Task<DoctorMaster> AddDoctor(DoctorMaster doctorMaster, UserMaster userMaster, UserDetail userDetail);
+
+        public Task<string> CheckEmail(string Email);
+        public Task<string> CheckMobile(string Mobile);
 
     }
 }

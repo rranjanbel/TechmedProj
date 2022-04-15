@@ -599,8 +599,188 @@ namespace TechMed.BL.Repository.BaseClasses
             }
             return DTOList;
         }
+        public async Task<List<GetTodayesPatientsDTO>> GetLatestReferred(DoctorVM doctorVM)
+        {
+            DateTime fromDatetime = DateTime.Now.AddHours(-1);
 
+            List<PatientQueue> masters = await _teleMedecineContext.PatientQueues
+                .Include(d => d.PatientCase.Patient.Gender)
+                .Include(c => c.AssignedByNavigation)
+                .Include(a => a.PatientCase)
+                .Include(b => b.PatientCase.Patient)
+                .Where(a => a.CaseFileStatusId == 4 && a.AssignedDoctorId == doctorVM.DoctorID
+                //&& a.AssignedOn.Year == DateTime.Now.Year
+                //&& a.AssignedOn.Month == DateTime.Now.Month
+                //&& a.AssignedOn.Day == DateTime.Now.Day
+                && a.AssignedOn > fromDatetime
+                ).ToListAsync();
 
+            var DTOList = new List<GetTodayesPatientsDTO>();
+            foreach (var item in masters)
+            {
+                //GetTodayesPatientsDTO mapdata = _mapper.Map<GetTodayesPatientsDTO>(item);
+                GetTodayesPatientsDTO mapdata = new GetTodayesPatientsDTO();
+                mapdata.PatientName = item.PatientCase.Patient.FirstName + " " + item.PatientCase.Patient.LastName;
+                mapdata.PhoneNumber = item.PatientCase.Patient.PhoneNumber;
+                mapdata.ReferredbyPHCName = item.AssignedByNavigation.Name;
+                mapdata.Age = CommanFunction.GetAge(item.PatientCase.Patient.Dob);
+                mapdata.Gender = item.PatientCase.Patient.Gender.Gender;
+                mapdata.PatientID = item.PatientCase.Patient.PatientId;
+                //mapdata.status = item.PatientCase.Patient.PatientStatus.PatientStatus;
+                DTOList.Add(mapdata);
+            }
+            return DTOList;
+        }
+        public async Task<bool> UpdateIsDrOnline(UpdateIsDrOnlineVM updateIsOnlineDrVM)
+        {
+            DoctorMaster doctorMaster = await _teleMedecineContext.DoctorMasters.Where(a => a.Id == updateIsOnlineDrVM.DoctorID).FirstOrDefaultAsync();
+            if (doctorMaster == null)
+            {
+                return false;
+            }
+            else
+            {
+                doctorMaster.IsOnline = updateIsOnlineDrVM.IsOnline;
+                if (updateIsOnlineDrVM.IsOnline)
+                {
+                    doctorMaster.LastOnlineAt = DateTime.Now;
+                }
+                _teleMedecineContext.SaveChanges();
+                return true;
+            }
+        }
+        public async Task<bool> IsDrOnline(DoctorVM doctorVM)
+        {
+            DoctorMaster doctorMaster = await _teleMedecineContext.DoctorMasters.Where(a => a.Id == doctorVM.DoctorID).FirstOrDefaultAsync();
+            if (doctorMaster == null)
+            {
+                return false;
+            }
+            else
+            {
+                return doctorMaster.IsOnline;
+            }
+        }
+        public async Task<List<OnlineDrListDTO>> OnlineDrList(OnlineDrListVM doctorVM)
+        {
+            List<OnlineDrListDTO> onlineDrList = new List<OnlineDrListDTO>();
+            var doctorMaster = await _teleMedecineContext
+                .DoctorMasters
+                .Include(a => a.Specialization)
+                .Where(a => a.ZoneId == doctorVM.ZoneID).ToListAsync();
+            foreach (var item in doctorMaster)
+            {
+                UserDetail userDetail = _teleMedecineContext.UserDetails.Where(a => a.UserId == item.UserId).FirstOrDefault();
+                onlineDrList.Add(new OnlineDrListDTO
+                {
+                    DoctorID = item.Id,
+                    DoctorFName = userDetail.FirstName,
+                    DoctorMName = userDetail.MiddleName,
+                    DoctorLName = userDetail.LastName,
+                    Photo = userDetail.Photo,
+                    Specialty = item.Specialization.Specialization
+                });
+            }
+            return onlineDrList;
+        }
+        public async Task<bool> UpdateIsDrOnlineByUserLoginName(UpdateIsDrOnlineByUserLoginNameVM updateIsOnlineDrVM)
+        {
+
+            UserMaster userMaster = await _teleMedecineContext.UserMasters.Where(a => a.Email.ToLower() == updateIsOnlineDrVM.UserLoginName.ToLower()).FirstOrDefaultAsync();
+            if (userMaster == null)
+            {
+                return false;
+            }
+            else
+            {
+                DoctorMaster doctorMaster = await _teleMedecineContext.DoctorMasters.Where(a => a.UserId == userMaster.Id).FirstOrDefaultAsync();
+                if (doctorMaster == null)
+                {
+                    return false;
+                }
+                doctorMaster.IsOnline = updateIsOnlineDrVM.IsOnline;
+                _teleMedecineContext.SaveChanges();
+                return true;
+            }
+        }
+        public async Task<DoctorMaster> AddDoctor(DoctorMaster doctorMaster, UserMaster userMaster, UserDetail userDetail)
+        {
+            int i = 0;
+            int j = 0;
+            int K = 0;
+            DoctorMaster doctor = new DoctorMaster();
+            using (TeleMedecineContext context = new TeleMedecineContext())
+            {
+                if (doctorMaster.SubSpecializationId==0)
+                {
+                    doctorMaster.SubSpecializationId = null;
+                }
+
+                using (var transaction = context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                       await context.UserMasters.AddAsync(userMaster);
+                        i = await context.SaveChangesAsync();
+                        if (i > 0 && userMaster.Id > 0)
+                        {
+                            doctorMaster.UserId = userMaster.Id;
+                            await context.DoctorMasters.AddAsync(doctorMaster);
+                            j = await context.SaveChangesAsync();
+
+                            userDetail.UserId = userMaster.Id;
+                            await context.UserDetails.AddAsync(userDetail);
+                            K = await context.SaveChangesAsync(); 
+                        }
+                        if (i > 0 && j > 0 && K > 0)
+                        {
+                            transaction.Commit();
+                            doctor = await context.DoctorMasters.FirstOrDefaultAsync(a => a.Id == doctorMaster.Id);
+                            //phcmasternew = (Phcmaster)newPHC;
+                        }
+                        else
+                        {
+                            transaction.Rollback();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        string excp = ex.Message;
+                        transaction.Rollback();
+                    }
+                }
+            }
+
+            return doctor;
+        }
+        public async Task<string> CheckEmail(string Email)
+        {
+            UserDetail userDetail=await _teleMedecineContext.UserDetails.FirstOrDefaultAsync(a => a.EmailId.ToLower() == Email.ToLower());
+            UserMaster userMaster = await _teleMedecineContext.UserMasters.FirstOrDefaultAsync(a => a.Email.ToLower() == Email.ToLower());
+            if (userDetail!=null)
+            {
+                return "Email already exists in UserDetail!";
+            }
+            if (userMaster!=null)
+            {
+                return "Email already exists in User!";
+            }
+            return "";
+        }
+        public async Task<string> CheckMobile(string Mobile)
+        {
+            UserDetail userDetail= await _teleMedecineContext.UserDetails.FirstOrDefaultAsync(a => a.PhoneNumber == Mobile);
+            UserMaster userMaster = await _teleMedecineContext.UserMasters.FirstOrDefaultAsync(a => a.Mobile == Mobile);
+            if (userDetail!=null)
+            {
+                return "Mobile already exists in UserDetail!";
+            }
+            if (userMaster!=null)
+            {
+                return "Mobile already exists in User!";
+            }
+            return "";
+        }
         public Task<DoctorMaster> Create(DoctorMaster model)
         {
             throw new NotImplementedException();

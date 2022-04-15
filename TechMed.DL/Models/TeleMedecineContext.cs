@@ -196,13 +196,15 @@ namespace TechMed.DL.Models
                     .IsUnicode(false);
 
                 entity.Property(e => e.DigitalSignature)
-                    .HasMaxLength(150)
+                    .HasMaxLength(500)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Ifsccode)
                     .HasMaxLength(15)
                     .IsUnicode(false)
                     .HasColumnName("IFSCCode");
+
+                entity.Property(e => e.LastOnlineAt).HasColumnType("datetime");
 
                 entity.Property(e => e.Mciid)
                     .HasMaxLength(50)
@@ -475,6 +477,8 @@ namespace TechMed.DL.Models
 
                 entity.Property(e => e.Prescription).IsUnicode(false);
 
+                entity.Property(e => e.SpecializationId).HasColumnName("SpecializationID");
+
                 entity.Property(e => e.Symptom)
                     .HasMaxLength(2000)
                     .IsUnicode(false);
@@ -497,6 +501,12 @@ namespace TechMed.DL.Models
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_PatientCase_PatientMaster");
 
+                entity.HasOne(d => d.Specialization)
+                    .WithMany(p => p.PatientCases)
+                    .HasForeignKey(d => d.SpecializationId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PatientCase_SpecializationMaster");
+
                 entity.HasOne(d => d.UpdatedByNavigation)
                     .WithMany(p => p.PatientCaseUpdatedByNavigations)
                     .HasForeignKey(d => d.UpdatedBy)
@@ -510,15 +520,15 @@ namespace TechMed.DL.Models
                 entity.Property(e => e.Id).HasColumnName("ID");
 
                 entity.Property(e => e.Description)
-                    .HasMaxLength(50)
+                    .HasMaxLength(1000)
                     .IsUnicode(false);
 
                 entity.Property(e => e.DocumentName)
-                    .HasMaxLength(50)
+                    .HasMaxLength(250)
                     .IsUnicode(false);
 
                 entity.Property(e => e.DocumentPath)
-                    .HasMaxLength(250)
+                    .HasMaxLength(1000)
                     .IsUnicode(false);
 
                 entity.Property(e => e.PatientCaseId).HasColumnName("PatientCaseID");
@@ -1025,7 +1035,7 @@ namespace TechMed.DL.Models
                     .IsUnicode(false);
 
                 entity.Property(e => e.Photo)
-                    .HasMaxLength(150)
+                    .HasMaxLength(500)
                     .IsUnicode(false);
 
                 entity.Property(e => e.PinCode)
@@ -1044,7 +1054,6 @@ namespace TechMed.DL.Models
                 entity.HasOne(d => d.Country)
                     .WithMany(p => p.UserDetails)
                     .HasForeignKey(d => d.CountryId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_UserDetail_CountryMaster");
 
                 entity.HasOne(d => d.CreatedByNavigation)
@@ -1066,13 +1075,11 @@ namespace TechMed.DL.Models
                 entity.HasOne(d => d.State)
                     .WithMany(p => p.UserDetails)
                     .HasForeignKey(d => d.StateId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_UserDetail_StateMaster");
 
                 entity.HasOne(d => d.Title)
                     .WithMany(p => p.UserDetails)
                     .HasForeignKey(d => d.TitleId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_UserDetail_TitleMaster");
 
                 entity.HasOne(d => d.UpdatedByNavigation)

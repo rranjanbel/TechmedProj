@@ -7,22 +7,14 @@ using System.Threading.Tasks;
 
 namespace TechMed.BL.DTOMaster
 {
-    public class DoctorDTO
+    public class AddDoctorDTO
     {
-        public DoctorDTO()
-        {
-            detailsDTO=new DetailsDTO();
-        }
-        public int Id { get; set; }
         [Required]
         public int ZoneId { get; set; }
         [Required]
         public int ClusterId { get; set; }
         [Required]
-        public int UserId { get; set; }
-        [Required]
         public int SpecializationId { get; set; }
-        [Required]
         public int? SubSpecializationId { get; set; }
         [Required]
         public string Mciid { get; set; } = null!;
@@ -47,13 +39,13 @@ namespace TechMed.BL.DTOMaster
         [Required]
         public string Ifsccode { get; set; } = null!;
         [Required]
-        public int? UpdatedBy { get; set; }
+        public int CreatedBy { get; set; }
         public DetailsDTO detailsDTO { get; set; } = null!;
     }
-    public class DetailsDTO
+    public class AddDoctorDetaisDTO
     {
         [Required]
-        public int? TitleId { get; set; }
+        public int TitleId { get; set; }
         [Required]
         public string FirstName { get; set; } = null!;
         public string? MiddleName { get; set; }
@@ -65,19 +57,21 @@ namespace TechMed.BL.DTOMaster
         public int GenderId { get; set; }
         [Required]
         public string EmailId { get; set; } = null!;
+        //[Required]
+        //public int CountryId { get; set; }
+        //[Required]
+        //public int StateId { get; set; }
+        //[Required]
+        //public string City { get; set; } = null!;
+        //[Required]
+        //public string? PinCode { get; set; }
         [Required]
-        public int? CountryId { get; set; }
+        public string Address { get; set; } = null!;
         [Required]
-        public int? StateId { get; set; }
-        [Required]
-        public string City { get; set; } = null!;
-        [Required]
-        public string? PinCode { get; set; }
         public string Photo { get; set; } = null!;
         [Required]
-        public int? IdproofTypeId { get; set; }
+        public int IdproofTypeId { get; set; }
         [Required]
         public string IdproofNumber { get; set; } = null!;
-        public string? Address { get; set; }
     }
 }

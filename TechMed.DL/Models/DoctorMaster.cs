@@ -27,6 +27,8 @@ namespace TechMed.DL.Models
         public string BranchName { get; set; } = null!;
         public string AccountNumber { get; set; } = null!;
         public string Ifsccode { get; set; } = null!;
+        public bool IsOnline { get; set; }
+        public DateTime? LastOnlineAt { get; set; }
         public int? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
         public int? UpdatedBy { get; set; }
