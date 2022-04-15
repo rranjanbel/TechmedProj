@@ -11,7 +11,7 @@ namespace TechMed.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class DoctorController : ControllerBase
     {
         DoctorBusinessMaster doctorBusinessMaster;
