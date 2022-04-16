@@ -21,4 +21,8 @@
     <ProjectReference Include="..\TechMed.BL\TechMed.BL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Logs\" />
+  </ItemGroup>
+
 </Project>
