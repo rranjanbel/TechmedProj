@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
+//using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -72,14 +72,17 @@ namespace TechMed.BL.Repository.BaseClasses
         }
 
         public async Task<Phcmaster> GetByID(int id)
-        {            
-            var phcmaster = await _teleMedecineContext.Phcmasters.FirstOrDefaultAsync(a => a.Id == id);
+        {
+            Phcmaster phcmaster = new Phcmaster();
+            phcmaster = await _teleMedecineContext.Phcmasters.Where(a => a.Id == id).FirstOrDefaultAsync(); 
             return phcmaster;
         }
 
         public async Task<Phcmaster> GetByPHCUserID(int userId)
         {
-            var phcmaster = await _teleMedecineContext.Phcmasters.FirstOrDefaultAsync(a => a.UserId == userId);
+            Phcmaster phcmaster = new Phcmaster();
+            var phc = await _teleMedecineContext.Phcmasters.Where(a => a.UserId == userId).FirstOrDefaultAsync();
+            phcmaster = (Phcmaster)phc;
             return phcmaster;
         }
 
