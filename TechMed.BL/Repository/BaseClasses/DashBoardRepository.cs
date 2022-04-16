@@ -31,7 +31,12 @@ namespace TechMed.BL.Repository.BaseClasses
             list = (from d in _teleMedecineContext.DoctorMasters
                     join u in _teleMedecineContext.UserMasters on d.UserId equals u.Id
                     join ud in _teleMedecineContext.UserDetails on d.UserId equals ud.UserId
-                    where d.ZoneId == doctorsLoggedInTodayVM.ZoneID
+                    where
+                    d.ZoneId == (doctorsLoggedInTodayVM.ZoneID==null ? d.ZoneId : doctorsLoggedInTodayVM.ZoneID)
+                    && d.ClusterId == (doctorsLoggedInTodayVM.ClusterID== null ? d.ClusterId : doctorsLoggedInTodayVM.ClusterID)
+                    && u.LastLoginAt.Value.Day == DateTime.Now.Day
+                    && u.LastLoginAt.Value.Month == DateTime.Now.Month
+                    && u.LastLoginAt.Value.Year == DateTime.Now.Year
                     select new DoctorDTO
                     {
                         AccountNumber = d.AccountNumber,
