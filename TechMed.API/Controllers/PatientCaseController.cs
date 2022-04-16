@@ -96,17 +96,17 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(PatientCaseVM))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetPatientCaseDetails(int PHCUserId, int PHCId, int PatientId =0)
+        public async Task<IActionResult> GetPatientCaseDetails(int PHCId =0, int PatientId =0)
         {
             PatientCaseVM patientcase = new PatientCaseVM();          
             try
             {
-                if (PatientId == 0)
+                if (PatientId == 0 && PHCId ==0)
                 {
-                    ModelState.AddModelError("GetPatientCase", "Please check patient id.");
+                    ModelState.AddModelError("GetPatientCase", "Please provide patient id and PHCID.");
                     return StatusCode(404, ModelState);
                 }               
-                patientcase = await _patientCaeRepository.GetPatientCaseDetails(PHCUserId, PHCId, PatientId);
+                patientcase = await _patientCaeRepository.GetPatientCaseDetails(PHCId, PatientId);
                 if (patientcase != null)
                 {
                     return StatusCode(200, patientcase);
