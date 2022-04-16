@@ -29,41 +29,56 @@ namespace TechMed.BL.Repository.BaseClasses
         public async Task<PatientMaster> AddPatient(PatientMaster patientMaster)
         {
             PatientMaster updatedPatientMaster = new PatientMaster();
-            //Setting setting = new Setting(); 
-            if (patientMaster != null)
+            try
             {
-                if (patientMaster.CreatedBy == 0)
-                    patientMaster.CreatedBy = 2;
-                if (patientMaster.UpdatedBy == 0)
-                    patientMaster.UpdatedBy = 2;
-                patientMaster.CreatedOn = DateTime.Now;
-                patientMaster.UpdatedOn = DateTime.Now;
-               // patientMaster.PatientId = UtilityMaster.GetPatientNumber();
-                //patientMaster.PatientId = GetPatientId();
-
-                if (patientMaster.Id == 0)
+                //Setting setting = new Setting(); 
+                if (patientMaster != null)
                 {
-                    //_teleMedecineContext.Add(patientMaster);
-                    //int i = await _teleMedecineContext.SaveChangesAsync();
-                    updatedPatientMaster = await Create(patientMaster);
-                    if (updatedPatientMaster.Id > 0)
-                    {
-                        _logger.LogInformation($"Add Patient : Patient added successfully");
-                    }
+                    if (patientMaster.CreatedBy == 0)
+                        patientMaster.CreatedBy = 2;
+                    if (patientMaster.UpdatedBy == 0)
+                        patientMaster.UpdatedBy = 2;
+                    patientMaster.CreatedOn = DateTime.Now;
+                    patientMaster.UpdatedOn = DateTime.Now;
+                    // patientMaster.PatientId = UtilityMaster.GetPatientNumber();
+                    //patientMaster.PatientId = GetPatientId();
 
-                    updatedPatientMaster = patientMaster;
-                    return updatedPatientMaster;
+                    if (patientMaster.Id == 0)
+                    {
+                        _logger.LogInformation($"Add Patient : call save method");
+                        _teleMedecineContext.Add(patientMaster);
+                        int i = await _teleMedecineContext.SaveChangesAsync();
+                        //updatedPatientMaster = await Create(patientMaster);
+
+                        if (i > 0)
+                        {
+                            _logger.LogInformation($"Add Patient : Patient added successfully");
+                        }
+                        else
+                        {
+                            _logger.LogInformation($"Add Patient : Patient did not add");
+                        }
+
+                        updatedPatientMaster = patientMaster;
+                        return updatedPatientMaster;
+                    }
+                    else
+                    {
+                        return patientMaster;
+                    }
                 }
                 else
                 {
+                    _logger.LogInformation($"Add Patient : model get null value");
                     return patientMaster;
                 }
             }
-            else
+            catch (Exception ex)
             {
-                _logger.LogInformation($"Add Patient : model get null value");
+                _logger.LogInformation($"Add Patient : get exception " +ex.Message);
                 return patientMaster;
             }
+          
         }
 
         public Task<bool> DeletePatient(int Id)

@@ -18,10 +18,12 @@ namespace TechMed.API.Controllers
     {
         private readonly IMapper _mapper;       
         private readonly IPatientRepository _patientRepository;
-        public PatientController(IMapper mapper, TeleMedecineContext teleMedecineContext, IPatientRepository patientRepository)
+        private readonly ILogger<PatientController> _logger;
+        public PatientController(IMapper mapper, TeleMedecineContext teleMedecineContext, IPatientRepository patientRepository, ILogger<PatientController> logger)
         {
             this._mapper = mapper;         
             this._patientRepository = patientRepository;
+            this._logger = logger;
         }        
         [HttpPost]
         [Route("AddPatient")]
@@ -33,26 +35,35 @@ namespace TechMed.API.Controllers
             PatientMaster newCreatedPatient = new PatientMaster();
             try
             {
+                _logger.LogInformation($"Add Patient : call web api add patient");
                 var patientDetails = _mapper.Map<PatientMaster>(patientdto);
                 if (!ModelState.IsValid)
                 {
+                    _logger.LogInformation($"Add Patient : model state is invalid");
                     return BadRequest(ModelState);
                 }
+                _logger.LogInformation($"Add Patient : going to check Is Patient Exist.");
                 if (_patientRepository.IsPatientExist(patientDetails))
                 {
+                    _logger.LogInformation($"Add Patient : Patient is already in system.");
                     ModelState.AddModelError("AddPatient", "Patient name already in system");
                     return StatusCode(404, ModelState);
                 }
                 //newCreatedPatient = await this._patientRepository.Create(patientDetails);
+                _logger.LogInformation($"Add Patient : call get patient id.");
                 patientDetails.PatientId = this._patientRepository.GetPatientId();
+                _logger.LogInformation($"Add Patient : get patient id." + patientDetails.PatientId);
+                _logger.LogInformation($"Add Patient : call add patient method ");
                 newCreatedPatient = await this._patientRepository.AddPatient(patientDetails);
                 if (newCreatedPatient == null)
                 {
+                    _logger.LogInformation($"Add Patient : Patient did not added in the database ");
                     ModelState.AddModelError("AddPatient", $"Something went wrong when create Patient {patientdto.FirstName}");
                     return StatusCode(404, ModelState);
                 }
                 else
-                {                  
+                {
+                    _logger.LogInformation($"Add Patient : Patient successfully added in the database ");
                     var createdPatient = _mapper.Map<PatientMasterDTO>(newCreatedPatient);
                     return CreatedAtRoute(201, createdPatient);
                 }
