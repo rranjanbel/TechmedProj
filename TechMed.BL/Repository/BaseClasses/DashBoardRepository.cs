@@ -17,8 +17,8 @@ namespace TechMed.BL.Repository.BaseClasses
     {
         private readonly TeleMedecineContext _teleMedecineContext;
         private readonly IMapper _mapper;
-        private readonly ILogger<UserRepository> _logger;
-        public DashBoardRepository(ILogger<UserRepository> logger, TeleMedecineContext teleMedecineContext, IMapper mapper)
+        private readonly ILogger<DashBoardRepository> _logger;
+        public DashBoardRepository(ILogger<DashBoardRepository> logger, TeleMedecineContext teleMedecineContext, IMapper mapper)
         {
             this._teleMedecineContext = teleMedecineContext;
             this._mapper = mapper;

@@ -58,6 +58,8 @@ builder.Services.AddScoped<IPHCRepository, PHCRepository>();
 builder.Services.AddScoped<ISpecializationRepository, SpecializationRepository>();
 builder.Services.AddScoped<IPatientCaseRepository, PatientCaseRepository>();
 builder.Services.AddScoped<IDashBoardRepository, DashBoardRepository>();
+builder.Services.AddScoped<IMISRepository, MISRepository>();
+builder.Services.AddScoped<ICaseFileStatusMasterRpository, CaseFileStatusMasterRpository>();
 
 
 
