@@ -14,6 +14,7 @@ namespace TechMed.BL.Repository.Interfaces
         Task<PatientCase> GetByID(int id);
         Task<PatientCase> GetByPHCUserID(int userId);
         Task<PatientCaseVM> GetPatientCaseDetails(int PHCID, int PatientID);
+        Task<PatientCaseDetailsVM> PostPatientCaseDetails(PatientCaseDetailsVM patientCaseVM);
         Task<PatientCaseWithDoctorVM> GetPatientQueueDetails(int PHCID, int PatientID);
         bool IsPatientCaseExist(PatientCaseCreateVM patientCase);
         long GetCaseFileNumber();

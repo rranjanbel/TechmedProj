@@ -19,7 +19,7 @@ namespace TechMed.BL.Repository.Interfaces
         bool DeleteUser(int UserId);
         bool IsduplicateUser(string username);
         bool SetUserPassword(int UserId, string Password);
-        Task<string> GetUserRole(int userId);
+        Task<string> GetUserRole(string userEmail);
 
     }
 }

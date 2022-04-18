@@ -199,10 +199,10 @@ namespace TechMed.BL.Repository.BaseClasses
             return isValidUser;
         }
 
-        public async Task<string> GetUserRole(int userId)
+        public async Task<string> GetUserRole(string userEmail)
         {
             string user = string.Empty;
-            user = await _teleMedecineContext.UserUsertypes.Include(u => u.UserType).Where(a => a.UserId == userId).Select(s => s.UserType.UserType).FirstOrDefaultAsync();
+            user = await _teleMedecineContext.UserUsertypes.Include(u => u.UserType).Include(a => a.User).Where(a => a.User.Email.Contains(userEmail)).Select(s => s.UserType.UserType).FirstOrDefaultAsync();
             return user;
         }
     }

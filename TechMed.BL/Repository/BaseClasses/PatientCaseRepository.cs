@@ -19,8 +19,8 @@ namespace TechMed.BL.Repository.BaseClasses
     {
         private readonly TeleMedecineContext _teleMedecineContext;
         private readonly IMapper _mapper;
-        private readonly ILogger<SpecializationRepository> _logger;
-        public PatientCaseRepository(ILogger<SpecializationRepository> logger, TeleMedecineContext teleMedecineContext, IMapper mapper) : base(teleMedecineContext)
+        private readonly ILogger<PatientCaseRepository> _logger;
+        public PatientCaseRepository(ILogger<PatientCaseRepository> logger, TeleMedecineContext teleMedecineContext, IMapper mapper) : base(teleMedecineContext)
         {
             this._teleMedecineContext = teleMedecineContext;
             this._mapper = mapper;
@@ -92,7 +92,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     vitalvm.Value = vital.Value;
                     vitalvm.VitalName = vital.Vital.Vital;
                     vitalvm.Date = vital.Date;
-                    vitalvm.Id = vital.Id;
+                    vitalvm.Id = vital.Vital.Id;
                     vitals.Add(vitalvm);
                 }
 
@@ -160,6 +160,146 @@ namespace TechMed.BL.Repository.BaseClasses
             //       _teleMedecineContext.PatientCases.Any( a => a.PatientId == patientCase.PatientID && a.CreatedOn)
             return false;
             
+        }
+
+        public async Task<PatientCaseDetailsVM> PostPatientCaseDetails(PatientCaseDetailsVM patientCaseVM)
+        {
+            PatientCaseDetailsVM patientcasecreateVM = new PatientCaseDetailsVM();
+            PatientCase patientCase ;
+            PatientCaseVital patientCaseVital;
+            PatientCaseDocument patientCaseDocument;
+            int i = 0;
+            int j = 0;
+            int k = 0;
+            int l = 0;
+            if(patientCaseVM != null)
+            {
+                if(patientCaseVM.PatientID != 0)
+                {
+                    if(patientCaseVM.patientCase != null)
+                    {
+                        try
+                        {
+                            if (patientCaseVM.patientCase.ID > 0)
+                            {
+                                patientCase = _teleMedecineContext.PatientCases.FirstOrDefault(a => a.Id == patientCaseVM.patientCase.ID);
+                                patientCase.UpdatedBy = patientCaseVM.patientCase.UpdatedBy;
+                                patientCase.UpdatedOn = DateTime.Now;
+                                patientCase.PatientId = patientCaseVM.patientCase.PatientId;
+                                patientCase.Allergies = patientCaseVM.patientCase.Allergies;
+                                patientCase.CaseFileNumber = patientCaseVM.patientCase.CaseFileNumber;
+                                patientCase.Test = patientCaseVM.patientCase.Test;
+                                patientCase.Instruction = patientCaseVM.patientCase.Instruction;
+                                patientCase.CaseHeading = patientCaseVM.patientCase.CaseHeading;
+                                patientCase.Symptom = patientCaseVM.patientCase.Symptom;
+                                patientCase.Prescription = "";
+                                patientCase.Observation = patientCaseVM.patientCase.Observation;
+                                patientCase.FamilyHistory = patientCaseVM.patientCase.FamilyHistory;
+                                patientCase.Diagnosis = patientCaseVM.patientCase.Diagnosis;
+
+                                this._teleMedecineContext.Entry(patientCase).State = EntityState.Modified;
+                                i = await this.Context.SaveChangesAsync();
+                                patientcasecreateVM.patientCase = patientCaseVM.patientCase;
+                                if (i > 0)
+                                {
+                                    _logger.LogInformation($"update Patient case : sucessfully {patientCase.Id}");
+                                }
+
+
+                            }
+                            else
+                            {
+                                patientCase = new PatientCase();
+                                patientCase.Id = 0;
+                                patientCase.PatientId = patientCaseVM.patientCase.PatientId;
+                                patientCase.Allergies = patientCaseVM.patientCase.Allergies;
+                                patientCase.CaseFileNumber = patientCaseVM.patientCase.CaseFileNumber;
+                                patientCase.Test = patientCaseVM.patientCase.Test;
+                                patientCase.Instruction = patientCaseVM.patientCase.Instruction;
+                                patientCase.CaseHeading = patientCaseVM.patientCase.CaseHeading;
+                                patientCase.Symptom = patientCaseVM.patientCase.Symptom;
+                                patientCase.Prescription = "";
+                                patientCase.Observation = patientCaseVM.patientCase.Observation;
+                                patientCase.FamilyHistory = patientCaseVM.patientCase.FamilyHistory;
+                                patientCase.Diagnosis = patientCaseVM.patientCase.Diagnosis;
+                                patientCase.UpdatedBy = patientCaseVM.patientCase.UpdatedBy;
+                                patientCase.UpdatedOn = DateTime.Now;
+                                patientCase.CreatedBy = patientCaseVM.patientCase.CreatedBy;
+                                patientCase.CreatedOn = DateTime.Now;
+
+                                this._teleMedecineContext.Entry(patientCase).State = EntityState.Added;
+                                j = await this.Context.SaveChangesAsync();
+                                patientcasecreateVM.patientCase = _mapper.Map<PatientCaseDTO>(patientCase);
+                                if (j > 0)
+                                {
+                                    _logger.LogInformation($"Patient case added : sucessfully {patientCase.Id}");
+                                }
+                            }
+
+                            if (i > 0 || j > 0)
+                            {
+
+                                foreach (var vital in patientCaseVM.vitals)
+                                {
+                                    patientCaseVital = new PatientCaseVital();
+                                    patientCaseVital.Date = DateTime.Now;
+                                    patientCaseVital.PatientCaseId = vital.PatientCaseId;
+                                    patientCaseVital.VitalId = vital.VitalId;
+                                    patientCaseVital.Value = vital.Value;
+                                    this._teleMedecineContext.Entry(patientCaseVital).State = EntityState.Added;
+                                    k = await this.Context.SaveChangesAsync();
+                                    if (k > 0)
+                                    {
+                                        _logger.LogInformation($"Patient vital added : sucessfully {patientCase.Id}");
+                                    }
+                                }
+
+                                patientcasecreateVM.vitals = patientCaseVM.vitals;
+
+                                patientCaseDocument = new PatientCaseDocument();
+                                patientCaseDocument = _mapper.Map<PatientCaseDocument>(patientCaseVM.caseDocuments);
+                                this._teleMedecineContext.Entry(patientCaseDocument).State = EntityState.Added;
+                                l = await this.Context.SaveChangesAsync();
+                                if (l > 0)
+                                {
+                                    _logger.LogInformation($"Patient case document added : sucessfully {patientCase.Id}");
+                                }
+                                patientcasecreateVM.caseDocuments = _mapper.Map<PatientCaseDocDTO>(patientCaseDocument);
+
+                                patientcasecreateVM.PatientID = patientCaseVM.PatientID;
+                                patientcasecreateVM.PHCUserId = patientCaseVM.PHCUserId;
+                                patientcasecreateVM.PHCId = patientCaseVM.PHCId;
+                                patientcasecreateVM.PatientID = patientCaseVM.PatientID;
+
+
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            string expMesg = ex.Message;
+                            _logger.LogInformation($"Exception when update and add patient case, vital and report doc {ex.Message}");
+
+                        }
+                       
+                        return patientcasecreateVM;
+                    }
+                    else
+                    {
+                        // Patient case is null
+                        return patientcasecreateVM;
+                    }
+                }
+                else
+                {
+                    //Patient Id is null
+                    return patientcasecreateVM;
+                }
+            }
+            else
+            {
+                // patient case model is null
+                return patientcasecreateVM;
+            }
         }
     }
 }

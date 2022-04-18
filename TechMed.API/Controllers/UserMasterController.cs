@@ -169,16 +169,17 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetUserRole(int userId = 0)
+        public async Task<IActionResult> GetUserRole(string userEmail)
         {
             try
             {
-                if (userId == 0)
+                if (userEmail == null)
                 {
+                    ModelState.AddModelError("LogedUserDetails", $"User email has null value");
                     return BadRequest(ModelState);
                 }
                 string userRole = string.Empty;
-                userRole = await _userRepository.GetUserRole(userId);
+                userRole = await _userRepository.GetUserRole(userEmail);
                 if (userRole != string.Empty)
                 {
                     return Ok(userRole);

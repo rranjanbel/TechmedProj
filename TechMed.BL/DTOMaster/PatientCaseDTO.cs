@@ -8,7 +8,7 @@ namespace TechMed.BL.DTOMaster
 {
     public class PatientCaseDTO
     {
-        public long Id { get; set; }
+        public long ID { get; set; }
         public int PatientId { get; set; }
         public string CaseFileNumber { get; set; } = null!;
         public string CaseHeading { get; set; } = null!;
