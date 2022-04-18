@@ -357,7 +357,7 @@ namespace TechMed.API.Controllers
             ZoneMasterDTO mapdata = new ZoneMasterDTO();
             try
             {
-                var spemasters = await _teleMedecineContext.ClusterMasters.ToListAsync();
+                var spemasters = await _teleMedecineContext.ZoneMasters.ToListAsync();
 
                 var DTOList = new List<ZoneMasterDTO>();
                 foreach (var item in spemasters)
