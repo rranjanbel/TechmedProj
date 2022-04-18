@@ -11,13 +11,14 @@ using Microsoft.EntityFrameworkCore;
 using TechMed.API.Services;
 using TechMed.BL.Repository.Interfaces;
 using TechMed.BL.Repository.BaseClasses;
+using TechMed.API.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionString = builder.Configuration.GetConnectionString("TeliMedConn");
 builder.Services.AddDbContext<TeleMedecineContext>(
     options => options.UseSqlServer(connectionString)
     );
@@ -57,6 +58,8 @@ builder.Services.AddScoped<IPHCRepository, PHCRepository>();
 builder.Services.AddScoped<ISpecializationRepository, SpecializationRepository>();
 builder.Services.AddScoped<IPatientCaseRepository, PatientCaseRepository>();
 builder.Services.AddScoped<IDashBoardRepository, DashBoardRepository>();
+builder.Services.AddScoped<IMISRepository, MISRepository>();
+builder.Services.AddScoped<ICaseFileStatusMasterRpository, CaseFileStatusMasterRpository>();
 
 
 
@@ -95,11 +98,20 @@ var log = new LoggerFactory();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+  
+   // app.UseSwagger();
+   // app.UseSwaggerUI();
     app.UseDeveloperExceptionPage();
 }
+// need to remove on production deployment
+app.UseSwagger();
+app.UseSwaggerUI();
+
+app.UseMiddleware<ExceptionMiddleware>();
+
 app.UseRouting();
+
+app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 

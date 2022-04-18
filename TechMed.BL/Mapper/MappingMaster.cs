@@ -22,10 +22,23 @@ namespace TechMed.BL.Mapper
             CreateMap<MedicineMaster, MedicineMasterDTO>().ReverseMap();
             CreateMap<VitalMaster, VitalMasterDTO>().ReverseMap();
             CreateMap<Phcmaster, PHCHospitalDTO>().ReverseMap();
-            CreateMap<SpecializationMaster, SpecializationDTO>().ReverseMap();
-            CreateMap<SubSpecializationMaster, SubSpecializationDTO>().ReverseMap();
             CreateMap<PatientCaseDocument, PatientCaseDocDTO>().ReverseMap();
             CreateMap<PatientCase, PatientCaseDTO>().ReverseMap();
+
+            //Master Mapping
+            CreateMap<SpecializationMaster, SpecializationDTO>().ReverseMap();
+            CreateMap<SubSpecializationMaster, SubSpecializationDTO>().ReverseMap();
+            CreateMap<CaseFileStatusMaster, CaseFileStatusMasterDTO>().ReverseMap();
+            CreateMap<CountryMaster, CountryMasterDTO>().ReverseMap();
+            CreateMap<DistrictMaster, DistrictMasterDTO>().ReverseMap();
+            CreateMap<GenderMaster, GenderMasterDTO>().ReverseMap();
+            CreateMap<IdproofTypeMaster, IDProofTypeMasterDTO>().ReverseMap();
+            CreateMap<TitleMaster, TitleMasterDTO>().ReverseMap();
+            CreateMap<UserTypeMaster, UserTypeMasterDTO>().ReverseMap();
+            CreateMap<ClusterMaster, ClusterMasterDTO>().ReverseMap();
+            CreateMap<ZoneMaster, ZoneMasterDTO>().ReverseMap();
+            CreateMap<StateMaster, StateMasterDTO>().ReverseMap();
+
         }
     }
 }
