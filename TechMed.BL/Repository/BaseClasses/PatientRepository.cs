@@ -52,6 +52,7 @@ namespace TechMed.BL.Repository.BaseClasses
 
                         if (i > 0)
                         {
+                            updatedPatientMaster = patientMaster;
                             _logger.LogInformation($"Add Patient : Patient added successfully");
                         }
                         else
@@ -59,7 +60,7 @@ namespace TechMed.BL.Repository.BaseClasses
                             _logger.LogInformation($"Add Patient : Patient did not add");
                         }
 
-                        updatedPatientMaster = patientMaster;
+                        
                         return updatedPatientMaster;
                     }
                     else
