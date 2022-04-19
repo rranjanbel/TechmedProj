@@ -103,7 +103,7 @@ namespace TechMed.API.Controllers
             {
                 if (PatientId == 0 && PHCId == 0)
                 {
-                    ModelState.AddModelError("GetPatientCase", "Please provide patient id and PHCID.");
+                    ModelState.AddModelError("GetPatientCaseDetails", "Please provide patient id and PHCID.");
                     return StatusCode(404, ModelState);
                 }
                 patientcase = await _patientCaeRepository.GetPatientCaseDetails(PHCId, PatientId);
@@ -113,14 +113,14 @@ namespace TechMed.API.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("AddPHC", $"Something went wrong when get patient case {PatientId}");
+                    ModelState.AddModelError("GetPatientCaseDetails", $"Something went wrong when get patient case {PatientId}");
                     return StatusCode(404, ModelState);
                 }
             }
             catch (Exception ex)
             {
 
-                ModelState.AddModelError("AddPHC", $"Something went wrong when create PHC {ex.Message}");
+                ModelState.AddModelError("GetPatientCaseDetails", $"Something went wrong when get patient case {ex.Message}");
                 return StatusCode(500, ModelState);
             }
         }
@@ -165,6 +165,40 @@ namespace TechMed.API.Controllers
             {
 
                 ModelState.AddModelError("AddPatientCaseDetails", $"Something went wrong when add case details {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
+
+        [HttpGet]
+        [Route("GetPatientCaseQueue")]
+        [ProducesResponseType(200, Type = typeof(PatientCaseWithDoctorVM))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetPatientCaseQueue(int PHCId = 0, int PatientId = 0)
+        {
+            PatientCaseWithDoctorVM patientcasequeue = new PatientCaseWithDoctorVM();
+            try
+            {
+                if (PatientId == 0 && PHCId == 0)
+                {
+                    ModelState.AddModelError("GetPatientCaseQueue", "Please provide patient id and PHCID.");
+                    return StatusCode(404, ModelState);
+                }
+                patientcasequeue = await _patientCaeRepository.GetPatientQueueDetails(PHCId, PatientId);
+                if (patientcasequeue != null)
+                {
+                    return StatusCode(200, patientcasequeue);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetPatientCaseQueue", $"Something went wrong when get patient queue {PatientId}");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError("GetPatientCaseQueue", $"Something went wrong when get patient queue {ex.Message}");
                 return StatusCode(500, ModelState);
             }
         }

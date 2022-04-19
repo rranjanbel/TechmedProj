@@ -8,7 +8,7 @@ namespace TechMed.BL.ViewModels
 {
     public class PatientCaseQueueVM
     {
-        public int PatientCaseID { get; set; }
+        public long PatientCaseID { get; set; }
         public int DoctorID { get; set; }
         public string DocterName { get; set; }
         public string Specialization { get; set; }
