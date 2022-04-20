@@ -46,7 +46,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     if (patientMaster.Id == 0)
                     {
                         _logger.LogInformation($"Add Patient : call save method");
-                        var patient = _teleMedecineContext.PatientMasters.AddAsync(patientMaster);                       
+                        var patient = await _teleMedecineContext.PatientMasters.AddAsync(patientMaster);                       
                         System.Threading.Thread.Sleep(4000);//delay
                         int i = await _teleMedecineContext.SaveChangesAsync();
                         //updatedPatientMaster = await Create(patientMaster);
