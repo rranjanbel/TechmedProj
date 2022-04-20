@@ -46,7 +46,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     if (patientMaster.Id == 0)
                     {
                         _logger.LogInformation($"Add Patient : call save method");
-                        _teleMedecineContext.Add(patientMaster);
+                        _teleMedecineContext.AddAsync(patientMaster);
                         int i = await _teleMedecineContext.SaveChangesAsync();
                         //updatedPatientMaster = await Create(patientMaster);
 
@@ -65,19 +65,20 @@ namespace TechMed.BL.Repository.BaseClasses
                     }
                     else
                     {
-                        return patientMaster;
+                        return updatedPatientMaster;
                     }
                 }
                 else
                 {
                     _logger.LogInformation($"Add Patient : model get null value");
-                    return patientMaster;
+                    return updatedPatientMaster;
                 }
             }
-            catch (Exception ex)
+            catch (Exception )
             {
-                _logger.LogInformation($"Add Patient : get exception " +ex.Message);
-                return patientMaster;
+                //_logger.LogInformation($"Add Patient : get exception " +ex.Message);
+                //return updatedPatientMaster;
+                throw;
             }
           
         }
