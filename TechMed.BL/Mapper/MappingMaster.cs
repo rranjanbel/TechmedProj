@@ -24,6 +24,7 @@ namespace TechMed.BL.Mapper
             CreateMap<Phcmaster, PHCHospitalDTO>().ReverseMap();
             CreateMap<PatientCaseDocument, PatientCaseDocDTO>().ReverseMap();
             CreateMap<PatientCase, PatientCaseDTO>().ReverseMap();
+            CreateMap<PatientCaseFeedback, PatientFeedbackDTO>().ReverseMap();        
 
             //Master Mapping
             CreateMap<SpecializationMaster, SpecializationDTO>().ReverseMap();

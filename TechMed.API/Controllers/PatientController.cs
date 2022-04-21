@@ -199,24 +199,24 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetYesterdaysPatient(int phcID)
         {
-            List<PatientViewModel> todaysPatientList = new List<PatientViewModel>();
+            List<PatientViewModel> patientList = new List<PatientViewModel>();
             try
             {
-                todaysPatientList = await this._patientRepository.GetYesterdaysPatientList(phcID);
-                if (todaysPatientList == null)
+                patientList = await this._patientRepository.GetYesterdaysPatientList(phcID);
+                if (patientList == null)
                 {
-                    ModelState.AddModelError("GetTodaysPatient", $"Something went wrong when get today's patient list");
+                    ModelState.AddModelError("GetYesterdaysPatient", $"Something went wrong when get yesterday's patient list");
                     return StatusCode(404, ModelState);
                 }
                 else
                 {
-                    return StatusCode(200, todaysPatientList);
+                    return StatusCode(200, patientList);
                 }
             }
             catch (Exception ex)
             {
 
-                ModelState.AddModelError("GetTodaysPatient", $"Something went wrong when get today's patient list {ex.Message}");
+                ModelState.AddModelError("GetYesterdaysPatient", $"Something went wrong when get yesterday's patient list {ex.Message}");
                 return StatusCode(500, ModelState);
             }
         }

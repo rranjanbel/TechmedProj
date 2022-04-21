@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TechMed.BL.DTOMaster;
 using TechMed.BL.ViewModels;
 using TechMed.DL.Models;
 
@@ -17,6 +18,7 @@ namespace TechMed.BL.Repository.Interfaces
         Task<PatientCaseDetailsVM> PostPatientCaseDetails(PatientCaseDetailsVM patientCaseVM);
         Task<PatientCaseWithDoctorVM> GetPatientQueueDetails(int PHCID, int PatientID);
         Task<PatientReferToDoctorVM> PostPatientReferToDoctor(PatientReferToDoctorVM patientReferToDoctorVM);
+        Task<PatientFeedbackDTO> PostPatientFeedBack(PatientFeedbackDTO patientFeedback);
         bool IsPatientCaseExist(PatientCaseCreateVM patientCase);
         long GetCaseFileNumber();
     }

@@ -321,6 +321,43 @@ namespace TechMed.BL.Repository.BaseClasses
             }
         }
 
+        public async Task<PatientFeedbackDTO> PostPatientFeedBack(PatientFeedbackDTO patientFeedback)
+        {
+            PatientFeedbackDTO updatedFeedback = new PatientFeedbackDTO();
+            PatientCaseFeedback feedback = new PatientCaseFeedback();
+            if (patientFeedback != null)
+            {                
+                bool isPatientCaseInSystem = await IsPatientCaseExist(patientFeedback.PatientCaseId);
+
+                if(isPatientCaseInSystem)
+                {
+                    feedback = _mapper.Map<PatientCaseFeedback>(patientFeedback);
+                    feedback.Question = "NA";
+                    feedback.Datetime = DateTime.Now;
+                    _teleMedecineContext.PatientCaseFeedbacks.Add(feedback);
+                    int i = _teleMedecineContext.SaveChanges();
+                    if(i > 0)
+                    {
+                        updatedFeedback = _mapper.Map<PatientFeedbackDTO>(feedback);
+                        return updatedFeedback;
+                    }
+                    else
+                    {
+                        return updatedFeedback;
+                    }
+
+                }
+                else
+                {
+                    return updatedFeedback;
+                }
+            }
+            else
+            {
+                return updatedFeedback;
+            }
+        }
+
         public async Task<PatientReferToDoctorVM> PostPatientReferToDoctor(PatientReferToDoctorVM patientReferToDoctorVM)
         {
             PatientReferToDoctorVM outPatientReferToDoctorVM = new PatientReferToDoctorVM();
@@ -358,6 +395,13 @@ namespace TechMed.BL.Repository.BaseClasses
             int caseFileStatus = 0;
             caseFileStatus = await _teleMedecineContext.CaseFileStatusMasters.Where(a => a.FileStatus.Contains("Queued")).Select(a => a.Id).FirstOrDefaultAsync();
             return caseFileStatus;
+        }
+
+        private async Task<bool> IsPatientCaseExist(long patientCaseID)
+        {
+            bool isPatientCaseCreated = false;
+            isPatientCaseCreated = await _teleMedecineContext.PatientCases.AnyAsync(a => a.Id == patientCaseID);
+            return isPatientCaseCreated;
         }
     }
 }
