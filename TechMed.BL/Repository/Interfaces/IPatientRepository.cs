@@ -22,6 +22,7 @@ namespace TechMed.BL.Repository.Interfaces
         Task<List<PatientMaster>> GetPendingPatientList(int Id);
         Task<PHCPatientCount> GetPatientCount(int phcID);
         Task<List<TodaysPatientVM>> GetSearchedTodaysPatientList(string patientName);
+        Task<List<PatientViewModel>> GetYesterdaysPatientList(int phcID);
         long GetPatientId();
     }
 }
