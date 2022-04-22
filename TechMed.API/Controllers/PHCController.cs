@@ -55,6 +55,36 @@ namespace TechMed.API.Controllers
         }
 
         [HttpGet]
+        [Route("GetPHCDetailsByEmailID")]
+        [ProducesResponseType(200, Type = typeof(PHCDetailsIdsVM))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetPHCDetailsByEmailID(string email)
+        {
+            PHCDetailsIdsVM pHCDetailsVM = new PHCDetailsIdsVM();
+            try
+            {
+                pHCDetailsVM = await _phcRepository.GetPHCDetailByEmailID(email);
+                if (pHCDetailsVM != null)
+                {
+                    //var phcMasterDTO = _mapper.Map<PHCHospitalDTO>(phcmaster);
+                    return Ok(pHCDetailsVM);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetPHCDetailsByEmailID", "PHC detail did not find");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError("GetPHCDetailsByEmailID", $"Something went wrong when GetPHCDetailsByUserID {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
+
+        [HttpGet]
         [Route("GetPHCDetailsByUserID")]
         [ProducesResponseType(200, Type = typeof(PHCHospitalDTO))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

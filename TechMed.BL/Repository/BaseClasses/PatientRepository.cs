@@ -46,7 +46,8 @@ namespace TechMed.BL.Repository.BaseClasses
                     if (patientMaster.Id == 0)
                     {
                         _logger.LogInformation($"Add Patient : call save method");
-                        _teleMedecineContext.Add(patientMaster);
+                        var patient = await _teleMedecineContext.PatientMasters.AddAsync(patientMaster);                       
+                        System.Threading.Thread.Sleep(4000);//delay
                         int i = await _teleMedecineContext.SaveChangesAsync();
                         //updatedPatientMaster = await Create(patientMaster);
 
@@ -65,19 +66,20 @@ namespace TechMed.BL.Repository.BaseClasses
                     }
                     else
                     {
-                        return patientMaster;
+                        return updatedPatientMaster;
                     }
                 }
                 else
                 {
                     _logger.LogInformation($"Add Patient : model get null value");
-                    return patientMaster;
+                    return updatedPatientMaster;
                 }
             }
-            catch (Exception ex)
+            catch (Exception )
             {
-                _logger.LogInformation($"Add Patient : get exception " +ex.Message);
-                return patientMaster;
+                //_logger.LogInformation($"Add Patient : get exception " +ex.Message);
+                //return updatedPatientMaster;
+                throw;
             }
           
         }
@@ -377,6 +379,46 @@ namespace TechMed.BL.Repository.BaseClasses
                 return currentNo + 1;
             }
             return 0;
+        }
+
+        public async Task<List<PatientViewModel>> GetYesterdaysPatientList(int phcID)
+        {
+            int currentYear = DateTime.Now.Year;
+            int currentMonth = DateTime.Now.Month;
+            int currentDay = DateTime.Now.Day;
+            List<PatientViewModel> patientList = new List<PatientViewModel>();        
+            var patientResult = (from pm in _teleMedecineContext.PatientMasters
+                               where pm.CreatedOn.Value.Year == currentYear && pm.CreatedOn.Value.Month == currentMonth && pm.CreatedOn.Value.Day == currentDay-1
+                               join phc in _teleMedecineContext.Phcmasters on pm.Phcid equals phc.Id
+                               join pc in _teleMedecineContext.PatientCases on pm.Id equals pc.PatientId into patientcase
+                               from pci in patientcase.DefaultIfEmpty()
+                               join pcq in _teleMedecineContext.PatientQueues on pci.Id equals pcq.Id into pcqd
+                               from pq in pcqd.DefaultIfEmpty()
+                               join d in _teleMedecineContext.DoctorMasters on pq.AssignedDoctorId equals d.Id into dm
+                               from doc in dm.DefaultIfEmpty()
+                               join u in _teleMedecineContext.UserMasters on doc.UserId equals u.Id into um
+                               from ud in um.DefaultIfEmpty()
+                               where phc.Id == phcID
+                               select new PatientViewModel
+                               {
+                                   //Age = GetAge(pm.Dob),
+                                   Age = UtilityMaster.GetAgeOfPatient(pm.Dob),
+                                   PatientName = pm.FirstName + " " + pm.LastName,
+                                   ID = pm.Id,
+                                   PhoneNumber = pm.PhoneNumber,
+                                   PatientID = pm.PatientId,
+                                   PHCUserID = pm.Phcid,
+                                   PHCUserName = phc.Phcname,
+                                   ReferredByPHCID = pm.Phcid,
+                                   ReferredByPHCName = phc.Phcname,
+                                   DocterID = pq.AssignedDoctorId > 0 ? pq.AssignedDoctorId : 0,
+                                   DoctorName = ud.Name,
+                                   Gender = (pm.GenderId == 1 ? "Male" : "Female")
+                               }).ToListAsync();
+            patientList = await patientResult;
+           
+
+            return patientList;
         }
     }
 }

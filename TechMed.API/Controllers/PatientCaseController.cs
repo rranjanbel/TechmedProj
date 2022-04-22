@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using TechMed.BL.DTOMaster;
 using TechMed.BL.Repository.Interfaces;
 using TechMed.BL.ViewModels;
 using TechMed.DL.Models;
@@ -169,6 +170,50 @@ namespace TechMed.API.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("AddReferDoctorInPatientCase")]
+        [ProducesResponseType(201, Type = typeof(PatientReferToDoctorVM))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> AddReferDoctorInPatientCase([FromBody] PatientReferToDoctorVM referDoctor)
+        {
+            PatientReferToDoctorVM updatedPatientCasevm = new PatientReferToDoctorVM();
+
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    ModelState.AddModelError("AddReferDoctorInPatientCase", "Patient case model state is not valid");
+                    return BadRequest(ModelState);
+                }
+                if (referDoctor != null)
+                {
+                    updatedPatientCasevm = await _patientCaeRepository.PostPatientReferToDoctor(referDoctor);
+                    if (updatedPatientCasevm != null)
+                    {
+                        return CreatedAtRoute(201, updatedPatientCasevm);
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("AddReferDoctorInPatientCase", $"Something went wrong when saving data in database");
+                        return StatusCode(404, ModelState);
+                    }
+
+                }
+                else
+                {
+                    ModelState.AddModelError("AddReferDoctorInPatientCase", "Refer doctor model state is not valid");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError("AddReferDoctorInPatientCase", $"Something went wrong when add refer doctor {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
+
         [HttpGet]
         [Route("GetPatientCaseQueue")]
         [ProducesResponseType(200, Type = typeof(PatientCaseWithDoctorVM))]
@@ -199,6 +244,50 @@ namespace TechMed.API.Controllers
             {
 
                 ModelState.AddModelError("GetPatientCaseQueue", $"Something went wrong when get patient queue {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
+
+        [HttpPost]
+        [Route("PostFeedback")]
+        [ProducesResponseType(201, Type = typeof(PatientFeedbackDTO))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> PostFeedback([FromBody] PatientFeedbackDTO feedbackDTO)
+        {
+            PatientFeedbackDTO updatedFeedback = new PatientFeedbackDTO();
+
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    ModelState.AddModelError("PostFeedback", "Patient feedback model state is not valid");
+                    return BadRequest(ModelState);
+                }
+                if (feedbackDTO != null)
+                {
+                    updatedFeedback = await _patientCaeRepository.PostPatientFeedBack(feedbackDTO);
+                    if (updatedFeedback != null)
+                    {
+                        return CreatedAtRoute(201, updatedFeedback);
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("PostFeedback", $"Something went wrong when saving data in database");
+                        return StatusCode(404, ModelState);
+                    }
+
+                }
+                else
+                {
+                    ModelState.AddModelError("PostFeedback", "Patient feedback model state is not valid");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError("PostFeedback", $"Something went wrong when add patient feedback {ex.Message}");
                 return StatusCode(500, ModelState);
             }
         }

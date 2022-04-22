@@ -320,5 +320,88 @@ namespace TechMed.BL.Repository.BaseClasses
                 return patientcasecreateVM;
             }
         }
+
+        public async Task<PatientFeedbackDTO> PostPatientFeedBack(PatientFeedbackDTO patientFeedback)
+        {
+            PatientFeedbackDTO updatedFeedback = new PatientFeedbackDTO();
+            PatientCaseFeedback feedback = new PatientCaseFeedback();
+            if (patientFeedback != null)
+            {                
+                bool isPatientCaseInSystem = await IsPatientCaseExist(patientFeedback.PatientCaseId);
+
+                if(isPatientCaseInSystem)
+                {
+                    feedback = _mapper.Map<PatientCaseFeedback>(patientFeedback);
+                    feedback.Question = "NA";
+                    feedback.Datetime = DateTime.Now;
+                    _teleMedecineContext.PatientCaseFeedbacks.Add(feedback);
+                    int i = _teleMedecineContext.SaveChanges();
+                    if(i > 0)
+                    {
+                        updatedFeedback = _mapper.Map<PatientFeedbackDTO>(feedback);
+                        return updatedFeedback;
+                    }
+                    else
+                    {
+                        return updatedFeedback;
+                    }
+
+                }
+                else
+                {
+                    return updatedFeedback;
+                }
+            }
+            else
+            {
+                return updatedFeedback;
+            }
+        }
+
+        public async Task<PatientReferToDoctorVM> PostPatientReferToDoctor(PatientReferToDoctorVM patientReferToDoctorVM)
+        {
+            PatientReferToDoctorVM outPatientReferToDoctorVM = new PatientReferToDoctorVM();
+            PatientQueue patientQueue = new PatientQueue();
+            if (patientReferToDoctorVM != null)
+            {
+                patientQueue.PatientCaseId = patientReferToDoctorVM.PatientCaseID;
+                patientQueue.AssignedDoctorId = patientReferToDoctorVM.AssignedDocterID;                
+                patientQueue.AssignedBy = patientReferToDoctorVM.PHCID;
+                patientQueue.CaseFileStatusId = await GetCaseFileStatus();              
+                patientQueue.StatusOn   = DateTime.Now;
+                patientQueue.Comment = "Assigned by PHC";
+                patientQueue.AssignedOn = DateTime.Now;
+
+                _teleMedecineContext.PatientQueues.Add(patientQueue);
+                int i = _teleMedecineContext.SaveChanges();
+
+                if(i > 0 && patientQueue.Id > 0)
+                {
+                    outPatientReferToDoctorVM.AssignedDocterID = patientQueue.AssignedDoctorId;
+                    outPatientReferToDoctorVM.PatientCaseID = patientQueue.PatientCaseId;
+                    outPatientReferToDoctorVM.PHCID = patientQueue.AssignedBy; 
+                    return outPatientReferToDoctorVM;
+                }
+                else
+                     return outPatientReferToDoctorVM;
+
+            }
+            else
+                return outPatientReferToDoctorVM;
+        }
+
+        private async Task<int> GetCaseFileStatus()
+        {
+            int caseFileStatus = 0;
+            caseFileStatus = await _teleMedecineContext.CaseFileStatusMasters.Where(a => a.FileStatus.Contains("Queued")).Select(a => a.Id).FirstOrDefaultAsync();
+            return caseFileStatus;
+        }
+
+        private async Task<bool> IsPatientCaseExist(long patientCaseID)
+        {
+            bool isPatientCaseCreated = false;
+            isPatientCaseCreated = await _teleMedecineContext.PatientCases.AnyAsync(a => a.Id == patientCaseID);
+            return isPatientCaseCreated;
+        }
     }
 }
