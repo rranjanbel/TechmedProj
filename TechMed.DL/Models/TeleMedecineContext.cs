@@ -26,6 +26,7 @@ namespace TechMed.DL.Models
         public virtual DbSet<FeedbackQuestionMaster> FeedbackQuestionMasters { get; set; } = null!;
         public virtual DbSet<GenderMaster> GenderMasters { get; set; } = null!;
         public virtual DbSet<IdproofTypeMaster> IdproofTypeMasters { get; set; } = null!;
+        public virtual DbSet<LoginHistory> LoginHistories { get; set; } = null!;
         public virtual DbSet<LoginRoleDelete> LoginRoleDeletes { get; set; } = null!;
         public virtual DbSet<MedicineMaster> MedicineMasters { get; set; } = null!;
         public virtual DbSet<Notification> Notifications { get; set; } = null!;
@@ -58,6 +59,8 @@ namespace TechMed.DL.Models
         public virtual DbSet<ZoneMaster> ZoneMasters { get; set; } = null!;
 
 
+        public virtual DbSet<SPResultGetPatientDetails> SPResultGetPatientDetails { get; set; } = null!;
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -72,7 +75,6 @@ namespace TechMed.DL.Models
                 optionsBuilder.UseSqlServer(connectionString);
             }
         }
-
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -327,6 +329,35 @@ namespace TechMed.DL.Models
                     .HasMaxLength(50)
                     .IsUnicode(false)
                     .HasColumnName("IDProofType");
+            });
+
+            modelBuilder.Entity<LoginHistory>(entity =>
+            {
+                entity.ToTable("LoginHistory");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.LogedInTime)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.LogedoutTime).HasColumnType("datetime");
+
+                entity.Property(e => e.UserId).HasColumnName("UserID");
+
+                entity.Property(e => e.UserTypeId).HasColumnName("UserTypeID");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.LoginHistories)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_LoginHistory_UserMaster");
+
+                entity.HasOne(d => d.UserType)
+                    .WithMany(p => p.LoginHistories)
+                    .HasForeignKey(d => d.UserTypeId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_LoginHistory_UserTypeMaster");
             });
 
             modelBuilder.Entity<LoginRoleDelete>(entity =>

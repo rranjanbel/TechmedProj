@@ -16,6 +16,7 @@ namespace TechMed.DL.Models
             DoctorMasterUsers = new HashSet<DoctorMaster>();
             InverseCreatedByNavigation = new HashSet<UserMaster>();
             InverseUpdatedByNavigation = new HashSet<UserMaster>();
+            LoginHistories = new HashSet<LoginHistory>();
             NotificationFromUserNavigations = new HashSet<Notification>();
             NotificationToUserNavigations = new HashSet<Notification>();
             PageMasterCreatedByNavigations = new HashSet<PageMaster>();
@@ -60,6 +61,7 @@ namespace TechMed.DL.Models
         public virtual ICollection<DoctorMaster> DoctorMasterUsers { get; set; }
         public virtual ICollection<UserMaster> InverseCreatedByNavigation { get; set; }
         public virtual ICollection<UserMaster> InverseUpdatedByNavigation { get; set; }
+        public virtual ICollection<LoginHistory> LoginHistories { get; set; }
         public virtual ICollection<Notification> NotificationFromUserNavigations { get; set; }
         public virtual ICollection<Notification> NotificationToUserNavigations { get; set; }
         public virtual ICollection<PageMaster> PageMasterCreatedByNavigations { get; set; }
