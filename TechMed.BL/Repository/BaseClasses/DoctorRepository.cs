@@ -672,7 +672,7 @@ namespace TechMed.BL.Repository.BaseClasses
             var doctorMaster = await _teleMedecineContext
                 .DoctorMasters
                 .Include(a => a.Specialization)
-                .Where(a => a.ZoneId == doctorVM.ZoneID).ToListAsync();
+                .Where(a => a.ZoneId == doctorVM.ZoneID&& a.IsOnline==true).ToListAsync();
             foreach (var item in doctorMaster)
             {
                 UserDetail userDetail = _teleMedecineContext.UserDetails.Where(a => a.UserId == item.UserId).FirstOrDefault();
