@@ -322,6 +322,7 @@ namespace TechMed.BL.Repository.BaseClasses
             getPatientCaseDetails.getPatientCaseVitalsDTOs = new List<GetPatientCaseVitalsDTO>();
             PatientQueue patientQueue = await _teleMedecineContext.PatientQueues
                 .Include(d => d.PatientCase.Patient.Gender)
+                .Include(d => d.PatientCase.Patient.Idproof)
                 .Include(c => c.AssignedByNavigation)
                 .Include(a => a.PatientCase)
                 .Include(b => b.PatientCase.Patient)
@@ -331,49 +332,63 @@ namespace TechMed.BL.Repository.BaseClasses
                 //&& a.AssignedOn.Date < today.Date
                 ).FirstOrDefaultAsync();
 
-            List<PatientCaseVital> vitalMasters = await _teleMedecineContext.PatientCaseVitals.Include(a=>a.Vital)
+            List<PatientCaseVital> vitalMasters = await _teleMedecineContext.PatientCaseVitals.Include(a => a.Vital)
                 .Where(a => a.PatientCaseId == vm.PatientCaseID).ToListAsync();
 
 
             List<PatientCaseDocument> patientCaseDocuments = await _teleMedecineContext.PatientCaseDocuments
                 .Where(a => a.PatientCaseId == vm.PatientCaseID).ToListAsync();
-
-            getPatientCaseDetails.PatientName = patientQueue.PatientCase.Patient.FirstName + " " + patientQueue.PatientCase.Patient.LastName;
-            getPatientCaseDetails.PatientId = patientQueue.PatientCase.Patient.PatientId;
-            getPatientCaseDetails.CaseFileNumber = patientQueue.PatientCase.CaseFileNumber;
-            getPatientCaseDetails.CaseHeading = patientQueue.PatientCase.CaseHeading;
-            getPatientCaseDetails.Symptom = patientQueue.PatientCase.Symptom;
-            getPatientCaseDetails.Observation = patientQueue.PatientCase.Observation;
-            getPatientCaseDetails.Allergies = patientQueue.PatientCase.Allergies;
-            getPatientCaseDetails.FamilyHistory = patientQueue.PatientCase.FamilyHistory;
-            getPatientCaseDetails.UpdatedBy = patientQueue.PatientCase.UpdatedBy;
-            getPatientCaseDetails.UpdatedOn = patientQueue.PatientCase.UpdatedOn;
-            getPatientCaseDetails.CreatedBy = patientQueue.PatientCase.CreatedBy;
-            getPatientCaseDetails.CreatedOn = patientQueue.PatientCase.CreatedOn;
-
-            foreach (var item in patientCaseDocuments)
+            if (patientQueue!=null)
             {
-                getPatientCaseDetails.getPatientCaseDocumentDTOs.Add(
-                    new PatientCaseDocDTO
-                    {
-                        Description = item.Description,
-                        DocumentName = item.DocumentName,
-                        DocumentPath = item.DocumentPath,
-                        Id = item.Id,
-                    }
-                    );
-            }
-            foreach (var item in vitalMasters)
-            {
-                getPatientCaseDetails.getPatientCaseVitalsDTOs.Add(
-                    new GetPatientCaseVitalsDTO
-                    {
-                        Date = item.Date,
-                        Unit = item.Vital.Unit,
-                        Value = item.Value,
-                        Vital = item.Vital.Vital
-                    }
-                    );
+                getPatientCaseDetails.PatientName = patientQueue.PatientCase.Patient.FirstName + " " + patientQueue.PatientCase.Patient.LastName;
+                getPatientCaseDetails.PatientId = patientQueue.PatientCase.Patient.PatientId;
+                getPatientCaseDetails.CaseFileNumber = patientQueue.PatientCase.CaseFileNumber;
+                getPatientCaseDetails.CaseHeading = patientQueue.PatientCase.CaseHeading;
+                getPatientCaseDetails.Symptom = patientQueue.PatientCase.Symptom;
+                getPatientCaseDetails.Observation = patientQueue.PatientCase.Observation;
+                getPatientCaseDetails.Allergies = patientQueue.PatientCase.Allergies;
+                getPatientCaseDetails.FamilyHistory = patientQueue.PatientCase.FamilyHistory;
+                getPatientCaseDetails.UpdatedBy = patientQueue.PatientCase.UpdatedBy;
+                getPatientCaseDetails.UpdatedOn = patientQueue.PatientCase.UpdatedOn;
+                getPatientCaseDetails.CreatedBy = patientQueue.PatientCase.CreatedBy;
+                getPatientCaseDetails.CreatedOn = patientQueue.PatientCase.CreatedOn;
+
+
+                getPatientCaseDetails.FirstName = patientQueue.PatientCase.Patient.FirstName;
+                getPatientCaseDetails.LastName = patientQueue.PatientCase.Patient.LastName;
+                getPatientCaseDetails.PhoneNumber = patientQueue.PatientCase.Patient.PhoneNumber;
+                getPatientCaseDetails.Idproof = patientQueue.PatientCase.Patient.Idproof.IdproofType;
+                getPatientCaseDetails.IdproofNumber = patientQueue.PatientCase.Patient.IdproofNumber;
+                getPatientCaseDetails.Gender = patientQueue.PatientCase.Patient.Gender.Gender;
+                getPatientCaseDetails.Photo = patientQueue.PatientCase.Patient.Photo;
+                getPatientCaseDetails.Age = CommanFunction.GetAge(patientQueue.PatientCase.Patient.Dob);
+
+
+                foreach (var item in patientCaseDocuments)
+                {
+                    getPatientCaseDetails.getPatientCaseDocumentDTOs.Add(
+                        new PatientCaseDocDTO
+                        {
+                            Description = item.Description,
+                            DocumentName = item.DocumentName,
+                            DocumentPath = item.DocumentPath,
+                            Id = item.Id,
+                        }
+                        );
+                }
+                foreach (var item in vitalMasters)
+                {
+                    getPatientCaseDetails.getPatientCaseVitalsDTOs.Add(
+                        new GetPatientCaseVitalsDTO
+                        {
+                            Date = item.Date,
+                            Unit = item.Vital.Unit,
+                            Value = item.Value,
+                            Vital = item.Vital.Vital
+                        }
+                        );
+                }
+
             }
 
             return getPatientCaseDetails;
@@ -672,7 +687,7 @@ namespace TechMed.BL.Repository.BaseClasses
             var doctorMaster = await _teleMedecineContext
                 .DoctorMasters
                 .Include(a => a.Specialization)
-                .Where(a => a.ZoneId == doctorVM.ZoneID&& a.IsOnline==true).ToListAsync();
+                .Where(a => a.ZoneId == doctorVM.ZoneID && a.IsOnline == true).ToListAsync();
             foreach (var item in doctorMaster)
             {
                 UserDetail userDetail = _teleMedecineContext.UserDetails.Where(a => a.UserId == item.UserId).FirstOrDefault();
@@ -716,58 +731,58 @@ namespace TechMed.BL.Repository.BaseClasses
             DoctorMaster doctor = new DoctorMaster();
             //using (TeleMedecineContext context = new TeleMedecineContext())
             //{
-                if (doctorMaster.SubSpecializationId==0)
-                {
-                    doctorMaster.SubSpecializationId = null;
-                }
+            if (doctorMaster.SubSpecializationId == 0)
+            {
+                doctorMaster.SubSpecializationId = null;
+            }
 
-                using (var transaction = _teleMedecineContext.Database.BeginTransaction())
+            using (var transaction = _teleMedecineContext.Database.BeginTransaction())
+            {
+                try
                 {
-                    try
+                    await _teleMedecineContext.UserMasters.AddAsync(userMaster);
+                    i = await _teleMedecineContext.SaveChangesAsync();
+                    if (i > 0 && userMaster.Id > 0)
                     {
-                       await _teleMedecineContext.UserMasters.AddAsync(userMaster);
-                        i = await _teleMedecineContext.SaveChangesAsync();
-                        if (i > 0 && userMaster.Id > 0)
-                        {
-                            doctorMaster.UserId = userMaster.Id;
-                            await _teleMedecineContext.DoctorMasters.AddAsync(doctorMaster);
-                            j = await _teleMedecineContext.SaveChangesAsync();
+                        doctorMaster.UserId = userMaster.Id;
+                        await _teleMedecineContext.DoctorMasters.AddAsync(doctorMaster);
+                        j = await _teleMedecineContext.SaveChangesAsync();
 
-                            userDetail.UserId = userMaster.Id;
-                            await _teleMedecineContext.UserDetails.AddAsync(userDetail);
-                            K = await _teleMedecineContext.SaveChangesAsync(); 
-                        }
-                        if (i > 0 && j > 0 && K > 0)
-                        {
-                            transaction.Commit();
-                            doctor = await _teleMedecineContext.DoctorMasters.FirstOrDefaultAsync(a => a.Id == doctorMaster.Id);
-                            //phcmasternew = (Phcmaster)newPHC;
-                        }
-                        else
-                        {
-                            transaction.Rollback();
-                        }
+                        userDetail.UserId = userMaster.Id;
+                        await _teleMedecineContext.UserDetails.AddAsync(userDetail);
+                        K = await _teleMedecineContext.SaveChangesAsync();
                     }
-                    catch (Exception ex)
+                    if (i > 0 && j > 0 && K > 0)
                     {
-                        string excp = ex.Message;
+                        transaction.Commit();
+                        doctor = await _teleMedecineContext.DoctorMasters.FirstOrDefaultAsync(a => a.Id == doctorMaster.Id);
+                        //phcmasternew = (Phcmaster)newPHC;
+                    }
+                    else
+                    {
                         transaction.Rollback();
-                        doctor = null;
                     }
                 }
+                catch (Exception ex)
+                {
+                    string excp = ex.Message;
+                    transaction.Rollback();
+                    doctor = null;
+                }
+            }
             //}
 
             return doctor;
         }
         public async Task<string> CheckEmail(string Email)
         {
-            UserDetail userDetail=await _teleMedecineContext.UserDetails.FirstOrDefaultAsync(a => a.EmailId.ToLower() == Email.ToLower());
+            UserDetail userDetail = await _teleMedecineContext.UserDetails.FirstOrDefaultAsync(a => a.EmailId.ToLower() == Email.ToLower());
             UserMaster userMaster = await _teleMedecineContext.UserMasters.FirstOrDefaultAsync(a => a.Email.ToLower() == Email.ToLower());
-            if (userDetail!=null)
+            if (userDetail != null)
             {
                 return "Email already exists in UserDetail!";
             }
-            if (userMaster!=null)
+            if (userMaster != null)
             {
                 return "Email already exists in User!";
             }
@@ -775,13 +790,13 @@ namespace TechMed.BL.Repository.BaseClasses
         }
         public async Task<string> CheckMobile(string Mobile)
         {
-            UserDetail userDetail= await _teleMedecineContext.UserDetails.FirstOrDefaultAsync(a => a.PhoneNumber == Mobile);
+            UserDetail userDetail = await _teleMedecineContext.UserDetails.FirstOrDefaultAsync(a => a.PhoneNumber == Mobile);
             UserMaster userMaster = await _teleMedecineContext.UserMasters.FirstOrDefaultAsync(a => a.Mobile == Mobile);
-            if (userDetail!=null)
+            if (userDetail != null)
             {
                 return "Mobile already exists in UserDetail!";
             }
-            if (userMaster!=null)
+            if (userMaster != null)
             {
                 return "Mobile already exists in User!";
             }
