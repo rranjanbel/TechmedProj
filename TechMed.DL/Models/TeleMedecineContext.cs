@@ -57,7 +57,7 @@ namespace TechMed.DL.Models
         public virtual DbSet<VitalMaster> VitalMasters { get; set; } = null!;
         public virtual DbSet<ZoneMaster> ZoneMasters { get; set; } = null!;
 
-       /* 
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -72,7 +72,7 @@ namespace TechMed.DL.Models
                 optionsBuilder.UseSqlServer(connectionString);
             }
         }
-       */
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

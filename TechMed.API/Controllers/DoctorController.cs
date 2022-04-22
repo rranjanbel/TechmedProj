@@ -798,6 +798,36 @@ namespace TechMed.API.Controllers
                 return StatusCode(500, ModelState);
             }
         }
+        [Route("GetLatestReferredCount")]
+        [HttpPost]
+        [ProducesResponseType(200, Type = typeof(int))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetLatestReferredCount(DoctorVM doctorVM)
+        {
+            try
+            {
+                if (doctorVM.DoctorID < 1 || !ModelState.IsValid)
+                {
+                    return BadRequest(doctorVM.DoctorID);
+                }
+                var DTO = await _doctorRepository.GetLatestReferredCount(doctorVM);
+                if (DTO > 0)
+                {
+                    return Ok(DTO);
+                }
+                else
+                {
+                    ModelState.AddModelError("", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
 
 
         [Route("UpdateIsDrOnline")]
