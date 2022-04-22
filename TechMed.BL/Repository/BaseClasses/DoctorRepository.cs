@@ -341,6 +341,7 @@ namespace TechMed.BL.Repository.BaseClasses
             if (patientQueue != null)
             {
                 Phcmaster phcmaster = await _teleMedecineContext.Phcmasters.Where(a => a.UserId == patientQueue.AssignedBy).FirstOrDefaultAsync();
+                UserDetail userDetail = await _teleMedecineContext.UserDetails.Where(a => a.UserId == patientQueue.AssignedBy).FirstOrDefaultAsync();
 
                 getPatientCaseDetails.PatientName = patientQueue.PatientCase.Patient.FirstName + " " + patientQueue.PatientCase.Patient.LastName;
                 getPatientCaseDetails.PatientId = patientQueue.PatientCase.Patient.PatientId;
@@ -354,7 +355,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 getPatientCaseDetails.UpdatedOn = patientQueue.PatientCase.UpdatedOn;
                 getPatientCaseDetails.CreatedBy = patientQueue.PatientCase.CreatedBy;
                 getPatientCaseDetails.CreatedOn = patientQueue.PatientCase.CreatedOn;
-
+                getPatientCaseDetails.maritalstatus= userDetail.IsMarried;
 
                 getPatientCaseDetails.FirstName = patientQueue.PatientCase.Patient.FirstName;
                 getPatientCaseDetails.LastName = patientQueue.PatientCase.Patient.LastName;
@@ -369,6 +370,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 getPatientCaseDetails.PHCName = phcmaster.Phcname;
                 getPatientCaseDetails.MOName = phcmaster.Moname;
                 getPatientCaseDetails.PHCID = phcmaster.Id;
+
 
                 foreach (var item in patientCaseDocuments)
                 {

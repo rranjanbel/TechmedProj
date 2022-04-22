@@ -20,8 +20,8 @@ namespace TechMed.BL.DTOMaster
         public string IdproofNumber { get; set; } = null!;
         public string Gender { get; set; }
         public string? Photo { get; set; }
-        public int  Age { get; set; }
-
+        public int Age { get; set; }
+        public bool? maritalstatus { get; set; }
 
         public string PatientName { get; set; }
         public long PatientId { get; set; }
