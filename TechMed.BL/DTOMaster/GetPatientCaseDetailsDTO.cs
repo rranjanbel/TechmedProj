@@ -9,6 +9,10 @@ namespace TechMed.BL.DTOMaster
     public class GetPatientCaseDetailsDTO
     {
 
+        public int PHCID { get; set; }
+        public string PHCName { get; set; } = null!;
+        public string MOName { get; set; } = null!;
+
         public string FirstName { get; set; } = null!;
         public string LastName { get; set; } = null!;
         public string PhoneNumber { get; set; } = null!;

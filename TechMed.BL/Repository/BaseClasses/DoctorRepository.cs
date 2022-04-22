@@ -338,8 +338,10 @@ namespace TechMed.BL.Repository.BaseClasses
 
             List<PatientCaseDocument> patientCaseDocuments = await _teleMedecineContext.PatientCaseDocuments
                 .Where(a => a.PatientCaseId == vm.PatientCaseID).ToListAsync();
-            if (patientQueue!=null)
+            if (patientQueue != null)
             {
+                Phcmaster phcmaster = await _teleMedecineContext.Phcmasters.Where(a => a.UserId == patientQueue.AssignedBy).FirstOrDefaultAsync();
+
                 getPatientCaseDetails.PatientName = patientQueue.PatientCase.Patient.FirstName + " " + patientQueue.PatientCase.Patient.LastName;
                 getPatientCaseDetails.PatientId = patientQueue.PatientCase.Patient.PatientId;
                 getPatientCaseDetails.CaseFileNumber = patientQueue.PatientCase.CaseFileNumber;
@@ -363,6 +365,10 @@ namespace TechMed.BL.Repository.BaseClasses
                 getPatientCaseDetails.Photo = patientQueue.PatientCase.Patient.Photo;
                 getPatientCaseDetails.Age = CommanFunction.GetAge(patientQueue.PatientCase.Patient.Dob);
 
+
+                getPatientCaseDetails.PHCName = phcmaster.Phcname;
+                getPatientCaseDetails.MOName = phcmaster.Moname;
+                getPatientCaseDetails.PHCID = phcmaster.Id;
 
                 foreach (var item in patientCaseDocuments)
                 {
