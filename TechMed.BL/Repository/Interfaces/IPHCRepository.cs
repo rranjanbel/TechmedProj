@@ -13,6 +13,7 @@ namespace TechMed.BL.Repository.Interfaces
         Task<Phcmaster> GetByID(int id);
         Task<Phcmaster> GetByPHCUserID(int userId);
         Task<PHCDetailsVM> GetPHCDetailByUserID(int userId);
+        Task<PHCDetailsIdsVM> GetPHCDetailByEmailID(string email);
         Task<Phcmaster> AddPHCUser(Phcmaster phcmaster, UserMaster userMaster);
         bool IsPHCExit(string name);
     }
