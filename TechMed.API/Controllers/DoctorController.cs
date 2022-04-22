@@ -929,12 +929,12 @@ namespace TechMed.API.Controllers
                 string emailchk = await _doctorRepository.CheckEmail(doctorDTO.detailsDTO.EmailId);
                 if (!string.IsNullOrEmpty(mobilechk))
                 {
-                    ModelState.AddModelError("phcdto", mobilechk);
+                    ModelState.AddModelError("doctorDTO", mobilechk);
                     return StatusCode(404, ModelState);
                 }
                 if (!string.IsNullOrEmpty(emailchk))
                 {
-                    ModelState.AddModelError("phcdto", emailchk);
+                    ModelState.AddModelError("doctorDTO", emailchk);
                     return StatusCode(404, ModelState);
                 }
                 if (true)
@@ -1047,7 +1047,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
 
-                ModelState.AddModelError("AddPHC", $"Something went wrong when create PHC {ex.Message}");
+                ModelState.AddModelError("AddDoctor", $"Something went wrong when create Doctor {ex.Message}");
                 return StatusCode(500, ModelState);
             }
         }

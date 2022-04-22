@@ -16,6 +16,7 @@ namespace TechMed.BL.DTOMaster
         //ReferredbyPHCName
         //Casefile 
         //status(Queued or Pending). 
+        public int id { get; set; }
         public string PatientName { get; set; }
         public Int64 PatientID { get; set; }
         public string Gender { get; set; }

@@ -12,72 +12,45 @@ using TechMed.DL.ViewModel;
 
 namespace TechMed.BL.Repository.BaseClasses
 {
-    public class MISRepository: IMISRepository
+    public class MISRepository : IMISRepository
     {
         private readonly TeleMedecineContext _teleMedecineContext;
         private readonly IMapper _mapper;
         private readonly ILogger<UserRepository> _logger;
-        public MISRepository(ILogger<UserRepository> logger, TeleMedecineContext teleMedecineContext, IMapper mapper) 
+        public MISRepository(ILogger<UserRepository> logger, TeleMedecineContext teleMedecineContext, IMapper mapper)
         {
             this._teleMedecineContext = teleMedecineContext;
             this._mapper = mapper;
             this._logger = logger;
         }
-        //public async Task<List<CompletedConsultationDTO>> CompletedConsultation(CompletedConsultationVM completedConsultationVM)
-        //{
+        public async Task<List<CompletedConsultationDTO>> CompletedConsultation(CompletedConsultationVM completedConsultationVM)
+        {
+            List<CompletedConsultationDTO> list = new List<CompletedConsultationDTO>();
+            list = (from pc in _teleMedecineContext.PatientCases
+                    join pm in _teleMedecineContext.PatientMasters on pc.PatientId equals pm.Id
+                    join pq in _teleMedecineContext.PatientQueues on pc.Id equals pq.PatientCaseId
+                    join pg in _teleMedecineContext.GenderMasters on pm.GenderId equals pg.Id
+                    join ph in _teleMedecineContext.Phcmasters on pm.Phcid equals ph.Id
+                    where pc.CreatedOn.Day >= (completedConsultationVM.fromDate.Day == null ? pc.CreatedOn.Day : completedConsultationVM.fromDate.Day)
+                    && pc.CreatedOn.Month >= (completedConsultationVM.fromDate.Month == null ? pc.CreatedOn.Month : completedConsultationVM.fromDate.Month)
+                    && pc.CreatedOn.Year >= (completedConsultationVM.fromDate.Year == null ? pc.CreatedOn.Year : completedConsultationVM.fromDate.Year)
 
-        //    List<DoctorDTO> list = new List<DoctorDTO>();
-        //    list = (from d in _teleMedecineContext.DoctorMasters
-        //            join u in _teleMedecineContext.UserMasters on d.UserId equals u.Id
-        //            join ud in _teleMedecineContext.UserDetails on d.UserId equals ud.UserId
-        //            where
-        //            d.ZoneId == (completedConsultationVM.ZoneID == null ? d.ZoneId : completedConsultationVM.ZoneID)
-        //            && d.ClusterId == (completedConsultationVM.ClusterID == null ? d.ClusterId : completedConsultationVM.ClusterID)
-        //            && u.LastLoginAt.Value.Day == DateTime.Now.Day
-        //            && u.LastLoginAt.Value.Month == DateTime.Now.Month
-        //            && u.LastLoginAt.Value.Year == DateTime.Now.Year
-        //            select new CompletedConsultationDTO
-        //            {
-        //                AccountNumber = d.AccountNumber,
-        //                BankName = d.BankName,
-        //                BranchName = d.BranchName,
-        //                ClusterId = d.ClusterId,
-        //                Designation = d.Designation,
-        //                DigitalSignature = d.DigitalSignature,
-        //                Id = d.Id,
-        //                Ifsccode = d.Ifsccode,
-        //                Mciid = d.Mciid,
-        //                PanNo = d.Panno,
-        //                PhoneNumber = d.PhoneNumber,
-        //                Qualification = d.Qualification,
-        //                RegistrationNumber = d.RegistrationNumber,
-        //                SpecializationId = d.SpecializationId,
-        //                SubSpecializationId = d.SubSpecializationId,
-        //                UpdatedBy = d.UpdatedBy,
-        //                UserId = d.UserId,
-        //                ZoneId = d.ZoneId,
-        //                detailsDTO = new DetailsDTO
-        //                {
-        //                    Address = ud.Address,
-        //                    City = ud.City,
-        //                    CountryId = ud.CountryId,
-        //                    Dob = ud.Dob,
-        //                    EmailId = ud.EmailId,
-        //                    FirstName = ud.FirstName,
-        //                    GenderId = ud.GenderId,
-        //                    IdproofNumber = ud.IdproofNumber,
-        //                    IdproofTypeId = ud.IdproofTypeId,
-        //                    LastName = ud.LastName,
-        //                    MiddleName = ud.MiddleName,
-        //                    Photo = ud.Photo,
-        //                    PinCode = ud.PinCode,
-        //                    StateId = ud.StateId,
-        //                    TitleId = ud.TitleId,
-        //                }
+                    && pc.CreatedOn.Day <= (completedConsultationVM.Todate.Day == null ? pc.CreatedOn.Day : completedConsultationVM.Todate.Day)
+                    && pc.CreatedOn.Month <= (completedConsultationVM.Todate.Month == null ? pc.CreatedOn.Month : completedConsultationVM.Todate.Month)
+                    && pc.CreatedOn.Year <= (completedConsultationVM.Todate.Year == null ? pc.CreatedOn.Year : completedConsultationVM.Todate.Year)
 
-        //            }).ToList();
-        //    return list;
-        //}
+
+                    select new CompletedConsultationDTO
+                    {
+                        Age = 1,
+                        Gender = pg.Gender,
+                        PatientID = pm.Id,
+                        PatientName = pm.FirstName + " " + pm.LastName,
+                        PhoneNumber = pm.PhoneNumber,
+                        ReferredbyPHCName = ph.Phcname
+                    }).ToList();
+            return list;
+        }
 
     }
 }

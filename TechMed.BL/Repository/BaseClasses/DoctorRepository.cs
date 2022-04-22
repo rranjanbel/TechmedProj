@@ -216,6 +216,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 mapdata.Age = CommanFunction.GetAge(item.PatientCase.Patient.Dob);
                 mapdata.Gender = item.PatientCase.Patient.Gender.Gender;
                 mapdata.PatientID = item.PatientCase.Patient.PatientId;
+                mapdata.id = item.PatientCase.Patient.Id;
                 //mapdata.status = item.PatientCase.Patient.PatientStatus.PatientStatus;
                 DTOList.Add(mapdata);
             }
@@ -246,6 +247,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 mapdata.Age = CommanFunction.GetAge(item.PatientCase.Patient.Dob);
                 mapdata.Gender = item.PatientCase.Patient.Gender.Gender;
                 mapdata.PatientID = item.PatientCase.Patient.PatientId;
+                mapdata.id = item.PatientCase.Patient.Id;
                 //mapdata.status = item.PatientCase.Patient.PatientStatus.PatientStatus;
                 DTOList.Add(mapdata);
             }
@@ -276,6 +278,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 mapdata.Age = CommanFunction.GetAge(item.PatientCase.Patient.Dob);
                 mapdata.Gender = item.PatientCase.Patient.Gender.Gender;
                 mapdata.PatientID = item.PatientCase.Patient.PatientId;
+                mapdata.id = item.PatientCase.Patient.Id;
                 //mapdata.status = item.PatientCase.Patient.PatientStatus.PatientStatus;
                 DTOList.Add(mapdata);
             }
@@ -306,6 +309,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 mapdata.Age = CommanFunction.GetAge(item.PatientCase.Patient.Dob);
                 mapdata.Gender = item.PatientCase.Patient.Gender.Gender;
                 mapdata.PatientID = item.PatientCase.Patient.PatientId;
+                mapdata.id = item.PatientCase.Patient.Id;
                 //mapdata.status = item.PatientCase.Patient.PatientStatus.PatientStatus;
                 DTOList.Add(mapdata);
             }
@@ -626,6 +630,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 mapdata.Age = CommanFunction.GetAge(item.PatientCase.Patient.Dob);
                 mapdata.Gender = item.PatientCase.Patient.Gender.Gender;
                 mapdata.PatientID = item.PatientCase.Patient.PatientId;
+                mapdata.id = item.PatientCase.Patient.Id;
                 //mapdata.status = item.PatientCase.Patient.PatientStatus.PatientStatus;
                 DTOList.Add(mapdata);
             }
@@ -709,33 +714,33 @@ namespace TechMed.BL.Repository.BaseClasses
             int j = 0;
             int K = 0;
             DoctorMaster doctor = new DoctorMaster();
-            using (TeleMedecineContext context = new TeleMedecineContext())
-            {
+            //using (TeleMedecineContext context = new TeleMedecineContext())
+            //{
                 if (doctorMaster.SubSpecializationId==0)
                 {
                     doctorMaster.SubSpecializationId = null;
                 }
 
-                using (var transaction = context.Database.BeginTransaction())
+                using (var transaction = _teleMedecineContext.Database.BeginTransaction())
                 {
                     try
                     {
-                       await context.UserMasters.AddAsync(userMaster);
-                        i = await context.SaveChangesAsync();
+                       await _teleMedecineContext.UserMasters.AddAsync(userMaster);
+                        i = await _teleMedecineContext.SaveChangesAsync();
                         if (i > 0 && userMaster.Id > 0)
                         {
                             doctorMaster.UserId = userMaster.Id;
-                            await context.DoctorMasters.AddAsync(doctorMaster);
-                            j = await context.SaveChangesAsync();
+                            await _teleMedecineContext.DoctorMasters.AddAsync(doctorMaster);
+                            j = await _teleMedecineContext.SaveChangesAsync();
 
                             userDetail.UserId = userMaster.Id;
-                            await context.UserDetails.AddAsync(userDetail);
-                            K = await context.SaveChangesAsync(); 
+                            await _teleMedecineContext.UserDetails.AddAsync(userDetail);
+                            K = await _teleMedecineContext.SaveChangesAsync(); 
                         }
                         if (i > 0 && j > 0 && K > 0)
                         {
                             transaction.Commit();
-                            doctor = await context.DoctorMasters.FirstOrDefaultAsync(a => a.Id == doctorMaster.Id);
+                            doctor = await _teleMedecineContext.DoctorMasters.FirstOrDefaultAsync(a => a.Id == doctorMaster.Id);
                             //phcmasternew = (Phcmaster)newPHC;
                         }
                         else
@@ -747,9 +752,10 @@ namespace TechMed.BL.Repository.BaseClasses
                     {
                         string excp = ex.Message;
                         transaction.Rollback();
+                        doctor = null;
                     }
                 }
-            }
+            //}
 
             return doctor;
         }
