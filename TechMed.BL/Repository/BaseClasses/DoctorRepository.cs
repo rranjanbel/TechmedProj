@@ -217,6 +217,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 mapdata.Gender = item.PatientCase.Patient.Gender.Gender;
                 mapdata.PatientID = item.PatientCase.Patient.PatientId;
                 mapdata.id = item.PatientCase.Patient.Id;
+                mapdata.PatientCaseID = item.PatientCase.Id;
                 //mapdata.status = item.PatientCase.Patient.PatientStatus.PatientStatus;
                 DTOList.Add(mapdata);
             }
@@ -248,6 +249,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 mapdata.Gender = item.PatientCase.Patient.Gender.Gender;
                 mapdata.PatientID = item.PatientCase.Patient.PatientId;
                 mapdata.id = item.PatientCase.Patient.Id;
+                mapdata.PatientCaseID = item.PatientCase.Id;
                 //mapdata.status = item.PatientCase.Patient.PatientStatus.PatientStatus;
                 DTOList.Add(mapdata);
             }
@@ -279,6 +281,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 mapdata.Gender = item.PatientCase.Patient.Gender.Gender;
                 mapdata.PatientID = item.PatientCase.Patient.PatientId;
                 mapdata.id = item.PatientCase.Patient.Id;
+                mapdata.PatientCaseID = item.PatientCase.Id;
                 //mapdata.status = item.PatientCase.Patient.PatientStatus.PatientStatus;
                 DTOList.Add(mapdata);
             }
@@ -310,6 +313,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 mapdata.Gender = item.PatientCase.Patient.Gender.Gender;
                 mapdata.PatientID = item.PatientCase.Patient.PatientId;
                 mapdata.id = item.PatientCase.Patient.Id;
+                mapdata.PatientCaseID = item.PatientCase.Id;
                 //mapdata.status = item.PatientCase.Patient.PatientStatus.PatientStatus;
                 DTOList.Add(mapdata);
             }
@@ -654,6 +658,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 mapdata.Gender = item.PatientCase.Patient.Gender.Gender;
                 mapdata.PatientID = item.PatientCase.Patient.PatientId;
                 mapdata.id = item.PatientCase.Patient.Id;
+                mapdata.PatientCaseID = item.PatientCase.Id;
                 //mapdata.status = item.PatientCase.Patient.PatientStatus.PatientStatus;
                 DTOList.Add(mapdata);
             }
@@ -687,6 +692,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 mapdata.Gender = item.PatientCase.Patient.Gender.Gender;
                 mapdata.PatientID = item.PatientCase.Patient.PatientId;
                 mapdata.id = item.PatientCase.Patient.Id;
+                mapdata.PatientCaseID = item.PatientCase.Id;
                 //mapdata.status = item.PatientCase.Patient.PatientStatus.PatientStatus;
                 DTOList.Add(mapdata);
             }
@@ -843,6 +849,24 @@ namespace TechMed.BL.Repository.BaseClasses
             }
             return "";
         }
+        public async Task<DoctorDTO> GetDoctorDetailsByUserID(GetDoctorDetailByUserIDVM getDoctorDetailByUserIDVM)
+        {
+            //
+            DoctorMaster doctorMaster = await _teleMedecineContext.DoctorMasters.Where(o => o.UserId == getDoctorDetailByUserIDVM.UserID).FirstOrDefaultAsync();
+            var DTO = new DoctorDTO();
+            if (doctorMaster != null )
+            {
+                UserDetail userDetail = await _teleMedecineContext.UserDetails.Where(o => o.UserId == doctorMaster.UserId).FirstOrDefaultAsync();
+                if (userDetail != null)
+                {
+                    DTO = _mapper.Map<DoctorDTO>(doctorMaster);
+                    DTO.detailsDTO = _mapper.Map<DetailsDTO>(userDetail);
+                }
+              
+            }
+            return DTO;
+        }
+
         public Task<DoctorMaster> Create(DoctorMaster model)
         {
             throw new NotImplementedException();
