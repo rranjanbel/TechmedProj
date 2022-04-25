@@ -46,6 +46,7 @@ namespace TechMed.BL.Repository.Interfaces
 
         public Task<string> CheckEmail(string Email);
         public Task<string> CheckMobile(string Mobile);
+        public Task<DoctorDTO> GetDoctorDetailsByUserID(GetDoctorDetailByUserIDVM getDoctorDetailByUserIDVM);
 
     }
 }

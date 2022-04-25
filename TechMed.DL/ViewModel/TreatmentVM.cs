@@ -33,7 +33,21 @@ namespace TechMed.DL.ViewModel
         [Required]
         public string Medicine { get; set; }
         [Required]
-        public string Dose { get; set; }
+        public bool Morning { get; set; }
+        [Required]
+        public bool Noon { get; set; }
+        [Required]
+        public bool Night { get; set; }
+        [Required]
+        public bool EmptyStomach { get; set; }
+        [Required]
+        public bool AfterMeal { get; set; }
+        [Required]
+        public bool OD { get; set; }
+        [Required]
+        public bool BD { get; set; }
+        [Required]
+        public bool TD { get; set; }
 
     }
 }

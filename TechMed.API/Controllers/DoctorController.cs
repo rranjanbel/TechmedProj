@@ -1081,5 +1081,37 @@ namespace TechMed.API.Controllers
                 return StatusCode(500, ModelState);
             }
         }
+
+        [Route("GetDoctorDetailsByUserID")]
+        [HttpPost]
+        [ProducesResponseType(200, Type = typeof(DoctorDTO))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetDoctorDetailsByUserID(GetDoctorDetailByUserIDVM getDoctorDetailVM)
+        {
+            try
+            {
+                if (getDoctorDetailVM == null)
+                {
+                    return BadRequest(ModelState);
+                }
+                var DTO = await _doctorRepository.GetDoctorDetailsByUserID(getDoctorDetailVM);
+                if (DTO.Id > 0)
+                {
+                    return Ok(DTO);
+                }
+                else
+                {
+                    ModelState.AddModelError("", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError("", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
     }
 }
