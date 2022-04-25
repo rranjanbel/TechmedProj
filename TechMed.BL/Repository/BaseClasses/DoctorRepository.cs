@@ -436,7 +436,15 @@ namespace TechMed.BL.Repository.BaseClasses
                     _teleMedecineContext.PatientCaseMedicines.Add(
                         new PatientCaseMedicine
                         {
-                            Dose = item.Dose,
+                            AfterMeal = item.AfterMeal,
+                             Bd=item.BD,
+                              EmptyStomach=item.EmptyStomach,
+                               Morning=item.Morning,
+                                Night=item.Night,
+                                 Noon=item.Noon,
+                                  Od=item.OD,
+                                   Td=item.TD,
+                                  
                             Medicine = item.Medicine,
                             PatientCaseId = treatmentVM.PatientCaseID
                         });

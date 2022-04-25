@@ -57,8 +57,6 @@ namespace TechMed.DL.Models
         public virtual DbSet<UserUsertype> UserUsertypes { get; set; } = null!;
         public virtual DbSet<VitalMaster> VitalMasters { get; set; } = null!;
         public virtual DbSet<ZoneMaster> ZoneMasters { get; set; } = null!;
-
-
         public virtual DbSet<SPResultGetPatientDetails> SPResultGetPatientDetails { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -605,6 +603,8 @@ namespace TechMed.DL.Models
 
                 entity.Property(e => e.Id).HasColumnName("ID");
 
+                entity.Property(e => e.Bd).HasColumnName("BD");
+
                 entity.Property(e => e.Dose)
                     .HasMaxLength(500)
                     .IsUnicode(false);
@@ -613,7 +613,11 @@ namespace TechMed.DL.Models
                     .HasMaxLength(500)
                     .IsUnicode(false);
 
+                entity.Property(e => e.Od).HasColumnName("OD");
+
                 entity.Property(e => e.PatientCaseId).HasColumnName("PatientCaseID");
+
+                entity.Property(e => e.Td).HasColumnName("TD");
 
                 entity.HasOne(d => d.PatientCase)
                     .WithMany(p => p.PatientCaseMedicines)
