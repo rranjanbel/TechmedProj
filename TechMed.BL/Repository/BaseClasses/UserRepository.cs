@@ -174,18 +174,55 @@ namespace TechMed.BL.Repository.BaseClasses
 
         public async Task<bool> IsValidUser(LoginVM login)
         {
-            string hashPwd = _teleMedecineContext.UserMasters.FirstOrDefault(a => a.Email == login.Email).HashPassword;            
-            bool resrult = EncodeAndDecordPassword.MatchPassword(login.Password, hashPwd);
-            if (resrult)
+            if (login != null)
             {
-                var isValidUser = await _teleMedecineContext.UserMasters.AnyAsync(a => a.Email == login.Email && a.IsActive == true);
-                return isValidUser;
+                UserMaster userMaster = new UserMaster();
+                LoginHistory loginHistory = new LoginHistory();
+                UserUsertype userUsertype = new UserUsertype();
+                userUsertype = _teleMedecineContext.UserUsertypes.Include(a => a.User).Include(a => a.UserType).FirstOrDefault( a => a.User.Email == login.Email && a.User.IsActive == true);
+                userMaster = _teleMedecineContext.UserMasters.FirstOrDefault(a => a.Email == login.Email && a.IsActive == true);
+                if (userMaster !=null)
+                {
+                    //string hashPwd = _teleMedecineContext.UserMasters.FirstOrDefault(a => a.Email == login.Email).HashPassword;
+                    bool resrult = EncodeAndDecordPassword.MatchPassword(login.Password, userMaster.HashPassword);
+                    if (resrult)
+                    {
+                        userMaster.LastLoginAt = DateTime.Now;
+
+                        loginHistory.UserId = userUsertype.UserId;
+                        loginHistory.UserTypeId = userUsertype.UserTypeId;
+                        loginHistory.LogedInTime = DateTime.Now;
+
+                        try
+                        {
+                            await Update(userMaster);
+
+                            _teleMedecineContext.Entry(loginHistory).State = EntityState.Added;
+                            _teleMedecineContext.SaveChanges();
+                        }
+                        catch (Exception ex)
+                        {
+                            string msg = ex.Message;
+                        }
+                        return true;
+
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }               
+                else
+                {
+                    return false;
+                }
             }
             else
             {
                 return false;
             }
-           
+
+
         }
 
         public Task<bool> IsLoggedIn()

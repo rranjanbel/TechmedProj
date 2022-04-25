@@ -163,6 +163,7 @@ namespace TechMed.BL.Repository.BaseClasses
 
         public async Task<List<TodaysPatientVM>> GetTodaysPatientList(int phcID)
         {
+            //List<SPResultGetPatientDetails> sPResultGetPatientDetails = GetSPResult(phcID);
             int currentYear = DateTime.Now.Year;
             int currentMonth = DateTime.Now.Month;
             int currentDay = DateTime.Now.Day;
@@ -380,6 +381,31 @@ namespace TechMed.BL.Repository.BaseClasses
             }
             return 0;
         }
+
+        public List<SPResultGetPatientDetails> GetSPResult(int patientId)
+        {
+            int PatientID = patientId;
+            List<SPResultGetPatientDetails> sPResultGetPatientDetails = new List<SPResultGetPatientDetails>();
+            SPResultGetPatientDetails sPResultGetPatientDetail ;
+            var Results = _teleMedecineContext.SPResultGetPatientDetails.FromSqlInterpolated($"EXEC [dbo].[GetPatientDetails] @PatientID ={PatientID}");
+            foreach (var item in Results)
+            {
+                sPResultGetPatientDetail = new SPResultGetPatientDetails();
+                sPResultGetPatientDetail.PhoneNo = item.PhoneNo;
+                sPResultGetPatientDetail.PatientCreatedBy = item.PatientCreatedBy;
+                sPResultGetPatientDetail.PatientName = item.PatientName;
+                sPResultGetPatientDetail.MOName = item.MOName;
+                sPResultGetPatientDetail.MailID = item.MailID;
+                sPResultGetPatientDetail.Zone = item.Zone;
+                sPResultGetPatientDetail.Cluster = item.Cluster;
+                sPResultGetPatientDetail.PHCAddress = item.PHCAddress;
+                sPResultGetPatientDetail.Docter = item.Docter;
+                sPResultGetPatientDetail.PHCName = item.PHCName;
+                sPResultGetPatientDetails.Add(sPResultGetPatientDetail);
+            }
+            return sPResultGetPatientDetails;
+        }
+
 
         public async Task<List<PatientViewModel>> GetYesterdaysPatientList(int phcID)
         {
