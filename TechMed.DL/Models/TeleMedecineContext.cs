@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Configuration;
+using TechMed.DL.ViewModel;
 
 namespace TechMed.DL.Models
 {
@@ -57,9 +58,9 @@ namespace TechMed.DL.Models
         public virtual DbSet<UserUsertype> UserUsertypes { get; set; } = null!;
         public virtual DbSet<VitalMaster> VitalMasters { get; set; } = null!;
         public virtual DbSet<ZoneMaster> ZoneMasters { get; set; } = null!;
-
-
         public virtual DbSet<SPResultGetPatientDetails> SPResultGetPatientDetails { get; set; } = null!;
+        public virtual DbSet<SpecializationReportVM> SpecializationReport { get; set; } = null!;
+        public virtual DbSet<LoggedUserCountVM> LoggedUserCount { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

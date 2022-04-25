@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TechMed.BL.DTOMaster;
@@ -10,6 +11,7 @@ namespace TechMed.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class DashBoardController : ControllerBase
     {
         private readonly IMapper _mapper;
@@ -49,6 +51,42 @@ namespace TechMed.API.Controllers
                 ModelState.AddModelError("", $"Something went wrong {ex.Message}");
                 return StatusCode(500, ModelState);
             }
+        }
+
+
+
+        [HttpGet]
+        [Route("GetLoggedUserCount")]
+        [ProducesResponseType(200, Type = typeof(LoggedUserCountVM))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult GetLoggedUserCount(int userTypeId = 3)
+        {
+            LoggedUserCountVM loggedUserCountVM = new LoggedUserCountVM();
+            try
+            {
+                if (userTypeId == 0)
+                {
+                    ModelState.AddModelError("GetLoggedUserCount", $"Please send userTypeId!");
+                    return BadRequest(ModelState);
+                }
+                loggedUserCountVM = _dashBoardRepository.GetLoggedUserTypeCount(userTypeId);
+                if (loggedUserCountVM != null)
+                {
+                    return Ok(loggedUserCountVM);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetLoggedUserCount", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("GetLoggedUserCount", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+
         }
     }
 }

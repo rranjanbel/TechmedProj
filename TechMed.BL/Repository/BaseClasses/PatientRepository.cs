@@ -380,7 +380,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 return currentNo + 1;
             }
             return 0;
-        }
+        }      
 
         public List<SPResultGetPatientDetails> GetSPResult(int patientId)
         {
@@ -445,6 +445,32 @@ namespace TechMed.BL.Repository.BaseClasses
            
 
             return patientList;
+        }
+
+        public string SaveImage(string ImgBase64Str, string rootPath)
+        {
+            string strm = "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+            ImgBase64Str = strm;
+            //string webRootPath = _webHostEnvironment.WebRootPath;
+         
+            string contentRootPath = rootPath;
+            string path = $"Images\\Patients\\";
+            //path = Path.Combine(webRootPath, "CSS");
+            path = Path.Combine(contentRootPath, path);
+
+            //Create     
+
+            var myfilename = string.Format(@"{0}", Guid.NewGuid());
+
+            //Generate unique filename
+            string filepath = path + myfilename + ".jpeg";
+            var bytess = Convert.FromBase64String(ImgBase64Str);
+            using (var imageFile = new FileStream(filepath, FileMode.Create))
+            {
+                imageFile.Write(bytess, 0, bytess.Length);
+                imageFile.Flush();
+            }
+            return filepath;
         }
     }
 }
