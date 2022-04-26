@@ -38,8 +38,13 @@ namespace TechMed.API.Controllers
             PatientMaster newCreatedPatient = new PatientMaster();
             try
             {
-                //string contentRootPath = _webHostEnvironment.ContentRootPath;
+                string contentRootPath = _webHostEnvironment.ContentRootPath;
                 string webRootPath = _webHostEnvironment.WebRootPath;
+                if (webRootPath == String.Empty || webRootPath == null)
+                {
+                    ModelState.AddModelError("AddPatient", "Path did not get proper "+ webRootPath + " ContentRootPath "+ contentRootPath);
+                    return StatusCode(404, ModelState);
+                }
                 _logger.LogInformation($"Add Patient : relative Path : "+ webRootPath);
                 _logger.LogInformation($"Add Patient : call web api add patient");
                 var patientDetails = _mapper.Map<PatientMaster>(patientdto);
