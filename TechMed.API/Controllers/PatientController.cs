@@ -38,7 +38,8 @@ namespace TechMed.API.Controllers
             PatientMaster newCreatedPatient = new PatientMaster();
             try
             {
-                string contentRootPath = _webHostEnvironment.ContentRootPath;
+                //string contentRootPath = _webHostEnvironment.ContentRootPath;
+                string webRootPath = _webHostEnvironment.WebRootPath;
                 _logger.LogInformation($"Add Patient : call web api add patient");
                 var patientDetails = _mapper.Map<PatientMaster>(patientdto);
                 if (!ModelState.IsValid)
@@ -58,7 +59,7 @@ namespace TechMed.API.Controllers
                 patientDetails.PatientId = this._patientRepository.GetPatientId();
                 _logger.LogInformation($"Add Patient : get patient id." + patientDetails.PatientId);
                 _logger.LogInformation($"Add Patient : call add patient method ");
-                patientDetails.Photo = _patientRepository.SaveImage(patientdto.Photo, contentRootPath);
+                patientDetails.Photo = _patientRepository.SaveImage(patientdto.Photo, webRootPath);
                 newCreatedPatient = await this._patientRepository.AddPatient(patientDetails);
                 if (newCreatedPatient == null)
                 {
