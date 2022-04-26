@@ -40,6 +40,7 @@ namespace TechMed.API.Controllers
             {
                 //string contentRootPath = _webHostEnvironment.ContentRootPath;
                 string webRootPath = _webHostEnvironment.WebRootPath;
+                _logger.LogInformation($"Add Patient : relative Path : "+ webRootPath);
                 _logger.LogInformation($"Add Patient : call web api add patient");
                 var patientDetails = _mapper.Map<PatientMaster>(patientdto);
                 if (!ModelState.IsValid)
