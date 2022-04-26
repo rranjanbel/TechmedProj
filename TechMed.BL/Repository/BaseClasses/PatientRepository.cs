@@ -449,8 +449,8 @@ namespace TechMed.BL.Repository.BaseClasses
 
         public string SaveImage(string ImgBase64Str, string rootPath)
         {
-            string strm = "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
-            ImgBase64Str = strm;
+            //string strm = "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+            //ImgBase64Str = strm;
             //string webRootPath = _webHostEnvironment.WebRootPath;
          
             string contentRootPath = rootPath;
@@ -463,8 +463,8 @@ namespace TechMed.BL.Repository.BaseClasses
             var myfilename = string.Format(@"{0}", Guid.NewGuid());
 
             //Generate unique filename
-            string filepath = path + myfilename + ".jpeg";
-            var bytess = Convert.FromBase64String(ImgBase64Str);
+            string filepath = path + myfilename + ".jpeg";// png
+             var bytess = Convert.FromBase64String(ImgBase64Str);
             using (var imageFile = new FileStream(filepath, FileMode.Create))
             {
                 imageFile.Write(bytess, 0, bytess.Length);
