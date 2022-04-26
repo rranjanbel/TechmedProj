@@ -38,11 +38,12 @@ namespace TechMed.API.Controllers
             PatientMaster newCreatedPatient = new PatientMaster();
             try
             {
-               // string contentRootPath = _webHostEnvironment.ContentRootPath;
+                string contentRootPath = _webHostEnvironment.ContentRootPath;
                 string webRootPath = _webHostEnvironment.WebRootPath;
                 if (string.IsNullOrWhiteSpace(_webHostEnvironment.WebRootPath))
                 {
-                    _webHostEnvironment.WebRootPath = Path.Combine(Directory.GetCurrentDirectory(), "");
+                    //_webHostEnvironment.WebRootPath = Path.Combine(Directory.GetCurrentDirectory(), "");
+                    _webHostEnvironment.WebRootPath = "~/MyFiles/Images/Patients/";
                     webRootPath = _webHostEnvironment.WebRootPath;
                 }
                 if (webRootPath == String.Empty || webRootPath == null)
@@ -70,7 +71,8 @@ namespace TechMed.API.Controllers
                 patientDetails.PatientId = this._patientRepository.GetPatientId();
                 _logger.LogInformation($"Add Patient : get patient id." + patientDetails.PatientId);
                 _logger.LogInformation($"Add Patient : call add patient method ");
-                patientDetails.Photo = _patientRepository.SaveImage(patientdto.Photo, webRootPath);
+                string fileName = _patientRepository.SaveImage(patientdto.Photo, contentRootPath);
+                patientDetails.Photo = webRootPath+fileName;
                 newCreatedPatient = await this._patientRepository.AddPatient(patientDetails);
                 if (newCreatedPatient == null)
                 {
