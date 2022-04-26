@@ -437,13 +437,13 @@ namespace TechMed.BL.Repository.BaseClasses
                         new PatientCaseMedicine
                         {
                             AfterMeal = item.AfterMeal,
-                             Bd=item.BD,
-                              EmptyStomach=item.EmptyStomach,
-                               Morning=item.Morning,
-                                Night=item.Night,
-                                 Noon=item.Noon,
-                                  Od=item.OD,
-                                   Td=item.TD,
+                            Bd=item.BD,
+                            EmptyStomach=item.EmptyStomach,
+                            Morning=item.Morning,
+                            Night=item.Night,
+                            Noon=item.Noon,
+                            Od=item.OD,
+                            Td=item.TD,
                                   
                             Medicine = item.Medicine,
                             PatientCaseId = treatmentVM.PatientCaseID
