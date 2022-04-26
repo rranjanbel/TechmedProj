@@ -12,6 +12,7 @@ using TechMed.API.Services;
 using TechMed.BL.Repository.Interfaces;
 using TechMed.BL.Repository.BaseClasses;
 using TechMed.API.Middleware;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -114,6 +115,13 @@ app.UseRouting();
 app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+           Path.Combine(builder.Environment.ContentRootPath, "MyStaticFiles")),
+    RequestPath = "/MyFiles"
+});
 
 app.UseAuthentication();
 
