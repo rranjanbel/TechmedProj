@@ -79,5 +79,49 @@ namespace TechMed.BL.Repository.BaseClasses
                     }).ToList();
             return list;
         }
+
+        public LoggedUserCountVM GetLoggedUserTypeCount(int usertTypeId)
+        {           
+            LoggedUserCountVM loggedUserReport = new LoggedUserCountVM();
+            var Results = _teleMedecineContext.LoggedUserCount.FromSqlInterpolated($"EXEC [dbo].[GetPHCCount] @UserTypeID ={usertTypeId}");
+            foreach (var item in Results)
+            {               
+                loggedUserReport.Count = item.Count;
+                loggedUserReport.UserTypeName = item.UserTypeName;              
+            }
+            return loggedUserReport;
+        }
+
+        public List<SpecializationReportVM> GetTodaysConsultedPatientList()
+        {
+            List<SpecializationReportVM> specializationReports = new List<SpecializationReportVM>();
+            SpecializationReportVM specializationReport;
+            var Results = _teleMedecineContext.SpecializationReport.FromSqlInterpolated($"EXEC [dbo].[GetVisitedPatientCase]");
+            foreach (var item in Results)
+            {
+                specializationReport = new SpecializationReportVM();
+                specializationReport.Count = item.Count;
+                specializationReport.SpecializationID = item.SpecializationID;
+                specializationReport.Specialization = item.Specialization;
+                specializationReports.Add(specializationReport);
+            }
+            return specializationReports ;
+        }
+
+        public List<SpecializationReportVM> GetTodaysRegistoredPatientList()
+        {
+            List<SpecializationReportVM> specializationReports = new List<SpecializationReportVM>();
+            SpecializationReportVM specializationReport;
+            var Results = _teleMedecineContext.SpecializationReport.FromSqlInterpolated($"EXEC [dbo].[GetTotalPatientCase]");
+            foreach (var item in Results)
+            {
+                specializationReport = new SpecializationReportVM();
+                specializationReport.Count = item.Count;
+                specializationReport.SpecializationID = item.SpecializationID;
+                specializationReport.Specialization = item.Specialization;
+                specializationReports.Add(specializationReport);
+            }
+            return specializationReports;
+        }
     }
 }

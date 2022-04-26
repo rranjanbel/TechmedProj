@@ -8,6 +8,7 @@ using TechMed.BL.ModelMaster;
 using TechMed.BL.Repository.Interfaces;
 using TechMed.BL.ViewModels;
 using TechMed.DL.Models;
+using System.IO;
 
 namespace TechMed.API.Controllers
 {
@@ -19,11 +20,13 @@ namespace TechMed.API.Controllers
         private readonly IMapper _mapper;       
         private readonly IPatientRepository _patientRepository;
         private readonly ILogger<PatientController> _logger;
-        public PatientController(IMapper mapper, TeleMedecineContext teleMedecineContext, IPatientRepository patientRepository, ILogger<PatientController> logger)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        public PatientController(IMapper mapper, TeleMedecineContext teleMedecineContext, IPatientRepository patientRepository, ILogger<PatientController> logger, IWebHostEnvironment webHostEnvironment)
         {
             this._mapper = mapper;         
             this._patientRepository = patientRepository;
             this._logger = logger;
+            this._webHostEnvironment = webHostEnvironment;
         }        
         [HttpPost]
         [Route("AddPatient")]
@@ -35,6 +38,7 @@ namespace TechMed.API.Controllers
             PatientMaster newCreatedPatient = new PatientMaster();
             try
             {
+                string contentRootPath = _webHostEnvironment.ContentRootPath;
                 _logger.LogInformation($"Add Patient : call web api add patient");
                 var patientDetails = _mapper.Map<PatientMaster>(patientdto);
                 if (!ModelState.IsValid)
@@ -54,6 +58,7 @@ namespace TechMed.API.Controllers
                 patientDetails.PatientId = this._patientRepository.GetPatientId();
                 _logger.LogInformation($"Add Patient : get patient id." + patientDetails.PatientId);
                 _logger.LogInformation($"Add Patient : call add patient method ");
+                patientDetails.Photo = _patientRepository.SaveImage(patientdto.Photo, contentRootPath);
                 newCreatedPatient = await this._patientRepository.AddPatient(patientDetails);
                 if (newCreatedPatient == null)
                 {
@@ -220,6 +225,9 @@ namespace TechMed.API.Controllers
                 return StatusCode(500, ModelState);
             }
         }
+
+
+      
 
 
     }
