@@ -128,7 +128,7 @@ namespace TechMed.BL.Repository.BaseClasses
             }
             return DTOList;
         }
-        public async Task<bool> UpdateDoctorDetails(DoctorDTO doctorDTO)
+        public async Task<bool> UpdateDoctorDetails(DoctorDTO doctorDTO, string rootPath)
         {
             if (doctorDTO != null)
             {
@@ -181,6 +181,10 @@ namespace TechMed.BL.Repository.BaseClasses
                     //userDetail.IdproofNumber { get; set; }
                     userDetail.UpdatedBy = doctorDTO.UpdatedBy;
                     userDetail.UpdatedOn = DateTime.Now;
+
+                    userDetail.Photo = SaveImage(userDetail.Photo, rootPath);
+                    masters.DigitalSignature = SaveImage(masters.DigitalSignature, rootPath);
+
                     await _teleMedecineContext.SaveChangesAsync();
                     return true;
                 }
@@ -359,7 +363,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 getPatientCaseDetails.UpdatedOn = patientQueue.PatientCase.UpdatedOn;
                 getPatientCaseDetails.CreatedBy = patientQueue.PatientCase.CreatedBy;
                 getPatientCaseDetails.CreatedOn = patientQueue.PatientCase.CreatedOn;
-                getPatientCaseDetails.maritalstatus= userDetail.IsMarried;
+                getPatientCaseDetails.maritalstatus = userDetail.IsMarried;
 
                 getPatientCaseDetails.FirstName = patientQueue.PatientCase.Patient.FirstName;
                 getPatientCaseDetails.LastName = patientQueue.PatientCase.Patient.LastName;
@@ -417,7 +421,12 @@ namespace TechMed.BL.Repository.BaseClasses
               ).FirstOrDefaultAsync();
             if (patientQueue != null)
             {
+                CaseFileStatusMaster caseFileStatus  = await _teleMedecineContext.CaseFileStatusMasters.Where(m => m.FileStatus.ToLower() == "Closed".ToLower()).FirstOrDefaultAsync();
+
                 //update case table
+                patientQueue.CaseFileStatusId = caseFileStatus.Id;
+                patientQueue.StatusOn = DateTime.Now;
+
                 var patientCase = patientQueue.PatientCase;
                 patientCase.Diagnosis = treatmentVM.Diagnosis;
                 patientCase.Instruction = treatmentVM.Instruction;
@@ -437,14 +446,14 @@ namespace TechMed.BL.Repository.BaseClasses
                         new PatientCaseMedicine
                         {
                             AfterMeal = item.AfterMeal,
-                            Bd=item.BD,
-                            EmptyStomach=item.EmptyStomach,
-                            Morning=item.Morning,
-                            Night=item.Night,
-                            Noon=item.Noon,
-                            Od=item.OD,
-                            Td=item.TD,
-                                  
+                            Bd = item.BD,
+                            EmptyStomach = item.EmptyStomach,
+                            Morning = item.Morning,
+                            Night = item.Night,
+                            Noon = item.Noon,
+                            Od = item.OD,
+                            Td = item.TD,
+
                             Medicine = item.Medicine,
                             PatientCaseId = treatmentVM.PatientCaseID
                         });
@@ -778,7 +787,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 return true;
             }
         }
-        public async Task<DoctorMaster> AddDoctor(DoctorMaster doctorMaster, UserMaster userMaster, UserDetail userDetail)
+        public async Task<DoctorMaster> AddDoctor(DoctorMaster doctorMaster, UserMaster userMaster, UserDetail userDetail, string RootPath)
         {
             int i = 0;
             int j = 0;
@@ -800,12 +809,16 @@ namespace TechMed.BL.Repository.BaseClasses
                     if (i > 0 && userMaster.Id > 0)
                     {
                         doctorMaster.UserId = userMaster.Id;
+                        doctorMaster.DigitalSignature = SaveImage(doctorMaster.DigitalSignature, RootPath);
+
                         await _teleMedecineContext.DoctorMasters.AddAsync(doctorMaster);
                         j = await _teleMedecineContext.SaveChangesAsync();
 
                         userDetail.UserId = userMaster.Id;
+                        userDetail.Photo = SaveImage(userDetail.Photo, RootPath);
                         await _teleMedecineContext.UserDetails.AddAsync(userDetail);
                         K = await _teleMedecineContext.SaveChangesAsync();
+
                     }
                     if (i > 0 && j > 0 && K > 0)
                     {
@@ -862,7 +875,7 @@ namespace TechMed.BL.Repository.BaseClasses
             //
             DoctorMaster doctorMaster = await _teleMedecineContext.DoctorMasters.Where(o => o.UserId == getDoctorDetailByUserIDVM.UserID).FirstOrDefaultAsync();
             var DTO = new DoctorDTO();
-            if (doctorMaster != null )
+            if (doctorMaster != null)
             {
                 UserDetail userDetail = await _teleMedecineContext.UserDetails.Where(o => o.UserId == doctorMaster.UserId).FirstOrDefaultAsync();
                 if (userDetail != null)
@@ -870,7 +883,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     DTO = _mapper.Map<DoctorDTO>(doctorMaster);
                     DTO.detailsDTO = _mapper.Map<DetailsDTO>(userDetail);
                 }
-              
+
             }
             return DTO;
         }
@@ -902,6 +915,31 @@ namespace TechMed.BL.Repository.BaseClasses
         Task<List<DoctorMaster>> IRepository<DoctorMaster>.GetAll()
         {
             throw new NotImplementedException();
+        }
+
+        public string SaveImage(string ImgBase64Str, string rootPath)
+        {
+            //string strm = "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+            //ImgBase64Str = strm;
+            //string webRootPath = _webHostEnvironment.WebRootPath;
+
+            string contentRootPath = rootPath;
+            string path = $"Images\\Doctor\\";
+            //path = Path.Combine(webRootPath, "CSS");
+            path = Path.Combine(contentRootPath, path);
+
+            //Create     
+            var myfilename = string.Format(@"{0}", Guid.NewGuid());
+
+            //Generate unique filename
+            string filepath = path + myfilename + ".jpeg";// png
+            var bytess = Convert.FromBase64String(ImgBase64Str);
+            using (var imageFile = new FileStream(filepath, FileMode.Create))
+            {
+                imageFile.Write(bytess, 0, bytess.Length);
+                imageFile.Flush();
+            }
+            return filepath;
         }
     }
 }

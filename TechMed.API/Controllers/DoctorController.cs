@@ -17,12 +17,13 @@ namespace TechMed.API.Controllers
         DoctorBusinessMaster doctorBusinessMaster;
         private readonly IMapper _mapper;
         private readonly IDoctorRepository _doctorRepository;
-        public DoctorController(IMapper mapper, TeleMedecineContext teleMedecineContext, IDoctorRepository doctorRepository)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        public DoctorController(IMapper mapper, TeleMedecineContext teleMedecineContext, IDoctorRepository doctorRepository, IWebHostEnvironment webHostEnvironment)
         {
-
             doctorBusinessMaster = new DoctorBusinessMaster(teleMedecineContext, mapper);
             _doctorRepository = doctorRepository;
             _mapper = mapper;
+            _webHostEnvironment = webHostEnvironment;
         }
         [Route("GetListOfNotification")]
         [HttpPost]
@@ -279,11 +280,13 @@ namespace TechMed.API.Controllers
 
             try
             {
+                //string contentRootPath = _webHostEnvironment.ContentRootPath;
+                string webRootPath = _webHostEnvironment.WebRootPath;
                 if (doctorDTO == null || doctorDTO.Id < 1 || !ModelState.IsValid)
                 {
                     return BadRequest(ModelState);
                 }
-                var DTO = await _doctorRepository.UpdateDoctorDetails(doctorDTO);
+                var DTO = await _doctorRepository.UpdateDoctorDetails(doctorDTO, webRootPath);
                 if (DTO)
                 {
                     return Ok(DTO);
@@ -939,6 +942,9 @@ namespace TechMed.API.Controllers
             UserDetail userDetail = new UserDetail();
             try
             {
+                //string contentRootPath = _webHostEnvironment.ContentRootPath;
+                string webRootPath = _webHostEnvironment.WebRootPath;
+
                 //check doctorPhone in doctor and user
                 //email in user and details
                 //"zoneId": 1,
@@ -1026,7 +1032,7 @@ namespace TechMed.API.Controllers
                     userDetail.UpdatedBy = doctorDTO.CreatedBy;
                     userDetail.UpdatedOn = DateTime.Now;
 
-                    doctorCreated = await this._doctorRepository.AddDoctor(doctor, userMaster, userDetail);
+                    doctorCreated = await this._doctorRepository.AddDoctor(doctor, userMaster, userDetail, webRootPath);
                 }
 
                 if (doctorCreated == null)
