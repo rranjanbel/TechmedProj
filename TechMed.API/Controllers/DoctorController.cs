@@ -287,7 +287,7 @@ namespace TechMed.API.Controllers
                 if (string.IsNullOrWhiteSpace(_webHostEnvironment.WebRootPath))
                 {
                     //_webHostEnvironment.WebRootPath = Path.Combine(Directory.GetCurrentDirectory(), "");
-                    _webHostEnvironment.WebRootPath = "~/MyFiles/Images/Patients/";
+                    _webHostEnvironment.WebRootPath = "/MyFiles/Images/Doctor/";
                     webRootPath = _webHostEnvironment.WebRootPath;
                 }
                 if (webRootPath == String.Empty || webRootPath == null)
@@ -962,7 +962,7 @@ namespace TechMed.API.Controllers
                 if (string.IsNullOrWhiteSpace(_webHostEnvironment.WebRootPath))
                 {
                     //_webHostEnvironment.WebRootPath = Path.Combine(Directory.GetCurrentDirectory(), "");
-                    _webHostEnvironment.WebRootPath = "/MyFiles/Images/Patients/";
+                    _webHostEnvironment.WebRootPath = "/MyFiles/Images/Doctor/";
                     webRootPath = _webHostEnvironment.WebRootPath;
                 }
                 if (webRootPath == String.Empty || webRootPath == null)
