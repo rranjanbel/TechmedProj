@@ -454,9 +454,10 @@ namespace TechMed.BL.Repository.BaseClasses
             //string webRootPath = _webHostEnvironment.WebRootPath;
          
             string contentRootPath = rootPath;
-            string path = $"Images\\Patients\\";
+            string path = @"\\MyStaticFiles\\Images\\Patients\\";
             //path = Path.Combine(webRootPath, "CSS");
-            path = Path.Combine(contentRootPath, path);
+            //path = Path.Combine(contentRootPath, path);
+            path = contentRootPath + path;
 
             //Create     
 
@@ -470,7 +471,8 @@ namespace TechMed.BL.Repository.BaseClasses
                 imageFile.Write(bytess, 0, bytess.Length);
                 imageFile.Flush();
             }
-            return filepath;
+            myfilename = myfilename + ".jpeg";
+            return myfilename;
         }
     }
 }
