@@ -88,5 +88,63 @@ namespace TechMed.API.Controllers
             }
 
         }
+
+        [HttpGet]
+        [Route("GetTodaysTotalPatientCase")]
+        [ProducesResponseType(200, Type = typeof(SpecializationReportVM))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult GetTodaysTotalPatientCase()
+        {
+            List<SpecializationReportVM> todaysRegistorCase = new List<SpecializationReportVM>();
+            try
+            {
+                todaysRegistorCase = _dashBoardRepository.GetTodaysRegistoredPatientList();
+                if (todaysRegistorCase != null)
+                {
+                    return Ok(todaysRegistorCase);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetLoggedUserCount", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("GetLoggedUserCount", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+
+        }
+
+        [HttpGet]
+        [Route("GetTodaysPatientQueue")]
+        [ProducesResponseType(200, Type = typeof(SpecializationReportVM))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult GetTodaysPatientQueue()
+        {
+            List<SpecializationReportVM> todaysRegistorCase = new List<SpecializationReportVM>();
+            try
+            {
+                todaysRegistorCase = _dashBoardRepository.GetTodaysConsultedPatientList();
+                if (todaysRegistorCase != null)
+                {
+                    return Ok(todaysRegistorCase);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetLoggedUserCount", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("GetLoggedUserCount", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+
+        }
     }
 }
