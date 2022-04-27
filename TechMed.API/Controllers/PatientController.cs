@@ -72,6 +72,7 @@ namespace TechMed.API.Controllers
                 _logger.LogInformation($"Add Patient : get patient id." + patientDetails.PatientId);
                 _logger.LogInformation($"Add Patient : call add patient method ");
                 string fileName = _patientRepository.SaveImage(patientdto.Photo, contentRootPath);
+                webRootPath = @"/MyFiles/Images/Patients/";
                 patientDetails.Photo = webRootPath + fileName;
                 newCreatedPatient = await this._patientRepository.AddPatient(patientDetails);
                 if (newCreatedPatient == null)
