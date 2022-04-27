@@ -13,6 +13,8 @@ using TechMed.BL.Repository.Interfaces;
 using TechMed.BL.Repository.BaseClasses;
 using TechMed.API.Middleware;
 using Microsoft.Extensions.FileProviders;
+using TechMed.BL.TwilioAPI.Model;
+using TechMed.BL.TwilioAPI.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,7 +63,14 @@ builder.Services.AddScoped<IPatientCaseRepository, PatientCaseRepository>();
 builder.Services.AddScoped<IDashBoardRepository, DashBoardRepository>();
 builder.Services.AddScoped<IMISRepository, MISRepository>();
 builder.Services.AddScoped<ICaseFileStatusMasterRpository, CaseFileStatusMasterRpository>();
-
+builder.Services.Configure<TwilioSettings>(
+    settings =>
+    {
+        settings.AccountSid = builder.Configuration.GetValue<string>("Twilio:TwilioAccountSid");
+        settings.ApiSecret = builder.Configuration.GetValue<string>("Twilio:TwilioApiSecret");
+        settings.ApiKey = builder.Configuration.GetValue<string>("Twilio:TwilioApiKey");
+    })
+    .AddTransient<IVideoService, VideoService>();
 
 
 builder.Services.AddSwaggerGen(c =>
