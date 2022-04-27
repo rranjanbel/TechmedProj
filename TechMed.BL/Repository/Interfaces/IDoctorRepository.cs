@@ -13,7 +13,7 @@ namespace TechMed.BL.Repository.Interfaces
     {
         void AddDoctorDetails();
         public Task<DoctorDTO> GetDoctorDetails(GetDoctorDetailVM getDoctorDetailVM);
-        public Task<bool> UpdateDoctorDetails(DoctorDTO doctorDTO);
+        public Task<bool> UpdateDoctorDetails(DoctorDTO doctorDTO, string rootPath, string webRootPath);
         public Task<List<PHCHospitalDTO>> GetListOfPHCHospital();
         public Task<List<PHCHospitalDTO>> GetListOfPHCHospitalZoneWise(GetListOfPHCHospitalVM getListOfPHCHospitalVM);
         public Task<List<NotificationDTO>> GetListOfNotification(GetListOfNotificationVM getListOfNotificationVM);
@@ -42,7 +42,7 @@ namespace TechMed.BL.Repository.Interfaces
         public Task<bool> UpdateIsDrOnlineByUserLoginName(UpdateIsDrOnlineByUserLoginNameVM updateIsOnlineDrVM);
         public Task<bool> IsDrOnline(DoctorVM doctorVM);
         public Task<List<OnlineDrListDTO>> OnlineDrList(OnlineDrListVM doctorVM);
-        public Task<DoctorMaster> AddDoctor(DoctorMaster doctorMaster, UserMaster userMaster, UserDetail userDetail);
+        public Task<DoctorMaster> AddDoctor(DoctorMaster doctorMaster, UserMaster userMaster, UserDetail userDetail,string BasePath,string webRootPath);
 
         public Task<string> CheckEmail(string Email);
         public Task<string> CheckMobile(string Mobile);

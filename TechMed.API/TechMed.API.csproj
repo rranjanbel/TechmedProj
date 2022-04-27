@@ -30,6 +30,7 @@
 
   <ItemGroup>
     <Folder Include="Logs\" />
+    <Folder Include="MyStaticFiles\Images\Doctor\" />
   </ItemGroup>
 
 </Project>
