@@ -211,6 +211,36 @@ namespace TechMed.API.Controllers
                 return StatusCode(500, ModelState);
             }
         }
-       
+
+        [HttpGet]
+        [Route("GetAllPHC")]
+        [ProducesResponseType(200, Type = typeof(List<PHCMasterDTO>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetAllPHC()
+        {
+            List<PHCMasterDTO> phcList = new List<PHCMasterDTO>();
+            try
+            {
+
+                phcList = await _phcRepository.GetAllPHC();
+                if (phcList != null)
+                {
+                    return Ok(phcList);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetAllPHC", "PHC details did not find");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError("GetAllPHC", $"Something went wrong when Get All PHC:  {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
+
     }
 }

@@ -417,6 +417,41 @@ namespace TechMed.API.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("GetAllPatientStatusMaster")]
+        [ProducesResponseType(200, Type = typeof(List<PatientStatusMastersDTO>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetAllPatientStatusMaster()
+        {
+            PatientStatusMastersDTO mapdata = new PatientStatusMastersDTO();
+            try
+            {
+                var spemasters = await _teleMedecineContext.PatientStatusMasters.ToListAsync();
+
+                var DTOList = new List<PatientStatusMastersDTO>();
+                foreach (var item in spemasters)
+                {
+                    mapdata = _mapper.Map<PatientStatusMastersDTO>(item);
+                    DTOList.Add(mapdata);
+                }
+                if (DTOList != null)
+                {
+                    return Ok(DTOList);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetAllStateMaster", "GetAllStateMaster did not find");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("GetAllStateMaster", $"Something went wrong when GetAllStateMaster {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
+
         ////CaseFileStatusMaster
         ////CountryMaster
         ////DistrictMaster

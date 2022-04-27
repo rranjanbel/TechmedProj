@@ -17,12 +17,15 @@ namespace TechMed.API.Controllers
         DoctorBusinessMaster doctorBusinessMaster;
         private readonly IMapper _mapper;
         private readonly IDoctorRepository _doctorRepository;
-        public DoctorController(IMapper mapper, TeleMedecineContext teleMedecineContext, IDoctorRepository doctorRepository)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly ILogger<DoctorController> _logger;
+        public DoctorController(IMapper mapper, ILogger<DoctorController> logger, TeleMedecineContext teleMedecineContext, IDoctorRepository doctorRepository, IWebHostEnvironment webHostEnvironment)
         {
-
             doctorBusinessMaster = new DoctorBusinessMaster(teleMedecineContext, mapper);
             _doctorRepository = doctorRepository;
             _mapper = mapper;
+            _webHostEnvironment = webHostEnvironment;
+            _logger = logger;
         }
         [Route("GetListOfNotification")]
         [HttpPost]
@@ -279,11 +282,26 @@ namespace TechMed.API.Controllers
 
             try
             {
+                string contentRootPath = _webHostEnvironment.ContentRootPath;
+                string webRootPath = _webHostEnvironment.WebRootPath;
+                if (string.IsNullOrWhiteSpace(_webHostEnvironment.WebRootPath))
+                {
+                    //_webHostEnvironment.WebRootPath = Path.Combine(Directory.GetCurrentDirectory(), "");
+                    _webHostEnvironment.WebRootPath = "/MyFiles/Images/Doctor/";
+                    webRootPath = _webHostEnvironment.WebRootPath;
+                }
+                if (webRootPath == String.Empty || webRootPath == null)
+                {
+                    ModelState.AddModelError("UpdateDoctorDetails", "Path did not get proper " + webRootPath);
+                    return StatusCode(404, ModelState);
+                }
+                _logger.LogInformation($"Update Doctor Details : relative Path : " + webRootPath);
+                _logger.LogInformation($"Update Doctor Details : call web api add UpdateDoctorDetails");
                 if (doctorDTO == null || doctorDTO.Id < 1 || !ModelState.IsValid)
                 {
                     return BadRequest(ModelState);
                 }
-                var DTO = await _doctorRepository.UpdateDoctorDetails(doctorDTO);
+                var DTO = await _doctorRepository.UpdateDoctorDetails(doctorDTO, contentRootPath ,webRootPath);
                 if (DTO)
                 {
                     return Ok(DTO);
@@ -939,6 +957,21 @@ namespace TechMed.API.Controllers
             UserDetail userDetail = new UserDetail();
             try
             {
+                string contentRootPath = _webHostEnvironment.ContentRootPath;
+                string webRootPath = _webHostEnvironment.WebRootPath;
+                if (string.IsNullOrWhiteSpace(_webHostEnvironment.WebRootPath))
+                {
+                    //_webHostEnvironment.WebRootPath = Path.Combine(Directory.GetCurrentDirectory(), "");
+                    _webHostEnvironment.WebRootPath = "/MyFiles/Images/Doctor/";
+                    webRootPath = _webHostEnvironment.WebRootPath;
+                }
+                if (webRootPath == String.Empty || webRootPath == null)
+                {
+                    ModelState.AddModelError("AddDoctor", "Path did not get proper " + webRootPath);
+                    return StatusCode(404, ModelState);
+                }
+                _logger.LogInformation($"Add Doctor : relative Path : " + webRootPath);
+                _logger.LogInformation($"Add Doctor : call web api add Doctor");
                 //check doctorPhone in doctor and user
                 //email in user and details
                 //"zoneId": 1,
@@ -1026,7 +1059,7 @@ namespace TechMed.API.Controllers
                     userDetail.UpdatedBy = doctorDTO.CreatedBy;
                     userDetail.UpdatedOn = DateTime.Now;
 
-                    doctorCreated = await this._doctorRepository.AddDoctor(doctor, userMaster, userDetail);
+                    doctorCreated = await this._doctorRepository.AddDoctor(doctor, userMaster, userDetail, contentRootPath,webRootPath);
                 }
 
                 if (doctorCreated == null)
