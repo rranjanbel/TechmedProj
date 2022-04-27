@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TechMed.BL.DTOMaster;
 using TechMed.BL.Repository.Interfaces;
+using TechMed.BL.ViewModels;
 using TechMed.DL.Models;
 using TechMed.DL.ViewModel;
 
@@ -19,17 +20,17 @@ namespace TechMed.API.Controllers
             _mISRepository = mISRepository;
             _mapper = mapper;
         }
-        [HttpGet]
+        [HttpPost]
         [Route("CompletedConsultation")]
-        [ProducesResponseType(200, Type = typeof(List<CompletedConsultationDTO>))]
+        [ProducesResponseType(200, Type = typeof(List<CompletedConsultantVM>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CompletedConsultation(CompletedConsultationVM completedConsultationVM)
+        public async Task<IActionResult> CompletedConsultation(CompletedPatientSearchVM completedConsultation)
         {
-            List<CompletedConsultationDTO> mapdata = new List<CompletedConsultationDTO>();
+            List<CompletedConsultantVM> mapdata = new List<CompletedConsultantVM>();
             try
             {
-                mapdata =await  _mISRepository.CompletedConsultation(completedConsultationVM);
+                mapdata = await  _mISRepository.CompletedConsultation(completedConsultation);
                 if (mapdata.Count >0)
                 {
                     return Ok(mapdata);
