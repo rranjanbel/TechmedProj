@@ -1059,7 +1059,7 @@ namespace TechMed.API.Controllers
                     userDetail.UpdatedBy = doctorDTO.CreatedBy;
                     userDetail.UpdatedOn = DateTime.Now;
 
-                    doctorCreated = await this._doctorRepository.AddDoctor(doctor, userMaster, userDetail, contentRootPath,webRootPath);
+                    doctorCreated = await this._doctorRepository.AddDoctor(doctor, userMaster, userDetail, doctorDTO, contentRootPath,webRootPath);
                 }
 
                 if (doctorCreated == null)
