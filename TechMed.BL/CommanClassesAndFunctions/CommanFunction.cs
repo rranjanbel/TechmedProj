@@ -11,6 +11,10 @@ namespace TechMed.BL.CommanClassesAndFunctions
         public static int GetAge(DateTime dob)
         {
             int age = 0;
+            if (dob.Year==DateTime.Now.Year)
+            {
+                return age;
+            }
             age = DateTime.Now.AddYears(-dob.Year).Year;
             return age;
         }
