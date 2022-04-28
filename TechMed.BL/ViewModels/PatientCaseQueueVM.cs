@@ -19,5 +19,7 @@ namespace TechMed.BL.ViewModels
         public string CaseStatus { get; set; }
         public DateTime AssignedOn { get; set; }
         public DateTime StatusOn { get; set; }
+        public string PhoneNo { get; set; }
+        public string? DrImagePath { get; set; }
     }
 }
