@@ -33,7 +33,7 @@ namespace TechMed.BL.DTOMaster
         public string Designation { get; set; } = null!;
         [Required]
         public string PhoneNumber { get; set; } = null!;
-        [Required]
+        //[Required]
         public string DigitalSignature { get; set; } = null!;
         [Required]
         public string PanNo { get; set; } = null!;
