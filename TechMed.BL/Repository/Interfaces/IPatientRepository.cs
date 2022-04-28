@@ -24,6 +24,7 @@ namespace TechMed.BL.Repository.Interfaces
         Task<List<TodaysPatientVM>> GetSearchedTodaysPatientList(string patientName);
         Task<List<PatientViewModel>> GetYesterdaysPatientList(int phcID);
         long GetPatientId();
+        public int GetAge(DateTime dateofbirth);
         string SaveImage(string ImgBase64Str, string rootPath);
     }
 }

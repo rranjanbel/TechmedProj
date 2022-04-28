@@ -34,10 +34,10 @@ namespace TechMed.BL.Repository.BaseClasses
                 //Setting setting = new Setting(); 
                 if (patientMaster != null)
                 {
-                    if (patientMaster.CreatedBy == 0)
-                        patientMaster.CreatedBy = 2;
-                    if (patientMaster.UpdatedBy == 0)
-                        patientMaster.UpdatedBy = 2;
+                    //if (patientMaster.CreatedBy == 0)
+                    //    patientMaster.CreatedBy = 2;
+                    //if (patientMaster.UpdatedBy == 0)
+                    //    patientMaster.UpdatedBy = 2;
                     patientMaster.CreatedOn = DateTime.Now;
                     patientMaster.UpdatedOn = DateTime.Now;
                     // patientMaster.PatientId = UtilityMaster.GetPatientNumber();
@@ -328,7 +328,7 @@ namespace TechMed.BL.Repository.BaseClasses
         {
             DateTime dtToday = DateTime.Now.Date;
             DateTime dtOfBirth = dateofbirth.Date;
-            TimeSpan diffResult = dtToday - dtToday;
+            TimeSpan diffResult = dtToday - dtOfBirth;
             double totalDays = diffResult.TotalDays;
             if (diffResult != TimeSpan.Zero)
             {

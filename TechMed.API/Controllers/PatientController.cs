@@ -85,6 +85,7 @@ namespace TechMed.API.Controllers
                 {
                     _logger.LogInformation($"Add Patient : Patient successfully added in the database ");
                     var createdPatient = _mapper.Map<PatientMasterDTO>(newCreatedPatient);
+                    createdPatient.Age = this._patientRepository.GetAge(createdPatient.Dob);
                     return CreatedAtRoute(201, createdPatient);
                 }
             }
