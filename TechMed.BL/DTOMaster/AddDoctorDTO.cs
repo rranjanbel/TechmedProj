@@ -40,7 +40,7 @@ namespace TechMed.BL.DTOMaster
         public string Ifsccode { get; set; } = null!;
         [Required]
         public int CreatedBy { get; set; }
-        public DetailsDTO detailsDTO { get; set; } = null!;
+        public AddDoctorDetaisDTO detailsDTO { get; set; } = null!;
     }
     public class AddDoctorDetaisDTO
     {
@@ -57,14 +57,14 @@ namespace TechMed.BL.DTOMaster
         public int GenderId { get; set; }
         [Required]
         public string EmailId { get; set; } = null!;
-        //[Required]
-        //public int CountryId { get; set; }
-        //[Required]
-        //public int StateId { get; set; }
-        //[Required]
-        //public string City { get; set; } = null!;
-        //[Required]
-        //public string? PinCode { get; set; }
+        [Required]
+        public int CountryId { get; set; }
+        [Required]
+        public int StateId { get; set; }
+        [Required]
+        public string City { get; set; } = null!;
+        [Required]
+        public string? PinCode { get; set; }
         [Required]
         public string Address { get; set; } = null!;
         [Required]

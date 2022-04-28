@@ -33,8 +33,11 @@ namespace TechMed.BL.DTOMaster
         public string Designation { get; set; } = null!;
         [Required]
         public string PhoneNumber { get; set; } = null!;
-        [Required]
+        //[Required]
         public string DigitalSignature { get; set; } = null!;
+
+        //[Required]
+        public string DigitalSignatureNewUpdate { get; set; } = null!;
         [Required]
         public string PanNo { get; set; } = null!;
         [Required]
@@ -73,6 +76,7 @@ namespace TechMed.BL.DTOMaster
         [Required]
         public string? PinCode { get; set; }
         public string Photo { get; set; } = null!;
+        public string PhotoNewUpdate { get; set; } = null!;
         [Required]
         public int? IdproofTypeId { get; set; }
         [Required]

@@ -181,13 +181,13 @@ namespace TechMed.BL.Repository.BaseClasses
                     //userDetail.IdproofNumber { get; set; }
                     userDetail.UpdatedBy = doctorDTO.UpdatedBy;
                     userDetail.UpdatedOn = DateTime.Now;
-                    if (!string.IsNullOrEmpty(userDetail.Photo))
+                    if (!string.IsNullOrEmpty(doctorDTO.detailsDTO.PhotoNewUpdate))
                     {
-                        userDetail.Photo = webRootPath + SaveImage(doctorDTO.detailsDTO.Photo, rootPath);
+                        userDetail.Photo = webRootPath + SaveImage(doctorDTO.detailsDTO.PhotoNewUpdate, rootPath);
                     }
-                    if (!string.IsNullOrEmpty(masters.DigitalSignature))
+                    if (!string.IsNullOrEmpty(doctorDTO.DigitalSignatureNewUpdate))
                     {
-                        masters.DigitalSignature = webRootPath + SaveImage(masters.DigitalSignature, rootPath);
+                        masters.DigitalSignature = webRootPath + SaveImage(doctorDTO.DigitalSignatureNewUpdate, rootPath);
                     }
 
                     await _teleMedecineContext.SaveChangesAsync();
@@ -792,7 +792,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 return true;
             }
         }
-        public async Task<DoctorMaster> AddDoctor(DoctorMaster doctorMaster, UserMaster userMaster, UserDetail userDetail, string RootPath, string webRootPath)
+        public async Task<DoctorMaster> AddDoctor(DoctorMaster doctorMaster, UserMaster userMaster, UserDetail userDetail, AddDoctorDTO doctorDTO, string RootPath, string webRootPath)
         {
             int i = 0;
             int j = 0;
@@ -814,17 +814,17 @@ namespace TechMed.BL.Repository.BaseClasses
                     if (i > 0 && userMaster.Id > 0)
                     {
                         doctorMaster.UserId = userMaster.Id;
-                        if (!string.IsNullOrEmpty(doctorMaster.DigitalSignature))
+                        if (!string.IsNullOrEmpty(doctorDTO.DigitalSignature))
                         {
-                            doctorMaster.DigitalSignature = webRootPath + SaveImage(doctorMaster.DigitalSignature, RootPath);
+                            doctorMaster.DigitalSignature = webRootPath + SaveImage(doctorDTO.DigitalSignature, RootPath);
                         }
                         await _teleMedecineContext.DoctorMasters.AddAsync(doctorMaster);
                         j = await _teleMedecineContext.SaveChangesAsync();
 
                         userDetail.UserId = userMaster.Id;
-                        if (!string.IsNullOrEmpty(userDetail.Photo))
+                        if (!string.IsNullOrEmpty(doctorDTO.detailsDTO.Photo))
                         {
-                            userDetail.Photo = webRootPath + SaveImage(userDetail.Photo, RootPath);
+                            userDetail.Photo = webRootPath + SaveImage(doctorDTO.detailsDTO.Photo, RootPath);
                         }
                         await _teleMedecineContext.UserDetails.AddAsync(userDetail);
                         K = await _teleMedecineContext.SaveChangesAsync();
