@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TechMed.BL.DTOMaster;
 using TechMed.BL.Repository.Interfaces;
 using TechMed.BL.ViewModels;
 using TechMed.DL.Models;
@@ -166,6 +167,21 @@ namespace TechMed.BL.Repository.BaseClasses
         {
            bool isExist = _teleMedecineContext.Phcmasters.Any(a => a.Phcname == name);
             return isExist;
+        }
+
+        public async Task<List<PHCMasterDTO>> GetAllPHC()
+        {
+            List<PHCMasterDTO> phcList = new List<PHCMasterDTO>();
+            PHCMasterDTO phcDTO;
+           var phcs = await GetAll();
+            foreach (var phc in phcs)
+            {
+                phcDTO = new PHCMasterDTO();
+                phcDTO.ID = phc.Id;
+                phcDTO.PHCName = phc.Phcname;
+                phcList.Add(phcDTO);
+            }
+            return phcList;
         }
 
 

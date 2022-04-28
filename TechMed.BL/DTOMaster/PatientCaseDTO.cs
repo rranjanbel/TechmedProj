@@ -18,6 +18,7 @@ namespace TechMed.BL.DTOMaster
         public string? FamilyHistory { get; set; }
         public string? Diagnosis { get; set; }
         public string? Instruction { get; set; }
+        public string? Prescription { get; set; }
         public string? Test { get; set; }
         public int CreatedBy { get; set; }     
         public int? UpdatedBy { get; set; }       
