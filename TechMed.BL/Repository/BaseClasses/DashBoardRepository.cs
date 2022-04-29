@@ -80,48 +80,64 @@ namespace TechMed.BL.Repository.BaseClasses
             return list;
         }
 
-        public LoggedUserCountVM GetLoggedUserTypeCount(int usertTypeId)
-        {           
+        public LoggedUserCountVM GetLoggedUserTypeCount(int usertTypeId = 0)
+        {
             LoggedUserCountVM loggedUserReport = new LoggedUserCountVM();
-            var Results = _teleMedecineContext.LoggedUserCount.FromSqlInterpolated($"EXEC [dbo].[GetPHCCount] @UserTypeID ={usertTypeId}");
-            foreach (var item in Results)
-            {               
-                loggedUserReport.Count = item.Count;
-                loggedUserReport.UserTypeName = item.UserTypeName;              
+            if (usertTypeId > 0)
+            {
+                var Results = _teleMedecineContext.LoggedUserCount.FromSqlInterpolated($"EXEC [dbo].[GetPHCCount] @UserTypeID ={usertTypeId}");
+                foreach (var item in Results)
+                {
+                    loggedUserReport.Count = item.Count;
+                    loggedUserReport.UserTypeName = item.UserTypeName;
+                }
             }
             return loggedUserReport;
         }
 
-        public List<SpecializationReportVM> GetTodaysConsultedPatientList()
+        public async Task<List<SpecializationReportVM>> GetTodaysConsultedPatientList()
         {
             List<SpecializationReportVM> specializationReports = new List<SpecializationReportVM>();
-            SpecializationReportVM specializationReport;
-            var Results = _teleMedecineContext.SpecializationReport.FromSqlInterpolated($"EXEC [dbo].[GetVisitedPatientCase]");
-            foreach (var item in Results)
-            {
-                specializationReport = new SpecializationReportVM();
-                specializationReport.Count = item.Count;
-                specializationReport.SpecializationID = item.SpecializationID;
-                specializationReport.Specialization = item.Specialization;
-                specializationReports.Add(specializationReport);
-            }
+            //SpecializationReportVM specializationReport;
+            //var Results = _teleMedecineContext.SpecializationReport.FromSqlInterpolated($"EXEC [dbo].[GetVisitedPatientCase]");
+            //foreach (var item in Results)
+            //{
+            //    specializationReport = new SpecializationReportVM();
+            //    specializationReport.Count = item.Count;
+            //    specializationReport.SpecializationID = item.SpecializationID;
+            //    specializationReport.Specialization = item.Specialization;
+            //    specializationReports.Add(specializationReport);
+            //}
+            specializationReports = await _teleMedecineContext.SpecializationReport.FromSqlRaw("GetVisitedPatientCase").ToListAsync();
             return specializationReports ;
         }
 
-        public List<SpecializationReportVM> GetTodaysRegistoredPatientList()
+        public async Task<List<LoggedUserCountVM>> GetTodaysLoggedUsersCount()
+        {
+            List<LoggedUserCountVM> loggedUserReports = new List<LoggedUserCountVM>();
+
+            loggedUserReports = await _teleMedecineContext.LoggedUserCount.FromSqlRaw("GetAllUserLoginCount").ToListAsync();              
+
+            return loggedUserReports;
+        }
+
+        public async Task<List<SpecializationReportVM>> GetTodaysRegistoredPatientList()
         {
             List<SpecializationReportVM> specializationReports = new List<SpecializationReportVM>();
             SpecializationReportVM specializationReport;
-            var Results = _teleMedecineContext.SpecializationReport.FromSqlInterpolated($"EXEC [dbo].[GetTotalPatientCase]");
-            foreach (var item in Results)
-            {
-                specializationReport = new SpecializationReportVM();
-                specializationReport.Count = item.Count;
-                specializationReport.SpecializationID = item.SpecializationID;
-                specializationReport.Specialization = item.Specialization;
-                specializationReports.Add(specializationReport);
-            }
+            //var Results = _teleMedecineContext.SpecializationReport.FromSqlInterpolated($"EXEC [dbo].[GetTotalPatientCase]");
+            //foreach (var item in Results)
+            //{
+            //    specializationReport = new SpecializationReportVM();
+            //    specializationReport.Count = item.Count;
+            //    specializationReport.SpecializationID = item.SpecializationID;
+            //    specializationReport.Specialization = item.Specialization;
+            //    specializationReports.Add(specializationReport);
+            //}
+            specializationReports = await _teleMedecineContext.SpecializationReport.FromSqlRaw("GetTotalPatientCase").ToListAsync();
             return specializationReports;
         }
+
+     
     }
 }
