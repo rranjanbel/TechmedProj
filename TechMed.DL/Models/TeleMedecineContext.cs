@@ -18,11 +18,13 @@ namespace TechMed.DL.Models
         {
         }
 
+        public virtual DbSet<BlockMaster> BlockMasters { get; set; } = null!;
         public virtual DbSet<CaseFileStatusMaster> CaseFileStatusMasters { get; set; } = null!;
         public virtual DbSet<CdssguidelineMaster> CdssguidelineMasters { get; set; } = null!;
         public virtual DbSet<ClusterMaster> ClusterMasters { get; set; } = null!;
         public virtual DbSet<CountryMaster> CountryMasters { get; set; } = null!;
         public virtual DbSet<DistrictMaster> DistrictMasters { get; set; } = null!;
+        public virtual DbSet<DivisionMaster> DivisionMasters { get; set; } = null!;
         public virtual DbSet<DoctorMaster> DoctorMasters { get; set; } = null!;
         public virtual DbSet<FeedbackQuestionMaster> FeedbackQuestionMasters { get; set; } = null!;
         public virtual DbSet<GenderMaster> GenderMasters { get; set; } = null!;
@@ -56,8 +58,10 @@ namespace TechMed.DL.Models
         public virtual DbSet<UserMaster> UserMasters { get; set; } = null!;
         public virtual DbSet<UserTypeMaster> UserTypeMasters { get; set; } = null!;
         public virtual DbSet<UserUsertype> UserUsertypes { get; set; } = null!;
+        public virtual DbSet<VideoCallTransaction> VideoCallTransactions { get; set; } = null!;
         public virtual DbSet<VitalMaster> VitalMasters { get; set; } = null!;
         public virtual DbSet<ZoneMaster> ZoneMasters { get; set; } = null!;
+
         public virtual DbSet<SPResultGetPatientDetails> SPResultGetPatientDetails { get; set; } = null!;
         public virtual DbSet<SpecializationReportVM> SpecializationReport { get; set; } = null!;
         public virtual DbSet<LoggedUserCountVM> LoggedUserCount { get; set; } = null!;
@@ -77,9 +81,29 @@ namespace TechMed.DL.Models
                 optionsBuilder.UseSqlServer(connectionString);
             }
         }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<BlockMaster>(entity =>
+            {
+                entity.ToTable("BlockMaster");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.BlockName)
+                    .HasMaxLength(150)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CreatedOn).HasColumnType("datetime");
+
+                entity.Property(e => e.DistrictId).HasColumnName("DistrictID");
+
+                entity.Property(e => e.DivisionId).HasColumnName("DivisionID");
+
+                entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
+
+                entity.Property(e => e.ZoneId).HasColumnName("ZoneID");
+            });
+
             modelBuilder.Entity<CaseFileStatusMaster>(entity =>
             {
                 entity.ToTable("CaseFileStatusMaster");
@@ -178,6 +202,25 @@ namespace TechMed.DL.Models
                     .HasForeignKey(d => d.StateId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_DistrictMaster_StateMaster");
+            });
+
+            modelBuilder.Entity<DivisionMaster>(entity =>
+            {
+                entity.ToTable("DivisionMaster");
+
+                entity.Property(e => e.Id)
+                    .ValueGeneratedNever()
+                    .HasColumnName("ID");
+
+                entity.Property(e => e.ClusterId).HasColumnName("ClusterID");
+
+                entity.Property(e => e.CreatedOn).HasColumnType("datetime");
+
+                entity.Property(e => e.DivisionName)
+                    .HasMaxLength(150)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
             });
 
             modelBuilder.Entity<DoctorMaster>(entity =>
@@ -737,10 +780,6 @@ namespace TechMed.DL.Models
                     .HasMaxLength(10)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Photo)
-                    .HasMaxLength(150)
-                    .IsUnicode(false);
-
                 entity.Property(e => e.PinCode)
                     .HasMaxLength(6)
                     .IsUnicode(false)
@@ -1144,6 +1183,12 @@ namespace TechMed.DL.Models
             {
                 entity.ToTable("UserMaster");
 
+                entity.HasIndex(e => e.Email, "IX_UserMaster")
+                    .IsUnique();
+
+                entity.HasIndex(e => e.Mobile, "IX_UserMaster_1")
+                    .IsUnique();
+
                 entity.Property(e => e.Id).HasColumnName("ID");
 
                 entity.Property(e => e.CreatedOn).HasColumnType("datetime");
@@ -1209,6 +1254,37 @@ namespace TechMed.DL.Models
                     .HasForeignKey(d => d.UserTypeId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_UserUsertype_UserTypeMaster");
+            });
+
+            modelBuilder.Entity<VideoCallTransaction>(entity =>
+            {
+                entity.ToTable("VideoCallTransaction");
+
+                entity.Property(e => e.Id)
+                    .ValueGeneratedNever()
+                    .HasColumnName("ID");
+
+                entity.Property(e => e.CreatedOn).HasColumnType("datetime");
+
+                entity.Property(e => e.TransactionId)
+                    .HasMaxLength(150)
+                    .IsUnicode(false)
+                    .HasColumnName("TransactionID");
+
+                entity.Property(e => e.VideoLink)
+                    .HasMaxLength(1000)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.FromUserNavigation)
+                    .WithMany(p => p.VideoCallTransactionFromUserNavigations)
+                    .HasForeignKey(d => d.FromUser)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_VideoCallTransaction_UserMasterFromUser");
+
+                entity.HasOne(d => d.ToUserNavigation)
+                    .WithMany(p => p.VideoCallTransactionToUserNavigations)
+                    .HasForeignKey(d => d.ToUser)
+                    .HasConstraintName("FK_VideoCallTransaction_UserMaster");
             });
 
             modelBuilder.Entity<VitalMaster>(entity =>

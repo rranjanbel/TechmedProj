@@ -17,6 +17,7 @@ namespace TechMed.DL.Models
         public bool? Bd { get; set; }
         public bool? Td { get; set; }
         public string? Dose { get; set; }
+
         public virtual PatientCase PatientCase { get; set; } = null!;
     }
 }

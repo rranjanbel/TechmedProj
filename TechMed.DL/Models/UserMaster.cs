@@ -32,6 +32,8 @@ namespace TechMed.DL.Models
             UserDetailCreatedByNavigations = new HashSet<UserDetail>();
             UserDetailUpdatedByNavigations = new HashSet<UserDetail>();
             UserDetailUsers = new HashSet<UserDetail>();
+            VideoCallTransactionFromUserNavigations = new HashSet<VideoCallTransaction>();
+            VideoCallTransactionToUserNavigations = new HashSet<VideoCallTransaction>();
             ZoneMasterCreatedByNavigations = new HashSet<ZoneMaster>();
             ZoneMasterUpdatedByNavigations = new HashSet<ZoneMaster>();
         }
@@ -77,6 +79,8 @@ namespace TechMed.DL.Models
         public virtual ICollection<UserDetail> UserDetailCreatedByNavigations { get; set; }
         public virtual ICollection<UserDetail> UserDetailUpdatedByNavigations { get; set; }
         public virtual ICollection<UserDetail> UserDetailUsers { get; set; }
+        public virtual ICollection<VideoCallTransaction> VideoCallTransactionFromUserNavigations { get; set; }
+        public virtual ICollection<VideoCallTransaction> VideoCallTransactionToUserNavigations { get; set; }
         public virtual ICollection<ZoneMaster> ZoneMasterCreatedByNavigations { get; set; }
         public virtual ICollection<ZoneMaster> ZoneMasterUpdatedByNavigations { get; set; }
     }
