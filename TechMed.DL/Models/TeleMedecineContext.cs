@@ -81,6 +81,7 @@ namespace TechMed.DL.Models
                 optionsBuilder.UseSqlServer(connectionString);
             }
         }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<BlockMaster>(entity =>
@@ -1260,9 +1261,7 @@ namespace TechMed.DL.Models
             {
                 entity.ToTable("VideoCallTransaction");
 
-                entity.Property(e => e.Id)
-                    .ValueGeneratedNever()
-                    .HasColumnName("ID");
+                entity.Property(e => e.Id).HasColumnName("ID");
 
                 entity.Property(e => e.CreatedOn).HasColumnType("datetime");
 
