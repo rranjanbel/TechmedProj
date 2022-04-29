@@ -8,6 +8,7 @@ namespace TechMed.DL.Models
         public PatientMaster()
         {
             PatientCases = new HashSet<PatientCase>();
+            VideoCallTransactions = new HashSet<VideoCallTransaction>();
         }
 
         public int Id { get; set; }
@@ -45,5 +46,6 @@ namespace TechMed.DL.Models
         public virtual StateMaster State { get; set; } = null!;
         public virtual UserMaster? UpdatedByNavigation { get; set; }
         public virtual ICollection<PatientCase> PatientCases { get; set; }
+        public virtual ICollection<VideoCallTransaction> VideoCallTransactions { get; set; }
     }
 }

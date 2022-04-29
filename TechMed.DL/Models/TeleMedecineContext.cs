@@ -1265,24 +1265,37 @@ namespace TechMed.DL.Models
 
                 entity.Property(e => e.CreatedOn).HasColumnType("datetime");
 
-                entity.Property(e => e.TransactionId)
-                    .HasMaxLength(150)
-                    .IsUnicode(false)
-                    .HasColumnName("TransactionID");
+                entity.Property(e => e.FromUserId).HasColumnName("FromUserID");
 
-                entity.Property(e => e.VideoLink)
+                entity.Property(e => e.PatientId).HasColumnName("PatientID");
+
+                entity.Property(e => e.RecordingLink)
                     .HasMaxLength(1000)
                     .IsUnicode(false);
 
-                entity.HasOne(d => d.FromUserNavigation)
-                    .WithMany(p => p.VideoCallTransactionFromUserNavigations)
-                    .HasForeignKey(d => d.FromUser)
+                entity.Property(e => e.RoomId)
+                    .HasMaxLength(150)
+                    .IsUnicode(false)
+                    .HasColumnName("RoomID");
+
+                entity.Property(e => e.ToUserId).HasColumnName("ToUserID");
+
+                entity.HasOne(d => d.FromUser)
+                    .WithMany(p => p.VideoCallTransactionFromUsers)
+                    .HasForeignKey(d => d.FromUserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_VideoCallTransaction_UserMasterFromUser");
 
-                entity.HasOne(d => d.ToUserNavigation)
-                    .WithMany(p => p.VideoCallTransactionToUserNavigations)
-                    .HasForeignKey(d => d.ToUser)
+                entity.HasOne(d => d.Patient)
+                    .WithMany(p => p.VideoCallTransactions)
+                    .HasForeignKey(d => d.PatientId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_VideoCallTransaction_PatientMaster");
+
+                entity.HasOne(d => d.ToUser)
+                    .WithMany(p => p.VideoCallTransactionToUsers)
+                    .HasForeignKey(d => d.ToUserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_VideoCallTransaction_UserMaster");
             });
 
