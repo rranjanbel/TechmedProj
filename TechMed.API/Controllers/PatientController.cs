@@ -63,7 +63,7 @@ namespace TechMed.API.Controllers
                 if (_patientRepository.IsPatientExist(patientDetails))
                 {
                     _logger.LogInformation($"Add Patient : Patient is already in system.");
-                    ModelState.AddModelError("AddPatient", "Patient name already in system");
+                    ModelState.AddModelError("AddPatient", "Patient name or mobile number is already in system");
                     return StatusCode(404, ModelState);
                 }
                 //newCreatedPatient = await this._patientRepository.Create(patientDetails);
@@ -85,6 +85,7 @@ namespace TechMed.API.Controllers
                 {
                     _logger.LogInformation($"Add Patient : Patient successfully added in the database ");
                     var createdPatient = _mapper.Map<PatientMasterDTO>(newCreatedPatient);
+                    createdPatient.Age = this._patientRepository.GetAge(createdPatient.Dob);
                     return CreatedAtRoute(201, createdPatient);
                 }
             }

@@ -54,6 +54,35 @@ namespace TechMed.API.Controllers
         }
 
 
+        [HttpGet]
+        [Route("LoggedUserInToday")]
+        [ProducesResponseType(200, Type = typeof(List<LoggedUserCountVM>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> LoggedUserInToday()
+        {            
+            List<LoggedUserCountVM> loggedUserCounts = new List<LoggedUserCountVM>();
+            try
+            {
+                loggedUserCounts = await _dashBoardRepository.GetTodaysLoggedUsersCount();
+                if (loggedUserCounts.Count > 0)
+                {
+                    return Ok(loggedUserCounts);
+                }
+                else
+                {
+                    ModelState.AddModelError("LoggedUserInToday", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("LoggedUserInToday", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
+
+
 
         [HttpGet]
         [Route("GetLoggedUserCount")]
@@ -94,12 +123,12 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(SpecializationReportVM))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult GetTodaysTotalPatientCase()
+        public async Task<IActionResult> GetTodaysTotalPatientCase()
         {
             List<SpecializationReportVM> todaysRegistorCase = new List<SpecializationReportVM>();
             try
             {
-                todaysRegistorCase = _dashBoardRepository.GetTodaysRegistoredPatientList();
+                todaysRegistorCase = await _dashBoardRepository.GetTodaysRegistoredPatientList();
                 if (todaysRegistorCase != null)
                 {
                     return Ok(todaysRegistorCase);
@@ -123,12 +152,12 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(SpecializationReportVM))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult GetTodaysPatientQueue()
+        public async Task<IActionResult> GetTodaysPatientQueue()
         {
             List<SpecializationReportVM> todaysRegistorCase = new List<SpecializationReportVM>();
             try
             {
-                todaysRegistorCase = _dashBoardRepository.GetTodaysConsultedPatientList();
+                todaysRegistorCase = await _dashBoardRepository.GetTodaysConsultedPatientList();
                 if (todaysRegistorCase != null)
                 {
                     return Ok(todaysRegistorCase);

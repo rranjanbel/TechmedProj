@@ -10,9 +10,10 @@ namespace TechMed.BL.Repository.Interfaces
 {
     public interface IDashBoardRepository
     {
-        public Task<List<DoctorDTO>> DoctorsLoggedInToday(DoctorsLoggedInTodayVM doctorsLoggedInTodayVM);
-        List<SpecializationReportVM> GetTodaysRegistoredPatientList();
-        List<SpecializationReportVM> GetTodaysConsultedPatientList();
+        Task<List<DoctorDTO>> DoctorsLoggedInToday(DoctorsLoggedInTodayVM doctorsLoggedInTodayVM);
+        Task<List<SpecializationReportVM>> GetTodaysRegistoredPatientList();
+        Task<List<SpecializationReportVM>> GetTodaysConsultedPatientList();
         LoggedUserCountVM GetLoggedUserTypeCount(int usertTypeId);
+        Task<List<LoggedUserCountVM>> GetTodaysLoggedUsersCount();
     }
 }
