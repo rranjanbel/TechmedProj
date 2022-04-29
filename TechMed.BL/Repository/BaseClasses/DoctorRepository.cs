@@ -355,61 +355,63 @@ namespace TechMed.BL.Repository.BaseClasses
             {
                 Phcmaster phcmaster = await _teleMedecineContext.Phcmasters.Where(a => a.UserId == patientQueue.AssignedBy).FirstOrDefaultAsync();
                 UserDetail userDetail = await _teleMedecineContext.UserDetails.Where(a => a.UserId == patientQueue.AssignedBy).FirstOrDefaultAsync();
-
-                getPatientCaseDetails.PatientName = patientQueue.PatientCase.Patient.FirstName + " " + patientQueue.PatientCase.Patient.LastName;
-                getPatientCaseDetails.PatientId = patientQueue.PatientCase.Patient.PatientId;
-                getPatientCaseDetails.CaseFileNumber = patientQueue.PatientCase.CaseFileNumber;
-                getPatientCaseDetails.CaseHeading = patientQueue.PatientCase.CaseHeading;
-                getPatientCaseDetails.Symptom = patientQueue.PatientCase.Symptom;
-                getPatientCaseDetails.Observation = patientQueue.PatientCase.Observation;
-                getPatientCaseDetails.Allergies = patientQueue.PatientCase.Allergies;
-                getPatientCaseDetails.FamilyHistory = patientQueue.PatientCase.FamilyHistory;
-                getPatientCaseDetails.UpdatedBy = patientQueue.PatientCase.UpdatedBy;
-                getPatientCaseDetails.UpdatedOn = patientQueue.PatientCase.UpdatedOn;
-                getPatientCaseDetails.CreatedBy = patientQueue.PatientCase.CreatedBy;
-                getPatientCaseDetails.CreatedOn = patientQueue.PatientCase.CreatedOn;
-                getPatientCaseDetails.maritalstatus = userDetail.IsMarried;
-
-                getPatientCaseDetails.FirstName = patientQueue.PatientCase.Patient.FirstName;
-                getPatientCaseDetails.LastName = patientQueue.PatientCase.Patient.LastName;
-                getPatientCaseDetails.PhoneNumber = patientQueue.PatientCase.Patient.PhoneNumber;
-                getPatientCaseDetails.Idproof = patientQueue.PatientCase.Patient.Idproof.IdproofType;
-                getPatientCaseDetails.IdproofNumber = patientQueue.PatientCase.Patient.IdproofNumber;
-                getPatientCaseDetails.Gender = patientQueue.PatientCase.Patient.Gender.Gender;
-                getPatientCaseDetails.Photo = patientQueue.PatientCase.Patient.Photo;
-                getPatientCaseDetails.Age = CommanFunction.GetAge(patientQueue.PatientCase.Patient.Dob);
-
-
-                getPatientCaseDetails.PHCName = phcmaster.Phcname;
-                getPatientCaseDetails.MOName = phcmaster.Moname;
-                getPatientCaseDetails.PHCID = phcmaster.Id;
-
-
-                foreach (var item in patientCaseDocuments)
+                if (phcmaster != null)
                 {
-                    getPatientCaseDetails.getPatientCaseDocumentDTOs.Add(
-                        new PatientCaseDocDTO
-                        {
-                            Description = item.Description,
-                            DocumentName = item.DocumentName,
-                            DocumentPath = item.DocumentPath,
-                            Id = item.Id,
-                        }
-                        );
-                }
-                foreach (var item in vitalMasters)
-                {
-                    getPatientCaseDetails.getPatientCaseVitalsDTOs.Add(
-                        new GetPatientCaseVitalsDTO
-                        {
-                            Date = item.Date,
-                            Unit = item.Vital.Unit,
-                            Value = item.Value,
-                            Vital = item.Vital.Vital
-                        }
-                        );
-                }
+                    getPatientCaseDetails.PatientCaseID = patientQueue.PatientCaseId;
+                    getPatientCaseDetails.ID = patientQueue.PatientCase.PatientId;
+                    getPatientCaseDetails.PatientName = patientQueue.PatientCase.Patient.FirstName + " " + patientQueue.PatientCase.Patient.LastName;
+                    getPatientCaseDetails.PatientId = patientQueue.PatientCase.Patient.PatientId;
+                    getPatientCaseDetails.CaseFileNumber = patientQueue.PatientCase.CaseFileNumber;
+                    getPatientCaseDetails.CaseHeading = patientQueue.PatientCase.CaseHeading;
+                    getPatientCaseDetails.Symptom = patientQueue.PatientCase.Symptom;
+                    getPatientCaseDetails.Observation = patientQueue.PatientCase.Observation;
+                    getPatientCaseDetails.Allergies = patientQueue.PatientCase.Allergies;
+                    getPatientCaseDetails.FamilyHistory = patientQueue.PatientCase.FamilyHistory;
+                    getPatientCaseDetails.UpdatedBy = patientQueue.PatientCase.UpdatedBy;
+                    getPatientCaseDetails.UpdatedOn = patientQueue.PatientCase.UpdatedOn;
+                    getPatientCaseDetails.CreatedBy = patientQueue.PatientCase.CreatedBy;
+                    getPatientCaseDetails.CreatedOn = patientQueue.PatientCase.CreatedOn;
+                    getPatientCaseDetails.maritalstatus = null;
 
+                    getPatientCaseDetails.FirstName = patientQueue.PatientCase.Patient.FirstName;
+                    getPatientCaseDetails.LastName = patientQueue.PatientCase.Patient.LastName;
+                    getPatientCaseDetails.PhoneNumber = patientQueue.PatientCase.Patient.PhoneNumber;
+                    getPatientCaseDetails.Idproof = patientQueue.PatientCase.Patient.Idproof.IdproofType;
+                    getPatientCaseDetails.IdproofNumber = patientQueue.PatientCase.Patient.IdproofNumber;
+                    getPatientCaseDetails.Gender = patientQueue.PatientCase.Patient.Gender.Gender;
+                    getPatientCaseDetails.Photo = patientQueue.PatientCase.Patient.Photo;
+                    getPatientCaseDetails.Age = CommanFunction.GetAge(patientQueue.PatientCase.Patient.Dob);
+
+
+                    getPatientCaseDetails.PHCName = phcmaster.Phcname;
+                    getPatientCaseDetails.MOName = phcmaster.Moname;
+                    getPatientCaseDetails.PHCID = phcmaster.Id;
+
+                    foreach (var item in patientCaseDocuments)
+                    {
+                        getPatientCaseDetails.getPatientCaseDocumentDTOs.Add(
+                            new PatientCaseDocDTO
+                            {
+                                Description = item.Description,
+                                DocumentName = item.DocumentName,
+                                DocumentPath = item.DocumentPath,
+                                Id = item.Id,
+                            }
+                            );
+                    }
+                    foreach (var item in vitalMasters)
+                    {
+                        getPatientCaseDetails.getPatientCaseVitalsDTOs.Add(
+                            new GetPatientCaseVitalsDTO
+                            {
+                                Date = item.Date,
+                                Unit = item.Vital.Unit,
+                                Value = item.Value,
+                                Vital = item.Vital.Vital
+                            }
+                            );
+                    }
+                }
             }
 
             return getPatientCaseDetails;
