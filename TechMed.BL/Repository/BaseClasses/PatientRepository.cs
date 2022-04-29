@@ -216,7 +216,7 @@ namespace TechMed.BL.Repository.BaseClasses
 
         public bool IsPatientExist(PatientMaster patientMaster)
         {
-            bool result = _teleMedecineContext.PatientMasters.Any(a => a.FirstName == patientMaster.FirstName && a.LastName == patientMaster.LastName && a.MobileNo == patientMaster.MobileNo);
+            bool result = _teleMedecineContext.PatientMasters.Any(a => a.FirstName == patientMaster.FirstName && a.LastName == patientMaster.LastName || a.MobileNo == patientMaster.MobileNo);
             return result;
         }
 
