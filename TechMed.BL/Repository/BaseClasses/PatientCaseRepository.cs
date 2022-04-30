@@ -413,16 +413,16 @@ namespace TechMed.BL.Repository.BaseClasses
                         outPatientReferToDoctorVM.PatientCaseID = patientQueue.PatientCaseId;
                         outPatientReferToDoctorVM.PHCID = patientQueue.AssignedBy;
 
-                        //PatientCaseQueDetail patientCaseQue = GetPatientInfo(patientQueue.PatientCaseId);
-                        //message = patientCaseQue.PHCName + "  PHC center has an updated information for Patient Name :" + patientCaseQue.PatientName + "(" + patientCaseQue.PatientID + ")";
-                        message = "PHC center has an updated information for Patient case ID : (" + patientQueue.PatientCaseId +")";
+                        PatientCaseQueDetail patientCaseQue = GetPatientInfo(patientQueue.PatientCaseId);
+                        message = patientCaseQue.PHCName + "  PHC center has an updated information for Patient Name :" + patientCaseQue.PatientName + "(" + patientCaseQue.PatientID + ")";
+                       // message = "PHC center has an updated information for Patient case ID : (" + patientQueue.PatientCaseId + ")";
                         Notification notification = new Notification();
-                        notification.ToUser = patientQueue.AssignedDoctorId;
+                        notification.ToUser = patientCaseQue.DoctorUserID;
                         notification.FromUser = patientQueue.AssignedBy;
                         notification.Message = message;
                         notification.CreatedOn = patientQueue.AssignedOn;
                         notification.SeenOn = patientQueue.AssignedOn;
-                        notification.IsSeen = true;
+                        notification.IsSeen = false;
                         _teleMedecineContext.Notifications.Add(notification);
                         int j = _teleMedecineContext.SaveChanges();
 
@@ -475,6 +475,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 patientCaseQue.PatientQueueId = item.PatientQueueId;
                 patientCaseQue.PatientCaseID = item.PatientCaseID;
                 patientCaseQue.PatientCreatedBy = item.PatientCreatedBy;
+                patientCaseQue.DoctorUserID = item.DoctorUserID;
             }
 
             return patientCaseQue;
