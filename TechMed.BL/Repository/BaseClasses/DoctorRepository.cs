@@ -52,7 +52,7 @@ namespace TechMed.BL.Repository.BaseClasses
         }
         public async Task<List<MedicineMasterDTO>> GetListOfMedicine()
         {
-            List<MedicineMaster> masters = await _teleMedecineContext.MedicineMasters.ToListAsync();
+            List<MedicineMaster> masters = await _teleMedecineContext.MedicineMasters.OrderByDescending(a=>a.Id).ToListAsync();
             var DTOList = new List<MedicineMasterDTO>();
             foreach (var item in masters)
             {
