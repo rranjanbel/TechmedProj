@@ -8,11 +8,24 @@ namespace TechMed.BL.CommanClassesAndFunctions
 {
     public class CommanFunction
     {
-        public static int GetAge(DateTime dob)
+        public static int GetAge(DateTime? dob)
         {
             int age = 0;
-            age = DateTime.Now.AddYears(-dob.Year).Year;
-            return age;
+            if (dob == null)
+            {
+                return age;
+            }
+            else
+            {
+                DateTime dobNew = Convert.ToDateTime(dob);
+                if (dobNew.Year == DateTime.Now.Year)
+                {
+                    return age;
+                }
+                age = DateTime.Now.AddYears(-dobNew.Year).Year;
+                return age;
+            }
+
         }
     }
 }

@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace TechMed.DL.Models
+namespace TechMed.BL.DTOMaster
 {
-    public partial class PatientCaseMedicine
+    public class PatientCaseMedicineDTO
     {
         public long Id { get; set; }
         public long PatientCaseId { get; set; }
@@ -17,7 +20,5 @@ namespace TechMed.DL.Models
         public bool? Bd { get; set; }
         public bool? Td { get; set; }
         public string? Dose { get; set; }
-
-        public virtual PatientCase PatientCase { get; set; } = null!;
     }
 }

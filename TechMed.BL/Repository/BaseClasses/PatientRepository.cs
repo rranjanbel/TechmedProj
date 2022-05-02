@@ -10,6 +10,7 @@ using TechMed.BL.CommanClassesAndFunctions;
 using TechMed.BL.Repository.Interfaces;
 using TechMed.BL.ViewModels;
 using TechMed.DL.Models;
+using TechMed.DL.ViewModel;
 
 namespace TechMed.BL.Repository.BaseClasses
 {
@@ -34,10 +35,10 @@ namespace TechMed.BL.Repository.BaseClasses
                 //Setting setting = new Setting(); 
                 if (patientMaster != null)
                 {
-                    if (patientMaster.CreatedBy == 0)
-                        patientMaster.CreatedBy = 2;
-                    if (patientMaster.UpdatedBy == 0)
-                        patientMaster.UpdatedBy = 2;
+                    //if (patientMaster.CreatedBy == 0)
+                    //    patientMaster.CreatedBy = 2;
+                    //if (patientMaster.UpdatedBy == 0)
+                    //    patientMaster.UpdatedBy = 2;
                     patientMaster.CreatedOn = DateTime.Now;
                     patientMaster.UpdatedOn = DateTime.Now;
                     // patientMaster.PatientId = UtilityMaster.GetPatientNumber();
@@ -216,7 +217,7 @@ namespace TechMed.BL.Repository.BaseClasses
 
         public bool IsPatientExist(PatientMaster patientMaster)
         {
-            bool result = _teleMedecineContext.PatientMasters.Any(a => a.FirstName == patientMaster.FirstName && a.LastName == patientMaster.LastName && a.MobileNo == patientMaster.MobileNo);
+            bool result = _teleMedecineContext.PatientMasters.Any(a => a.FirstName == patientMaster.FirstName && a.LastName == patientMaster.LastName || a.MobileNo == patientMaster.MobileNo);
             return result;
         }
 
@@ -328,7 +329,7 @@ namespace TechMed.BL.Repository.BaseClasses
         {
             DateTime dtToday = DateTime.Now.Date;
             DateTime dtOfBirth = dateofbirth.Date;
-            TimeSpan diffResult = dtToday - dtToday;
+            TimeSpan diffResult = dtToday - dtOfBirth;
             double totalDays = diffResult.TotalDays;
             if (diffResult != TimeSpan.Zero)
             {
@@ -473,6 +474,62 @@ namespace TechMed.BL.Repository.BaseClasses
             }
             myfilename = myfilename + ".jpeg";
             return myfilename;
+        }
+
+        public List<PatientSearchResultVM> GetAdvanceSearchPatient(AdvanceSearchPatientVM searchParameter)
+        {
+            List<PatientSearchResultVM> patientSearchResults = new List<PatientSearchResultVM>();
+            PatientSearchResultVM searchResult;
+            int? PHCID = 0;
+            string? PatientName = string.Empty;
+            long ? PatientId = 0;
+            string? contractNo = string.Empty;
+            int? genderId = 0;
+            if (searchParameter != null)
+            {
+                if (searchParameter.PHCID > 0)
+                    PHCID = searchParameter.PHCID;
+                else
+                    PHCID = null;
+                if (searchParameter.PatientName == "")
+                    PatientName = null;
+                else
+                    PatientName = searchParameter.PatientName;
+                if(searchParameter.PatientName.ToLower().Trim() == "string")
+                    PatientName = null;
+                else
+                    PatientName = searchParameter.PatientName;
+                if (searchParameter.PatientUID > 0)
+                    PatientId = searchParameter.PatientUID;
+                else
+                    PatientId = null;
+                if (searchParameter.ContactNo == "")
+                    contractNo = null; 
+                else
+                    contractNo = searchParameter.ContactNo;
+                if (searchParameter.ContactNo.ToLower().Trim() == "string")
+                    contractNo = null;
+                else
+                    contractNo = searchParameter.ContactNo;
+                if (searchParameter.GenderId > 0)
+                    genderId = searchParameter.GenderId;
+                else
+                    genderId = null;
+            }
+           
+            var Results = _teleMedecineContext.PatientSearchResults
+                .FromSqlInterpolated($"EXEC [dbo].[AdvanceSearchOfPatients] @PHCID ={PHCID},@PatientName={PatientName},@PatientUID={PatientId},@ContactNo={contractNo},@GenderId={genderId}");
+            foreach (var item in Results)
+            {
+                searchResult = new PatientSearchResultVM();              
+                searchResult.PatientName = item.PatientName;
+                searchResult.PatientID = item.PatientID;
+                searchResult.Gender = item.Gender;
+                searchResult.Age = item.Age;
+                searchResult.PhoneNumber = item.PhoneNumber;
+                patientSearchResults.Add(searchResult);
+            };
+            return patientSearchResults;
         }
     }
 }

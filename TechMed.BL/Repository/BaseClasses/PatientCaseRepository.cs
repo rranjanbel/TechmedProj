@@ -11,7 +11,7 @@ using TechMed.BL.DTOMaster;
 using TechMed.BL.Repository.Interfaces;
 using TechMed.BL.ViewModels;
 using TechMed.DL.Models;
-
+using TechMed.DL.ViewModel;
 
 namespace TechMed.BL.Repository.BaseClasses
 {
@@ -45,7 +45,8 @@ namespace TechMed.BL.Repository.BaseClasses
         }
 
         public long GetCaseFileNumber()
-        {            Setting setting = new Setting();
+        {
+            Setting setting = new Setting();
             Int64 currentNo = 0;
             Int64 casefileSerNo = 0;
             casefileSerNo = _teleMedecineContext.Settings.Select(a => a.CaseFileNumber).FirstOrDefault();
@@ -116,86 +117,114 @@ namespace TechMed.BL.Repository.BaseClasses
 
                 patientCase = (PatientCaseVM)phcresult;
             }
-          
+
             return patientCase;
         }
 
         public async Task<PatientCaseWithDoctorVM> GetPatientQueueDetails(int PHCID, int PatientID)
         {
             PatientCaseWithDoctorVM patientCaseQueue = new PatientCaseWithDoctorVM();
-            if (PHCID > 0 && PatientID > 0)
+            List<PatientCaseMedicineDTO> patientCaseMedicineDTOs = new List<PatientCaseMedicineDTO>();
+            List<PatientCaseMedicine> patientCaseMedicines = new List<PatientCaseMedicine>();
+            PatientCaseMedicineDTO patientCaseMedicine;
+            try
             {
+                if (PHCID > 0 && PatientID > 0)
+                {
 
-                var patientCaseQueueresult = await (from pm in _teleMedecineContext.PatientMasters
-                                       where pm.Id == PatientID && pm.Phcid == PHCID
-                                       join um in _teleMedecineContext.UserMasters on pm.CreatedBy equals um.Id
-                                       join pc in _teleMedecineContext.PatientCases on pm.Id equals pc.PatientId into pcase
-                                       from pcdet in pcase.DefaultIfEmpty()
-                                       join pq in _teleMedecineContext.PatientQueues on pcdet.Id equals pq.PatientCaseId into pque
-                                       from pques in pque.DefaultIfEmpty()
-                                       join dm in _teleMedecineContext.DoctorMasters on pques.AssignedDoctorId equals dm.Id
-                                       join du in _teleMedecineContext.UserMasters on dm.UserId equals du.Id
-                                       join ud in _teleMedecineContext.UserDetails on du.Id equals ud.UserId into udet
-                                       from userdet in udet.DefaultIfEmpty()
-                                       join cs in _teleMedecineContext.CaseFileStatusMasters on pques.CaseFileStatusId equals cs.Id
-                                       join sp in _teleMedecineContext.SpecializationMasters on dm.SpecializationId equals sp.Id
-                                       select new PatientCaseWithDoctorVM
-                                       {
-                                           PatientID = pm.Id,
-                                           PHCId = PHCID,
-                                           PHCUserId = um.Id,
-                                           patientMaster = _mapper.Map<PatientMasterDTO>(pm),
-                                           patientCase = _mapper.Map<PatientCaseDTO>(pcdet),                                         
-                                           patientCaseQueueVM = new PatientCaseQueueVM
-                                           {
-                                               PatientCaseID = pcdet.Id,
-                                               DoctorID = pques.AssignedDoctorId,
-                                               DocterName = userdet.FirstName+" "+userdet.LastName,
-                                               CaseFileStatusID = pques.CaseFileStatusId,
-                                               CaseStatus = cs.FileStatus,
-                                               AssignedBy = pques.AssignedBy,
-                                               AssigneeName = um.Name,
-                                               AssignedOn = pques.AssignedOn,
-                                               Qualification = dm.Qualification,
-                                               Specialization = sp.Specialization,
-                                               StatusOn = pques.StatusOn,
-                                           }
+                    var patientCaseQueueresult = await (from pm in _teleMedecineContext.PatientMasters
+                                                        where pm.Id == PatientID && pm.Phcid == PHCID
+                                                        join um in _teleMedecineContext.UserMasters on pm.CreatedBy equals um.Id
+                                                        join pc in _teleMedecineContext.PatientCases on pm.Id equals pc.PatientId into pcase
+                                                        from pcdet in pcase.DefaultIfEmpty()
+                                                        join pq in _teleMedecineContext.PatientQueues on pcdet.Id equals pq.PatientCaseId into pque
+                                                        from pques in pque.DefaultIfEmpty()
+                                                        join dm in _teleMedecineContext.DoctorMasters on pques.AssignedDoctorId equals dm.Id
+                                                        join du in _teleMedecineContext.UserMasters on dm.UserId equals du.Id
+                                                        join ud in _teleMedecineContext.UserDetails on du.Id equals ud.UserId into udet
+                                                        from userdet in udet.DefaultIfEmpty()
+                                                        join cs in _teleMedecineContext.CaseFileStatusMasters on pques.CaseFileStatusId equals cs.Id
+                                                        join sp in _teleMedecineContext.SpecializationMasters on dm.SpecializationId equals sp.Id
+                                                        //join pcm in _teleMedecineContext.PatientCaseMedicines on pcdet.Id equals pcm.PatientCaseId into pcmed
+                                                        //from pcmedicine in pcmed.DefaultIfEmpty()
+                                                        select new PatientCaseWithDoctorVM
+                                                        {
+                                                            PatientID = pm.Id,
+                                                            PHCId = PHCID,
+                                                            PHCUserId = um.Id,
+                                                            DoctorID = dm.UserId,
+                                                            PatientCaseID = pcdet.Id,
+                                                            patientMaster = _mapper.Map<PatientMasterDTO>(pm),
+                                                            patientCase = _mapper.Map<PatientCaseDTO>(pcdet),
+                                                            patientCaseQueueVM = new PatientCaseQueueVM
+                                                            {
+                                                                PatientCaseID = pcdet.Id,
+                                                                DoctorID = pques.AssignedDoctorId,
+                                                                DocterName = userdet.FirstName + " " + userdet.LastName,
+                                                                CaseFileStatusID = pques.CaseFileStatusId,
+                                                                CaseStatus = cs.FileStatus,
+                                                                AssignedBy = pques.AssignedBy,
+                                                                AssigneeName = um.Name,
+                                                                AssignedOn = pques.AssignedOn,
+                                                                Qualification = dm.Qualification,
+                                                                Specialization = sp.Specialization,
+                                                                StatusOn = pques.StatusOn,
+                                                                PhoneNo = dm.PhoneNumber,
+                                                                DrImagePath = userdet.Photo
+                                                            },
+                                                            patientCaseMedicines = patientCaseMedicineDTOs
 
-                                       }).FirstOrDefaultAsync();
+                                                        }).FirstOrDefaultAsync();
 
-                patientCaseQueue = (PatientCaseWithDoctorVM)patientCaseQueueresult;
+                    patientCaseQueue = (PatientCaseWithDoctorVM)patientCaseQueueresult;
+
+                    patientCaseMedicines = _teleMedecineContext.PatientCaseMedicines.Where(a => a.PatientCaseId == patientCaseQueue.PatientCaseID).ToList();
+                    foreach (var item in patientCaseMedicines)
+                    {
+                        patientCaseMedicine = new PatientCaseMedicineDTO();
+                        patientCaseMedicine = _mapper.Map<PatientCaseMedicineDTO>(item);
+                        patientCaseMedicineDTOs.Add(patientCaseMedicine);
+                    }
+                    patientCaseQueue.patientCaseMedicines = patientCaseMedicineDTOs;
+                }
             }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
+                throw;
+            }
+
 
             return patientCaseQueue;
         }
 
         public bool IsPatientCaseExist(PatientCaseCreateVM patientCase)
         {
-           // We will dicide and complete the function later
-            if(patientCase == null)
+            // We will dicide and complete the function later
+            if (patientCase == null)
             {
                 return true;
             }
             //       _teleMedecineContext.PatientCases.Any( a => a.PatientId == patientCase.PatientID && a.CreatedOn)
             return false;
-            
+
         }
 
         public async Task<PatientCaseDetailsVM> PostPatientCaseDetails(PatientCaseDetailsVM patientCaseVM)
         {
             PatientCaseDetailsVM patientcasecreateVM = new PatientCaseDetailsVM();
-            PatientCase patientCase ;
+            PatientCase patientCase;
             PatientCaseVital patientCaseVital;
             PatientCaseDocument patientCaseDocument;
             int i = 0;
             int j = 0;
             int k = 0;
             int l = 0;
-            if(patientCaseVM != null)
+            if (patientCaseVM != null)
             {
-                if(patientCaseVM.PatientID != 0)
+                if (patientCaseVM.PatientID != 0)
                 {
-                    if(patientCaseVM.patientCase != null)
+                    if (patientCaseVM.patientCase != null)
                     {
                         try
                         {
@@ -299,7 +328,7 @@ namespace TechMed.BL.Repository.BaseClasses
                             _logger.LogInformation($"Exception when update and add patient case, vital and report doc {ex.Message}");
 
                         }
-                       
+
                         return patientcasecreateVM;
                     }
                     else
@@ -326,17 +355,17 @@ namespace TechMed.BL.Repository.BaseClasses
             PatientFeedbackDTO updatedFeedback = new PatientFeedbackDTO();
             PatientCaseFeedback feedback = new PatientCaseFeedback();
             if (patientFeedback != null)
-            {                
+            {
                 bool isPatientCaseInSystem = await IsPatientCaseExist(patientFeedback.PatientCaseId);
 
-                if(isPatientCaseInSystem)
+                if (isPatientCaseInSystem)
                 {
                     feedback = _mapper.Map<PatientCaseFeedback>(patientFeedback);
                     feedback.Question = "NA";
                     feedback.Datetime = DateTime.Now;
                     _teleMedecineContext.PatientCaseFeedbacks.Add(feedback);
                     int i = _teleMedecineContext.SaveChanges();
-                    if(i > 0)
+                    if (i > 0)
                     {
                         updatedFeedback = _mapper.Map<PatientFeedbackDTO>(feedback);
                         return updatedFeedback;
@@ -362,38 +391,62 @@ namespace TechMed.BL.Repository.BaseClasses
         {
             PatientReferToDoctorVM outPatientReferToDoctorVM = new PatientReferToDoctorVM();
             PatientQueue patientQueue = new PatientQueue();
-            if (patientReferToDoctorVM != null)
+            string message = string.Empty;
+            try
             {
-                patientQueue.PatientCaseId = patientReferToDoctorVM.PatientCaseID;
-                patientQueue.AssignedDoctorId = patientReferToDoctorVM.AssignedDocterID;                
-                patientQueue.AssignedBy = patientReferToDoctorVM.PHCID;
-                patientQueue.CaseFileStatusId = await GetCaseFileStatus();              
-                patientQueue.StatusOn   = DateTime.Now;
-                patientQueue.Comment = "Assigned by PHC";
-                patientQueue.AssignedOn = DateTime.Now;
-
-                _teleMedecineContext.PatientQueues.Add(patientQueue);
-                int i = _teleMedecineContext.SaveChanges();
-
-                if(i > 0 && patientQueue.Id > 0)
+                if (patientReferToDoctorVM != null)
                 {
-                    outPatientReferToDoctorVM.AssignedDocterID = patientQueue.AssignedDoctorId;
-                    outPatientReferToDoctorVM.PatientCaseID = patientQueue.PatientCaseId;
-                    outPatientReferToDoctorVM.PHCID = patientQueue.AssignedBy; 
-                    return outPatientReferToDoctorVM;
+                    patientQueue.PatientCaseId = patientReferToDoctorVM.PatientCaseID;
+                    patientQueue.AssignedDoctorId = patientReferToDoctorVM.AssignedDocterID;
+                    patientQueue.AssignedBy = patientReferToDoctorVM.PHCID;
+                    patientQueue.CaseFileStatusId = await GetCaseFileStatus();
+                    patientQueue.StatusOn = DateTime.Now;
+                    patientQueue.Comment = "Assigned by PHC";
+                    patientQueue.AssignedOn = DateTime.Now;
+
+                    _teleMedecineContext.PatientQueues.Add(patientQueue);
+                    int i = _teleMedecineContext.SaveChanges();
+
+                    if (i > 0 && patientQueue.Id > 0)
+                    {
+                        outPatientReferToDoctorVM.AssignedDocterID = patientQueue.AssignedDoctorId;
+                        outPatientReferToDoctorVM.PatientCaseID = patientQueue.PatientCaseId;
+                        outPatientReferToDoctorVM.PHCID = patientQueue.AssignedBy;
+
+                        PatientCaseQueDetail patientCaseQue = GetPatientInfo(patientQueue.PatientCaseId);
+                        message = patientCaseQue.PHCName + "  PHC center has an updated information for Patient Name :" + patientCaseQue.PatientName + "(" + patientCaseQue.PatientID + ")";
+                       // message = "PHC center has an updated information for Patient case ID : (" + patientQueue.PatientCaseId + ")";
+                        Notification notification = new Notification();
+                        notification.ToUser = patientCaseQue.DoctorUserID;
+                        notification.FromUser = patientQueue.AssignedBy;
+                        notification.Message = message;
+                        notification.CreatedOn = patientQueue.AssignedOn;
+                        notification.SeenOn = patientQueue.AssignedOn;
+                        notification.IsSeen = false;
+                        _teleMedecineContext.Notifications.Add(notification);
+                        int j = _teleMedecineContext.SaveChanges();
+
+                        return outPatientReferToDoctorVM;
+                    }
+                    else
+                        return outPatientReferToDoctorVM;
+
                 }
                 else
-                     return outPatientReferToDoctorVM;
-
+                    return outPatientReferToDoctorVM;
             }
-            else
-                return outPatientReferToDoctorVM;
+            catch (Exception ex)
+            {
+                string messageExp = ex.Message;
+                throw;
+            }
+           
         }
 
         private async Task<int> GetCaseFileStatus()
         {
             int caseFileStatus = 0;
-            caseFileStatus = await _teleMedecineContext.CaseFileStatusMasters.Where(a => a.FileStatus.Contains("Queued")).Select(a => a.Id).FirstOrDefaultAsync();
+            caseFileStatus = await _teleMedecineContext.CaseFileStatusMasters.Where(a => a.FileStatus.Contains("Queued")).Select(a => a.Id).FirstOrDefaultAsync();          
             return caseFileStatus;
         }
 
@@ -403,5 +456,30 @@ namespace TechMed.BL.Repository.BaseClasses
             isPatientCaseCreated = await _teleMedecineContext.PatientCases.AnyAsync(a => a.Id == patientCaseID);
             return isPatientCaseCreated;
         }
+
+        public PatientCaseQueDetail GetPatientInfo(long patientCaseID)
+        {
+            PatientCaseQueDetail patientCaseQue = new PatientCaseQueDetail();
+            //patientCaseQue = _teleMedecineContext.PatientCaseQueDetails.FromSqlRaw("PatientCaseQueDetails", patientCaseID).FirstOrDefault();
+            var Results = _teleMedecineContext.PatientCaseQueDetails.FromSqlInterpolated($"EXEC [dbo].[GetPatientCaseDetails] @PatientCaseID ={patientCaseID}");
+            foreach (var item in Results)
+            {
+                patientCaseQue.PHCName = item.PHCName;
+                patientCaseQue.PatientName = item.PatientName;
+                patientCaseQue.Docter = item.Docter;
+                patientCaseQue.PHCID =item.PHCID;
+                patientCaseQue.AssignedOn = item.AssignedOn;
+                patientCaseQue.Cluster = item.Cluster;
+                patientCaseQue.Zone = item.Zone;
+                patientCaseQue.PatientID = item.PatientID;
+                patientCaseQue.PatientQueueId = item.PatientQueueId;
+                patientCaseQue.PatientCaseID = item.PatientCaseID;
+                patientCaseQue.PatientCreatedBy = item.PatientCreatedBy;
+                patientCaseQue.DoctorUserID = item.DoctorUserID;
+            }
+
+            return patientCaseQue;
+        }
     }
+
 }

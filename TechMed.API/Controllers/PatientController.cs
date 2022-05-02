@@ -9,6 +9,7 @@ using TechMed.BL.Repository.Interfaces;
 using TechMed.BL.ViewModels;
 using TechMed.DL.Models;
 using System.IO;
+using TechMed.DL.ViewModel;
 
 namespace TechMed.API.Controllers
 {
@@ -63,7 +64,7 @@ namespace TechMed.API.Controllers
                 if (_patientRepository.IsPatientExist(patientDetails))
                 {
                     _logger.LogInformation($"Add Patient : Patient is already in system.");
-                    ModelState.AddModelError("AddPatient", "Patient name already in system");
+                    ModelState.AddModelError("AddPatient", "Patient name or mobile number is already in system");
                     return StatusCode(404, ModelState);
                 }
                 //newCreatedPatient = await this._patientRepository.Create(patientDetails);
@@ -85,6 +86,7 @@ namespace TechMed.API.Controllers
                 {
                     _logger.LogInformation($"Add Patient : Patient successfully added in the database ");
                     var createdPatient = _mapper.Map<PatientMasterDTO>(newCreatedPatient);
+                    createdPatient.Age = this._patientRepository.GetAge(createdPatient.Dob);
                     return CreatedAtRoute(201, createdPatient);
                 }
             }
@@ -241,8 +243,41 @@ namespace TechMed.API.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("AdvanceSearchResult")]
+        [ProducesResponseType(201, Type = typeof(List<PatientSearchResultVM>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult AdvanceSearchResult([FromBody] AdvanceSearchPatientVM searchParameter)
+        {
+            List<PatientSearchResultVM> patientSearchResults = new List<PatientSearchResultVM>();
+            try
+            {
+                patientSearchResults = this._patientRepository.GetAdvanceSearchPatient(searchParameter);
 
-      
+
+                if (searchParameter == null)
+                {
+                    ModelState.AddModelError("AdvanceSearchResult", $"Serrch Parameter is null");
+                    return StatusCode(404, ModelState);
+                }
+                else
+                {
+                    return StatusCode(200, patientSearchResults);
+                }               
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("AdvanceSearchResult", $"Something went wrong when get yesterday's patient list {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+          
+
+        }
+
+
+
+
 
 
     }

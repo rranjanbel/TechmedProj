@@ -64,6 +64,7 @@ builder.Services.AddScoped<IPatientCaseRepository, PatientCaseRepository>();
 builder.Services.AddScoped<IDashBoardRepository, DashBoardRepository>();
 builder.Services.AddScoped<IMISRepository, MISRepository>();
 builder.Services.AddScoped<ICaseFileStatusMasterRpository, CaseFileStatusMasterRpository>();
+builder.Services.AddScoped<IVideoCallTransactionRespository, VideoCallTransactionRespository>();
 builder.Services.Configure<TwilioSettings>(
     settings =>
     {

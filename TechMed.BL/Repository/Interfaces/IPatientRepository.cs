@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TechMed.BL.ViewModels;
 using TechMed.DL.Models;
+using TechMed.DL.ViewModel;
 
 namespace TechMed.BL.Repository.Interfaces
 {
@@ -23,7 +24,9 @@ namespace TechMed.BL.Repository.Interfaces
         Task<PHCPatientCount> GetPatientCount(int phcID);
         Task<List<TodaysPatientVM>> GetSearchedTodaysPatientList(string patientName);
         Task<List<PatientViewModel>> GetYesterdaysPatientList(int phcID);
+        List<PatientSearchResultVM> GetAdvanceSearchPatient(AdvanceSearchPatientVM searchParameter);
         long GetPatientId();
+        public int GetAge(DateTime dateofbirth);
         string SaveImage(string ImgBase64Str, string rootPath);
     }
 }

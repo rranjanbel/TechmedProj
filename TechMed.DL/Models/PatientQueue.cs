@@ -14,7 +14,7 @@ namespace TechMed.DL.Models
         public string Comment { get; set; } = null!;
         public DateTime AssignedOn { get; set; }
 
-        public virtual UserMaster AssignedByNavigation { get; set; } = null!;
+        public virtual Phcmaster AssignedByNavigation { get; set; } = null!;
         public virtual DoctorMaster AssignedDoctor { get; set; } = null!;
         public virtual CaseFileStatusMaster CaseFileStatus { get; set; } = null!;
         public virtual PatientCase PatientCase { get; set; } = null!;

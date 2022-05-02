@@ -181,13 +181,13 @@ namespace TechMed.BL.Repository.BaseClasses
                     //userDetail.IdproofNumber { get; set; }
                     userDetail.UpdatedBy = doctorDTO.UpdatedBy;
                     userDetail.UpdatedOn = DateTime.Now;
-                    if (!string.IsNullOrEmpty(userDetail.Photo))
+                    if (!string.IsNullOrEmpty(doctorDTO.detailsDTO.PhotoNewUpdate))
                     {
-                        userDetail.Photo = webRootPath + SaveImage(doctorDTO.detailsDTO.Photo, rootPath);
+                        userDetail.Photo = webRootPath + SaveImage(doctorDTO.detailsDTO.PhotoNewUpdate, rootPath);
                     }
-                    if (!string.IsNullOrEmpty(masters.DigitalSignature))
+                    if (!string.IsNullOrEmpty(doctorDTO.DigitalSignatureNewUpdate))
                     {
-                        masters.DigitalSignature = webRootPath + SaveImage(masters.DigitalSignature, rootPath);
+                        masters.DigitalSignature = webRootPath + SaveImage(doctorDTO.DigitalSignatureNewUpdate, rootPath);
                     }
 
                     await _teleMedecineContext.SaveChangesAsync();
@@ -221,7 +221,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 GetTodayesPatientsDTO mapdata = new GetTodayesPatientsDTO();
                 mapdata.PatientName = item.PatientCase.Patient.FirstName + " " + item.PatientCase.Patient.LastName;
                 mapdata.PhoneNumber = item.PatientCase.Patient.PhoneNumber;
-                mapdata.ReferredbyPHCName = item.AssignedByNavigation.Name;
+                mapdata.ReferredbyPHCName = item.AssignedByNavigation.Phcname;
                 mapdata.Age = CommanFunction.GetAge(item.PatientCase.Patient.Dob);
                 mapdata.Gender = item.PatientCase.Patient.Gender.Gender;
                 mapdata.PatientID = item.PatientCase.Patient.PatientId;
@@ -253,7 +253,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 GetTodayesPatientsDTO mapdata = new GetTodayesPatientsDTO();
                 mapdata.PatientName = item.PatientCase.Patient.FirstName + " " + item.PatientCase.Patient.LastName;
                 mapdata.PhoneNumber = item.PatientCase.Patient.PhoneNumber;
-                mapdata.ReferredbyPHCName = item.AssignedByNavigation.Name;
+                mapdata.ReferredbyPHCName = item.AssignedByNavigation.Phcname;
                 mapdata.Age = CommanFunction.GetAge(item.PatientCase.Patient.Dob);
                 mapdata.Gender = item.PatientCase.Patient.Gender.Gender;
                 mapdata.PatientID = item.PatientCase.Patient.PatientId;
@@ -285,7 +285,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 GetTodayesPatientsDTO mapdata = new GetTodayesPatientsDTO();
                 mapdata.PatientName = item.PatientCase.Patient.FirstName + " " + item.PatientCase.Patient.LastName;
                 mapdata.PhoneNumber = item.PatientCase.Patient.PhoneNumber;
-                mapdata.ReferredbyPHCName = item.AssignedByNavigation.Name;
+                mapdata.ReferredbyPHCName = item.AssignedByNavigation.Phcname;
                 mapdata.Age = CommanFunction.GetAge(item.PatientCase.Patient.Dob);
                 mapdata.Gender = item.PatientCase.Patient.Gender.Gender;
                 mapdata.PatientID = item.PatientCase.Patient.PatientId;
@@ -317,7 +317,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 GetTodayesPatientsDTO mapdata = new GetTodayesPatientsDTO();
                 mapdata.PatientName = item.PatientCase.Patient.FirstName + " " + item.PatientCase.Patient.LastName;
                 mapdata.PhoneNumber = item.PatientCase.Patient.PhoneNumber;
-                mapdata.ReferredbyPHCName = item.AssignedByNavigation.Name;
+                mapdata.ReferredbyPHCName = item.AssignedByNavigation.Phcname;
                 mapdata.Age = CommanFunction.GetAge(item.PatientCase.Patient.Dob);
                 mapdata.Gender = item.PatientCase.Patient.Gender.Gender;
                 mapdata.PatientID = item.PatientCase.Patient.PatientId;
@@ -353,63 +353,65 @@ namespace TechMed.BL.Repository.BaseClasses
                 .Where(a => a.PatientCaseId == vm.PatientCaseID).ToListAsync();
             if (patientQueue != null)
             {
-                Phcmaster phcmaster = await _teleMedecineContext.Phcmasters.Where(a => a.UserId == patientQueue.AssignedBy).FirstOrDefaultAsync();
-                UserDetail userDetail = await _teleMedecineContext.UserDetails.Where(a => a.UserId == patientQueue.AssignedBy).FirstOrDefaultAsync();
-
-                getPatientCaseDetails.PatientName = patientQueue.PatientCase.Patient.FirstName + " " + patientQueue.PatientCase.Patient.LastName;
-                getPatientCaseDetails.PatientId = patientQueue.PatientCase.Patient.PatientId;
-                getPatientCaseDetails.CaseFileNumber = patientQueue.PatientCase.CaseFileNumber;
-                getPatientCaseDetails.CaseHeading = patientQueue.PatientCase.CaseHeading;
-                getPatientCaseDetails.Symptom = patientQueue.PatientCase.Symptom;
-                getPatientCaseDetails.Observation = patientQueue.PatientCase.Observation;
-                getPatientCaseDetails.Allergies = patientQueue.PatientCase.Allergies;
-                getPatientCaseDetails.FamilyHistory = patientQueue.PatientCase.FamilyHistory;
-                getPatientCaseDetails.UpdatedBy = patientQueue.PatientCase.UpdatedBy;
-                getPatientCaseDetails.UpdatedOn = patientQueue.PatientCase.UpdatedOn;
-                getPatientCaseDetails.CreatedBy = patientQueue.PatientCase.CreatedBy;
-                getPatientCaseDetails.CreatedOn = patientQueue.PatientCase.CreatedOn;
-                getPatientCaseDetails.maritalstatus = userDetail.IsMarried;
-
-                getPatientCaseDetails.FirstName = patientQueue.PatientCase.Patient.FirstName;
-                getPatientCaseDetails.LastName = patientQueue.PatientCase.Patient.LastName;
-                getPatientCaseDetails.PhoneNumber = patientQueue.PatientCase.Patient.PhoneNumber;
-                getPatientCaseDetails.Idproof = patientQueue.PatientCase.Patient.Idproof.IdproofType;
-                getPatientCaseDetails.IdproofNumber = patientQueue.PatientCase.Patient.IdproofNumber;
-                getPatientCaseDetails.Gender = patientQueue.PatientCase.Patient.Gender.Gender;
-                getPatientCaseDetails.Photo = patientQueue.PatientCase.Patient.Photo;
-                getPatientCaseDetails.Age = CommanFunction.GetAge(patientQueue.PatientCase.Patient.Dob);
-
-
-                getPatientCaseDetails.PHCName = phcmaster.Phcname;
-                getPatientCaseDetails.MOName = phcmaster.Moname;
-                getPatientCaseDetails.PHCID = phcmaster.Id;
-
-
-                foreach (var item in patientCaseDocuments)
+                Phcmaster phcmaster = await _teleMedecineContext.Phcmasters.Where(a => a.Id == patientQueue.AssignedBy).FirstOrDefaultAsync();
+                //UserDetail userDetail = await _teleMedecineContext.UserDetails.Where(a => a.UserId == patientQueue.AssignedBy).FirstOrDefaultAsync();
+                if (phcmaster != null)
                 {
-                    getPatientCaseDetails.getPatientCaseDocumentDTOs.Add(
-                        new PatientCaseDocDTO
-                        {
-                            Description = item.Description,
-                            DocumentName = item.DocumentName,
-                            DocumentPath = item.DocumentPath,
-                            Id = item.Id,
-                        }
-                        );
-                }
-                foreach (var item in vitalMasters)
-                {
-                    getPatientCaseDetails.getPatientCaseVitalsDTOs.Add(
-                        new GetPatientCaseVitalsDTO
-                        {
-                            Date = item.Date,
-                            Unit = item.Vital.Unit,
-                            Value = item.Value,
-                            Vital = item.Vital.Vital
-                        }
-                        );
-                }
+                    getPatientCaseDetails.PatientCaseID = patientQueue.PatientCaseId;
+                    getPatientCaseDetails.ID = patientQueue.PatientCase.PatientId;
+                    getPatientCaseDetails.PatientName = patientQueue.PatientCase.Patient.FirstName + " " + patientQueue.PatientCase.Patient.LastName;
+                    getPatientCaseDetails.PatientId = patientQueue.PatientCase.Patient.PatientId;
+                    getPatientCaseDetails.CaseFileNumber = patientQueue.PatientCase.CaseFileNumber;
+                    getPatientCaseDetails.CaseHeading = patientQueue.PatientCase.CaseHeading;
+                    getPatientCaseDetails.Symptom = patientQueue.PatientCase.Symptom;
+                    getPatientCaseDetails.Observation = patientQueue.PatientCase.Observation;
+                    getPatientCaseDetails.Allergies = patientQueue.PatientCase.Allergies;
+                    getPatientCaseDetails.FamilyHistory = patientQueue.PatientCase.FamilyHistory;
+                    getPatientCaseDetails.UpdatedBy = patientQueue.PatientCase.UpdatedBy;
+                    getPatientCaseDetails.UpdatedOn = patientQueue.PatientCase.UpdatedOn;
+                    getPatientCaseDetails.CreatedBy = patientQueue.PatientCase.CreatedBy;
+                    getPatientCaseDetails.CreatedOn = patientQueue.PatientCase.CreatedOn;
+                    getPatientCaseDetails.maritalstatus = null;
 
+                    getPatientCaseDetails.FirstName = patientQueue.PatientCase.Patient.FirstName;
+                    getPatientCaseDetails.LastName = patientQueue.PatientCase.Patient.LastName;
+                    getPatientCaseDetails.PhoneNumber = patientQueue.PatientCase.Patient.PhoneNumber;
+                    getPatientCaseDetails.Idproof = patientQueue.PatientCase.Patient.Idproof.IdproofType;
+                    getPatientCaseDetails.IdproofNumber = patientQueue.PatientCase.Patient.IdproofNumber;
+                    getPatientCaseDetails.Gender = patientQueue.PatientCase.Patient.Gender.Gender;
+                    getPatientCaseDetails.Photo = patientQueue.PatientCase.Patient.Photo;
+                    getPatientCaseDetails.Age = CommanFunction.GetAge(patientQueue.PatientCase.Patient.Dob);
+
+
+                    getPatientCaseDetails.PHCName = phcmaster.Phcname;
+                    getPatientCaseDetails.MOName = phcmaster.Moname;
+                    getPatientCaseDetails.PHCID = phcmaster.Id;
+
+                    foreach (var item in patientCaseDocuments)
+                    {
+                        getPatientCaseDetails.getPatientCaseDocumentDTOs.Add(
+                            new PatientCaseDocDTO
+                            {
+                                Description = item.Description,
+                                DocumentName = item.DocumentName,
+                                DocumentPath = item.DocumentPath,
+                                Id = item.Id,
+                            }
+                            );
+                    }
+                    foreach (var item in vitalMasters)
+                    {
+                        getPatientCaseDetails.getPatientCaseVitalsDTOs.Add(
+                            new GetPatientCaseVitalsDTO
+                            {
+                                Date = item.Date,
+                                Unit = item.Vital.Unit,
+                                Value = item.Value,
+                                Vital = item.Vital.Vital
+                            }
+                            );
+                    }
+                }
             }
 
             return getPatientCaseDetails;
@@ -581,7 +583,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 SearchPatientsDTO mapdata = new SearchPatientsDTO();
                 mapdata.PatientName = item.PatientCase.Patient.FirstName + " " + item.PatientCase.Patient.LastName;
                 mapdata.PhoneNumber = item.PatientCase.Patient.PhoneNumber;
-                mapdata.ReferredbyPHCName = item.AssignedByNavigation.Name;
+                mapdata.ReferredbyPHCName = item.AssignedByNavigation.Phcname;
                 mapdata.Age = CommanFunction.GetAge(item.PatientCase.Patient.Dob);
                 mapdata.Gender = item.PatientCase.Patient.Gender.Gender;
                 mapdata.PatientID = item.PatientCase.Patient.PatientId;
@@ -612,7 +614,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 SearchPatientsDTO mapdata = new SearchPatientsDTO();
                 mapdata.PatientName = item.PatientCase.Patient.FirstName + " " + item.PatientCase.Patient.LastName;
                 mapdata.PhoneNumber = item.PatientCase.Patient.PhoneNumber;
-                mapdata.ReferredbyPHCName = item.AssignedByNavigation.Name;
+                mapdata.ReferredbyPHCName = item.AssignedByNavigation.Phcname;
                 mapdata.Age = CommanFunction.GetAge(item.PatientCase.Patient.Dob);
                 mapdata.Gender = item.PatientCase.Patient.Gender.Gender;
                 mapdata.PatientID = item.PatientCase.Patient.PatientId;
@@ -675,7 +677,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 GetTodayesPatientsDTO mapdata = new GetTodayesPatientsDTO();
                 mapdata.PatientName = item.PatientCase.Patient.FirstName + " " + item.PatientCase.Patient.LastName;
                 mapdata.PhoneNumber = item.PatientCase.Patient.PhoneNumber;
-                mapdata.ReferredbyPHCName = item.AssignedByNavigation.Name;
+                mapdata.ReferredbyPHCName = item.AssignedByNavigation.Phcname;
                 mapdata.Age = CommanFunction.GetAge(item.PatientCase.Patient.Dob);
                 mapdata.Gender = item.PatientCase.Patient.Gender.Gender;
                 mapdata.PatientID = item.PatientCase.Patient.PatientId;
@@ -709,7 +711,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 GetTodayesPatientsDTO mapdata = new GetTodayesPatientsDTO();
                 mapdata.PatientName = item.PatientCase.Patient.FirstName + " " + item.PatientCase.Patient.LastName;
                 mapdata.PhoneNumber = item.PatientCase.Patient.PhoneNumber;
-                mapdata.ReferredbyPHCName = item.AssignedByNavigation.Name;
+                mapdata.ReferredbyPHCName = item.AssignedByNavigation.Phcname;
                 mapdata.Age = CommanFunction.GetAge(item.PatientCase.Patient.Dob);
                 mapdata.Gender = item.PatientCase.Patient.Gender.Gender;
                 mapdata.PatientID = item.PatientCase.Patient.PatientId;
@@ -792,7 +794,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 return true;
             }
         }
-        public async Task<DoctorMaster> AddDoctor(DoctorMaster doctorMaster, UserMaster userMaster, UserDetail userDetail, string RootPath, string webRootPath)
+        public async Task<DoctorMaster> AddDoctor(DoctorMaster doctorMaster, UserMaster userMaster, UserDetail userDetail, AddDoctorDTO doctorDTO, string RootPath, string webRootPath)
         {
             int i = 0;
             int j = 0;
@@ -814,17 +816,17 @@ namespace TechMed.BL.Repository.BaseClasses
                     if (i > 0 && userMaster.Id > 0)
                     {
                         doctorMaster.UserId = userMaster.Id;
-                        if (!string.IsNullOrEmpty(doctorMaster.DigitalSignature))
+                        if (!string.IsNullOrEmpty(doctorDTO.DigitalSignature))
                         {
-                            doctorMaster.DigitalSignature = webRootPath + SaveImage(doctorMaster.DigitalSignature, RootPath);
+                            doctorMaster.DigitalSignature = webRootPath + SaveImage(doctorDTO.DigitalSignature, RootPath);
                         }
                         await _teleMedecineContext.DoctorMasters.AddAsync(doctorMaster);
                         j = await _teleMedecineContext.SaveChangesAsync();
 
                         userDetail.UserId = userMaster.Id;
-                        if (!string.IsNullOrEmpty(userDetail.Photo))
+                        if (!string.IsNullOrEmpty(doctorDTO.detailsDTO.Photo))
                         {
-                            userDetail.Photo = webRootPath + SaveImage(userDetail.Photo, RootPath);
+                            userDetail.Photo = webRootPath + SaveImage(doctorDTO.detailsDTO.Photo, RootPath);
                         }
                         await _teleMedecineContext.UserDetails.AddAsync(userDetail);
                         K = await _teleMedecineContext.SaveChangesAsync();

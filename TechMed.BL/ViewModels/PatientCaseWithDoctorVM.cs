@@ -14,14 +14,17 @@ namespace TechMed.BL.ViewModels
             this.patientMaster = new PatientMasterDTO();
             this.patientCase = new PatientCaseDTO();           
             this.patientCaseQueueVM = new PatientCaseQueueVM();
+            this.patientCaseMedicines = new List<PatientCaseMedicineDTO>();
         }
         public int PHCUserId { get; set; }
         public int PHCId { get; set; }
         public int PatientID { get; set; }
         public int DoctorID { get; set; }
+        public long PatientCaseID { get; set; }
         public PatientMasterDTO patientMaster { get; set; }
         public PatientCaseDTO patientCase { get; set; }
         public PatientCaseQueueVM patientCaseQueueVM { get; set; }
+        public List<PatientCaseMedicineDTO> patientCaseMedicines { get; set; }
 
     }
 }
