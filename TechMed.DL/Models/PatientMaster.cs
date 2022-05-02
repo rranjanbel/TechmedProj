@@ -37,14 +37,14 @@ namespace TechMed.DL.Models
         public DateTime? UpdatedOn { get; set; }
 
         public virtual CountryMaster Country { get; set; } = null!;
-        public virtual UserMaster? CreatedByNavigation { get; set; }
+        public virtual Phcmaster? CreatedByNavigation { get; set; }
         public virtual DistrictMaster District { get; set; } = null!;
         public virtual GenderMaster Gender { get; set; } = null!;
         public virtual IdproofTypeMaster Idproof { get; set; } = null!;
         public virtual PatientStatusMaster PatientStatus { get; set; } = null!;
         public virtual Phcmaster Phc { get; set; } = null!;
         public virtual StateMaster State { get; set; } = null!;
-        public virtual UserMaster? UpdatedByNavigation { get; set; }
+        public virtual Phcmaster? UpdatedByNavigation { get; set; }
         public virtual ICollection<PatientCase> PatientCases { get; set; }
         public virtual ICollection<VideoCallTransaction> VideoCallTransactions { get; set; }
     }

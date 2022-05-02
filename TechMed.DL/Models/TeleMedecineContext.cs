@@ -801,7 +801,7 @@ namespace TechMed.DL.Models
                 entity.HasOne(d => d.CreatedByNavigation)
                     .WithMany(p => p.PatientMasterCreatedByNavigations)
                     .HasForeignKey(d => d.CreatedBy)
-                    .HasConstraintName("FK_PatientMaster_UserMasterCreatedBy");
+                    .HasConstraintName("FK_PatientMaster_PHCMasterCreatedBy");
 
                 entity.HasOne(d => d.District)
                     .WithMany(p => p.PatientMasters)
@@ -828,7 +828,7 @@ namespace TechMed.DL.Models
                     .HasConstraintName("FK_PatientMaster_PatientStatusMaster");
 
                 entity.HasOne(d => d.Phc)
-                    .WithMany(p => p.PatientMasters)
+                    .WithMany(p => p.PatientMasterPhcs)
                     .HasForeignKey(d => d.Phcid)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_PatientMaster_PHCMaster");
@@ -842,7 +842,7 @@ namespace TechMed.DL.Models
                 entity.HasOne(d => d.UpdatedByNavigation)
                     .WithMany(p => p.PatientMasterUpdatedByNavigations)
                     .HasForeignKey(d => d.UpdatedBy)
-                    .HasConstraintName("FK_PatientMaster_UserMasterUpdatedBy");
+                    .HasConstraintName("FK_PatientMaster_PHCMasterUpdatedBy");
             });
 
             modelBuilder.Entity<PatientQueue>(entity =>
@@ -869,7 +869,7 @@ namespace TechMed.DL.Models
                     .WithMany(p => p.PatientQueues)
                     .HasForeignKey(d => d.AssignedBy)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_PatientQueue_UserMasterAssignedBy");
+                    .HasConstraintName("FK_PatientQueue_PHCMasterAssignedBy");
 
                 entity.HasOne(d => d.AssignedDoctor)
                     .WithMany(p => p.PatientQueues)

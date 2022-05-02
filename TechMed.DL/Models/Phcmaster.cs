@@ -7,7 +7,10 @@ namespace TechMed.DL.Models
     {
         public Phcmaster()
         {
-            PatientMasters = new HashSet<PatientMaster>();
+            PatientMasterCreatedByNavigations = new HashSet<PatientMaster>();
+            PatientMasterPhcs = new HashSet<PatientMaster>();
+            PatientMasterUpdatedByNavigations = new HashSet<PatientMaster>();
+            PatientQueues = new HashSet<PatientQueue>();
         }
 
         public int Id { get; set; }
@@ -29,6 +32,9 @@ namespace TechMed.DL.Models
         public virtual UserMaster? UpdatedByNavigation { get; set; }
         public virtual UserMaster User { get; set; } = null!;
         public virtual ZoneMaster Zone { get; set; } = null!;
-        public virtual ICollection<PatientMaster> PatientMasters { get; set; }
+        public virtual ICollection<PatientMaster> PatientMasterCreatedByNavigations { get; set; }
+        public virtual ICollection<PatientMaster> PatientMasterPhcs { get; set; }
+        public virtual ICollection<PatientMaster> PatientMasterUpdatedByNavigations { get; set; }
+        public virtual ICollection<PatientQueue> PatientQueues { get; set; }
     }
 }

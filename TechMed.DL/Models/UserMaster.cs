@@ -23,9 +23,6 @@ namespace TechMed.DL.Models
             PageMasterUpdatedByNavigations = new HashSet<PageMaster>();
             PatientCaseCreatedByNavigations = new HashSet<PatientCase>();
             PatientCaseUpdatedByNavigations = new HashSet<PatientCase>();
-            PatientMasterCreatedByNavigations = new HashSet<PatientMaster>();
-            PatientMasterUpdatedByNavigations = new HashSet<PatientMaster>();
-            PatientQueues = new HashSet<PatientQueue>();
             PhcmasterCreatedByNavigations = new HashSet<Phcmaster>();
             PhcmasterUpdatedByNavigations = new HashSet<Phcmaster>();
             PhcmasterUsers = new HashSet<Phcmaster>();
@@ -70,9 +67,6 @@ namespace TechMed.DL.Models
         public virtual ICollection<PageMaster> PageMasterUpdatedByNavigations { get; set; }
         public virtual ICollection<PatientCase> PatientCaseCreatedByNavigations { get; set; }
         public virtual ICollection<PatientCase> PatientCaseUpdatedByNavigations { get; set; }
-        public virtual ICollection<PatientMaster> PatientMasterCreatedByNavigations { get; set; }
-        public virtual ICollection<PatientMaster> PatientMasterUpdatedByNavigations { get; set; }
-        public virtual ICollection<PatientQueue> PatientQueues { get; set; }
         public virtual ICollection<Phcmaster> PhcmasterCreatedByNavigations { get; set; }
         public virtual ICollection<Phcmaster> PhcmasterUpdatedByNavigations { get; set; }
         public virtual ICollection<Phcmaster> PhcmasterUsers { get; set; }
