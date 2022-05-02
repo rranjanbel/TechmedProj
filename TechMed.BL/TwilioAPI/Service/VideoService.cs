@@ -54,6 +54,17 @@ namespace TechMed.BL.TwilioAPI.Service
 
             }
         }
+        public async Task<RoomResource> CreateRoomsAsync(string roomname, string callBackUrl)
+        {
+           var room =await RoomResource.CreateAsync(
+           recordParticipantsOnConnect: true,
+           statusCallback: new Uri(callBackUrl),
+           type: RoomResource.RoomTypeEnum.Group,
+           uniqueName: roomname
+           );
+
+            return room;
+        }
         #region Borrowed from https://github.com/twilio/video-quickstart-js/blob/1.x/server/randomname.js
 
         readonly string[] _adjectives =

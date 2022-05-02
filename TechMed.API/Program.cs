@@ -15,6 +15,7 @@ using TechMed.API.Middleware;
 using Microsoft.Extensions.FileProviders;
 using TechMed.BL.TwilioAPI.Model;
 using TechMed.BL.TwilioAPI.Service;
+using TechMed.API.NotificationHub;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -72,7 +73,7 @@ builder.Services.Configure<TwilioSettings>(
     })
     .AddTransient<IVideoService, VideoService>();
 
-
+builder.Services.AddSignalR();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "TechMed API", Version = "v1" });
@@ -135,6 +136,11 @@ app.UseStaticFiles(new StaticFileOptions
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapHub<NotificationHub>("/notificationHub");
+});
 
 log.AddSerilog();
 
