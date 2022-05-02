@@ -258,7 +258,7 @@ namespace TechMed.API.Controllers
 
                 if (searchParameter == null)
                 {
-                    ModelState.AddModelError("AdvanceSearchResult", $"Serrch Parameter is null");
+                    ModelState.AddModelError("AdvanceSearchResult", $"Search Parameter is null");
                     return StatusCode(404, ModelState);
                 }
                 else

@@ -485,36 +485,54 @@ namespace TechMed.BL.Repository.BaseClasses
             long ? PatientId = 0;
             string? contractNo = string.Empty;
             int? genderId = 0;
+            DateTime? DateOfRegistration = DateTime.MinValue;
+            DateTime? DateOfBirth = DateTime.MinValue;
             if (searchParameter != null)
             {
                 if (searchParameter.PHCID > 0)
                     PHCID = searchParameter.PHCID;
                 else
                     PHCID = null;
+
                 if (searchParameter.PatientName == "")
                     PatientName = null;
                 else
                     PatientName = searchParameter.PatientName;
+
                 if(searchParameter.PatientName.ToLower().Trim() == "string")
                     PatientName = null;
                 else
                     PatientName = searchParameter.PatientName;
+
                 if (searchParameter.PatientUID > 0)
                     PatientId = searchParameter.PatientUID;
                 else
                     PatientId = null;
+
                 if (searchParameter.ContactNo == "")
                     contractNo = null; 
                 else
                     contractNo = searchParameter.ContactNo;
+
                 if (searchParameter.ContactNo.ToLower().Trim() == "string")
                     contractNo = null;
                 else
                     contractNo = searchParameter.ContactNo;
+
                 if (searchParameter.GenderId > 0)
                     genderId = searchParameter.GenderId;
                 else
                     genderId = null;
+
+                if (searchParameter.DateOfRegistration.Date == DateTime.Now.Date)
+                    DateOfRegistration = null; 
+                else
+                    DateOfRegistration = searchParameter.DateOfRegistration;
+
+                if (searchParameter.DateOfBirth.Date == DateTime.Now.Date)
+                    DateOfBirth = null;
+                else
+                    DateOfBirth = searchParameter.DateOfBirth;
             }
            
             var Results = _teleMedecineContext.PatientSearchResults
