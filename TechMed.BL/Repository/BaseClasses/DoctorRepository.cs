@@ -353,7 +353,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 .Where(a => a.PatientCaseId == vm.PatientCaseID).ToListAsync();
             if (patientQueue != null)
             {
-                Phcmaster phcmaster = await _teleMedecineContext.Phcmasters.Where(a => a.UserId == patientQueue.AssignedBy).FirstOrDefaultAsync();
+                Phcmaster phcmaster = await _teleMedecineContext.Phcmasters.Where(a => a.Id == patientQueue.AssignedBy).FirstOrDefaultAsync();
                 //UserDetail userDetail = await _teleMedecineContext.UserDetails.Where(a => a.UserId == patientQueue.AssignedBy).FirstOrDefaultAsync();
                 if (phcmaster != null)
                 {
