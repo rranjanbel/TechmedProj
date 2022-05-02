@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TechMed.BL.TwilioAPI.Service;
+using Twilio.Rest.Video.V1;
 
 namespace TechMed.API.Controllers
 {
@@ -19,5 +20,12 @@ namespace TechMed.API.Controllers
         [HttpGet("rooms")]
         public async Task<IActionResult> GetRooms()
             => new JsonResult(await _videoService.GetAllRoomsAsync());
+
+        [HttpPost("create-room-with-recording")]
+        public async Task<RoomResource> CreateRoomsAsync(string roomname, string callBackUrl)
+        { 
+            return await _videoService.CreateRoomsAsync(roomname, callBackUrl);
+        }
+
     }
 }
