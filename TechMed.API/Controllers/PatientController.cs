@@ -9,6 +9,7 @@ using TechMed.BL.Repository.Interfaces;
 using TechMed.BL.ViewModels;
 using TechMed.DL.Models;
 using System.IO;
+using TechMed.DL.ViewModel;
 
 namespace TechMed.API.Controllers
 {
@@ -242,8 +243,41 @@ namespace TechMed.API.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("AdvanceSearchResult")]
+        [ProducesResponseType(201, Type = typeof(List<PatientSearchResultVM>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult AdvanceSearchResult([FromBody] AdvanceSearchPatientVM searchParameter)
+        {
+            List<PatientSearchResultVM> patientSearchResults = new List<PatientSearchResultVM>();
+            try
+            {
+                patientSearchResults = this._patientRepository.GetAdvanceSearchPatient(searchParameter);
 
-      
+
+                if (searchParameter == null)
+                {
+                    ModelState.AddModelError("AdvanceSearchResult", $"Serrch Parameter is null");
+                    return StatusCode(404, ModelState);
+                }
+                else
+                {
+                    return StatusCode(200, patientSearchResults);
+                }               
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("AdvanceSearchResult", $"Something went wrong when get yesterday's patient list {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+          
+
+        }
+
+
+
+
 
 
     }
