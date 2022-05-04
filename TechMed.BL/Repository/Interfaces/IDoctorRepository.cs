@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TechMed.BL.DTOMaster;
+using TechMed.BL.ViewModels;
 using TechMed.DL.Models;
 using TechMed.DL.ViewModel;
 
@@ -47,6 +48,7 @@ namespace TechMed.BL.Repository.Interfaces
         public Task<string> CheckEmail(string Email);
         public Task<string> CheckMobile(string Mobile);
         public Task<DoctorDTO> GetDoctorDetailsByUserID(GetDoctorDetailByUserIDVM getDoctorDetailByUserIDVM);
+        List<DoctorPatientSearchVM> GetAdvanceSearchDoctorsPatient(AdvanceDoctorPatientSearchVM searchParameter);
 
     }
 }

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using TechMed.BL.CommanClassesAndFunctions;
 using TechMed.BL.DTOMaster;
 using TechMed.BL.Repository.Interfaces;
+using TechMed.BL.ViewModels;
 using TechMed.DL.Models;
 using TechMed.DL.ViewModel;
 
@@ -954,6 +955,88 @@ namespace TechMed.BL.Repository.BaseClasses
             }
             myfilename = myfilename + ".jpeg";
             return myfilename;
+        }
+
+        public List<DoctorPatientSearchVM> GetAdvanceSearchDoctorsPatient(AdvanceDoctorPatientSearchVM searchParameter)
+        {
+            List<DoctorPatientSearchVM> patientSearchResults = new List<DoctorPatientSearchVM>();
+            DoctorPatientSearchVM searchResult;
+            int? PHCID = 0;
+            string? PatientName = string.Empty;
+            long? PatientId = 0;
+            string? contractNo = string.Empty;
+            int? genderId = 0;
+            int? doctorId = 0;
+            DateTime? DateOfRegistration = DateTime.MinValue;
+            DateTime? DateOfBirth = DateTime.MinValue;
+            if (searchParameter != null)
+            {
+                if (searchParameter.PHCID > 0)
+                    PHCID = searchParameter.PHCID;
+                else
+                    PHCID = null;
+
+                if (searchParameter.PatientName == "")
+                    PatientName = null;
+                else
+                    PatientName = searchParameter.PatientName;
+
+                if (searchParameter.PatientName.ToLower().Trim() == "string")
+                    PatientName = null;
+                else
+                    PatientName = searchParameter.PatientName;
+
+                if (searchParameter.PatientUID > 0)
+                    PatientId = searchParameter.PatientUID;
+                else
+                    PatientId = null;
+
+                if (searchParameter.ContactNo == "")
+                    contractNo = null;
+                else
+                    contractNo = searchParameter.ContactNo;
+
+                if (searchParameter.ContactNo.ToLower().Trim() == "string")
+                    contractNo = null;
+                else
+                    contractNo = searchParameter.ContactNo;
+
+                if (searchParameter.GenderId > 0)
+                    genderId = searchParameter.GenderId;
+                else
+                    genderId = null;
+
+                if (searchParameter.DateOfRegistration.Date == DateTime.Now.Date)
+                    DateOfRegistration = null;
+                else
+                    DateOfRegistration = searchParameter.DateOfRegistration;
+
+                if (searchParameter.DateOfBirth.Date == DateTime.Now.Date)
+                    DateOfBirth = null;
+                else
+                    DateOfBirth = searchParameter.DateOfBirth;
+
+                if (searchParameter.DoctorId > 0)
+                    doctorId = searchParameter.DoctorId;
+                else
+                    doctorId = null;
+            }
+
+            var Results = _teleMedecineContext.DoctorPatientSearchResults
+                .FromSqlInterpolated($"EXEC [dbo].[AdvanceSearchOfPatientsByDoctor] @PHCID ={PHCID},@PatientName={PatientName},@PatientUID={PatientId},@ContactNo={contractNo},@GenderId={genderId},@DoctorId={doctorId}");
+            foreach (var item in Results)
+            {
+                searchResult = new DoctorPatientSearchVM();
+                searchResult.PatientName = item.PatientName;
+                searchResult.PatientID = item.PatientID;
+                searchResult.Gender = item.Gender;
+                searchResult.Age = item.Age;
+                searchResult.PhoneNumber = item.PhoneNumber;
+                searchResult.DocterID = item.DocterID;
+                searchResult.Doctor = item.Doctor;
+                patientSearchResults.Add(searchResult);
+            };
+            return patientSearchResults;
         }
     }
 }

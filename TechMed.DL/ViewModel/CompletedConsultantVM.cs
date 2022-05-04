@@ -10,6 +10,7 @@ namespace TechMed.DL.ViewModel
     [Keyless]
     public class CompletedConsultantVM
     {
+        public int SrNo { get; set; }
         public DateTime AssignedOn { get; set; }
         public string PatientName { get; set; }
         public int Age { get; set; }

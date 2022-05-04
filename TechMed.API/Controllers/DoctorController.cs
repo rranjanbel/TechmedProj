@@ -7,6 +7,8 @@ using TechMed.BL.ModelMaster;
 using TechMed.DL.Models;
 using TechMed.DL.ViewModel;
 using TechMed.BL.Repository.Interfaces;
+using TechMed.BL.ViewModels;
+
 namespace TechMed.API.Controllers
 {
     [Route("api/[controller]")]
@@ -1145,6 +1147,38 @@ namespace TechMed.API.Controllers
                 ModelState.AddModelError("", $"Something went wrong {ex.Message}");
                 return StatusCode(500, ModelState);
             }
+        }
+
+        [HttpPost]
+        [Route("AdvanceSearchResult")]
+        [ProducesResponseType(201, Type = typeof(List<DoctorPatientSearchVM>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult AdvanceSearchResult([FromBody] AdvanceDoctorPatientSearchVM searchParameter)
+        {
+            List<DoctorPatientSearchVM> patientSearchResults = new List<DoctorPatientSearchVM>();
+            try
+            {
+                patientSearchResults = this._doctorRepository.GetAdvanceSearchDoctorsPatient(searchParameter);
+
+
+                if (searchParameter == null)
+                {
+                    ModelState.AddModelError("AdvanceSearchResult", $"Search Parameter is null");
+                    return StatusCode(404, ModelState);
+                }
+                else
+                {
+                    return StatusCode(200, patientSearchResults);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("AdvanceSearchResult", $"Something went wrong when get yesterday's patient list {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+
+
         }
     }
 }

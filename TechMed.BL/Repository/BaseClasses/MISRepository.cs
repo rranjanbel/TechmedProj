@@ -29,13 +29,16 @@ namespace TechMed.BL.Repository.BaseClasses
         {
             bool IsPHCExit = await IsPHCExists(completedConsultationSearch.PHCID);
             List<CompletedConsultantVM> CompletedConsultantReports = new List<CompletedConsultantVM>();
+            int SrNo = 0;
             if(IsPHCExit)
             {
                 CompletedConsultantVM CompletedConsultantReport;
                 var Results = _teleMedecineContext.CompletedConsultant.FromSqlInterpolated($"EXEC [dbo].[GetCompletedConsultant] @PHCID={completedConsultationSearch.PHCID},@FromDate={completedConsultationSearch.FromDate},@ToDate={completedConsultationSearch.ToDate}");
                 foreach (var item in Results)
                 {
+                    SrNo = SrNo + 1;
                     CompletedConsultantReport = new CompletedConsultantVM();
+                    CompletedConsultantReport.SrNo = SrNo;
                     CompletedConsultantReport.AssignedOn = item.AssignedOn;
                     CompletedConsultantReport.PatientName = item.PatientName;
                     CompletedConsultantReport.Age = item.Age;
