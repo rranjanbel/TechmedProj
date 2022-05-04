@@ -31,6 +31,7 @@ namespace TechMed.DL.Models
         public virtual DbSet<IdproofTypeMaster> IdproofTypeMasters { get; set; } = null!;
         public virtual DbSet<LoginHistory> LoginHistories { get; set; } = null!;
         public virtual DbSet<LoginRoleDelete> LoginRoleDeletes { get; set; } = null!;
+        public virtual DbSet<MaritalStatus> MaritalStatuses { get; set; } = null!;
         public virtual DbSet<MedicineMaster> MedicineMasters { get; set; } = null!;
         public virtual DbSet<Notification> Notifications { get; set; } = null!;
         public virtual DbSet<PageAccess> PageAccesses { get; set; } = null!;
@@ -201,11 +202,21 @@ namespace TechMed.DL.Models
 
                 entity.Property(e => e.StateId).HasColumnName("StateID");
 
+                entity.Property(e => e.ZoneId)
+                    .HasColumnName("ZoneID")
+                    .HasDefaultValueSql("((1))");
+
                 entity.HasOne(d => d.State)
                     .WithMany(p => p.DistrictMasters)
                     .HasForeignKey(d => d.StateId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_DistrictMaster_StateMaster");
+
+                entity.HasOne(d => d.Zone)
+                    .WithMany(p => p.DistrictMasters)
+                    .HasForeignKey(d => d.ZoneId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_DistrictMaster_ZoneMaster");
             });
 
             modelBuilder.Entity<DivisionMaster>(entity =>
@@ -420,6 +431,17 @@ namespace TechMed.DL.Models
                 entity.Property(e => e.LoginId).HasColumnName("LoginID");
 
                 entity.Property(e => e.RoleId).HasColumnName("RoleID");
+            });
+
+            modelBuilder.Entity<MaritalStatus>(entity =>
+            {
+                entity.ToTable("MaritalStatus");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.Name)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<MedicineMaster>(entity =>

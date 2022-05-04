@@ -7,6 +7,7 @@ namespace TechMed.DL.Models
     {
         public ZoneMaster()
         {
+            DistrictMasters = new HashSet<DistrictMaster>();
             DoctorMasters = new HashSet<DoctorMaster>();
             Phcmasters = new HashSet<Phcmaster>();
         }
@@ -23,6 +24,7 @@ namespace TechMed.DL.Models
         public virtual ClusterMaster Cluster { get; set; } = null!;
         public virtual UserMaster? CreatedByNavigation { get; set; }
         public virtual UserMaster? UpdatedByNavigation { get; set; }
+        public virtual ICollection<DistrictMaster> DistrictMasters { get; set; }
         public virtual ICollection<DoctorMaster> DoctorMasters { get; set; }
         public virtual ICollection<Phcmaster> Phcmasters { get; set; }
     }
