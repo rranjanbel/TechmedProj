@@ -19,6 +19,7 @@ namespace TechMed.DL.Models
         }
 
         public virtual DbSet<BlockMaster> BlockMasters { get; set; } = null!;
+        public virtual DbSet<CalenderMaster> CalenderMasters { get; set; } = null!;
         public virtual DbSet<CaseFileStatusMaster> CaseFileStatusMasters { get; set; } = null!;
         public virtual DbSet<CdssguidelineMaster> CdssguidelineMasters { get; set; } = null!;
         public virtual DbSet<ClusterMaster> ClusterMasters { get; set; } = null!;
@@ -108,6 +109,15 @@ namespace TechMed.DL.Models
                 entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
 
                 entity.Property(e => e.ZoneId).HasColumnName("ZoneID");
+            });
+
+            modelBuilder.Entity<CalenderMaster>(entity =>
+            {
+                entity.ToTable("CalenderMaster");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.Month).HasMaxLength(50);
             });
 
             modelBuilder.Entity<CaseFileStatusMaster>(entity =>
