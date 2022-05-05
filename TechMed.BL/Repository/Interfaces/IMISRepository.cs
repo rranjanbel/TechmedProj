@@ -12,5 +12,6 @@ namespace TechMed.BL.Repository.Interfaces
     public interface IMISRepository
     {
         public Task<List<CompletedConsultantVM>> CompletedConsultation(CompletedPatientSearchVM completedConsultationSearch);
+        List<ConsultedPatientByDoctorAndPHCVM> CompletedConsultationByDoctor(SearchDateVM searchField);
     }
 }

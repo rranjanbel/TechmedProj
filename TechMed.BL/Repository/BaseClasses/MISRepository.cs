@@ -88,6 +88,27 @@ namespace TechMed.BL.Repository.BaseClasses
             //return list;
         }
 
+        public List<ConsultedPatientByDoctorAndPHCVM> CompletedConsultationByDoctor(SearchDateVM searchField)
+        {
+            List<ConsultedPatientByDoctorAndPHCVM> CompletedConsultantReports = new List<ConsultedPatientByDoctorAndPHCVM>();          
+            if (searchField !=null)
+            {
+                ConsultedPatientByDoctorAndPHCVM CompletedConsultantReport;
+                var Results = _teleMedecineContext.ConsultedPatientByDoctorAndPHCResults.FromSqlInterpolated($"EXEC [dbo].[GetConsultationByDoctorAndPHC] @FromDate={searchField.FromDate},@ToDate={searchField.ToDate}");
+                foreach (var item in Results)
+                {
+                    CompletedConsultantReport = new ConsultedPatientByDoctorAndPHCVM();
+                    CompletedConsultantReport.SrNo = item.SrNo;
+                    CompletedConsultantReport.NoOfConsultations = item.NoOfConsultations;
+                    CompletedConsultantReport.Doctor = item.Doctor;
+                    CompletedConsultantReport.PHCName = item.PHCName;                   
+                    CompletedConsultantReports.Add(CompletedConsultantReport);
+                }
+            }
+
+            return CompletedConsultantReports;
+        }
+
         public async Task<bool> IsPHCExists(int PHCID)
         {
             var result = await _teleMedecineContext.Phcmasters.AnyAsync(a => a.Id == PHCID);

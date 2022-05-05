@@ -70,6 +70,7 @@ namespace TechMed.DL.Models
         public virtual DbSet<PatientCaseQueDetail> PatientCaseQueDetails { get; set; } = null!;
         public virtual DbSet<PatientSearchResultVM> PatientSearchResults { get; set; } = null!;
         public virtual DbSet<DoctorPatientSearchVM> DoctorPatientSearchResults { get; set; } = null!;
+        public virtual DbSet<ConsultedPatientByDoctorAndPHCVM> ConsultedPatientByDoctorAndPHCResults { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

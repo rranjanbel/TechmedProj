@@ -47,5 +47,33 @@ namespace TechMed.API.Controllers
                 return StatusCode(500, ModelState);
             }
         }
+
+        [HttpPost]
+        [Route("CompletedConsultationByDoctors")]
+        [ProducesResponseType(200, Type = typeof(List<ConsultedPatientByDoctorAndPHCVM>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult CompletedConsultationByDoctors(SearchDateVM completedConsultation)
+        {
+            List<ConsultedPatientByDoctorAndPHCVM> mapdata = new List<ConsultedPatientByDoctorAndPHCVM>();
+            try
+            {
+                mapdata = _mISRepository.CompletedConsultationByDoctor(completedConsultation);
+                if (mapdata.Count > 0)
+                {
+                    return Ok(mapdata);
+                }
+                else
+                {
+                    ModelState.AddModelError("CompletedConsultationByDoctors", "CompletedConsultation did not find");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("CompletedConsultationByDoctors", $"Something went wrong when CompletedConsultation {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
     }
 }
