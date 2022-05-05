@@ -125,6 +125,8 @@ app.UseRouting();
 
 app.UseCors("AllowAll");
 
+app.MapHub<NotificationHub>("/notificationHub");
+
 app.UseHttpsRedirection();
 
 app.UseStaticFiles(new StaticFileOptions
@@ -137,11 +139,6 @@ app.UseStaticFiles(new StaticFileOptions
 app.UseAuthentication();
 
 app.UseAuthorization();
-
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapHub<NotificationHub>("/notificationHub");
-});
 
 log.AddSerilog();
 
