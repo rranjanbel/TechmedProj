@@ -289,9 +289,10 @@ namespace TechMed.API.Controllers
                 if (string.IsNullOrWhiteSpace(_webHostEnvironment.WebRootPath))
                 {
                     //_webHostEnvironment.WebRootPath = Path.Combine(Directory.GetCurrentDirectory(), "");
-                    _webHostEnvironment.WebRootPath = "/MyFiles/Images/Doctor/";
-                    webRootPath = _webHostEnvironment.WebRootPath;
+                   
                 }
+                _webHostEnvironment.WebRootPath = "/MyFiles/Images/Doctor/";
+                webRootPath = _webHostEnvironment.WebRootPath;
                 if (webRootPath == String.Empty || webRootPath == null)
                 {
                     ModelState.AddModelError("UpdateDoctorDetails", "Path did not get proper " + webRootPath);
@@ -964,9 +965,10 @@ namespace TechMed.API.Controllers
                 if (string.IsNullOrWhiteSpace(_webHostEnvironment.WebRootPath))
                 {
                     //_webHostEnvironment.WebRootPath = Path.Combine(Directory.GetCurrentDirectory(), "");
-                    _webHostEnvironment.WebRootPath = "/MyFiles/Images/Doctor/";
-                    webRootPath = _webHostEnvironment.WebRootPath;
+                    
                 }
+                _webHostEnvironment.WebRootPath = "/MyFiles/Images/Doctor/";
+                webRootPath = _webHostEnvironment.WebRootPath;
                 if (webRootPath == String.Empty || webRootPath == null)
                 {
                     ModelState.AddModelError("AddDoctor", "Path did not get proper " + webRootPath);
