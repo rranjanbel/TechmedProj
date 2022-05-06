@@ -13,5 +13,6 @@ namespace TechMed.BL.Repository.Interfaces
     {
         public Task<List<CompletedConsultantVM>> CompletedConsultation(CompletedPatientSearchVM completedConsultationSearch);
         List<ConsultedPatientByDoctorAndPHCVM> CompletedConsultationByDoctor(SearchDateVM searchField);
+        List<CompletedConsultationChartVM> CompletedConsultationChart(int year);
     }
 }
