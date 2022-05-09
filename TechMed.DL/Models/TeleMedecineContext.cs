@@ -827,6 +827,8 @@ namespace TechMed.DL.Models
 
                 entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
 
+                entity.Property(e => e.MaritalStatusID).HasColumnName("MaritalStatusID");
+
                 entity.HasOne(d => d.Country)
                     .WithMany(p => p.PatientMasters)
                     .HasForeignKey(d => d.CountryId)
@@ -872,12 +874,18 @@ namespace TechMed.DL.Models
                     .WithMany(p => p.PatientMasters)
                     .HasForeignKey(d => d.StateId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_PatientMaster_StateMaster");
+                    .HasConstraintName("FK_PatientMaster_StateMaster");              
 
                 entity.HasOne(d => d.UpdatedByNavigation)
                     .WithMany(p => p.PatientMasterUpdatedByNavigations)
                     .HasForeignKey(d => d.UpdatedBy)
                     .HasConstraintName("FK_PatientMaster_PHCMasterUpdatedBy");
+
+                //entity.HasOne(d => d.MaritalStatus)
+                //  .WithMany(p => p.PatientMasters)
+                //  .HasForeignKey(d => d.MaritalStatusID)
+                //  .OnDelete(DeleteBehavior.ClientSetNull)
+                //  .HasConstraintName("FK_PatientMaster_MaritalStatus");
             });
 
             modelBuilder.Entity<PatientQueue>(entity =>
