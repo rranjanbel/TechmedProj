@@ -828,9 +828,7 @@ namespace TechMed.DL.Models
 
                 entity.Property(e => e.StateId).HasColumnName("StateID");
 
-                entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
-
-                entity.Property(e => e.MaritalStatusID).HasColumnName("MaritalStatusID");
+                entity.Property(e => e.UpdatedOn).HasColumnType("datetime");             
 
                 entity.HasOne(d => d.Country)
                     .WithMany(p => p.PatientMasters)

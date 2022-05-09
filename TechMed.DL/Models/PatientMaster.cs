@@ -49,6 +49,6 @@ namespace TechMed.DL.Models
         public virtual Phcmaster? UpdatedByNavigation { get; set; }
         public virtual ICollection<PatientCase> PatientCases { get; set; }
         public virtual ICollection<VideoCallTransaction> VideoCallTransactions { get; set; }
-        public virtual MaritalStatus MaritalStatus { get; set; } = null!;
+        
     }
 }
