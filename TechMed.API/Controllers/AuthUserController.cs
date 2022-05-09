@@ -7,6 +7,7 @@ using TechMedAPI.JwtInfra;
 using Microsoft.IdentityModel.Tokens;
 using TechMed.BL.Repository.Interfaces;
 using TechMed.DL.ViewModel;
+using TechMed.BL.ViewModels;
 
 namespace TechMed.API.Controllers
 {
@@ -26,11 +27,13 @@ namespace TechMed.API.Controllers
         [AllowAnonymous]
         [HttpPost("api/generatetoken")]
         public async Task<ActionResult> GenerateToken([FromBody] LoginRequest request)
-        {
+        {           
+
             if (!ModelState.IsValid)
             {
                 return BadRequest();
-            }
+            }          
+            //userDetails = _userService.
 
             if (!await _userService.IsValidUserCredentials(request.UserName, request.Password))
             {
@@ -50,6 +53,43 @@ namespace TechMed.API.Controllers
                 AccessToken = jwtResult.AccessToken,
                 RefreshToken = jwtResult.RefreshToken.TokenString
             });
+        }
+
+        [AllowAnonymous]
+        [HttpPost("api/AuthenticateUser")]       
+        [ProducesResponseType(200, Type = typeof(List<LoggedUserDetails>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult> AuthenticateUser([FromBody] LoginVM login)
+        {
+            LoggedUserDetails userDetails = new LoggedUserDetails();           
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+          
+            userDetails = await _userService.Authenticate(login);
+
+            if (userDetails == null)
+            {
+                return Unauthorized("Unauthorized User");
+            }
+            else
+            {
+                var claims = new[]
+                 {
+                    new Claim(ClaimTypes.Name,userDetails.UserName)
+                 };
+
+                var jwtResult = _jwtAuthManager.GenerateTokens(userDetails.UserName, claims, DateTime.Now);
+                userDetails.AccessToken = jwtResult.AccessToken;
+                userDetails.RefreshToken = jwtResult.RefreshToken.TokenString;
+                _logger.LogInformation($"User [{userDetails.UserName}] logged in the system.");
+                return Ok(userDetails);
+            }
+
+           
         }
         [HttpPost("api/logout")]
         [Authorize]

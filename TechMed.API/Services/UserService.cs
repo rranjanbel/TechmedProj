@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using TechMed.BL.ModelMaster;
 using TechMed.BL.Repository.Interfaces;
+using TechMed.BL.ViewModels;
 using TechMed.DL.Models;
 using TechMed.DL.ViewModel;
 
@@ -50,6 +51,17 @@ namespace TechMed.API.Services
             bool isValid = await _userRepository.IsValidUser(login);
 
             return isValid;
+        }
+
+        public async Task<LoggedUserDetails> Authenticate(LoginVM login)
+        {
+            LoggedUserDetails userDetails = new LoggedUserDetails();
+            if(login != null)
+            {
+                userDetails = await _userRepository.AuthenticateUser(login);
+            }
+            return userDetails;
+          
         }
     }
 }

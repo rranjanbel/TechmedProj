@@ -138,6 +138,41 @@ namespace TechMed.API.Controllers
         }
 
         [HttpGet]
+        [Route("GetAllMaritalStatus")]
+        [ProducesResponseType(200, Type = typeof(List<MaritalStatusDTO>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetAllMaritalStatus()
+        {
+            MaritalStatusDTO mapdata = new MaritalStatusDTO();
+            try
+            {
+                var spemasters = await _teleMedecineContext.MaritalStatuses.ToListAsync();
+
+                var DTOList = new List<MaritalStatusDTO>();
+                foreach (var item in spemasters)
+                {
+                    mapdata = _mapper.Map<MaritalStatusDTO>(item);
+                    DTOList.Add(mapdata);
+                }
+                if (DTOList != null)
+                {
+                    return Ok(DTOList);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetAllCountryMaster", "GetAllCountryMaster did not find");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("GetAllCountryMaster", $"Something went wrong when GetAllCountryMaster {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
+
+        [HttpGet]
         [Route("GetAllDistrictMaster")]
         [ProducesResponseType(200, Type = typeof(List<DistrictMasterDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

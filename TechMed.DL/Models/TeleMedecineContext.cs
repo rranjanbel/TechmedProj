@@ -89,6 +89,7 @@ namespace TechMed.DL.Models
             }
         }
 
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<BlockMaster>(entity =>
@@ -804,6 +805,8 @@ namespace TechMed.DL.Models
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
+                entity.Property(e => e.MaritalStatusId).HasColumnName("MaritalStatusID");
+
                 entity.Property(e => e.MobileNo)
                     .HasMaxLength(10)
                     .IsUnicode(false);
@@ -825,7 +828,7 @@ namespace TechMed.DL.Models
 
                 entity.Property(e => e.StateId).HasColumnName("StateID");
 
-                entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
+                entity.Property(e => e.UpdatedOn).HasColumnType("datetime");             
 
                 entity.HasOne(d => d.Country)
                     .WithMany(p => p.PatientMasters)
@@ -856,6 +859,11 @@ namespace TechMed.DL.Models
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_PatientMaster_IDProofTypeMaster");
 
+                entity.HasOne(d => d.MaritalStatus)
+                    .WithMany(p => p.PatientMasters)
+                    .HasForeignKey(d => d.MaritalStatusId)
+                    .HasConstraintName("FK_PatientMaster_MaritalStatus");
+
                 entity.HasOne(d => d.PatientStatus)
                     .WithMany(p => p.PatientMasters)
                     .HasForeignKey(d => d.PatientStatusId)
@@ -872,12 +880,18 @@ namespace TechMed.DL.Models
                     .WithMany(p => p.PatientMasters)
                     .HasForeignKey(d => d.StateId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_PatientMaster_StateMaster");
+                    .HasConstraintName("FK_PatientMaster_StateMaster");              
 
                 entity.HasOne(d => d.UpdatedByNavigation)
                     .WithMany(p => p.PatientMasterUpdatedByNavigations)
                     .HasForeignKey(d => d.UpdatedBy)
                     .HasConstraintName("FK_PatientMaster_PHCMasterUpdatedBy");
+
+                //entity.HasOne(d => d.MaritalStatus)
+                //  .WithMany(p => p.PatientMasters)
+                //  .HasForeignKey(d => d.MaritalStatusID)
+                //  .OnDelete(DeleteBehavior.ClientSetNull)
+                //  .HasConstraintName("FK_PatientMaster_MaritalStatus");
             });
 
             modelBuilder.Entity<PatientQueue>(entity =>
