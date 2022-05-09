@@ -88,6 +88,7 @@ namespace TechMed.DL.Models
             }
         }
 
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<BlockMaster>(entity =>
@@ -803,6 +804,8 @@ namespace TechMed.DL.Models
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
+                entity.Property(e => e.MaritalStatusId).HasColumnName("MaritalStatusID");
+
                 entity.Property(e => e.MobileNo)
                     .HasMaxLength(10)
                     .IsUnicode(false);
@@ -854,6 +857,11 @@ namespace TechMed.DL.Models
                     .HasForeignKey(d => d.IdproofId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_PatientMaster_IDProofTypeMaster");
+
+                entity.HasOne(d => d.MaritalStatus)
+                    .WithMany(p => p.PatientMasters)
+                    .HasForeignKey(d => d.MaritalStatusId)
+                    .HasConstraintName("FK_PatientMaster_MaritalStatus");
 
                 entity.HasOne(d => d.PatientStatus)
                     .WithMany(p => p.PatientMasters)
