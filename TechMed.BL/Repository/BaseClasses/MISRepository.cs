@@ -109,6 +109,26 @@ namespace TechMed.BL.Repository.BaseClasses
             return CompletedConsultantReports;
         }
 
+        public List<CompletedConsultationChartVM> CompletedConsultationChart(int year)
+        {
+            List<CompletedConsultationChartVM> CompletedConsultantReports = new List<CompletedConsultationChartVM>();
+            //if (year > 0)
+            //{
+                CompletedConsultationChartVM CompletedConsultantReport;
+                var Results = _teleMedecineContext.CompletedConsultationChartResults.FromSqlInterpolated($"EXEC [dbo].[GetCompletedConsultationChart] @Year={year}");
+                foreach (var item in Results)
+                {
+                    CompletedConsultantReport = new CompletedConsultationChartVM();
+                    CompletedConsultantReport.NoOfConsultations = item.NoOfConsultations;
+                    CompletedConsultantReport.Month = item.Month;
+                    CompletedConsultantReport.Year = item.Year;                   
+                    CompletedConsultantReports.Add(CompletedConsultantReport);
+                }
+            //}
+
+            return CompletedConsultantReports;
+        }
+
         public async Task<bool> IsPHCExists(int PHCID)
         {
             var result = await _teleMedecineContext.Phcmasters.AnyAsync(a => a.Id == PHCID);
