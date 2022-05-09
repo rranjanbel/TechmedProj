@@ -103,7 +103,7 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
-        builder => { builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(); });
+        builder => { builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().AllowCredentials(); });
 });
 var app = builder.Build();
 var log = new LoggerFactory();

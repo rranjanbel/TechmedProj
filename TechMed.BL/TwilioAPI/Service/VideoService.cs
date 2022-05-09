@@ -59,7 +59,8 @@ namespace TechMed.BL.TwilioAPI.Service
            var room =await RoomResource.CreateAsync(
            recordParticipantsOnConnect: true,
            statusCallback: new Uri(callBackUrl),
-           type: RoomResource.RoomTypeEnum.Group,
+           type: RoomResource.RoomTypeEnum.GroupSmall,
+           maxParticipants:2,
            uniqueName: roomname
            );
 
