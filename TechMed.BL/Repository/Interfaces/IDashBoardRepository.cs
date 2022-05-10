@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TechMed.BL.DTOMaster;
+using TechMed.BL.ViewModels;
 using TechMed.DL.ViewModel;
 
 namespace TechMed.BL.Repository.Interfaces
@@ -15,5 +16,8 @@ namespace TechMed.BL.Repository.Interfaces
         Task<List<SpecializationReportVM>> GetTodaysConsultedPatientList();
         LoggedUserCountVM GetLoggedUserTypeCount(int usertTypeId);
         Task<List<LoggedUserCountVM>> GetTodaysLoggedUsersCount();
+        Task<List<DashboardConsultationVM>> GetDashboardConsultation(GetDashboardConsultationVM getDashboardConsultationVM);
+
+
     }
 }

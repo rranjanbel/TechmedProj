@@ -8,6 +8,7 @@ namespace TechMed.BL.DTOMaster
 {
     public class SearchPatientsDTO
     {
+        public int ID { get; set; }
         public string PatientName { get; set; }
         public Int64 PatientID { get; set; }
         public string Gender { get; set; }
