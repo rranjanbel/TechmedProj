@@ -12,6 +12,7 @@ namespace TechMed.DL.Models
             PatientCaseMedicines = new HashSet<PatientCaseMedicine>();
             PatientCaseVitals = new HashSet<PatientCaseVital>();
             PatientQueues = new HashSet<PatientQueue>();
+            VideoCallTransactions = new HashSet<VideoCallTransaction>();
         }
 
         public long Id { get; set; }
@@ -42,5 +43,6 @@ namespace TechMed.DL.Models
         public virtual ICollection<PatientCaseMedicine> PatientCaseMedicines { get; set; }
         public virtual ICollection<PatientCaseVital> PatientCaseVitals { get; set; }
         public virtual ICollection<PatientQueue> PatientQueues { get; set; }
+        public virtual ICollection<VideoCallTransaction> VideoCallTransactions { get; set; }
     }
 }
