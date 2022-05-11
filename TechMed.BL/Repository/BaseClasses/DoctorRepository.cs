@@ -583,6 +583,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 //GetTodayesPatientsDTO mapdata = _mapper.Map<GetTodayesPatientsDTO>(item);
                 SearchPatientsDTO mapdata = new SearchPatientsDTO();
                 mapdata.ID = item.PatientCase.Patient.Id;
+                mapdata.PatientCaseID = item.PatientCase.Id;
                 mapdata.PatientName = item.PatientCase.Patient.FirstName + " " + item.PatientCase.Patient.LastName;
                 mapdata.PhoneNumber = item.PatientCase.Patient.PhoneNumber;
                 mapdata.ReferredbyPHCName = item.AssignedByNavigation.Phcname;
@@ -615,6 +616,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 //GetTodayesPatientsDTO mapdata = _mapper.Map<GetTodayesPatientsDTO>(item);
                 SearchPatientsDTO mapdata = new SearchPatientsDTO();
                 mapdata.ID = item.PatientCase.Patient.Id;
+                mapdata.PatientCaseID = item.PatientCase.Id;
                 mapdata.PatientName = item.PatientCase.Patient.FirstName + " " + item.PatientCase.Patient.LastName;
                 mapdata.PhoneNumber = item.PatientCase.Patient.PhoneNumber;
                 mapdata.ReferredbyPHCName = item.AssignedByNavigation.Phcname;
