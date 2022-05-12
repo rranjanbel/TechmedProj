@@ -162,28 +162,25 @@ namespace TechMed.API.Controllers
                     return StatusCode(404, ModelState);
                 }
                 if(phcMaster != null)
-                { 
-                    //Need to get here data from database runtime when not supplied by GUI
-                    if (phcMaster.CreatedBy == 0)
-                        phcMaster.CreatedBy = 2; 
-                    if (phcMaster.UpdatedBy == 0)
-                        phcMaster.UpdatedBy = 2;
-                    if (phcMaster.UserId == 0)
-                        phcMaster.UserId = 4;
+                {                     
                     phcMaster.CreatedOn = DateTime.Now;
                     phcMaster.UpdatedOn = DateTime.Now;
+                    phcMaster.ClusterId = phcdto.ClusterId;
+                    phcMaster.ZoneId = phcdto.ZoneId;
+                    phcMaster.CreatedBy = phcdto.CreatedBy;
+                    phcMaster.UpdatedBy = phcdto.CreatedBy;
 
                     UserMaster userMaster = new UserMaster();
                     userMaster.Email = phcMaster.MailId;
                     userMaster.Name = phcMaster.Moname;
                     userMaster.Mobile = phcMaster.PhoneNo;
-                    userMaster.HashPassword = EncodeAndDecordPassword.EncodePassword("phcmo@123"); 
+                    userMaster.HashPassword = EncodeAndDecordPassword.EncodePassword("phc@12345"); 
                     userMaster.LoginAttempts = 0;
                     userMaster.LastLoginAt = DateTime.Now;
                     userMaster.IsActive = true;
                     userMaster.IsPasswordChanged = false;
-                    userMaster.CreatedBy = 2;
-                    userMaster.UpdatedBy = 2;
+                    userMaster.CreatedBy = phcdto.CreatedBy;
+                    userMaster.UpdatedBy = phcdto.CreatedBy;
                     userMaster.CreatedOn = DateTime.Now;
                     userMaster.UpdatedOn = DateTime.Now;
 
