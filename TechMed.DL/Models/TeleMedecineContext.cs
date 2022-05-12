@@ -29,6 +29,7 @@ namespace TechMed.DL.Models
         public virtual DbSet<DoctorMaster> DoctorMasters { get; set; } = null!;
         public virtual DbSet<FeedbackQuestionMaster> FeedbackQuestionMasters { get; set; } = null!;
         public virtual DbSet<GenderMaster> GenderMasters { get; set; } = null!;
+        public virtual DbSet<Holiday> Holidays { get; set; } = null!;
         public virtual DbSet<IdproofTypeMaster> IdproofTypeMasters { get; set; } = null!;
         public virtual DbSet<LoginHistory> LoginHistories { get; set; } = null!;
         public virtual DbSet<LoginRoleDelete> LoginRoleDeletes { get; set; } = null!;
@@ -49,6 +50,7 @@ namespace TechMed.DL.Models
         public virtual DbSet<PatientStatusMaster> PatientStatusMasters { get; set; } = null!;
         public virtual DbSet<Phcmaster> Phcmasters { get; set; } = null!;
         public virtual DbSet<RoleMasterDelete> RoleMasterDeletes { get; set; } = null!;
+        public virtual DbSet<ServerHealth> ServerHealths { get; set; } = null!;
         public virtual DbSet<Setting> Settings { get; set; } = null!;
         public virtual DbSet<SpecialityMasterDelete> SpecialityMasterDeletes { get; set; } = null!;
         public virtual DbSet<SpecializationMaster> SpecializationMasters { get; set; } = null!;
@@ -73,6 +75,8 @@ namespace TechMed.DL.Models
         public virtual DbSet<DoctorPatientSearchVM> DoctorPatientSearchResults { get; set; } = null!;
         public virtual DbSet<ConsultedPatientByDoctorAndPHCVM> ConsultedPatientByDoctorAndPHCResults { get; set; } = null!;
         public virtual DbSet<CompletedConsultationChartVM> CompletedConsultationChartResults { get; set; } = null!;
+        public virtual DbSet<DashboardConsultationVM> GetDashboardConsultation { get; set; } = null!;
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -386,6 +390,22 @@ namespace TechMed.DL.Models
 
                 entity.Property(e => e.Gender)
                     .HasMaxLength(50)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<Holiday>(entity =>
+            {
+                entity.ToTable("Holiday");
+
+                entity.HasIndex(e => e.Date, "IX_Holiday")
+                    .IsUnique();
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.Date).HasColumnType("date");
+
+                entity.Property(e => e.Description)
+                    .HasMaxLength(250)
                     .IsUnicode(false);
             });
 
@@ -828,7 +848,7 @@ namespace TechMed.DL.Models
 
                 entity.Property(e => e.StateId).HasColumnName("StateID");
 
-                entity.Property(e => e.UpdatedOn).HasColumnType("datetime");             
+                entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
 
                 entity.HasOne(d => d.Country)
                     .WithMany(p => p.PatientMasters)
@@ -862,6 +882,7 @@ namespace TechMed.DL.Models
                 entity.HasOne(d => d.MaritalStatus)
                     .WithMany(p => p.PatientMasters)
                     .HasForeignKey(d => d.MaritalStatusId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_PatientMaster_MaritalStatus");
 
                 entity.HasOne(d => d.PatientStatus)
@@ -880,18 +901,12 @@ namespace TechMed.DL.Models
                     .WithMany(p => p.PatientMasters)
                     .HasForeignKey(d => d.StateId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_PatientMaster_StateMaster");              
+                    .HasConstraintName("FK_PatientMaster_StateMaster");
 
                 entity.HasOne(d => d.UpdatedByNavigation)
                     .WithMany(p => p.PatientMasterUpdatedByNavigations)
                     .HasForeignKey(d => d.UpdatedBy)
                     .HasConstraintName("FK_PatientMaster_PHCMasterUpdatedBy");
-
-                //entity.HasOne(d => d.MaritalStatus)
-                //  .WithMany(p => p.PatientMasters)
-                //  .HasForeignKey(d => d.MaritalStatusID)
-                //  .OnDelete(DeleteBehavior.ClientSetNull)
-                //  .HasConstraintName("FK_PatientMaster_MaritalStatus");
             });
 
             modelBuilder.Entity<PatientQueue>(entity =>
@@ -1029,6 +1044,25 @@ namespace TechMed.DL.Models
                 entity.Property(e => e.Role)
                     .HasMaxLength(50)
                     .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<ServerHealth>(entity =>
+            {
+                entity.ToTable("ServerHealth");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.Availability).HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.Date).HasColumnType("date");
+
+                entity.Property(e => e.DownTiming).HasMaxLength(250);
+
+                entity.Property(e => e.Reason)
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Workingtime).HasMaxLength(150);
             });
 
             modelBuilder.Entity<Setting>(entity =>
@@ -1314,9 +1348,15 @@ namespace TechMed.DL.Models
 
                 entity.Property(e => e.Id).HasColumnName("ID");
 
+                entity.Property(e => e.CallEndTime).HasColumnType("datetime");
+
+                entity.Property(e => e.CallStartTime).HasColumnType("datetime");
+
                 entity.Property(e => e.CreatedOn).HasColumnType("datetime");
 
                 entity.Property(e => e.FromUserId).HasColumnName("FromUserID");
+
+                entity.Property(e => e.PatientCaseId).HasColumnName("PatientCaseID");
 
                 entity.Property(e => e.PatientId).HasColumnName("PatientID");
 
@@ -1336,6 +1376,12 @@ namespace TechMed.DL.Models
                     .HasForeignKey(d => d.FromUserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_VideoCallTransaction_UserMasterFromUser");
+
+                entity.HasOne(d => d.PatientCase)
+                    .WithMany(p => p.VideoCallTransactions)
+                    .HasForeignKey(d => d.PatientCaseId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_VideoCallTransaction_PatientCase");
 
                 entity.HasOne(d => d.Patient)
                     .WithMany(p => p.VideoCallTransactions)

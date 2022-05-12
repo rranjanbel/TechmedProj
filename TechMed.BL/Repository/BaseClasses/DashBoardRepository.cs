@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TechMed.BL.DTOMaster;
 using TechMed.BL.Repository.Interfaces;
+using TechMed.BL.ViewModels;
 using TechMed.DL.Models;
 using TechMed.DL.ViewModel;
 
@@ -138,6 +139,47 @@ namespace TechMed.BL.Repository.BaseClasses
             return specializationReports;
         }
 
-     
+        public async Task<List<DashboardConsultationVM>> GetDashboardConsultation(GetDashboardConsultationVM getDashboardConsultationVM)
+        {
+            List<DashboardConsultationVM> dashboardConsultations = new List<DashboardConsultationVM>();
+               
+            int SrNo = 0;
+            if (true)
+            {
+                DashboardConsultationVM CompletedConsultantReport;
+                var Results = _teleMedecineContext.GetDashboardConsultation.FromSqlInterpolated($"EXEC [dbo].[GetDashboardConsultation] @SpecializationID={getDashboardConsultationVM.SpecializationID},@FromDate={getDashboardConsultationVM.FromDate},@ToDate={getDashboardConsultationVM.ToDate}");
+                foreach (var item in Results)
+                {
+                    SrNo = SrNo + 1;
+                    CompletedConsultantReport = new DashboardConsultationVM();
+                    CompletedConsultantReport.SrNo = SrNo;
+
+                    CompletedConsultantReport.DistrictName= item.DistrictName;
+                    CompletedConsultantReport.BlockName = item.BlockName;
+                    CompletedConsultantReport.Complaint = item.Complaint;
+                    CompletedConsultantReport.AssignedOn = item.AssignedOn;
+                    CompletedConsultantReport.PatientName = item.PatientName;
+                    CompletedConsultantReport.Age = item.Age;
+                    CompletedConsultantReport.Gender = item.Gender;
+                    CompletedConsultantReport.PHCName = item.PHCName;
+                    CompletedConsultantReport.PHCTechnician = item.PHCTechnician;
+
+                    CompletedConsultantReport.Doctor = item.Doctor;
+                    CompletedConsultantReport.PHCAddress = item.PHCAddress;
+                    CompletedConsultantReport.Cluster = item.Cluster;
+                    CompletedConsultantReport.CluserID = item.CluserID;
+                    CompletedConsultantReport.Zone = item.Zone;
+                    CompletedConsultantReport.ZoneID = item.ZoneID;
+
+                    CompletedConsultantReport.PHCID = item.PHCID;
+                    CompletedConsultantReport.CreatedBy = item.CreatedBy;
+                    CompletedConsultantReport.PatientCreatedBy = item.PatientCreatedBy;
+                    dashboardConsultations.Add(CompletedConsultantReport);
+                }
+            }
+
+            return dashboardConsultations;
+            
+        }
     }
 }

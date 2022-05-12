@@ -337,6 +337,7 @@ namespace TechMed.BL.Repository.BaseClasses
             PatientQueue patientQueue = await _teleMedecineContext.PatientQueues
                 .Include(d => d.PatientCase.Patient.Gender)
                 .Include(d => d.PatientCase.Patient.Idproof)
+                .Include(d => d.PatientCase.Patient.MaritalStatus)
                 .Include(c => c.AssignedByNavigation)
                 .Include(a => a.PatientCase)
                 .Include(b => b.PatientCase.Patient)
@@ -372,7 +373,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     getPatientCaseDetails.UpdatedOn = patientQueue.PatientCase.UpdatedOn;
                     getPatientCaseDetails.CreatedBy = patientQueue.PatientCase.CreatedBy;
                     getPatientCaseDetails.CreatedOn = patientQueue.PatientCase.CreatedOn;
-                    getPatientCaseDetails.maritalstatus = null;
+                    getPatientCaseDetails.maritalstatus = patientQueue.PatientCase.Patient.MaritalStatus.Name ;
 
                     getPatientCaseDetails.FirstName = patientQueue.PatientCase.Patient.FirstName;
                     getPatientCaseDetails.LastName = patientQueue.PatientCase.Patient.LastName;
@@ -582,6 +583,8 @@ namespace TechMed.BL.Repository.BaseClasses
             {
                 //GetTodayesPatientsDTO mapdata = _mapper.Map<GetTodayesPatientsDTO>(item);
                 SearchPatientsDTO mapdata = new SearchPatientsDTO();
+                mapdata.ID = item.PatientCase.Patient.Id;
+                mapdata.PatientCaseID = item.PatientCase.Id;
                 mapdata.PatientName = item.PatientCase.Patient.FirstName + " " + item.PatientCase.Patient.LastName;
                 mapdata.PhoneNumber = item.PatientCase.Patient.PhoneNumber;
                 mapdata.ReferredbyPHCName = item.AssignedByNavigation.Phcname;
@@ -613,6 +616,8 @@ namespace TechMed.BL.Repository.BaseClasses
             {
                 //GetTodayesPatientsDTO mapdata = _mapper.Map<GetTodayesPatientsDTO>(item);
                 SearchPatientsDTO mapdata = new SearchPatientsDTO();
+                mapdata.ID = item.PatientCase.Patient.Id;
+                mapdata.PatientCaseID = item.PatientCase.Id;
                 mapdata.PatientName = item.PatientCase.Patient.FirstName + " " + item.PatientCase.Patient.LastName;
                 mapdata.PhoneNumber = item.PatientCase.Patient.PhoneNumber;
                 mapdata.ReferredbyPHCName = item.AssignedByNavigation.Phcname;
