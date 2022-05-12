@@ -209,6 +209,36 @@ namespace TechMed.API.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("GetDashboardReportSummary")]
+        [ProducesResponseType(200, Type = typeof(List<DashboardReportSummaryVM>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetDashboardReportSummary(GetDashboardReportSummaryVM getDashboardReportSummaryVM)
+        {
+            try
+            {
+                if (getDashboardReportSummaryVM == null)
+                {
+                    return BadRequest(ModelState);
+                }
+                var DTO = await _dashBoardRepository.GetDashboardReportSummary(getDashboardReportSummaryVM);
+                if (DTO.Count > 0)
+                {
+                    return Ok(DTO);
+                }
+                else
+                {
+                    ModelState.AddModelError("", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
 
+                ModelState.AddModelError("", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
     }
 }

@@ -8,6 +8,7 @@ using TechMed.DL.Models;
 using TechMed.DL.ViewModel;
 using TechMed.BL.Repository.Interfaces;
 using TechMed.BL.ViewModels;
+using TechMed.BL.CommanClassesAndFunctions;
 
 namespace TechMed.API.Controllers
 {
@@ -1032,7 +1033,7 @@ namespace TechMed.API.Controllers
                     userMaster.Email = doctorDTO.detailsDTO.EmailId;
                     userMaster.Name = doctorDTO.detailsDTO.FirstName;
                     userMaster.Mobile = doctorDTO.PhoneNumber;
-                    userMaster.HashPassword = "Doctot@123";
+                    userMaster.HashPassword = EncodeAndDecordPassword.EncodePassword("doctot@123"); 
                     userMaster.LoginAttempts = 0;
                     userMaster.LastLoginAt = DateTime.Now;
                     userMaster.IsActive = true;

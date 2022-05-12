@@ -17,6 +17,7 @@ namespace TechMed.BL.Repository.Interfaces
         LoggedUserCountVM GetLoggedUserTypeCount(int usertTypeId);
         Task<List<LoggedUserCountVM>> GetTodaysLoggedUsersCount();
         Task<List<DashboardConsultationVM>> GetDashboardConsultation(GetDashboardConsultationVM getDashboardConsultationVM);
+        Task<List<DashboardReportSummaryVM>> GetDashboardReportSummary(GetDashboardReportSummaryVM getDashboardReportSummaryVM);
 
 
     }
