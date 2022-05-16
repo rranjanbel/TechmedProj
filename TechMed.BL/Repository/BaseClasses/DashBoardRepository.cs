@@ -181,5 +181,31 @@ namespace TechMed.BL.Repository.BaseClasses
             return dashboardConsultations;
             
         }
+
+        public List<PHCLoginHistoryReportVM> GetPHCLoginHistoryReport(int PHCId, DateTime fromDate, DateTime toDate)
+        {
+            List<PHCLoginHistoryReportVM> phcLoginReports = new List<PHCLoginHistoryReportVM>();
+            PHCLoginHistoryReportVM phcLoginHistoryReport;
+            if (PHCId > 0)
+            {
+                var Results = _teleMedecineContext.PHCLoginHistoryReports.FromSqlInterpolated($"EXEC [dbo].[GetPHCLoginReport] @PHCID ={PHCId}, @FromDate ={fromDate}, @ToDate ={toDate}");
+                foreach (var item in Results)
+                {
+                    phcLoginHistoryReport = new PHCLoginHistoryReportVM();
+                    phcLoginHistoryReport.SrNo = item.SrNo;
+                    phcLoginHistoryReport.DistrictName = item.DistrictName;
+                    phcLoginHistoryReport.Zone =item.Zone;
+                    phcLoginHistoryReport.PHCName = item.PHCName;                  
+                    phcLoginHistoryReport.UserID = item.UserID;
+                    phcLoginHistoryReport.LogedDate = item.LogedDate;
+                    phcLoginHistoryReport.LoginTime = item.LoginTime;
+                    phcLoginHistoryReport.LogoutTime = item.LogoutTime;
+                    phcLoginHistoryReport.Remark = item.Remark;
+                    phcLoginHistoryReport.Status = item.Status;
+                    phcLoginReports.Add(phcLoginHistoryReport);
+                }
+            }
+            return phcLoginReports;
+        }
     }
 }

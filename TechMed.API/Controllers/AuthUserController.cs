@@ -93,11 +93,12 @@ namespace TechMed.API.Controllers
         }
         [HttpPost("api/logout")]
         [Authorize]
-        public ActionResult Logout()
+        public async Task<ActionResult> Logout()
         {
             var userName = User.Identity?.Name;
             _jwtAuthManager.RemoveRefreshTokenByUserName(userName);
             _logger.LogInformation($"User [{userName}] logged out the system.");
+            bool result = await _userService.LogoutUsers(userName);
             //_doctorRepository.UpdateIsDrOnlineByUserLoginName(new UpdateIsDrOnlineByUserLoginNameVM
             //{
             //    IsOnline = false,

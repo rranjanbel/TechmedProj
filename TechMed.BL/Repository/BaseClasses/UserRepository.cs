@@ -341,5 +341,19 @@ namespace TechMed.BL.Repository.BaseClasses
 
 
         }
+
+        public async Task<bool> LogoutUsers(string userEmail)
+        {
+            LoginHistory loginHistory = new LoginHistory();
+            loginHistory = await _teleMedecineContext.LoginHistories.Include( a => a.User).Where(a => a.User.Email == userEmail).OrderByDescending(a => a.Id).FirstOrDefaultAsync();
+            if(loginHistory != null)
+            {
+                loginHistory.LogedoutTime = DateTime.Now;
+
+                this._teleMedecineContext.Entry(loginHistory).State = EntityState.Modified;
+                int i = await this._teleMedecineContext.SaveChangesAsync();
+            }
+            return true;
+        }
     }
 }
