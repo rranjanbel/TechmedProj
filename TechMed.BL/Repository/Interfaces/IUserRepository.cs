@@ -22,6 +22,7 @@ namespace TechMed.BL.Repository.Interfaces
         bool SetUserPassword(int UserId, string Password);
         Task<string> GetUserRole(string userEmail);
         Task<LoggedUserDetails> AuthenticateUser(LoginVM login);
+        Task<bool> LogoutUsers(string userEmail);
 
     }
 }

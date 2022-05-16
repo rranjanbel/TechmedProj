@@ -63,5 +63,11 @@ namespace TechMed.API.Services
             return userDetails;
           
         }
+
+        public async Task<bool> LogoutUsers(string userEmail)
+        {
+           bool result = await _userRepository.LogoutUsers(userEmail);
+            return result;
+        }
     }
 }

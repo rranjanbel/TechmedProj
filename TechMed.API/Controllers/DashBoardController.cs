@@ -209,6 +209,35 @@ namespace TechMed.API.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("GetPHCLoginHistoryReport")]
+        [ProducesResponseType(200, Type = typeof(List<PHCLoginHistoryReportVM>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult GetPHCLoginHistoryReport(int PHCId, DateTime fromDate, DateTime toDate)
+        {
+            List<PHCLoginHistoryReportVM> todaysRegistorCase = new List<PHCLoginHistoryReportVM>();
+            try
+            {
+                todaysRegistorCase = _dashBoardRepository.GetPHCLoginHistoryReport(PHCId, fromDate, toDate);
+                if (todaysRegistorCase != null)
+                {
+                    return Ok(todaysRegistorCase);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetPHCLoginHistoryReport", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("GetPHCLoginHistoryReport", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+
+        }
+
         [HttpPost]
         [Route("GetDashboardReportSummary")]
         [ProducesResponseType(200, Type = typeof(List<DashboardReportSummaryVM>))]
