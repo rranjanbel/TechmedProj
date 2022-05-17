@@ -32,6 +32,7 @@ namespace TechMed.DL.Models
         public virtual BlockMaster Block { get; set; } = null!;
         public virtual ClusterMaster Cluster { get; set; } = null!;
         public virtual UserMaster? CreatedByNavigation { get; set; }
+        public virtual DistrictMaster District { get; set; } = null!;
         public virtual DivisionMaster Division { get; set; } = null!;
         public virtual UserMaster? UpdatedByNavigation { get; set; }
         public virtual UserMaster User { get; set; } = null!;

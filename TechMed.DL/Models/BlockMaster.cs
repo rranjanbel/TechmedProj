@@ -20,6 +20,7 @@ namespace TechMed.DL.Models
         public int? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
 
+        public virtual DistrictMaster District { get; set; } = null!;
         public virtual ICollection<DoctorMaster> DoctorMasters { get; set; }
         public virtual ICollection<Phcmaster> Phcmasters { get; set; }
     }

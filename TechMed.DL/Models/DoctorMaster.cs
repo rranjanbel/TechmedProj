@@ -37,6 +37,7 @@ namespace TechMed.DL.Models
         public DateTime? UpdatedOn { get; set; }
 
         public virtual BlockMaster? Block { get; set; }
+        public virtual ClusterMaster? Cluster { get; set; }
         public virtual UserMaster? CreatedByNavigation { get; set; }
         public virtual DistrictMaster? District { get; set; }
         public virtual DivisionMaster? Division { get; set; }

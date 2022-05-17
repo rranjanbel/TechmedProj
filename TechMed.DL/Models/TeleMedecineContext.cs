@@ -110,6 +110,12 @@ namespace TechMed.DL.Models
                 entity.Property(e => e.DistrictId).HasColumnName("DistrictID");
 
                 entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
+
+                entity.HasOne(d => d.District)
+                    .WithMany(p => p.BlockMasters)
+                    .HasForeignKey(d => d.DistrictId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_BlockMaster_DistrictMaster");
             });
 
             modelBuilder.Entity<CalenderMaster>(entity =>
@@ -334,6 +340,11 @@ namespace TechMed.DL.Models
                     .HasForeignKey(d => d.BlockId)
                     .HasConstraintName("FK_DoctorMaster_BlockMaster");
 
+                entity.HasOne(d => d.Cluster)
+                    .WithMany(p => p.DoctorMasters)
+                    .HasForeignKey(d => d.ClusterId)
+                    .HasConstraintName("FK_DoctorMaster_ClusterMaster");
+
                 entity.HasOne(d => d.CreatedByNavigation)
                     .WithMany(p => p.DoctorMasterCreatedByNavigations)
                     .HasForeignKey(d => d.CreatedBy)
@@ -347,7 +358,7 @@ namespace TechMed.DL.Models
                 entity.HasOne(d => d.Division)
                     .WithMany(p => p.DoctorMasters)
                     .HasForeignKey(d => d.DivisionId)
-                    .HasConstraintName("FK_DoctorMaster_ClusterMaster");
+                    .HasConstraintName("FK_DoctorMaster_DivisionMaster");
 
                 entity.HasOne(d => d.Specialization)
                     .WithMany(p => p.DoctorMasters)
@@ -1027,6 +1038,12 @@ namespace TechMed.DL.Models
                     .WithMany(p => p.PhcmasterCreatedByNavigations)
                     .HasForeignKey(d => d.CreatedBy)
                     .HasConstraintName("FK_PHCMaster_UserMasterCreatedBy");
+
+                entity.HasOne(d => d.District)
+                    .WithMany(p => p.Phcmasters)
+                    .HasForeignKey(d => d.DistrictId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PHCMaster_DistrictMaster");
 
                 entity.HasOne(d => d.Division)
                     .WithMany(p => p.Phcmasters)
