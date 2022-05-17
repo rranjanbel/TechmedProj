@@ -16,7 +16,7 @@ namespace TechMed.DL.Models
         public string PhoneNo { get; set; }
         public string MailID { get; set; }
         public string Cluster { get; set; }
-        public string Zone { get; set; }
+        public string BlockName { get; set; }
         public string PatientName { get; set; }
         public string PatientCreatedBy { get; set; }
         public string Docter { get; set; }

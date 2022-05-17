@@ -397,7 +397,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 sPResultGetPatientDetail.PatientName = item.PatientName;
                 sPResultGetPatientDetail.MOName = item.MOName;
                 sPResultGetPatientDetail.MailID = item.MailID;
-                sPResultGetPatientDetail.Zone = item.Zone;
+                sPResultGetPatientDetail.BlockName = item.BlockName;
                 sPResultGetPatientDetail.Cluster = item.Cluster;
                 sPResultGetPatientDetail.PHCAddress = item.PHCAddress;
                 sPResultGetPatientDetail.Docter = item.Docter;

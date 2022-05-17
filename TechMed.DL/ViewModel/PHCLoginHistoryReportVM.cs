@@ -12,7 +12,7 @@ namespace TechMed.DL.ViewModel
     {
         public long SrNo { get; set; }
         public string DistrictName { get; set; }
-        public string Zone { get; set; }
+        public string BlockName { get; set; }
         public string PHCName { get; set; }
         public int UserID { get; set; }
         public DateTime LogedDate { get; set; }

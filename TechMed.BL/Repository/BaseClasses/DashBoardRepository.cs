@@ -194,7 +194,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     phcLoginHistoryReport = new PHCLoginHistoryReportVM();
                     phcLoginHistoryReport.SrNo = item.SrNo;
                     phcLoginHistoryReport.DistrictName = item.DistrictName;
-                    phcLoginHistoryReport.Zone =item.Zone;
+                    phcLoginHistoryReport.BlockName = item.BlockName;
                     phcLoginHistoryReport.PHCName = item.PHCName;                  
                     phcLoginHistoryReport.UserID = item.UserID;
                     phcLoginHistoryReport.LogedDate = item.LogedDate;
