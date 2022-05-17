@@ -1075,7 +1075,7 @@ namespace TechMed.API.Controllers
                 {
                     DoctorDTO doctorDTO1 = new DoctorDTO();
                     doctorDTO1.Id = doctorCreated.Id;
-                    doctorDTO1.ZoneId = doctorCreated.ZoneId;
+                    doctorDTO1.BlockID = doctorCreated.BlockId;
                     doctorDTO1.ClusterId = doctorCreated.ClusterId;
                     doctorDTO1.UserId = doctorCreated.UserId;
                     doctorDTO1.SpecializationId = doctorCreated.SpecializationId;
