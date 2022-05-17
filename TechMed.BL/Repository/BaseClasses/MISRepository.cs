@@ -50,8 +50,8 @@ namespace TechMed.BL.Repository.BaseClasses
                     CompletedConsultantReport.PHCAddress = item.PHCAddress;
                     CompletedConsultantReport.Cluster = item.Cluster;
                     CompletedConsultantReport.CluserID = item.CluserID;
-                    CompletedConsultantReport.Zone = item.Zone;
-                    CompletedConsultantReport.ZoneID = item.ZoneID;
+                    CompletedConsultantReport.BlockName = item.BlockName;
+                    CompletedConsultantReport.BlockID = item.BlockID;
 
                     CompletedConsultantReport.PHCID = item.PHCID;
                     CompletedConsultantReport.CreatedBy = item.CreatedBy;
