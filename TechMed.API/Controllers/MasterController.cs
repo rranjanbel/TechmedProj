@@ -387,12 +387,12 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<ZoneMasterDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAllZoneMaster()
+        public async Task<IActionResult> GetAllBlockMaster()
         {
             ZoneMasterDTO mapdata = new ZoneMasterDTO();
             try
             {
-                var spemasters = await _teleMedecineContext.ZoneMasters.ToListAsync();
+                var spemasters = await _teleMedecineContext.BlockMasters.ToListAsync();
 
                 var DTOList = new List<ZoneMasterDTO>();
                 foreach (var item in spemasters)
