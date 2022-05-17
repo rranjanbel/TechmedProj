@@ -6,11 +6,15 @@ using System.Threading.Tasks;
 
 namespace TechMed.BL.DTOMaster
 {
-    public class ZoneMasterDTO
+    public class BlockMasterDTO
     {
         public int Id { get; set; }
-        public int ClusterId { get; set; }
-        public string Zone { get; set; } = null!;
+        public string BlockName { get; set; } = null!;
+        public int DistrictId { get; set; }
         public bool IsActive { get; set; }
+        public int? CreatedBy { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public int? UpdatedBy { get; set; }
+        public DateTime? UpdatedOn { get; set; }
     }
 }

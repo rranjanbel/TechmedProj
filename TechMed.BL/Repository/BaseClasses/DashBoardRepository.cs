@@ -33,7 +33,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     join u in _teleMedecineContext.UserMasters on d.UserId equals u.Id
                     join ud in _teleMedecineContext.UserDetails on d.UserId equals ud.UserId
                     where
-                    d.ZoneId == (doctorsLoggedInTodayVM.ZoneID==null ? d.ZoneId : doctorsLoggedInTodayVM.ZoneID)
+                    d.BlockId == (doctorsLoggedInTodayVM.ZoneID==null ? d.BlockId : doctorsLoggedInTodayVM.ZoneID)
                     && d.ClusterId == (doctorsLoggedInTodayVM.ClusterID== null ? d.ClusterId : doctorsLoggedInTodayVM.ClusterID)
                     && u.LastLoginAt.Value.Day == DateTime.Now.Day
                     && u.LastLoginAt.Value.Month == DateTime.Now.Month
@@ -57,7 +57,7 @@ namespace TechMed.BL.Repository.BaseClasses
                         SubSpecializationId = d.SubSpecializationId,
                         UpdatedBy = d.UpdatedBy,
                         UserId = d.UserId,
-                        ZoneId = d.ZoneId,
+                        BlockID = d.BlockId,
                         detailsDTO = new DetailsDTO
                         {
                             Address = ud.Address,

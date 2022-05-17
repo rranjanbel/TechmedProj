@@ -383,21 +383,21 @@ namespace TechMed.API.Controllers
         }
 
         [HttpGet]
-        [Route("GetAllZoneMaster")]
-        [ProducesResponseType(200, Type = typeof(List<ZoneMasterDTO>))]
+        [Route("GetAllBlockMaster")]
+        [ProducesResponseType(200, Type = typeof(List<BlockMasterDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAllZoneMaster()
+        public async Task<IActionResult> GetAllBlockMaster()
         {
-            ZoneMasterDTO mapdata = new ZoneMasterDTO();
+            BlockMasterDTO mapdata = new BlockMasterDTO();
             try
             {
-                var spemasters = await _teleMedecineContext.ZoneMasters.ToListAsync();
+                var spemasters = await _teleMedecineContext.BlockMasters.ToListAsync();
 
-                var DTOList = new List<ZoneMasterDTO>();
+                var DTOList = new List<BlockMasterDTO>();
                 foreach (var item in spemasters)
                 {
-                    mapdata = _mapper.Map<ZoneMasterDTO>(item);
+                    mapdata = _mapper.Map<BlockMasterDTO>(item);
                     DTOList.Add(mapdata);
                 }
                 if (DTOList != null)

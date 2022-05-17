@@ -10,7 +10,7 @@ namespace TechMed.BL.ViewModels
     {
         public int Id { get; set; }
         public string? Phcname { get; set; }
-        public string ZoneName { get; set; } = null!;
+        public string BlockName { get; set; } = null!;
         public string ClusterName { get; set; } = null!;
         public string? Address { get; set; }
         public string City { get; set; }
