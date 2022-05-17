@@ -14,8 +14,10 @@ namespace TechMed.DL.Models
         }
 
         public int Id { get; set; }
-        public int ZoneId { get; set; }
         public int ClusterId { get; set; }
+        public int DivisionId { get; set; }
+        public int DistrictId { get; set; }
+        public int BlockId { get; set; }
         public int UserId { get; set; }
         public string Phcname { get; set; } = null!;
         public string MailId { get; set; } = null!;
@@ -27,11 +29,12 @@ namespace TechMed.DL.Models
         public int? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
 
+        public virtual BlockMaster Block { get; set; } = null!;
         public virtual ClusterMaster Cluster { get; set; } = null!;
         public virtual UserMaster? CreatedByNavigation { get; set; }
+        public virtual DivisionMaster Division { get; set; } = null!;
         public virtual UserMaster? UpdatedByNavigation { get; set; }
         public virtual UserMaster User { get; set; } = null!;
-        public virtual ZoneMaster Zone { get; set; } = null!;
         public virtual ICollection<PatientMaster> PatientMasterCreatedByNavigations { get; set; }
         public virtual ICollection<PatientMaster> PatientMasterPhcs { get; set; }
         public virtual ICollection<PatientMaster> PatientMasterUpdatedByNavigations { get; set; }

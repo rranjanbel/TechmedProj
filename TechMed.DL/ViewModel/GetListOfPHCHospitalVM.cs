@@ -10,6 +10,6 @@ namespace TechMed.DL.ViewModel
     public class GetListOfPHCHospitalVM
     {
         [Required]
-        public int ZoneID { get; set; }
+        public int BlockID { get; set; }
     }
 }

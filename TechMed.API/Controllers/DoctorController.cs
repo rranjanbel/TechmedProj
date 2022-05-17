@@ -758,12 +758,12 @@ namespace TechMed.API.Controllers
             }
         }
 
-        [Route("GetListOfPHCHospitalZoneWise")]
+        [Route("GetListOfPHCHospitalBlockWise")]
         [HttpPost]
         [ProducesResponseType(200, Type = typeof(List<PHCHospitalDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetListOfPHCHospitalZoneWise(GetListOfPHCHospitalVM getListOfPHCHospitalVM)
+        public async Task<IActionResult> GetListOfPHCHospitalBlockWise(GetListOfPHCHospitalVM getListOfPHCHospitalVM)
         {
             try
             {
@@ -771,7 +771,7 @@ namespace TechMed.API.Controllers
                 {
                     return BadRequest(ModelState);
                 }
-                var DTO = await _doctorRepository.GetListOfPHCHospitalZoneWise(getListOfPHCHospitalVM);
+                var DTO = await _doctorRepository.GetListOfPHCHospitalBlockWise(getListOfPHCHospitalVM);
                 if (DTO.Count > 0)
                 {
                     return Ok(DTO);
@@ -924,7 +924,7 @@ namespace TechMed.API.Controllers
         {
             try
             {
-                if (doctorVM.ZoneID < 1 || !ModelState.IsValid)
+                if (doctorVM.BlockID < 1 || !ModelState.IsValid)
                 {
                     return BadRequest(doctorVM);
                 }
@@ -1008,7 +1008,7 @@ namespace TechMed.API.Controllers
                 {
                     //Need to get here data from database runtime when not supplied by GUI
 
-                    doctor.ZoneId = doctorDTO.ZoneId;
+                    doctor.BlockId = doctorDTO.BlockId;
                     doctor.ClusterId = doctorDTO.ClusterId;
                     doctor.SpecializationId = doctorDTO.SpecializationId;
                     doctor.SubSpecializationId = doctorDTO.SubSpecializationId;

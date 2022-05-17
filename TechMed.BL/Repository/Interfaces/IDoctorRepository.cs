@@ -16,7 +16,7 @@ namespace TechMed.BL.Repository.Interfaces
         public Task<DoctorDTO> GetDoctorDetails(GetDoctorDetailVM getDoctorDetailVM);
         public Task<bool> UpdateDoctorDetails(DoctorDTO doctorDTO, string rootPath, string webRootPath);
         public Task<List<PHCHospitalDTO>> GetListOfPHCHospital();
-        public Task<List<PHCHospitalDTO>> GetListOfPHCHospitalZoneWise(GetListOfPHCHospitalVM getListOfPHCHospitalVM);
+        public Task<List<PHCHospitalDTO>> GetListOfPHCHospitalBlockWise(GetListOfPHCHospitalVM getListOfPHCHospitalVM);
         public Task<List<NotificationDTO>> GetListOfNotification(GetListOfNotificationVM getListOfNotificationVM);
         public Task<CdssguidelineMasterDTO> GetCDSSGuideLines();
         public Task<List<GetTodayesPatientsDTO>> GetYesterdayPatientsHistory(DoctorVM doctorVM);

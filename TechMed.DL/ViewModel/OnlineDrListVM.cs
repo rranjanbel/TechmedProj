@@ -8,6 +8,6 @@ namespace TechMed.DL.ViewModel
 {
     public class OnlineDrListVM
     {
-        public int ZoneID { get; set; }
+        public int BlockID { get; set; }
     }
 }
