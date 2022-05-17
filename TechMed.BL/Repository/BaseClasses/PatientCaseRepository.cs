@@ -470,7 +470,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 patientCaseQue.PHCID =item.PHCID;
                 patientCaseQue.AssignedOn = item.AssignedOn;
                 patientCaseQue.Cluster = item.Cluster;
-                patientCaseQue.Zone = item.Zone;
+                patientCaseQue.BlockName = item.BlockName;
                 patientCaseQue.PatientID = item.PatientID;
                 patientCaseQue.PatientQueueId = item.PatientQueueId;
                 patientCaseQue.PatientCaseID = item.PatientCaseID;
