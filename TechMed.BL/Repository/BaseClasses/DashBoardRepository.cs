@@ -207,5 +207,27 @@ namespace TechMed.BL.Repository.BaseClasses
             }
             return phcLoginReports;
         }
+
+        public List<PHCConsultationVM> GetPHCConsultationReport(int PHCId, DateTime? fromDate, DateTime? toDate)
+        {
+            List<PHCConsultationVM> phcconsultationReports = new List<PHCConsultationVM>();
+            PHCConsultationVM phcconsultationReport;
+            if (PHCId > 0)
+            {
+                var Results = _teleMedecineContext.PHCConsultationResult.FromSqlInterpolated($"EXEC [dbo].[GetDashboardPHCConsultation] @PHCID ={PHCId}, @FromDate ={fromDate}, @ToDate ={toDate}");
+                foreach (var item in Results)
+                {
+                    phcconsultationReport = new PHCConsultationVM();
+                    phcconsultationReport.SrNo = item.SrNo;
+                    phcconsultationReport.DistrictName = item.DistrictName;
+                    phcconsultationReport.BlockName = item.BlockName;
+                    phcconsultationReport.PHCName = item.PHCName;
+                    phcconsultationReport.NoOfConsultation = item.NoOfConsultation;
+
+                    phcconsultationReports.Add(phcconsultationReport);
+                }
+            }
+            return phcconsultationReports;
+        }
     }
 }
