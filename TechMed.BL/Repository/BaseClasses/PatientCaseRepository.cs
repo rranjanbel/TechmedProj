@@ -212,6 +212,7 @@ namespace TechMed.BL.Repository.BaseClasses
 
         public async Task<PatientCaseDetailsVM> PostPatientCaseDetails(PatientCaseDetailsVM patientCaseVM)
         {
+            List<PatientCaseDocDTO> caseDocumentsList = new List<PatientCaseDocDTO>();
             PatientCaseDetailsVM patientcasecreateVM = new PatientCaseDetailsVM();
             PatientCase patientCase;
             PatientCaseVital patientCaseVital;
@@ -304,16 +305,22 @@ namespace TechMed.BL.Repository.BaseClasses
                                 }
 
                                 patientcasecreateVM.vitals = patientCaseVM.vitals;
+                                foreach (var doc in patientCaseVM.caseDocuments)
+                                {
+                                    l = 0;
+                                    patientCaseDocument = new PatientCaseDocument();
+                                    patientCaseDocument = _mapper.Map<PatientCaseDocument>(doc);
+                                    this._teleMedecineContext.Entry(patientCaseDocument).State = EntityState.Added;
+                                    l = await this.Context.SaveChangesAsync();
 
-                                patientCaseDocument = new PatientCaseDocument();
-                                patientCaseDocument = _mapper.Map<PatientCaseDocument>(patientCaseVM.caseDocuments);
-                                this._teleMedecineContext.Entry(patientCaseDocument).State = EntityState.Added;
-                                l = await this.Context.SaveChangesAsync();
+                                    PatientCaseDocDTO docDTO = _mapper.Map<PatientCaseDocDTO>(patientCaseDocument);
+                                    caseDocumentsList.Add(docDTO);
+                                }
                                 if (l > 0)
                                 {
                                     _logger.LogInformation($"Patient case document added : sucessfully {patientCase.Id}");
                                 }
-                                patientcasecreateVM.caseDocuments = _mapper.Map<PatientCaseDocDTO>(patientCaseDocument);
+                                patientcasecreateVM.caseDocuments = caseDocumentsList;
 
                                 patientcasecreateVM.PatientID = patientCaseVM.PatientID;
                                 patientcasecreateVM.PHCUserId = patientCaseVM.PHCUserId;
