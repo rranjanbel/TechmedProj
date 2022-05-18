@@ -289,6 +289,7 @@ namespace TechMed.BL.Repository.BaseClasses
 
                                 foreach (var vital in patientCaseVM.vitals)
                                 {
+                                    k = 0;
                                     patientCaseVital = new PatientCaseVital();
                                     patientCaseVital.Date = DateTime.Now;
                                     patientCaseVital.PatientCaseId = vital.PatientCaseId;
