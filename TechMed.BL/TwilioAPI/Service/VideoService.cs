@@ -5,7 +5,12 @@ using Twilio.Jwt.AccessToken;
 using Twilio.Rest.Video.V1;
 using Twilio.Rest.Video.V1.Room;
 using ParticipantStatus = Twilio.Rest.Video.V1.Room.ParticipantResource.StatusEnum;
-
+using static Twilio.Rest.Video.V1.CompositionResource;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Text;
+using Newtonsoft.Json;
 
 namespace TechMed.BL.TwilioAPI.Service
 {
@@ -65,6 +70,50 @@ namespace TechMed.BL.TwilioAPI.Service
            );
 
             return room;
+        }
+        public async Task<ResourceSet<CompositionResource>> GetAllCompletedComposition()
+        {
+            var composition = await CompositionResource.ReadAsync(status: CompositionResource.StatusEnum.Completed);
+            if (composition != null)
+                return composition;
+            else
+                return null;
+        }      
+        public async Task<CompositionResource> ComposeVideo(string roomSid, string callBackUrl)
+        {
+            var layout = new {
+                transcode = new
+                {
+                    video_sources = new string[] { "*" }
+                }
+            };
+            var composition = await CompositionResource.CreateAsync(
+                                  roomSid: roomSid,
+                                  audioSources: new List<string>{"*"},
+                                  videoLayout: layout,
+                                  statusCallback: new Uri(callBackUrl),
+                                  format: FormatEnum.Mp4
+                              );
+
+            return composition;
+
+        }
+        public void DownloadComposeVideo(string compositionSid)
+        {
+            string uri = "https://video.twilio.com/v1/Compositions/"+ compositionSid + "/Media?Ttl=3600";
+
+            var request = (HttpWebRequest) WebRequest.Create(uri);
+            request.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(Encoding.ASCII.GetBytes(_twilioSettings.ApiKey + ":" + _twilioSettings.ApiSecret)));
+            request.AllowAutoRedirect = false;
+            string responseBody = new StreamReader(request.GetResponse().GetResponseStream()).ReadToEnd();
+            var mediaLocation = JsonConvert.DeserializeObject<Dictionary<string, string>>(responseBody)["redirect_to"];
+
+            new WebClient().DownloadFile(mediaLocation, $"{compositionSid}.out");
+
+        }
+        public async Task<bool> DeleteComposeVideo(string compositionSid)
+        {
+          return  await CompositionResource.DeleteAsync(compositionSid);
         }
         #region Borrowed from https://github.com/twilio/video-quickstart-js/blob/1.x/server/randomname.js
 
