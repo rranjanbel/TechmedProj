@@ -48,10 +48,15 @@ namespace TechMed.API.Controllers
             return await _videoService.DeleteComposeVideo(compositionSid);
         }
 
-        [HttpPost("room-sid")]
+        [HttpPost("getroom-sid")]
         public async Task<string> GetRoomSid(string roomName)
         {
             return await _videoService.GetRoomSid(roomName);
+        }
+        [HttpPost("end-video-call")]
+        public async Task<RoomResource> EndVideoCall(string roomsid)
+        {
+            return await _videoService.EndVideoCall(roomsid);
         }
     }
 }

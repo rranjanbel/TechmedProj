@@ -125,6 +125,13 @@ namespace TechMed.BL.TwilioAPI.Service
             }
             return roomSid;
         }
+        public async Task<RoomResource> EndVideoCall(string roomsid)
+        {
+            var room = await RoomResource.UpdateAsync(
+                       status: RoomResource.RoomStatusEnum.Completed,
+                       pathSid: roomsid);
+            return room;
+        }
         #region Borrowed from https://github.com/twilio/video-quickstart-js/blob/1.x/server/randomname.js
 
         readonly string[] _adjectives =
