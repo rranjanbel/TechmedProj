@@ -37,23 +37,23 @@ namespace TechMed.API.Controllers
         {
             return await _videoService.ComposeVideo(roomSid, callBackUrl);
         }
-        [HttpPost("download-video")]
+        [HttpGet("download-video")]
         public void DownloadComposeVideo(string compositionSid)
         {
             _videoService.DownloadComposeVideo(compositionSid);
         }
-        [HttpPost("delete-video")]
+        [HttpGet("delete-video")]
         public async Task<bool> DeleteComposeVideo(string compositionSid)
         {
             return await _videoService.DeleteComposeVideo(compositionSid);
         }
 
-        [HttpPost("getroom-sid")]
+        [HttpGet("getroom-sid")]
         public async Task<string> GetRoomSid(string roomName)
         {
             return await _videoService.GetRoomSid(roomName);
         }
-        [HttpPost("end-video-call")]
+        [HttpGet("end-video-call")]
         public async Task<RoomResource> EndVideoCall(string roomsid)
         {
             return await _videoService.EndVideoCall(roomsid);
