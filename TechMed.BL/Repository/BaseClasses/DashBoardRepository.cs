@@ -229,7 +229,7 @@ namespace TechMed.BL.Repository.BaseClasses
             }
             return phcconsultationReports;
         }
-    }
+    
 
         public async Task<List<DashboardReportSummaryVM>> GetDashboardReportSummary(GetDashboardReportSummaryVM getDashboardReportSummaryVM)
         {
@@ -239,7 +239,7 @@ namespace TechMed.BL.Repository.BaseClasses
             if (true)
             {
                 DashboardReportSummaryVM CompletedConsultantReport;
-                var Results = _teleMedecineContext.GetDashboardReportSummary.FromSqlInterpolated($"EXEC [dbo].[GetDashboardReportSummary] @FromDate={getDashboardReportSummaryVM.FromDate},@ToDate={getDashboardReportSummaryVM.ToDate}");
+                var Results =  _teleMedecineContext.GetDashboardReportSummary.FromSqlInterpolated($"EXEC [dbo].[GetDashboardReportSummary] @FromDate={getDashboardReportSummaryVM.FromDate},@ToDate={getDashboardReportSummaryVM.ToDate}");
                 foreach (var item in Results)
                 {
                     //SrNo = SrNo + 1;
