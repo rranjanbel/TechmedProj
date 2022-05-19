@@ -79,8 +79,9 @@ namespace TechMed.BL.TwilioAPI.Service
             else
                 return null;
         }      
-        public async Task<CompositionResource> ComposeVideo(string roomSid, string callBackUrl)
+        public async Task<CompositionResource> ComposeVideo(string roomName, string callBackUrl)
         {
+            var roomDetail = RoomResource.Fetch(roomName);
             var layout = new {
                 transcode = new
                 {
@@ -88,7 +89,7 @@ namespace TechMed.BL.TwilioAPI.Service
                 }
             };
             var composition = await CompositionResource.CreateAsync(
-                                  roomSid: roomSid,
+                                  roomSid: roomDetail.Sid,
                                   audioSources: new List<string>{"*"},
                                   videoLayout: layout,
                                   statusCallback: new Uri(callBackUrl),
@@ -125,11 +126,12 @@ namespace TechMed.BL.TwilioAPI.Service
             }
             return roomSid;
         }
-        public async Task<RoomResource> EndVideoCall(string roomsid)
+        public async Task<RoomResource> EndVideoCall(string roomName)
         {
+            var roomDetail = RoomResource.Fetch(roomName);
             var room = await RoomResource.UpdateAsync(
                        status: RoomResource.RoomStatusEnum.Completed,
-                       pathSid: roomsid);
+                       pathSid: roomDetail.Sid);
             return room;
         }
         #region Borrowed from https://github.com/twilio/video-quickstart-js/blob/1.x/server/randomname.js
