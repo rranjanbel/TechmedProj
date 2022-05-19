@@ -33,8 +33,8 @@ namespace TechMed.BL.Repository.BaseClasses
                     join u in _teleMedecineContext.UserMasters on d.UserId equals u.Id
                     join ud in _teleMedecineContext.UserDetails on d.UserId equals ud.UserId
                     where
-                    d.BlockId == (doctorsLoggedInTodayVM.ZoneID==null ? d.BlockId : doctorsLoggedInTodayVM.ZoneID)
-                    && d.ClusterId == (doctorsLoggedInTodayVM.ClusterID== null ? d.ClusterId : doctorsLoggedInTodayVM.ClusterID)
+                    d.BlockId == (doctorsLoggedInTodayVM.ZoneID == null ? d.BlockId : doctorsLoggedInTodayVM.ZoneID)
+                    && d.ClusterId == (doctorsLoggedInTodayVM.ClusterID == null ? d.ClusterId : doctorsLoggedInTodayVM.ClusterID)
                     && u.LastLoginAt.Value.Day == DateTime.Now.Day
                     && u.LastLoginAt.Value.Month == DateTime.Now.Month
                     && u.LastLoginAt.Value.Year == DateTime.Now.Year
@@ -110,14 +110,14 @@ namespace TechMed.BL.Repository.BaseClasses
             //    specializationReports.Add(specializationReport);
             //}
             specializationReports = await _teleMedecineContext.SpecializationReport.FromSqlRaw("GetVisitedPatientCase").ToListAsync();
-            return specializationReports ;
+            return specializationReports;
         }
 
         public async Task<List<LoggedUserCountVM>> GetTodaysLoggedUsersCount()
         {
             List<LoggedUserCountVM> loggedUserReports = new List<LoggedUserCountVM>();
 
-            loggedUserReports = await _teleMedecineContext.LoggedUserCount.FromSqlRaw("GetAllUserLoginCount").ToListAsync();              
+            loggedUserReports = await _teleMedecineContext.LoggedUserCount.FromSqlRaw("GetAllUserLoginCount").ToListAsync();
 
             return loggedUserReports;
         }
@@ -142,7 +142,7 @@ namespace TechMed.BL.Repository.BaseClasses
         public async Task<List<DashboardConsultationVM>> GetDashboardConsultation(GetDashboardConsultationVM getDashboardConsultationVM)
         {
             List<DashboardConsultationVM> dashboardConsultations = new List<DashboardConsultationVM>();
-               
+
             int SrNo = 0;
             if (true)
             {
@@ -154,7 +154,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     CompletedConsultantReport = new DashboardConsultationVM();
                     CompletedConsultantReport.SrNo = SrNo;
 
-                    CompletedConsultantReport.DistrictName= item.DistrictName;
+                    CompletedConsultantReport.DistrictName = item.DistrictName;
                     CompletedConsultantReport.BlockName = item.BlockName;
                     CompletedConsultantReport.Complaint = item.Complaint;
                     CompletedConsultantReport.AssignedOn = item.AssignedOn;
@@ -179,7 +179,7 @@ namespace TechMed.BL.Repository.BaseClasses
             }
 
             return dashboardConsultations;
-            
+
         }
 
         public List<PHCLoginHistoryReportVM> GetPHCLoginHistoryReport(int PHCId, DateTime fromDate, DateTime toDate)
@@ -195,7 +195,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     phcLoginHistoryReport.SrNo = item.SrNo;
                     phcLoginHistoryReport.DistrictName = item.DistrictName;
                     phcLoginHistoryReport.BlockName = item.BlockName;
-                    phcLoginHistoryReport.PHCName = item.PHCName;                  
+                    phcLoginHistoryReport.PHCName = item.PHCName;
                     phcLoginHistoryReport.UserID = item.UserID;
                     phcLoginHistoryReport.LogedDate = item.LogedDate;
                     phcLoginHistoryReport.LoginTime = item.LoginTime;
@@ -207,5 +207,112 @@ namespace TechMed.BL.Repository.BaseClasses
             }
             return phcLoginReports;
         }
+
+        public async Task<List<DashboardReportSummaryVM>> GetDashboardReportSummary(GetDashboardReportSummaryVM getDashboardReportSummaryVM)
+        {
+            List<DashboardReportSummaryVM> dashboardConsultations = new List<DashboardReportSummaryVM>();
+
+            //int SrNo = 0;
+            if (true)
+            {
+                DashboardReportSummaryVM CompletedConsultantReport;
+                var Results = _teleMedecineContext.GetDashboardReportSummary.FromSqlInterpolated($"EXEC [dbo].[GetDashboardReportSummary] @FromDate={getDashboardReportSummaryVM.FromDate},@ToDate={getDashboardReportSummaryVM.ToDate}");
+                foreach (var item in Results)
+                {
+                    //SrNo = SrNo + 1;
+                    CompletedConsultantReport = new DashboardReportSummaryVM();
+
+                    CompletedConsultantReport.SLNo = item.SLNo;
+                    CompletedConsultantReport.District = item.District;
+                    CompletedConsultantReport.Block = item.Block;
+                    CompletedConsultantReport.PHC = item.PHC;
+                    CompletedConsultantReport.Total = item.Total;
+                    CompletedConsultantReport.GeneralPractice = item.GeneralPractice;
+                    CompletedConsultantReport.ObstetricsAndGyne = item.ObstetricsAndGyne;
+                    CompletedConsultantReport.Pediatrics = item.Pediatrics;
+                    dashboardConsultations.Add(CompletedConsultantReport);
+                }
+            }
+
+            return dashboardConsultations;
+
+        }
+        public async Task<List<DashboardReportSummaryVM>> GetDashboardReportSummaryMonthly(GetDashboardReportSummaryMonthVM getDashboardReportSummaryVM)
+        {
+            List<DashboardReportSummaryVM> dashboardConsultations = new List<DashboardReportSummaryVM>();
+
+            //int SrNo = 0;
+            if (true)
+            {
+                DashboardReportSummaryVM CompletedConsultantReport;
+                var Results = _teleMedecineContext.GetDashboardReportSummaryMonthly.FromSqlInterpolated($"EXEC [dbo].[GetDashboardReportSummaryMonthly] @month={getDashboardReportSummaryVM.month},@year={getDashboardReportSummaryVM.year}");
+                foreach (var item in Results)
+                {
+                    //SrNo = SrNo + 1;
+                    CompletedConsultantReport = new DashboardReportSummaryVM();
+
+                    CompletedConsultantReport.SLNo = item.SLNo;
+                    CompletedConsultantReport.District = item.District;
+                    CompletedConsultantReport.Block = item.Block;
+                    CompletedConsultantReport.PHC = item.PHC;
+                    CompletedConsultantReport.Total = item.Total;
+                    CompletedConsultantReport.GeneralPractice = item.GeneralPractice;
+                    CompletedConsultantReport.ObstetricsAndGyne = item.ObstetricsAndGyne;
+                    CompletedConsultantReport.Pediatrics = item.Pediatrics;
+                    dashboardConsultations.Add(CompletedConsultantReport);
+                }
+            }
+
+            return dashboardConsultations;
+
+        }
+        public async Task<List<DashboardReportConsultationVM>> GetDashboardReportConsultation(GetDashboardReportConsultationVM getDashboardReportSummaryVM)
+        {
+            List<DashboardReportConsultationVM> dashboardConsultations = new List<DashboardReportConsultationVM>();
+
+            //int SrNo = 0;
+            if (true)
+            {
+                DashboardReportConsultationVM dashboardReportConsultationVM;
+                var Results = _teleMedecineContext.GetDashboardReportConsultation
+                    .FromSqlInterpolated
+                    ($"EXEC [dbo].[GetDashboardReportConsultation] @PatientName={getDashboardReportSummaryVM.PatientName},@MobileNo={getDashboardReportSummaryVM.MobileNo},@OPDNo={getDashboardReportSummaryVM.OPDNo},@PHCID={getDashboardReportSummaryVM.PHCID},@FromDate={getDashboardReportSummaryVM.FromDate},@ToDate={getDashboardReportSummaryVM.ToDate}");
+                foreach (var item in Results)
+                {
+                    //SrNo = SrNo + 1;
+                    dashboardReportConsultationVM = new DashboardReportConsultationVM();
+                    dashboardReportConsultationVM.MobileNo = item.MobileNo;
+                    dashboardReportConsultationVM.OPDNo = item.OPDNo;
+                    dashboardReportConsultationVM.ReviewDate = item.ReviewDate;
+                    dashboardReportConsultationVM.ConsultDate = item.ConsultDate;
+                    dashboardReportConsultationVM.starttime = item.starttime;
+                    dashboardReportConsultationVM.endtime = item.endtime;
+                    dashboardReportConsultationVM.specialization = item.specialization;
+                    dashboardReportConsultationVM.SrNo = item.SrNo;
+                    dashboardReportConsultationVM.DistrictName = item.DistrictName;//
+                    dashboardReportConsultationVM.BlockName = item.BlockName;//
+                    dashboardReportConsultationVM.Complaint = item.Complaint;//
+                    dashboardReportConsultationVM.AssignedOn = item.AssignedOn;
+                    dashboardReportConsultationVM.PatientName = item.PatientName;
+                    dashboardReportConsultationVM.Age = item.Age;
+                    dashboardReportConsultationVM.Gender = item.Gender;
+                    dashboardReportConsultationVM.PHCName = item.PHCName;
+                    dashboardReportConsultationVM.PHCTechnician = item.PHCTechnician;
+                    dashboardReportConsultationVM.Doctor = item.Doctor;
+                    dashboardReportConsultationVM.PHCAddress = item.PHCAddress;
+                    dashboardReportConsultationVM.CluserID = item.CluserID;
+                    dashboardReportConsultationVM.Cluster = item.Cluster;
+                    dashboardReportConsultationVM.BlockID = item.BlockID;
+                    dashboardReportConsultationVM.PHCID = item.PHCID;
+                    dashboardReportConsultationVM.CreatedBy = item.CreatedBy;
+                    dashboardReportConsultationVM.PatientCreatedBy = item.PatientCreatedBy;
+                    dashboardConsultations.Add(dashboardReportConsultationVM);
+                }
+            }
+
+            return dashboardConsultations;
+
+        }
+
     }
 }

@@ -76,6 +76,9 @@ namespace TechMed.DL.Models
         public virtual DbSet<CompletedConsultationChartVM> CompletedConsultationChartResults { get; set; } = null!;
         public virtual DbSet<DashboardConsultationVM> GetDashboardConsultation { get; set; } = null!;
         public virtual DbSet<PHCLoginHistoryReportVM> PHCLoginHistoryReports { get; set; } = null!;
+        public virtual DbSet<DashboardReportSummaryVM> GetDashboardReportSummary { get; set; } = null!;
+        public virtual DbSet<DashboardReportSummaryVM> GetDashboardReportSummaryMonthly { get; set; } = null!;
+        public virtual DbSet<DashboardReportConsultationVM> GetDashboardReportConsultation { get; set; } = null!;
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -92,6 +95,7 @@ namespace TechMed.DL.Models
                 optionsBuilder.UseSqlServer(connectionString);
             }
         }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -436,6 +440,10 @@ namespace TechMed.DL.Models
                     .HasMaxLength(50)
                     .IsUnicode(false)
                     .HasColumnName("IDProofType");
+
+                entity.Property(e => e.IsActive)
+                    .IsRequired()
+                    .HasDefaultValueSql("((1))");
             });
 
             modelBuilder.Entity<LoginHistory>(entity =>
