@@ -10,8 +10,8 @@ namespace TechMed.BL.TwilioAPI.Service
         Task<IEnumerable<RoomDetails>> GetAllRoomsAsync();
         Task<RoomResource> CreateRoomsAsync(string roomname, string callBackUrl);
         Task<ResourceSet<CompositionResource>> GetAllCompletedComposition();
-        Task<CompositionResource> ComposeVideo(string roomName, string callBackUrl);
-        void DownloadComposeVideo(string compositionSid);
+        Task<CompositionResource> ComposeVideo(string roomSid, string callBackUrl);
+        Task<string> DownloadComposeVideo(string compositionSid);
         Task<bool> DeleteComposeVideo(string compositionSid);
         Task<string> GetRoomSid(string roomName);
         Task<RoomResource> EndVideoCall(string roomName);

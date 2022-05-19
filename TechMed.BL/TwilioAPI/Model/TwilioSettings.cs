@@ -22,5 +22,6 @@ namespace TechMed.BL.TwilioAPI.Model
         /// The API Secret that corresponds to the <see cref="ApiKey"/>.
         /// </summary>
         public string ApiSecret { get; set; }
+        public string AuthToken { get; set; }
     }
 }

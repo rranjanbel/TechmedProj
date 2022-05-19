@@ -79,9 +79,10 @@ namespace TechMed.BL.TwilioAPI.Service
             else
                 return null;
         }      
-        public async Task<CompositionResource> ComposeVideo(string roomName, string callBackUrl)
+        public async Task<CompositionResource> ComposeVideo(string roomSid, string callBackUrl)
         {
-            var roomDetail = RoomResource.Fetch(roomName);
+            TwilioClient.Init(_twilioSettings.AccountSid, _twilioSettings.AuthToken);
+            //var roomDetail = RoomResource.Fetch(roomName);
             var layout = new {
                 transcode = new
                 {
@@ -89,7 +90,7 @@ namespace TechMed.BL.TwilioAPI.Service
                 }
             };
             var composition = await CompositionResource.CreateAsync(
-                                  roomSid: roomDetail.Sid,
+                                  roomSid: roomSid,
                                   audioSources: new List<string>{"*"},
                                   videoLayout: layout,
                                   statusCallback: new Uri(callBackUrl),
@@ -99,7 +100,7 @@ namespace TechMed.BL.TwilioAPI.Service
             return composition;
 
         }
-        public void DownloadComposeVideo(string compositionSid)
+        public async Task<string> DownloadComposeVideo(string compositionSid)
         {
             string uri = "https://video.twilio.com/v1/Compositions/"+ compositionSid + "/Media?Ttl=3600";
 
@@ -107,17 +108,21 @@ namespace TechMed.BL.TwilioAPI.Service
             request.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(Encoding.ASCII.GetBytes(_twilioSettings.ApiKey + ":" + _twilioSettings.ApiSecret)));
             request.AllowAutoRedirect = false;
             string responseBody = new StreamReader(request.GetResponse().GetResponseStream()).ReadToEnd();
-            var mediaLocation = JsonConvert.DeserializeObject<Dictionary<string, string>>(responseBody)["redirect_to"];
+            var mediaLocation = await
+                Task.Factory.StartNew(() => JsonConvert.DeserializeObject<Dictionary<string, string>>(responseBody)["redirect_to"]);
+            return mediaLocation.ToString();
 
-            new WebClient().DownloadFile(mediaLocation, $"{compositionSid}.out");
+            //new WebClient().DownloadFile(mediaLocation, $"{compositionSid}.out");
 
         }
         public async Task<bool> DeleteComposeVideo(string compositionSid)
         {
-          return  await CompositionResource.DeleteAsync(compositionSid);
+            TwilioClient.Init(_twilioSettings.AccountSid, _twilioSettings.AuthToken);
+            return  await CompositionResource.DeleteAsync(compositionSid);
         }
         public async Task<string> GetRoomSid(string roomName)
         {
+            TwilioClient.Init(_twilioSettings.AccountSid, _twilioSettings.AuthToken);
             string roomSid = null;
             if (!string.IsNullOrEmpty(roomName))
             {
