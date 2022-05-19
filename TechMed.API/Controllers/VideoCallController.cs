@@ -32,6 +32,11 @@ namespace TechMed.API.Controllers
         {
            return await  _videoService.GetAllCompletedComposition();
         }
+        [HttpGet("get-completed-callrecord")]
+        public async Task<List<RoomResource>> GetAllCompletedCall()
+        {
+            return await _videoService.GetAllCompletedCall();
+        }
         [HttpPost("compose-video")]
         public async Task<CompositionResource> ComposeVideo(string roomSid, string callBackUrl)
         {

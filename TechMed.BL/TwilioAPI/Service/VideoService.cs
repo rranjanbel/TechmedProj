@@ -75,10 +75,31 @@ namespace TechMed.BL.TwilioAPI.Service
         {
             var composition = await CompositionResource.ReadAsync(status: CompositionResource.StatusEnum.Completed);
             if (composition != null)
+            {
+                foreach(CompositionResource resource in composition)
+                {
+                   
+                }
                 return composition;
+            }
+
             else
                 return null;
-        }      
+        }
+        public async Task<List<RoomResource>> GetAllCompletedCall()
+        {
+            List<RoomResource> roomResources = new List<RoomResource>();
+            var rooms = await RoomResource.ReadAsync(status: RoomResource.RoomStatusEnum.Completed);
+            var composition = await CompositionResource.ReadAsync(status: CompositionResource.StatusEnum.Completed);
+            List<RoomResource> listRoomResource = rooms.ToList();
+            List<CompositionResource> listCompositionResources = composition.ToList();
+            roomResources = listRoomResource.ExceptBy(listCompositionResources.Select(comp=> comp.RoomSid),room=> room.Sid).ToList();
+
+            if (roomResources != null && roomResources.Count > 0)
+                return roomResources;
+            else
+                return null;
+        }
         public async Task<CompositionResource> ComposeVideo(string roomSid, string callBackUrl)
         {
             TwilioClient.Init(_twilioSettings.AccountSid, _twilioSettings.AuthToken);
