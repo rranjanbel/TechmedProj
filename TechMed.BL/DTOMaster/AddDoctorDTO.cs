@@ -10,7 +10,7 @@ namespace TechMed.BL.DTOMaster
     public class AddDoctorDTO
     {
         [Required]
-        public int ZoneId { get; set; }
+        public int BlockId { get; set; }
         [Required]
         public int ClusterId { get; set; }
         [Required]

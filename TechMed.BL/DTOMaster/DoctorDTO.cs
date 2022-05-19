@@ -15,9 +15,9 @@ namespace TechMed.BL.DTOMaster
         }
         public int Id { get; set; }
         [Required]
-        public int ZoneId { get; set; }
+        public int? BlockID { get; set; }
         [Required]
-        public int ClusterId { get; set; }
+        public int? ClusterId { get; set; }
         [Required]
         public int UserId { get; set; }
         [Required]

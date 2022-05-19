@@ -11,8 +11,10 @@ namespace TechMed.DL.Models
         }
 
         public int Id { get; set; }
-        public int ZoneId { get; set; }
-        public int ClusterId { get; set; }
+        public int? ClusterId { get; set; }
+        public int? DivisionId { get; set; }
+        public int? DistrictId { get; set; }
+        public int? BlockId { get; set; }
         public int UserId { get; set; }
         public int SpecializationId { get; set; }
         public int? SubSpecializationId { get; set; }
@@ -34,13 +36,15 @@ namespace TechMed.DL.Models
         public int? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
 
-        public virtual ClusterMaster Cluster { get; set; } = null!;
+        public virtual BlockMaster? Block { get; set; }
+        public virtual ClusterMaster? Cluster { get; set; }
         public virtual UserMaster? CreatedByNavigation { get; set; }
+        public virtual DistrictMaster? District { get; set; }
+        public virtual DivisionMaster? Division { get; set; }
         public virtual SpecializationMaster Specialization { get; set; } = null!;
         public virtual SubSpecializationMaster? SubSpecialization { get; set; }
         public virtual UserMaster? UpdatedByNavigation { get; set; }
         public virtual UserMaster User { get; set; } = null!;
-        public virtual ZoneMaster Zone { get; set; } = null!;
         public virtual ICollection<PatientQueue> PatientQueues { get; set; }
     }
 }

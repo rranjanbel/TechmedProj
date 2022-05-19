@@ -21,8 +21,8 @@ namespace TechMed.DL.ViewModel
         public string PHCAddress { get; set; }
         public int CluserID { get; set; }
         public string Cluster { get; set; }
-        public int ZoneID { get; set; }
-        public string Zone { get; set; }
+        public int BlockID { get; set; }
+        public string BlockName { get; set; }
         public int PHCID { get; set; }
         public int CreatedBy { get; set; }
         public string PatientCreatedBy { get; set; }

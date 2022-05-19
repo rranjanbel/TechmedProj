@@ -38,7 +38,7 @@ namespace TechMed.BL.Mapper
             CreateMap<TitleMaster, TitleMasterDTO>().ReverseMap();
             CreateMap<UserTypeMaster, UserTypeMasterDTO>().ReverseMap();
             CreateMap<ClusterMaster, ClusterMasterDTO>().ReverseMap();
-            CreateMap<ZoneMaster, ZoneMasterDTO>().ReverseMap();
+            CreateMap<BlockMaster, BlockMasterDTO>().ReverseMap();
             CreateMap<StateMaster, StateMasterDTO>().ReverseMap();
             CreateMap<PatientStatusMaster, PatientStatusMastersDTO>().ReverseMap();
             CreateMap<MaritalStatus, MaritalStatusDTO>().ReverseMap();

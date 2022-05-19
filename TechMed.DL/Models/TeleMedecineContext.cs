@@ -29,7 +29,7 @@ namespace TechMed.DL.Models
         public virtual DbSet<DoctorMaster> DoctorMasters { get; set; } = null!;
         public virtual DbSet<FeedbackQuestionMaster> FeedbackQuestionMasters { get; set; } = null!;
         public virtual DbSet<GenderMaster> GenderMasters { get; set; } = null!;
-        public virtual DbSet<Holiday> Holidays { get; set; } = null!;
+        public virtual DbSet<HolidayMaster> HolidayMasters { get; set; } = null!;
         public virtual DbSet<IdproofTypeMaster> IdproofTypeMasters { get; set; } = null!;
         public virtual DbSet<LoginHistory> LoginHistories { get; set; } = null!;
         public virtual DbSet<LoginRoleDelete> LoginRoleDeletes { get; set; } = null!;
@@ -64,7 +64,6 @@ namespace TechMed.DL.Models
         public virtual DbSet<UserUsertype> UserUsertypes { get; set; } = null!;
         public virtual DbSet<VideoCallTransaction> VideoCallTransactions { get; set; } = null!;
         public virtual DbSet<VitalMaster> VitalMasters { get; set; } = null!;
-        public virtual DbSet<ZoneMaster> ZoneMasters { get; set; } = null!;
 
         public virtual DbSet<SPResultGetPatientDetails> SPResultGetPatientDetails { get; set; } = null!;
         public virtual DbSet<SpecializationReportVM> SpecializationReport { get; set; } = null!;
@@ -78,6 +77,10 @@ namespace TechMed.DL.Models
         public virtual DbSet<DashboardConsultationVM> GetDashboardConsultation { get; set; } = null!;
         public virtual DbSet<DashboardReportSummaryVM> GetDashboardReportSummary { get; set; } = null!;
         public virtual DbSet<PHCLoginHistoryReportVM> PHCLoginHistoryReports { get; set; } = null!;
+        public virtual DbSet<PHCConsultationVM> PHCConsultationResult { get; set; } = null!;
+        public virtual DbSet<DashboardReportSummaryVM> GetDashboardReportSummary { get; set; } = null!;
+        public virtual DbSet<DashboardReportSummaryVM> GetDashboardReportSummaryMonthly { get; set; } = null!;
+        public virtual DbSet<DashboardReportConsultationVM> GetDashboardReportConsultation { get; set; } = null!;
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -112,11 +115,13 @@ namespace TechMed.DL.Models
 
                 entity.Property(e => e.DistrictId).HasColumnName("DistrictID");
 
-                entity.Property(e => e.DivisionId).HasColumnName("DivisionID");
-
                 entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
 
-                entity.Property(e => e.ZoneId).HasColumnName("ZoneID");
+                entity.HasOne(d => d.District)
+                    .WithMany(p => p.BlockMasters)
+                    .HasForeignKey(d => d.DistrictId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_BlockMaster_DistrictMaster");
             });
 
             modelBuilder.Entity<CalenderMaster>(entity =>
@@ -168,9 +173,6 @@ namespace TechMed.DL.Models
             {
                 entity.ToTable("ClusterMaster");
 
-                entity.HasIndex(e => e.Cluster, "IX_ClusterMaster")
-                    .IsUnique();
-
                 entity.Property(e => e.Id).HasColumnName("ID");
 
                 entity.Property(e => e.Cluster)
@@ -196,9 +198,6 @@ namespace TechMed.DL.Models
             {
                 entity.ToTable("CountryMaster");
 
-                entity.HasIndex(e => e.CountryName, "IX_CountryMaster")
-                    .IsUnique();
-
                 entity.Property(e => e.Id).HasColumnName("ID");
 
                 entity.Property(e => e.CountryName)
@@ -210,51 +209,62 @@ namespace TechMed.DL.Models
             {
                 entity.ToTable("DistrictMaster");
 
-                entity.HasIndex(e => e.DistrictName, "IX_DistrictMaster")
-                    .IsUnique();
-
                 entity.Property(e => e.Id).HasColumnName("ID");
 
                 entity.Property(e => e.DistrictName)
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
+                entity.Property(e => e.DivisionId)
+                    .HasColumnName("DivisionID")
+                    .HasDefaultValueSql("((1))");
+
                 entity.Property(e => e.StateId).HasColumnName("StateID");
 
-                entity.Property(e => e.ZoneId)
-                    .HasColumnName("ZoneID")
-                    .HasDefaultValueSql("((1))");
+                entity.HasOne(d => d.Division)
+                    .WithMany(p => p.DistrictMasters)
+                    .HasForeignKey(d => d.DivisionId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_DistrictMaster_ZoneMaster");
 
                 entity.HasOne(d => d.State)
                     .WithMany(p => p.DistrictMasters)
                     .HasForeignKey(d => d.StateId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_DistrictMaster_StateMaster");
-
-                entity.HasOne(d => d.Zone)
-                    .WithMany(p => p.DistrictMasters)
-                    .HasForeignKey(d => d.ZoneId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_DistrictMaster_ZoneMaster");
             });
 
             modelBuilder.Entity<DivisionMaster>(entity =>
             {
                 entity.ToTable("DivisionMaster");
 
-                entity.Property(e => e.Id)
-                    .ValueGeneratedNever()
-                    .HasColumnName("ID");
+                entity.Property(e => e.Id).HasColumnName("ID");
 
                 entity.Property(e => e.ClusterId).HasColumnName("ClusterID");
 
                 entity.Property(e => e.CreatedOn).HasColumnType("datetime");
 
-                entity.Property(e => e.DivisionName)
+                entity.Property(e => e.Name)
                     .HasMaxLength(150)
                     .IsUnicode(false);
 
                 entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
+
+                entity.HasOne(d => d.Cluster)
+                    .WithMany(p => p.DivisionMasters)
+                    .HasForeignKey(d => d.ClusterId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ZoneMaster_ClusterMaster");
+
+                entity.HasOne(d => d.CreatedByNavigation)
+                    .WithMany(p => p.DivisionMasterCreatedByNavigations)
+                    .HasForeignKey(d => d.CreatedBy)
+                    .HasConstraintName("FK_ZoneMaster_UserMasterCreatedBy");
+
+                entity.HasOne(d => d.UpdatedByNavigation)
+                    .WithMany(p => p.DivisionMasterUpdatedByNavigations)
+                    .HasForeignKey(d => d.UpdatedBy)
+                    .HasConstraintName("FK_ZoneMaster_UserMasterUpdatedBy");
             });
 
             modelBuilder.Entity<DoctorMaster>(entity =>
@@ -271,6 +281,8 @@ namespace TechMed.DL.Models
                     .HasMaxLength(150)
                     .IsUnicode(false);
 
+                entity.Property(e => e.BlockId).HasColumnName("BlockID");
+
                 entity.Property(e => e.BranchName)
                     .HasMaxLength(150)
                     .IsUnicode(false);
@@ -286,6 +298,10 @@ namespace TechMed.DL.Models
                 entity.Property(e => e.DigitalSignature)
                     .HasMaxLength(500)
                     .IsUnicode(false);
+
+                entity.Property(e => e.DistrictId).HasColumnName("DistrictID");
+
+                entity.Property(e => e.DivisionId).HasColumnName("DivisionID");
 
                 entity.Property(e => e.Ifsccode)
                     .HasMaxLength(15)
@@ -325,18 +341,30 @@ namespace TechMed.DL.Models
 
                 entity.Property(e => e.UserId).HasColumnName("UserID");
 
-                entity.Property(e => e.ZoneId).HasColumnName("ZoneID");
+                entity.HasOne(d => d.Block)
+                    .WithMany(p => p.DoctorMasters)
+                    .HasForeignKey(d => d.BlockId)
+                    .HasConstraintName("FK_DoctorMaster_BlockMaster");
 
                 entity.HasOne(d => d.Cluster)
                     .WithMany(p => p.DoctorMasters)
                     .HasForeignKey(d => d.ClusterId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_DoctorMaster_ClusterMaster");
 
                 entity.HasOne(d => d.CreatedByNavigation)
                     .WithMany(p => p.DoctorMasterCreatedByNavigations)
                     .HasForeignKey(d => d.CreatedBy)
                     .HasConstraintName("FK_DoctorMaster_UserMasterCreatedBy");
+
+                entity.HasOne(d => d.District)
+                    .WithMany(p => p.DoctorMasters)
+                    .HasForeignKey(d => d.DistrictId)
+                    .HasConstraintName("FK_DoctorMaster_DistrictMaster");
+
+                entity.HasOne(d => d.Division)
+                    .WithMany(p => p.DoctorMasters)
+                    .HasForeignKey(d => d.DivisionId)
+                    .HasConstraintName("FK_DoctorMaster_DivisionMaster");
 
                 entity.HasOne(d => d.Specialization)
                     .WithMany(p => p.DoctorMasters)
@@ -359,20 +387,11 @@ namespace TechMed.DL.Models
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_DoctorMaster_UserMaster");
-
-                entity.HasOne(d => d.Zone)
-                    .WithMany(p => p.DoctorMasters)
-                    .HasForeignKey(d => d.ZoneId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_DoctorMaster_ZoneMaster");
             });
 
             modelBuilder.Entity<FeedbackQuestionMaster>(entity =>
             {
                 entity.ToTable("FeedbackQuestionMaster");
-
-                entity.HasIndex(e => e.Question, "IX_FeedbackQuestionMaster")
-                    .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("ID");
 
@@ -385,9 +404,6 @@ namespace TechMed.DL.Models
             {
                 entity.ToTable("GenderMaster");
 
-                entity.HasIndex(e => e.Gender, "IX_GenderMaster")
-                    .IsUnique();
-
                 entity.Property(e => e.Id).HasColumnName("ID");
 
                 entity.Property(e => e.Gender)
@@ -395,28 +411,30 @@ namespace TechMed.DL.Models
                     .IsUnicode(false);
             });
 
-            modelBuilder.Entity<Holiday>(entity =>
+            modelBuilder.Entity<HolidayMaster>(entity =>
             {
-                entity.ToTable("Holiday");
-
-                entity.HasIndex(e => e.Date, "IX_Holiday")
-                    .IsUnique();
+                entity.ToTable("HolidayMaster");
 
                 entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.CalenderId).HasColumnName("CalenderID");
 
                 entity.Property(e => e.Date).HasColumnType("date");
 
                 entity.Property(e => e.Description)
                     .HasMaxLength(250)
                     .IsUnicode(false);
+
+                entity.HasOne(d => d.Calender)
+                    .WithMany(p => p.HolidayMasters)
+                    .HasForeignKey(d => d.CalenderId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_HolidayMaster_CalenderMaster");
             });
 
             modelBuilder.Entity<IdproofTypeMaster>(entity =>
             {
                 entity.ToTable("IDProofTypeMaster");
-
-                entity.HasIndex(e => e.IdproofType, "IX_IDProofTypeMaster")
-                    .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("ID");
 
@@ -424,6 +442,10 @@ namespace TechMed.DL.Models
                     .HasMaxLength(50)
                     .IsUnicode(false)
                     .HasColumnName("IDProofType");
+
+                entity.Property(e => e.IsActive)
+                    .IsRequired()
+                    .HasDefaultValueSql("((1))");
             });
 
             modelBuilder.Entity<LoginHistory>(entity =>
@@ -482,9 +504,6 @@ namespace TechMed.DL.Models
             modelBuilder.Entity<MedicineMaster>(entity =>
             {
                 entity.ToTable("MedicineMaster");
-
-                entity.HasIndex(e => e.MedicineName, "IX_MedicineMaster")
-                    .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("ID");
 
@@ -971,15 +990,24 @@ namespace TechMed.DL.Models
             {
                 entity.ToTable("PHCMaster");
 
+                entity.HasIndex(e => new { e.Id, e.Phcname }, "UC_PHCName")
+                    .IsUnique();
+
                 entity.Property(e => e.Id).HasColumnName("ID");
 
                 entity.Property(e => e.Address)
                     .HasMaxLength(500)
                     .IsUnicode(false);
 
+                entity.Property(e => e.BlockId).HasColumnName("BlockID");
+
                 entity.Property(e => e.ClusterId).HasColumnName("ClusterID");
 
                 entity.Property(e => e.CreatedOn).HasColumnType("datetime");
+
+                entity.Property(e => e.DistrictId).HasColumnName("DistrictID");
+
+                entity.Property(e => e.DivisionId).HasColumnName("DivisionID");
 
                 entity.Property(e => e.MailId)
                     .HasMaxLength(150)
@@ -1004,7 +1032,11 @@ namespace TechMed.DL.Models
 
                 entity.Property(e => e.UserId).HasColumnName("UserID");
 
-                entity.Property(e => e.ZoneId).HasColumnName("ZoneID");
+                entity.HasOne(d => d.Block)
+                    .WithMany(p => p.Phcmasters)
+                    .HasForeignKey(d => d.BlockId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PHCMaster_BlockMaster");
 
                 entity.HasOne(d => d.Cluster)
                     .WithMany(p => p.Phcmasters)
@@ -1017,6 +1049,18 @@ namespace TechMed.DL.Models
                     .HasForeignKey(d => d.CreatedBy)
                     .HasConstraintName("FK_PHCMaster_UserMasterCreatedBy");
 
+                entity.HasOne(d => d.District)
+                    .WithMany(p => p.Phcmasters)
+                    .HasForeignKey(d => d.DistrictId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PHCMaster_DistrictMaster");
+
+                entity.HasOne(d => d.Division)
+                    .WithMany(p => p.Phcmasters)
+                    .HasForeignKey(d => d.DivisionId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PHCMaster_DivisionMaster");
+
                 entity.HasOne(d => d.UpdatedByNavigation)
                     .WithMany(p => p.PhcmasterUpdatedByNavigations)
                     .HasForeignKey(d => d.UpdatedBy)
@@ -1027,12 +1071,6 @@ namespace TechMed.DL.Models
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_PHCMaster_UserMaster");
-
-                entity.HasOne(d => d.Zone)
-                    .WithMany(p => p.Phcmasters)
-                    .HasForeignKey(d => d.ZoneId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_PHCMaster_ZoneMaster");
             });
 
             modelBuilder.Entity<RoleMasterDelete>(entity =>
@@ -1271,10 +1309,7 @@ namespace TechMed.DL.Models
             {
                 entity.ToTable("UserMaster");
 
-                entity.HasIndex(e => e.Email, "IX_UserMaster")
-                    .IsUnique();
-
-                entity.HasIndex(e => e.Mobile, "IX_UserMaster_1")
+                entity.HasIndex(e => new { e.Id, e.Email }, "UC_UserMaster")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("ID");
@@ -1411,39 +1446,6 @@ namespace TechMed.DL.Models
                 entity.Property(e => e.Vital)
                     .HasMaxLength(50)
                     .IsUnicode(false);
-            });
-
-            modelBuilder.Entity<ZoneMaster>(entity =>
-            {
-                entity.ToTable("ZoneMaster");
-
-                entity.Property(e => e.Id).HasColumnName("ID");
-
-                entity.Property(e => e.ClusterId).HasColumnName("ClusterID");
-
-                entity.Property(e => e.CreatedOn).HasColumnType("datetime");
-
-                entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
-
-                entity.Property(e => e.Zone)
-                    .HasMaxLength(150)
-                    .IsUnicode(false);
-
-                entity.HasOne(d => d.Cluster)
-                    .WithMany(p => p.ZoneMasters)
-                    .HasForeignKey(d => d.ClusterId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_ZoneMaster_ClusterMaster");
-
-                entity.HasOne(d => d.CreatedByNavigation)
-                    .WithMany(p => p.ZoneMasterCreatedByNavigations)
-                    .HasForeignKey(d => d.CreatedBy)
-                    .HasConstraintName("FK_ZoneMaster_UserMasterCreatedBy");
-
-                entity.HasOne(d => d.UpdatedByNavigation)
-                    .WithMany(p => p.ZoneMasterUpdatedByNavigations)
-                    .HasForeignKey(d => d.UpdatedBy)
-                    .HasConstraintName("FK_ZoneMaster_UserMasterUpdatedBy");
             });
 
             OnModelCreatingPartial(modelBuilder);

@@ -11,6 +11,8 @@ namespace TechMed.DL.Models
             CdssguidelineMasterUpdatedByNavigations = new HashSet<CdssguidelineMaster>();
             ClusterMasterCreatedByNavigations = new HashSet<ClusterMaster>();
             ClusterMasterUpdatedByNavigations = new HashSet<ClusterMaster>();
+            DivisionMasterCreatedByNavigations = new HashSet<DivisionMaster>();
+            DivisionMasterUpdatedByNavigations = new HashSet<DivisionMaster>();
             DoctorMasterCreatedByNavigations = new HashSet<DoctorMaster>();
             DoctorMasterUpdatedByNavigations = new HashSet<DoctorMaster>();
             DoctorMasterUsers = new HashSet<DoctorMaster>();
@@ -31,8 +33,6 @@ namespace TechMed.DL.Models
             UserDetailUsers = new HashSet<UserDetail>();
             VideoCallTransactionFromUsers = new HashSet<VideoCallTransaction>();
             VideoCallTransactionToUsers = new HashSet<VideoCallTransaction>();
-            ZoneMasterCreatedByNavigations = new HashSet<ZoneMaster>();
-            ZoneMasterUpdatedByNavigations = new HashSet<ZoneMaster>();
         }
 
         public int Id { get; set; }
@@ -55,6 +55,8 @@ namespace TechMed.DL.Models
         public virtual ICollection<CdssguidelineMaster> CdssguidelineMasterUpdatedByNavigations { get; set; }
         public virtual ICollection<ClusterMaster> ClusterMasterCreatedByNavigations { get; set; }
         public virtual ICollection<ClusterMaster> ClusterMasterUpdatedByNavigations { get; set; }
+        public virtual ICollection<DivisionMaster> DivisionMasterCreatedByNavigations { get; set; }
+        public virtual ICollection<DivisionMaster> DivisionMasterUpdatedByNavigations { get; set; }
         public virtual ICollection<DoctorMaster> DoctorMasterCreatedByNavigations { get; set; }
         public virtual ICollection<DoctorMaster> DoctorMasterUpdatedByNavigations { get; set; }
         public virtual ICollection<DoctorMaster> DoctorMasterUsers { get; set; }
@@ -75,7 +77,5 @@ namespace TechMed.DL.Models
         public virtual ICollection<UserDetail> UserDetailUsers { get; set; }
         public virtual ICollection<VideoCallTransaction> VideoCallTransactionFromUsers { get; set; }
         public virtual ICollection<VideoCallTransaction> VideoCallTransactionToUsers { get; set; }
-        public virtual ICollection<ZoneMaster> ZoneMasterCreatedByNavigations { get; set; }
-        public virtual ICollection<ZoneMaster> ZoneMasterUpdatedByNavigations { get; set; }
     }
 }

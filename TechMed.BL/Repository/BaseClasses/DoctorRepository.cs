@@ -647,10 +647,10 @@ namespace TechMed.BL.Repository.BaseClasses
             }
             return getCaseLabelDTOs;
         }
-        public async Task<List<PHCHospitalDTO>> GetListOfPHCHospitalZoneWise(GetListOfPHCHospitalVM getListOfPHCHospitalVM)
+        public async Task<List<PHCHospitalDTO>> GetListOfPHCHospitalBlockWise(GetListOfPHCHospitalVM getListOfPHCHospitalVM)
         {
             List<Phcmaster> masters = await _teleMedecineContext.Phcmasters
-                .Where(a => a.ZoneId == getListOfPHCHospitalVM.ZoneID)
+                .Where(a => a.BlockId == getListOfPHCHospitalVM.BlockID)
                 .ToListAsync();
             var DTOList = new List<PHCHospitalDTO>();
             foreach (var item in masters)
@@ -764,7 +764,7 @@ namespace TechMed.BL.Repository.BaseClasses
             var doctorMaster = await _teleMedecineContext
                 .DoctorMasters
                 .Include(a => a.Specialization)
-                .Where(a => a.ZoneId == doctorVM.ZoneID && a.IsOnline == true).ToListAsync();
+                .Where(a => a.BlockId == doctorVM.BlockID && a.IsOnline == true).ToListAsync();
             foreach (var item in doctorMaster)
             {
                 UserDetail userDetail = _teleMedecineContext.UserDetails.Where(a => a.UserId == item.UserId).FirstOrDefault();

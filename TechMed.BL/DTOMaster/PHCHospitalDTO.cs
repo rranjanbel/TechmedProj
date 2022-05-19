@@ -9,7 +9,7 @@ namespace TechMed.BL.DTOMaster
     public class PHCHospitalDTO
     {
         public int Id { get; set; }
-        public int ZoneId { get; set; }
+        public int BlockId { get; set; }
         public int ClusterId { get; set; }
         public int UserId { get; set; }
         public string Phcname { get; set; } = null!;

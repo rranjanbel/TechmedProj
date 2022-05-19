@@ -166,7 +166,7 @@ namespace TechMed.API.Controllers
                     phcMaster.CreatedOn = DateTime.Now;
                     phcMaster.UpdatedOn = DateTime.Now;
                     phcMaster.ClusterId = phcdto.ClusterId;
-                    phcMaster.ZoneId = phcdto.ZoneId;
+                    phcMaster.BlockId = phcdto.BlockId;
                     phcMaster.CreatedBy = phcdto.CreatedBy;
                     phcMaster.UpdatedBy = phcdto.CreatedBy;
 

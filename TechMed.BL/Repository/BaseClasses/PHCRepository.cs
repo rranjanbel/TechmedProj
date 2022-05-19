@@ -91,8 +91,8 @@ namespace TechMed.BL.Repository.BaseClasses
         {
             PHCDetailsIdsVM pHCDetails = new PHCDetailsIdsVM();
             var phcresult = await(from pm in _teleMedecineContext.Phcmasters
-                                  join cm in _teleMedecineContext.ClusterMasters on pm.Id equals cm.Id
-                                  join zo in _teleMedecineContext.ZoneMasters on pm.ZoneId equals zo.Id
+                                  join cm in _teleMedecineContext.ClusterMasters on pm.ClusterId equals cm.Id
+                                  join zo in _teleMedecineContext.BlockMasters on pm.BlockId equals zo.Id
                                   join ur in _teleMedecineContext.UserMasters on pm.UserId equals ur.Id
                                   join ud in _teleMedecineContext.UserDetails on ur.Id equals ud.UserId into usr
                                   from usrdet in usr.DefaultIfEmpty()
@@ -105,7 +105,7 @@ namespace TechMed.BL.Repository.BaseClasses
                                   {
                                       Phcname = pm.Phcname,
                                       ClusterName = pm.Cluster.Cluster,
-                                      ZoneName = pm.Zone.Zone,
+                                      BLockName = pm.Block.BlockName,
                                       Moname = pm.Moname,
                                       Address = pm.Address,
                                       PhoneNo = pm.PhoneNo,
@@ -118,7 +118,7 @@ namespace TechMed.BL.Repository.BaseClasses
                                       PinCode = usrdet.PinCode,
                                       Gender = genmas.Gender,
                                       PHCId = pm.Id,
-                                      ZoneId = pm.ZoneId,
+                                      BLockID = pm.BlockId,
                                       ClusterId = pm.ClusterId
                                   }).FirstOrDefaultAsync();
 
@@ -130,8 +130,8 @@ namespace TechMed.BL.Repository.BaseClasses
         {
             PHCDetailsVM pHCDetails = new PHCDetailsVM();           
             var phcresult = await (from pm in _teleMedecineContext.Phcmasters
-                          join cm in _teleMedecineContext.ClusterMasters on pm.Id equals cm.Id
-                          join zo in _teleMedecineContext.ZoneMasters on pm.ZoneId equals zo.Id
+                          join cm in _teleMedecineContext.ClusterMasters on pm.ClusterId equals cm.Id
+                          join zo in _teleMedecineContext.BlockMasters on pm.BlockId equals zo.Id
                           join ur in _teleMedecineContext.UserMasters on pm.UserId equals ur.Id
                           join ud in _teleMedecineContext.UserDetails on ur.Id equals ud.UserId into usr
                           from usrdet in usr.DefaultIfEmpty()
@@ -144,7 +144,7 @@ namespace TechMed.BL.Repository.BaseClasses
                           {
                               Phcname = pm.Phcname,
                               ClusterName = pm.Cluster.Cluster,
-                              ZoneName = pm.Zone.Zone,
+                              BlockName = pm.Block.BlockName,
                                Moname = pm.Moname,
                                Address = pm.Address,
                                PhoneNo = pm.PhoneNo,
