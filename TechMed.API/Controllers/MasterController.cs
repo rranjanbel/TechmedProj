@@ -252,7 +252,7 @@ namespace TechMed.API.Controllers
             IDProofTypeMasterDTO mapdata = new IDProofTypeMasterDTO();
             try
             {
-                var spemasters = await _teleMedecineContext.IdproofTypeMasters.ToListAsync();
+                var spemasters = await _teleMedecineContext.IdproofTypeMasters.Where(a => a.IsActive ==true).ToListAsync();
 
                 var DTOList = new List<IDProofTypeMasterDTO>();
                 foreach (var item in spemasters)
