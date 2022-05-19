@@ -216,13 +216,13 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult GetPHCLoginHistoryReport(int PHCId, DateTime fromDate, DateTime toDate)
         {
-            List<PHCLoginHistoryReportVM> todaysRegistorCase = new List<PHCLoginHistoryReportVM>();
+            List<PHCLoginHistoryReportVM> loginHistoryPHC = new List<PHCLoginHistoryReportVM>();
             try
             {
-                todaysRegistorCase = _dashBoardRepository.GetPHCLoginHistoryReport(PHCId, fromDate, toDate);
-                if (todaysRegistorCase != null)
+                loginHistoryPHC = _dashBoardRepository.GetPHCLoginHistoryReport(PHCId, fromDate, toDate);
+                if (loginHistoryPHC != null)
                 {
-                    return Ok(todaysRegistorCase);
+                    return Ok(loginHistoryPHC);
                 }
                 else
                 {
@@ -233,6 +233,41 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetPHCLoginHistoryReport", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+
+        }
+
+        [HttpGet]
+        [Route("GetPHCConsultationReport")]
+        [ProducesResponseType(200, Type = typeof(List<PHCConsultationVM>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult GetPHCConsultationReport(int PHCId, DateTime? fromDate =null, DateTime? toDate =null)
+        {
+            List<PHCConsultationVM> phcConsultation = new List<PHCConsultationVM>();
+            DateTime? fromDateUtc = null;
+            if(fromDate != null)
+                fromDateUtc = fromDate.Value;
+            DateTime? toDateUtc = null;
+            if (toDateUtc != null)
+                toDateUtc = toDateUtc.Value;
+            try
+            {
+                phcConsultation = _dashBoardRepository.GetPHCConsultationReport(PHCId, fromDateUtc, toDateUtc);
+                if (phcConsultation != null)
+                {
+                    return Ok(phcConsultation);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetPHCConsultationReport", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("GetPHCConsultationReport", $"Something went wrong {ex.Message}");
                 return StatusCode(500, ModelState);
             }
 

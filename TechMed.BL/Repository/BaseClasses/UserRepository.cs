@@ -272,13 +272,13 @@ namespace TechMed.BL.Repository.BaseClasses
                         if (userUsertype.UserType.UserType == "PHCUser")
                         {
                             Phcmaster phc = _teleMedecineContext.Phcmasters.FirstOrDefault(a => a.UserId == userMaster.Id);
-                            userDetails.UserID = phc.UserId;
+                            userDetails.UserID = phc.Id;
                             userDetails.UserName = phc.Phcname;
                         }
                         else if(userUsertype.UserType.UserType == "Doctor")
                         {
                             DoctorMaster doctor = _teleMedecineContext.DoctorMasters.FirstOrDefault(a => a.UserId == userMaster.Id);
-                            userDetails.UserID = doctor.UserId;
+                            userDetails.UserID = doctor.Id;
                             userDetails.UserName = userMaster.Name;
                         }
                         else if (userUsertype.UserType.UserType == "SuperAdmin")

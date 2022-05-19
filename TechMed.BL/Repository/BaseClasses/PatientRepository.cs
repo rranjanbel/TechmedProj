@@ -499,10 +499,10 @@ namespace TechMed.BL.Repository.BaseClasses
                 else
                     PatientName = searchParameter.PatientName;
 
-                if(searchParameter.PatientName.ToLower().Trim() == "string")
-                    PatientName = null;
-                else
-                    PatientName = searchParameter.PatientName;
+                //if(searchParameter.PatientName.ToLower().Trim() == "string")
+                //    PatientName = null;
+                //else
+                //    PatientName = searchParameter.PatientName;
 
                 if (searchParameter.PatientUID > 0)
                     PatientId = searchParameter.PatientUID;
@@ -514,22 +514,22 @@ namespace TechMed.BL.Repository.BaseClasses
                 else
                     contractNo = searchParameter.ContactNo;
 
-                if (searchParameter.ContactNo.ToLower().Trim() == "string")
-                    contractNo = null;
-                else
-                    contractNo = searchParameter.ContactNo;
+                //if (searchParameter.ContactNo.ToLower().Trim() == "string")
+                //    contractNo = null;
+                //else
+                //    contractNo = searchParameter.ContactNo;
 
                 if (searchParameter.GenderId > 0)
                     genderId = searchParameter.GenderId;
                 else
                     genderId = null;
 
-                if (searchParameter.DateOfRegistration.Date == DateTime.Now.Date)
+                if (searchParameter.DateOfRegistration == null)
                     DateOfRegistration = null; 
                 else
                     DateOfRegistration = searchParameter.DateOfRegistration;
 
-                if (searchParameter.DateOfBirth.Date == DateTime.Now.Date)
+                if (searchParameter.DateOfBirth == null)
                     DateOfBirth = null;
                 else
                     DateOfBirth = searchParameter.DateOfBirth;
