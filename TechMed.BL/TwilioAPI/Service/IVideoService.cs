@@ -13,5 +13,6 @@ namespace TechMed.BL.TwilioAPI.Service
         Task<CompositionResource> ComposeVideo(string roomSid, string callBackUrl);
         void DownloadComposeVideo(string compositionSid);
         Task<bool> DeleteComposeVideo(string compositionSid);
+        Task<string> GetRoomSid(string roomName);
     }
 }

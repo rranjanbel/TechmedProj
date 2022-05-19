@@ -115,6 +115,16 @@ namespace TechMed.BL.TwilioAPI.Service
         {
           return  await CompositionResource.DeleteAsync(compositionSid);
         }
+        public async Task<string> GetRoomSid(string roomName)
+        {
+            string roomSid = null;
+            if (!string.IsNullOrEmpty(roomName))
+            {
+                var room = await RoomResource.FetchAsync(pathSid: roomName);
+                roomSid = room.Sid;
+            }
+            return roomSid;
+        }
         #region Borrowed from https://github.com/twilio/video-quickstart-js/blob/1.x/server/randomname.js
 
         readonly string[] _adjectives =
