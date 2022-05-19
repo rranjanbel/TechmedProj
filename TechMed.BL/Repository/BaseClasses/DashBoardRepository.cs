@@ -259,9 +259,9 @@ namespace TechMed.BL.Repository.BaseClasses
             }
             return phcconsultationReports;
         }
-    
 
-        public async Task<List<DashboardReportSummaryVM>> GetDashboardReportSummary(GetDashboardReportSummaryVM getDashboardReportSummaryVM)
+        #region Duplicate GetDashboardReportSummary
+       /* public async Task<List<DashboardReportSummaryVM>> GetDashboardReportSummary(GetDashboardReportSummaryVM getDashboardReportSummaryVM)
         {
             List<DashboardReportSummaryVM> dashboardConsultations = new List<DashboardReportSummaryVM>();
 
@@ -289,7 +289,8 @@ namespace TechMed.BL.Repository.BaseClasses
 
             return dashboardConsultations;
 
-        }
+        }*/
+        #endregion
         public async Task<List<DashboardReportSummaryVM>> GetDashboardReportSummaryMonthly(GetDashboardReportSummaryMonthVM getDashboardReportSummaryVM)
         {
             List<DashboardReportSummaryVM> dashboardConsultations = new List<DashboardReportSummaryVM>();
