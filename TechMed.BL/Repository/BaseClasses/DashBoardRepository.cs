@@ -212,7 +212,7 @@ namespace TechMed.BL.Repository.BaseClasses
 
         }
 
-        public List<PHCLoginHistoryReportVM> GetPHCLoginHistoryReport(int PHCId, DateTime fromDate, DateTime toDate)
+        public List<PHCLoginHistoryReportVM> GetPHCLoginHistoryReport(int PHCId, DateTime? fromDate, DateTime? toDate)
         {
             List<PHCLoginHistoryReportVM> phcLoginReports = new List<PHCLoginHistoryReportVM>();
             PHCLoginHistoryReportVM phcLoginHistoryReport;

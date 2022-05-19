@@ -214,12 +214,18 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<PHCLoginHistoryReportVM>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult GetPHCLoginHistoryReport(int PHCId, DateTime fromDate, DateTime toDate)
+        public IActionResult GetPHCLoginHistoryReport(int PHCId, DateTime? fromDate, DateTime? toDate)
         {
             List<PHCLoginHistoryReportVM> loginHistoryPHC = new List<PHCLoginHistoryReportVM>();
+            DateTime? fromDateUtc = null;
+            if (fromDate != null)
+                fromDateUtc = fromDate.Value;
+            DateTime? toDateUtc = null;
+            if (toDateUtc != null)
+                toDateUtc = toDateUtc.Value;
             try
             {
-                loginHistoryPHC = _dashBoardRepository.GetPHCLoginHistoryReport(PHCId, fromDate, toDate);
+                loginHistoryPHC = _dashBoardRepository.GetPHCLoginHistoryReport(PHCId, fromDateUtc, toDateUtc);
                 if (loginHistoryPHC != null)
                 {
                     return Ok(loginHistoryPHC);
