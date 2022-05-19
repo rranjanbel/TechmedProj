@@ -261,35 +261,35 @@ namespace TechMed.BL.Repository.BaseClasses
         }
 
         #region Duplicate GetDashboardReportSummary
-       /* public async Task<List<DashboardReportSummaryVM>> GetDashboardReportSummary(GetDashboardReportSummaryVM getDashboardReportSummaryVM)
-        {
-            List<DashboardReportSummaryVM> dashboardConsultations = new List<DashboardReportSummaryVM>();
+        //public async Task<List<DashboardReportSummaryVM>> GetDashboardReportSummary(GetDashboardReportSummaryVM getDashboardReportSummaryVM)
+        //{
+        //    List<DashboardReportSummaryVM> dashboardConsultations = new List<DashboardReportSummaryVM>();
 
-            //int SrNo = 0;
-            if (true)
-            {
-                DashboardReportSummaryVM CompletedConsultantReport;
-                var Results =  _teleMedecineContext.GetDashboardReportSummary.FromSqlInterpolated($"EXEC [dbo].[GetDashboardReportSummary] @FromDate={getDashboardReportSummaryVM.FromDate},@ToDate={getDashboardReportSummaryVM.ToDate}");
-                foreach (var item in Results)
-                {
-                    //SrNo = SrNo + 1;
-                    CompletedConsultantReport = new DashboardReportSummaryVM();
+        //    //int SrNo = 0;
+        //    if (true)
+        //    {
+        //        DashboardReportSummaryVM CompletedConsultantReport;
+        //        var Results = _teleMedecineContext.GetDashboardReportSummary.FromSqlInterpolated($"EXEC [dbo].[GetDashboardReportSummary] @FromDate={getDashboardReportSummaryVM.FromDate},@ToDate={getDashboardReportSummaryVM.ToDate}");
+        //        foreach (var item in Results)
+        //        {
+        //            //SrNo = SrNo + 1;
+        //            CompletedConsultantReport = new DashboardReportSummaryVM();
 
-                    CompletedConsultantReport.SLNo = item.SLNo;
-                    CompletedConsultantReport.District = item.District;
-                    CompletedConsultantReport.Block = item.Block;
-                    CompletedConsultantReport.PHC = item.PHC;
-                    CompletedConsultantReport.Total = item.Total;
-                    CompletedConsultantReport.GeneralPractice = item.GeneralPractice;
-                    CompletedConsultantReport.ObstetricsAndGyne = item.ObstetricsAndGyne;
-                    CompletedConsultantReport.Pediatrics = item.Pediatrics;
-                    dashboardConsultations.Add(CompletedConsultantReport);
-                }
-            }
+        //            CompletedConsultantReport.SLNo = item.SLNo;
+        //            CompletedConsultantReport.District = item.District;
+        //            CompletedConsultantReport.Block = item.Block;
+        //            CompletedConsultantReport.PHC = item.PHC;
+        //            CompletedConsultantReport.Total = item.Total;
+        //            CompletedConsultantReport.GeneralPractice = item.GeneralPractice;
+        //            CompletedConsultantReport.ObstetricsAndGyne = item.ObstetricsAndGyne;
+        //            CompletedConsultantReport.Pediatrics = item.Pediatrics;
+        //            dashboardConsultations.Add(CompletedConsultantReport);
+        //        }
+        //    }
 
-            return dashboardConsultations;
+        //    return dashboardConsultations;
 
-        }*/
+        //}
         #endregion
         public async Task<List<DashboardReportSummaryVM>> GetDashboardReportSummaryMonthly(GetDashboardReportSummaryMonthVM getDashboardReportSummaryVM)
         {
