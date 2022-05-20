@@ -102,7 +102,6 @@ namespace TechMed.BL.TwilioAPI.Service
         }
         public async Task<CompositionResource> ComposeVideo(string roomSid, string callBackUrl)
         {
-            TwilioClient.Init(_twilioSettings.AccountSid, _twilioSettings.AuthToken);
             //var roomDetail = RoomResource.Fetch(roomName);
             var layout = new {
                 transcode = new
@@ -138,13 +137,11 @@ namespace TechMed.BL.TwilioAPI.Service
         }
         public async Task<bool> DeleteComposeVideo(string compositionSid)
         {
-            TwilioClient.Init(_twilioSettings.AccountSid, _twilioSettings.AuthToken);
             return  await CompositionResource.DeleteAsync(compositionSid);
         }
         public async Task<string> GetRoomSid(string roomName)
         {
-            TwilioClient.Init(_twilioSettings.AccountSid, _twilioSettings.AuthToken);
-            string roomSid = null;
+             string roomSid = null;
             if (!string.IsNullOrEmpty(roomName))
             {
                 var room = await RoomResource.FetchAsync(pathSid: roomName);
