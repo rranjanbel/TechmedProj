@@ -104,15 +104,13 @@ namespace TechMed.BL.Repository.BaseClasses
             List<TodaysPatientVM> todaysConsultantedPatientList = new List<TodaysPatientVM>();
             var patientList = (from pm in _teleMedecineContext.PatientMasters where pm.CreatedOn.Value.Year == currentYear && pm.CreatedOn.Value.Month == currentMonth && pm.CreatedOn.Value.Day == currentDay
                                join phc in _teleMedecineContext.Phcmasters on pm.Phcid equals phc.Id
-                               join pc in _teleMedecineContext.PatientCases on pm.Id equals pc.PatientId into patientcase
-                               from pci in patientcase.DefaultIfEmpty()
-                               join pcq in _teleMedecineContext.PatientQueues on pci.Id equals pcq.Id into pcqd
-                               from pq in pcqd.DefaultIfEmpty()
-                               join d in _teleMedecineContext.DoctorMasters on pq.AssignedDoctorId equals d.Id into dm
+                               join pc in _teleMedecineContext.PatientCases on pm.Id equals pc.PatientId 
+                               join pcq in _teleMedecineContext.PatientQueues on pc.Id equals pcq.PatientCaseId 
+                               join d in _teleMedecineContext.DoctorMasters on pcq.AssignedDoctorId equals d.Id into dm
                                from doc in dm.DefaultIfEmpty()
                                join u in _teleMedecineContext.UserMasters on doc.UserId equals u.Id into um
                                from ud in um.DefaultIfEmpty()
-                               where phc.Id == phcID
+                               where phc.Id == phcID && pcq.CaseFileStatusId == 5
                                select new TodaysPatientVM
                                {
                                    //Age = GetAge(pm.Dob),
@@ -125,20 +123,20 @@ namespace TechMed.BL.Repository.BaseClasses
                                    PHCUserName = phc.Phcname,
                                    ReferredByPHCID = pm.Phcid,
                                    ReferredByPHCName = phc.Phcname,
-                                   DocterID = pq.AssignedDoctorId > 0 ? pq.AssignedDoctorId : 0,
+                                   DocterID = pcq.AssignedDoctorId > 0 ? pcq.AssignedDoctorId : 0,
                                    DoctorName = ud.Name,
                                    Gender = (pm.GenderId == 1 ? "Male" : "Female")
                                }).ToListAsync();
             todaysPatientList = await patientList;
-            foreach (var item in todaysPatientList)
-            {
-                if (item.DocterID > 0)
-                {
-                    todaysConsultantedPatientList.Add(item);
-                }
-            }
+            //foreach (var item in todaysPatientList)
+            //{
+            //    if (item.DocterID > 0)
+            //    {
+            //        todaysConsultantedPatientList.Add(item);
+            //    }
+            //}
 
-            return todaysConsultantedPatientList;
+            return todaysPatientList;
         }
 
         public async Task<PatientMaster> GetPatientByID(int Id)
@@ -173,9 +171,8 @@ namespace TechMed.BL.Repository.BaseClasses
             var patientList = (from pm in _teleMedecineContext.PatientMasters
                                where pm.CreatedOn.Value.Year == currentYear && pm.CreatedOn.Value.Month == currentMonth && pm.CreatedOn.Value.Day == currentDay
                                join phc in _teleMedecineContext.Phcmasters on pm.Phcid equals phc.Id
-                               join pc in _teleMedecineContext.PatientCases on pm.Id equals pc.PatientId into patientcase
-                               from pci in patientcase.DefaultIfEmpty()
-                               join pcq in _teleMedecineContext.PatientQueues on pci.Id equals pcq.Id into pcqd
+                               join pc in _teleMedecineContext.PatientCases on pm.Id equals pc.PatientId 
+                               join pcq in _teleMedecineContext.PatientQueues on pc.Id equals pcq.PatientCaseId into pcqd
                                from pq in pcqd.DefaultIfEmpty()
                                join d in _teleMedecineContext.DoctorMasters on pq.AssignedDoctorId equals d.Id into dm
                                from doc in dm.DefaultIfEmpty()
@@ -237,9 +234,8 @@ namespace TechMed.BL.Repository.BaseClasses
             var patientList = (from pm in _teleMedecineContext.PatientMasters
                                where pm.CreatedOn.Value.Year == currentYear && pm.CreatedOn.Value.Month == currentMonth && pm.CreatedOn.Value.Day == currentDay
                                join phc in _teleMedecineContext.Phcmasters on pm.Phcid equals phc.Id
-                               join pc in _teleMedecineContext.PatientCases on pm.Id equals pc.PatientId into patientcase
-                               from pci in patientcase.DefaultIfEmpty()
-                               join pcq in _teleMedecineContext.PatientQueues on pci.Id equals pcq.Id into pcqd
+                               join pc in _teleMedecineContext.PatientCases on pm.Id equals pc.PatientId 
+                               join pcq in _teleMedecineContext.PatientQueues on pc.Id equals pcq.Id into pcqd
                                from pq in pcqd.DefaultIfEmpty()
                                join d in _teleMedecineContext.DoctorMasters on pq.AssignedDoctorId equals d.Id into dm
                                from doc in dm.DefaultIfEmpty()
@@ -268,9 +264,9 @@ namespace TechMed.BL.Repository.BaseClasses
             {
                 pHCPatientCount.PHCName = todaysPatientList.Select(s => s.ReferredByPHCName).FirstOrDefault();
                 pHCPatientCount.ID = todaysPatientList.Select(s => s.ReferredByPHCID).FirstOrDefault();
-                pHCPatientCount.TotalPatients = todaysPatientList.Count;
-                pHCPatientCount.TotalConsulted = todaysPatientList.Where(a => a.DocterID > 0).Count();
-                pHCPatientCount.TotalPending = todaysPatientList.Where(a => a.DocterID ==0).Count();
+                pHCPatientCount.TotalPatients = _teleMedecineContext.PatientMasters.Where(p => p.CreatedOn.Value.Year == currentYear && p.CreatedOn.Value.Month == currentMonth && p.CreatedOn.Value.Day == currentDay).Count();
+                pHCPatientCount.TotalConsulted = _teleMedecineContext.PatientQueues.Include(p => p.PatientCase).Include(p => p.PatientCase.Patient).Where(p => p.StatusOn.Year == currentYear && p.StatusOn.Month == currentMonth && p.StatusOn.Day == currentDay && p.CaseFileStatusId ==5).Count(); 
+                pHCPatientCount.TotalPending = _teleMedecineContext.PatientQueues.Include(p => p.PatientCase).Include(p => p.PatientCase.Patient).Where(p => p.StatusOn.Year == currentYear && p.StatusOn.Month == currentMonth && p.StatusOn.Day == currentDay && p.CaseFileStatusId != 5).Count(); 
             } 
             else
             {

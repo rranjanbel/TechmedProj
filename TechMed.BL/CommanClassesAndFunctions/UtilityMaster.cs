@@ -24,12 +24,7 @@ namespace TechMed.BL.CommanClassesAndFunctions
                 {
                     int year = (int)(totalDays / 365);
                     return year;
-                }
-                else if (totalDays < 365)
-                {
-                    int month = (int)(totalDays / 12);
-                    return 365;
-                }
+                }               
                 else
                 {
                     return 0;
