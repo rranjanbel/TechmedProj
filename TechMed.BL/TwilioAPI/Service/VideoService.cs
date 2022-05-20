@@ -75,12 +75,34 @@ namespace TechMed.BL.TwilioAPI.Service
         {
             var composition = await CompositionResource.ReadAsync(status: CompositionResource.StatusEnum.Completed);
             if (composition != null)
+            {
+                foreach(CompositionResource resource in composition)
+                {
+                   
+                }
                 return composition;
+            }
+
             else
                 return null;
-        }      
+        }
+        public async Task<List<RoomResource>> GetAllCompletedCall()
+        {
+            List<RoomResource> roomResources = new List<RoomResource>();
+            var rooms = await RoomResource.ReadAsync(status: RoomResource.RoomStatusEnum.Completed);
+            var composition = await CompositionResource.ReadAsync(status: CompositionResource.StatusEnum.Completed);
+            List<RoomResource> listRoomResource = rooms.ToList();
+            List<CompositionResource> listCompositionResources = composition.ToList();
+            roomResources = listRoomResource.ExceptBy(listCompositionResources.Select(comp=> comp.RoomSid),room=> room.Sid).ToList();
+
+            if (roomResources != null && roomResources.Count > 0)
+                return roomResources;
+            else
+                return null;
+        }
         public async Task<CompositionResource> ComposeVideo(string roomSid, string callBackUrl)
         {
+            //var roomDetail = RoomResource.Fetch(roomName);
             var layout = new {
                 transcode = new
                 {
@@ -98,7 +120,7 @@ namespace TechMed.BL.TwilioAPI.Service
             return composition;
 
         }
-        public void DownloadComposeVideo(string compositionSid)
+        public async Task<string> DownloadComposeVideo(string compositionSid)
         {
             string uri = "https://video.twilio.com/v1/Compositions/"+ compositionSid + "/Media?Ttl=3600";
 
@@ -106,18 +128,20 @@ namespace TechMed.BL.TwilioAPI.Service
             request.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(Encoding.ASCII.GetBytes(_twilioSettings.ApiKey + ":" + _twilioSettings.ApiSecret)));
             request.AllowAutoRedirect = false;
             string responseBody = new StreamReader(request.GetResponse().GetResponseStream()).ReadToEnd();
-            var mediaLocation = JsonConvert.DeserializeObject<Dictionary<string, string>>(responseBody)["redirect_to"];
+            var mediaLocation = await
+                Task.Factory.StartNew(() => JsonConvert.DeserializeObject<Dictionary<string, string>>(responseBody)["redirect_to"]);
+            return mediaLocation.ToString();
 
-            new WebClient().DownloadFile(mediaLocation, $"{compositionSid}.out");
+            //new WebClient().DownloadFile(mediaLocation, $"{compositionSid}.out");
 
         }
         public async Task<bool> DeleteComposeVideo(string compositionSid)
         {
-          return  await CompositionResource.DeleteAsync(compositionSid);
+            return  await CompositionResource.DeleteAsync(compositionSid);
         }
         public async Task<string> GetRoomSid(string roomName)
         {
-            string roomSid = null;
+             string roomSid = null;
             if (!string.IsNullOrEmpty(roomName))
             {
                 var room = await RoomResource.FetchAsync(pathSid: roomName);
@@ -125,11 +149,12 @@ namespace TechMed.BL.TwilioAPI.Service
             }
             return roomSid;
         }
-        public async Task<RoomResource> EndVideoCall(string roomsid)
+        public async Task<RoomResource> EndVideoCall(string roomName)
         {
+            var roomDetail = RoomResource.Fetch(roomName);
             var room = await RoomResource.UpdateAsync(
                        status: RoomResource.RoomStatusEnum.Completed,
-                       pathSid: roomsid);
+                       pathSid: roomDetail.Sid);
             return room;
         }
         #region Borrowed from https://github.com/twilio/video-quickstart-js/blob/1.x/server/randomname.js

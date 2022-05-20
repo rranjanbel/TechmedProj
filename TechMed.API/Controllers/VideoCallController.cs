@@ -32,15 +32,20 @@ namespace TechMed.API.Controllers
         {
            return await  _videoService.GetAllCompletedComposition();
         }
-        [HttpPost("compose-video")]
+        [HttpGet("get-completed-callrecord")]
+        public async Task<List<RoomResource>> GetAllCompletedCall()
+        {
+            return await _videoService.GetAllCompletedCall();
+        }
+        [HttpGet("compose-video")]
         public async Task<CompositionResource> ComposeVideo(string roomSid, string callBackUrl)
         {
             return await _videoService.ComposeVideo(roomSid, callBackUrl);
         }
         [HttpGet("download-video")]
-        public void DownloadComposeVideo(string compositionSid)
+        public async Task<string> DownloadComposeVideo(string compositionSid)
         {
-            _videoService.DownloadComposeVideo(compositionSid);
+          return await _videoService.DownloadComposeVideo(compositionSid);
         }
         [HttpGet("delete-video")]
         public async Task<bool> DeleteComposeVideo(string compositionSid)
@@ -54,9 +59,9 @@ namespace TechMed.API.Controllers
             return await _videoService.GetRoomSid(roomName);
         }
         [HttpGet("end-video-call")]
-        public async Task<RoomResource> EndVideoCall(string roomsid)
+        public async Task<RoomResource> EndVideoCall(string roomName)
         {
-            return await _videoService.EndVideoCall(roomsid);
+            return await _videoService.EndVideoCall(roomName);
         }
     }
 }

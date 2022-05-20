@@ -71,6 +71,7 @@ builder.Services.Configure<TwilioSettings>(
         settings.AccountSid = builder.Configuration.GetValue<string>("Twilio:TwilioAccountSid");
         settings.ApiSecret = builder.Configuration.GetValue<string>("Twilio:TwilioApiSecret");
         settings.ApiKey = builder.Configuration.GetValue<string>("Twilio:TwilioApiKey");
+        settings.AuthToken = builder.Configuration.GetValue<string>("Twilio:TwilioAuthToken");
     })
     .AddTransient<IVideoService, VideoService>();
 
