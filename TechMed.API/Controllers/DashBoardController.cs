@@ -221,8 +221,8 @@ namespace TechMed.API.Controllers
             if (fromDate != null)
                 fromDateUtc = fromDate.Value;
             DateTime? toDateUtc = null;
-            if (toDateUtc != null)
-                toDateUtc = toDateUtc.Value;
+            if (toDate != null)
+                toDateUtc = toDate.Value;
             try
             {
                 loginHistoryPHC = _dashBoardRepository.GetPHCLoginHistoryReport(PHCId, fromDateUtc, toDateUtc);
@@ -375,6 +375,45 @@ namespace TechMed.API.Controllers
                 ModelState.AddModelError("", $"Something went wrong {ex.Message}");
                 return StatusCode(500, ModelState);
             }
+        }
+
+        [HttpGet]
+        [Route("GetPHCManpowerReport")]
+        [ProducesResponseType(200, Type = typeof(PHCMainpowerResultSetVM))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult GetPHCManpowerReport(int year, int month)
+        {
+            PHCMainpowerResultSetVM phcmanpowerReport = new PHCMainpowerResultSetVM();
+
+
+            try
+            {
+                if (year > 0 && month > 0)
+                {
+                    phcmanpowerReport = _dashBoardRepository.GetPHCManpowerReport(year,month);
+                    if (phcmanpowerReport != null)
+                    {
+                        return Ok(phcmanpowerReport);
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("GetPHCManpowerReport", $"Data not found!");
+                        return StatusCode(404, ModelState);
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError("GetPHCManpowerReport", $"year and month should not null.");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("GetPHCManpowerReport", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+
         }
 
     }

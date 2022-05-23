@@ -215,26 +215,36 @@ namespace TechMed.BL.Repository.BaseClasses
         public List<PHCLoginHistoryReportVM> GetPHCLoginHistoryReport(int PHCId, DateTime? fromDate, DateTime? toDate)
         {
             List<PHCLoginHistoryReportVM> phcLoginReports = new List<PHCLoginHistoryReportVM>();
-            PHCLoginHistoryReportVM phcLoginHistoryReport;
-            if (PHCId > 0)
-            {
-                var Results = _teleMedecineContext.PHCLoginHistoryReports.FromSqlInterpolated($"EXEC [dbo].[GetPHCLoginReport] @PHCID ={PHCId}, @FromDate ={fromDate}, @ToDate ={toDate}");
-                foreach (var item in Results)
+            PHCLoginHistoryReportVM phcLoginHistoryReport;         
+            try
+            {             
+
+                if (PHCId > 0)
                 {
-                    phcLoginHistoryReport = new PHCLoginHistoryReportVM();
-                    phcLoginHistoryReport.SrNo = item.SrNo;
-                    phcLoginHistoryReport.DistrictName = item.DistrictName;
-                    phcLoginHistoryReport.BlockName = item.BlockName;
-                    phcLoginHistoryReport.PHCName = item.PHCName;
-                    phcLoginHistoryReport.UserID = item.UserID;
-                    phcLoginHistoryReport.LogedDate = item.LogedDate;
-                    phcLoginHistoryReport.LoginTime = item.LoginTime;
-                    phcLoginHistoryReport.LogoutTime = item.LogoutTime;
-                    phcLoginHistoryReport.Remark = item.Remark;
-                    phcLoginHistoryReport.Status = item.Status;
-                    phcLoginReports.Add(phcLoginHistoryReport);
+                    var Results = _teleMedecineContext.PHCLoginHistoryReports.FromSqlInterpolated($"EXEC [dbo].[GetPHCLoginReport] @PHCID ={PHCId}, @FromDate ={fromDate}, @ToDate ={toDate}");
+                    foreach (var item in Results)
+                    {
+                        phcLoginHistoryReport = new PHCLoginHistoryReportVM();
+                        phcLoginHistoryReport.SrNo = item.SrNo;
+                        phcLoginHistoryReport.DistrictName = item.DistrictName;
+                        phcLoginHistoryReport.BlockName = item.BlockName;
+                        phcLoginHistoryReport.PHCName = item.PHCName;
+                        phcLoginHistoryReport.UserID = item.UserID;
+                        phcLoginHistoryReport.LogedDate = item.LogedDate;
+                        phcLoginHistoryReport.LoginTime = item.LoginTime;
+                        phcLoginHistoryReport.LogoutTime = item.LogoutTime;
+                        phcLoginHistoryReport.Remark = item.Remark;
+                        phcLoginHistoryReport.Status = item.Status;
+                        phcLoginReports.Add(phcLoginHistoryReport);
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
+            }
+           
+           
             return phcLoginReports;
         }
 
@@ -368,5 +378,38 @@ namespace TechMed.BL.Repository.BaseClasses
 
         }
 
+        public PHCMainpowerResultSetVM GetPHCManpowerReport(int year, int month)
+        {
+            List<PHCManpowerVM> phcManpowerReports = new List<PHCManpowerVM>();
+            PHCManpowerVM phcManpowerReport;
+            PHCMainpowerResultSetVM phcmanpowerresultset = new  PHCMainpowerResultSetVM();
+            int totalWorkingDays = 0;
+            int totaldaysPresnt = 0;
+            if (year > 0 && month > 0)
+            {
+                var Results = _teleMedecineContext.PHCManpowerReports.FromSqlInterpolated($"EXEC [dbo].[GetPHCManpowerReport] @year ={year}, @month ={month}");
+                foreach (var item in Results)
+                {
+                    phcManpowerReport = new PHCManpowerVM();
+                    phcManpowerReport.SrNo = item.SrNo;
+                    phcManpowerReport.DistrictName = item.DistrictName;
+                    phcManpowerReport.BlockName = item.BlockName;
+                    phcManpowerReport.PHCName = item.PHCName;
+                    phcManpowerReport.WorkingDays = item.WorkingDays;
+                    phcManpowerReport.DaysPresent = item.DaysPresent;
+                    phcManpowerReport.DaysAbsent = item.DaysAbsent;
+                    phcManpowerReport.NoOfDaysInMonth = item.NoOfDaysInMonth;
+                    phcManpowerReport.PHCID = item.PHCID; 
+                    phcManpowerReports.Add(phcManpowerReport);
+                }
+            }
+            phcmanpowerresultset.PHCManpowerReports = phcManpowerReports;
+            phcmanpowerresultset.NoOfDaysInMonth = phcManpowerReports.Select(a => a.NoOfDaysInMonth).FirstOrDefault();
+            phcmanpowerresultset.TotalPresentDays = totaldaysPresnt = phcManpowerReports.Sum(a => a.DaysPresent);
+            phcmanpowerresultset.TotalWorkingDays = totalWorkingDays = phcManpowerReports.Sum(a => a.WorkingDays);
+            phcmanpowerresultset.AvailabilityPercentage = ((totaldaysPresnt * 100)/ totalWorkingDays);
+
+            return phcmanpowerresultset;
+        }
     }
 }

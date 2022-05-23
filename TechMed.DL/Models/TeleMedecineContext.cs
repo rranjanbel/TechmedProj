@@ -80,6 +80,7 @@ namespace TechMed.DL.Models
         public virtual DbSet<PHCConsultationVM> PHCConsultationResult { get; set; } = null!;
         public virtual DbSet<DashboardReportSummaryVM> GetDashboardReportSummaryMonthly { get; set; } = null!;
         public virtual DbSet<DashboardReportConsultationVM> GetDashboardReportConsultation { get; set; } = null!;
+        public virtual DbSet<PHCManpowerVM> PHCManpowerReports { get; set; } = null!;
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
