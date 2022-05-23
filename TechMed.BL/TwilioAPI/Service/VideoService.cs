@@ -130,7 +130,7 @@ namespace TechMed.BL.TwilioAPI.Service
             string responseBody = new StreamReader(request.GetResponse().GetResponseStream()).ReadToEnd();
             var mediaLocation = await
                 Task.Factory.StartNew(() => JsonConvert.DeserializeObject<Dictionary<string, string>>(responseBody)["redirect_to"]);
-            return mediaLocation.ToString();
+            return responseBody;
 
             //new WebClient().DownloadFile(mediaLocation, $"{compositionSid}.out");
 
