@@ -214,13 +214,13 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<PHCMasterDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAllPHC()
+        public async Task<IActionResult> GetAllPHC(int districtId)
         {
             List<PHCMasterDTO> phcList = new List<PHCMasterDTO>();
             try
             {
 
-                phcList = await _phcRepository.GetAllPHC();
+                phcList = await _phcRepository.GetAllPHC(districtId);
                 if (phcList != null)
                 {
                     return Ok(phcList);

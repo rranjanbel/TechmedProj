@@ -169,11 +169,11 @@ namespace TechMed.BL.Repository.BaseClasses
             return isExist;
         }
 
-        public async Task<List<PHCMasterDTO>> GetAllPHC()
+        public async Task<List<PHCMasterDTO>> GetAllPHC(int districtId)
         {
             List<PHCMasterDTO> phcList = new List<PHCMasterDTO>();
             PHCMasterDTO phcDTO;
-           var phcs = await GetAll();
+           var phcs = await _teleMedecineContext.Phcmasters.Where(a => a.DistrictId == districtId).ToListAsync();
             foreach (var phc in phcs)
             {
                 phcDTO = new PHCMasterDTO();

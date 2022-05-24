@@ -23,6 +23,7 @@ namespace TechMed.BL.Repository.Interfaces
         Task<List<DashboardReportSummaryVM>> GetDashboardReportSummaryMonthly(GetDashboardReportSummaryMonthVM getDashboardReportSummaryMonthVM);
         Task<List<DashboardReportConsultationVM>> GetDashboardReportConsultation(GetDashboardReportConsultationVM getDashboardReportSummaryVM);
         PHCMainpowerResultSetVM GetPHCManpowerReport(int year, int month);
+        List<RegisterPatientVM> GetRegisterPatientReport(DateTime? fromDate, DateTime? toDate);
 
     }
 }

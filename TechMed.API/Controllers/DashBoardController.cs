@@ -416,5 +416,40 @@ namespace TechMed.API.Controllers
 
         }
 
+        [HttpGet]
+        [Route("GetPatientRegisterReport")]
+        [ProducesResponseType(200, Type = typeof(List<RegisterPatientVM>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult GetPatientRegisterReport(DateTime? fromDate = null, DateTime? toDate = null)
+        {
+            List<RegisterPatientVM> patientResiter = new List<RegisterPatientVM>();
+            DateTime? fromDateUtc = null;
+            if (fromDate != null)
+                fromDateUtc = fromDate.Value;
+            DateTime? toDateUtc = null;
+            if (toDateUtc != null)
+                toDateUtc = toDateUtc.Value;
+            try
+            {
+                patientResiter = _dashBoardRepository.GetRegisterPatientReport(fromDateUtc, toDateUtc);
+                if (patientResiter != null)
+                {
+                    return Ok(patientResiter);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetPatientRegisterReport", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("GetPatientRegisterReport", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+
+        }
+
     }
 }

@@ -411,5 +411,37 @@ namespace TechMed.BL.Repository.BaseClasses
 
             return phcmanpowerresultset;
         }
+
+        public List<RegisterPatientVM> GetRegisterPatientReport(DateTime? fromDate, DateTime? toDate)
+        {
+            List<RegisterPatientVM> registerPatientReports = new List<RegisterPatientVM>();
+            RegisterPatientVM registerPatientReport;
+            try
+            {
+                var Results = _teleMedecineContext.RegisterPatientReports.FromSqlInterpolated($"EXEC [dbo].[GetRegisterPatientReport] @FromDate ={fromDate}, @ToDate ={toDate}");
+                foreach (var item in Results)
+                {
+                    registerPatientReport = new RegisterPatientVM();
+                    registerPatientReport.SrNo = item.SrNo;
+                    registerPatientReport.DistrictName = item.DistrictName;
+                    registerPatientReport.BlockName = item.BlockName;
+                    registerPatientReport.PHCName = item.PHCName;
+                    registerPatientReport.PatientName  = item.PatientName;
+                    registerPatientReport.Gender = item.Gender;
+                    registerPatientReport.Age = item.Age;
+                    registerPatientReport.RegistrationDate = item.RegistrationDate;
+                    registerPatientReport.PatientCaseID = item.PatientCaseID;
+                    registerPatientReports.Add(registerPatientReport);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
+            }
+
+
+            return registerPatientReports;
+        }
     }
 }

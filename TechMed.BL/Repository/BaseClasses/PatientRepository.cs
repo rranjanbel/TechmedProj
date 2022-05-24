@@ -327,27 +327,21 @@ namespace TechMed.BL.Repository.BaseClasses
             DateTime dtOfBirth = dateofbirth.Date;
             TimeSpan diffResult = dtToday - dtOfBirth;
             double totalDays = diffResult.TotalDays;
-            if (diffResult != TimeSpan.Zero)
-            {
-                if (totalDays > 365)
-                {
-                    int year = (int)(totalDays / 365);
-                    return year;
-                }
-                else if (totalDays < 365)
-                {
-                    int month = (int)(totalDays / 12);
-                    return 365;
-                }
-                else
-                {
-                    return 0;
-                }
 
+            if (totalDays > 365)
+            {
+                int year = (int)(totalDays / 365);
+                return year;
             }
             else
+            {
                 return 0;
-            
+            }
+            //else if (totalDays < 365)
+            //{
+            //    int month = (int)(totalDays / 12);
+            //    return month;
+            //}
         }
 
         public long GetPatientId()
