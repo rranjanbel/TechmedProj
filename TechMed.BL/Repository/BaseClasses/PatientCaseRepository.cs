@@ -134,25 +134,30 @@ namespace TechMed.BL.Repository.BaseClasses
 
                     var patientCaseQueueresult = await (from pm in _teleMedecineContext.PatientMasters
                                                         where pm.Id == PatientID && pm.Phcid == PHCID
-                                                        join um in _teleMedecineContext.UserMasters on pm.CreatedBy equals um.Id
+                                                        join phc in _teleMedecineContext.Phcmasters on pm.Phcid equals phc.Id
+                                                        //join um in _teleMedecineContext.UserMasters on pm.CreatedBy equals um.Id
                                                         join pc in _teleMedecineContext.PatientCases on pm.Id equals pc.PatientId into pcase
                                                         from pcdet in pcase.DefaultIfEmpty()
                                                         join pq in _teleMedecineContext.PatientQueues on pcdet.Id equals pq.PatientCaseId into pque
                                                         from pques in pque.DefaultIfEmpty()
-                                                        join dm in _teleMedecineContext.DoctorMasters on pques.AssignedDoctorId equals dm.Id
-                                                        join du in _teleMedecineContext.UserMasters on dm.UserId equals du.Id
-                                                        join ud in _teleMedecineContext.UserDetails on du.Id equals ud.UserId into udet
+                                                        join dm in _teleMedecineContext.DoctorMasters on pques.AssignedDoctorId equals dm.Id into doc
+                                                        from doct in doc.DefaultIfEmpty()
+                                                        join du in _teleMedecineContext.UserMasters on doct.UserId equals du.Id into user 
+                                                        from usr in user.DefaultIfEmpty()
+                                                        join ud in _teleMedecineContext.UserDetails on usr.Id equals ud.UserId into udet
                                                         from userdet in udet.DefaultIfEmpty()
-                                                        join cs in _teleMedecineContext.CaseFileStatusMasters on pques.CaseFileStatusId equals cs.Id
-                                                        join sp in _teleMedecineContext.SpecializationMasters on dm.SpecializationId equals sp.Id
+                                                        join cs in _teleMedecineContext.CaseFileStatusMasters on pques.CaseFileStatusId equals cs.Id into cfs
+                                                        from cfsm in cfs.DefaultIfEmpty()
+                                                        join sp in _teleMedecineContext.SpecializationMasters on doct.SpecializationId equals sp.Id into spm
+                                                        from sepm in spm.DefaultIfEmpty()
                                                         //join pcm in _teleMedecineContext.PatientCaseMedicines on pcdet.Id equals pcm.PatientCaseId into pcmed
                                                         //from pcmedicine in pcmed.DefaultIfEmpty()
                                                         select new PatientCaseWithDoctorVM
                                                         {
                                                             PatientID = pm.Id,
                                                             PHCId = PHCID,
-                                                            PHCUserId = um.Id,
-                                                            DoctorID = dm.UserId,
+                                                            PHCUserId = phc.UserId,
+                                                            DoctorID = doct.UserId,
                                                             PatientCaseID = pcdet.Id,
                                                             patientMaster = _mapper.Map<PatientMasterDTO>(pm),
                                                             patientCase = _mapper.Map<PatientCaseDTO>(pcdet),
@@ -162,14 +167,14 @@ namespace TechMed.BL.Repository.BaseClasses
                                                                 DoctorID = pques.AssignedDoctorId,
                                                                 DocterName = userdet.FirstName + " " + userdet.LastName,
                                                                 CaseFileStatusID = pques.CaseFileStatusId,
-                                                                CaseStatus = cs.FileStatus,
+                                                                CaseStatus = cfsm.FileStatus,
                                                                 AssignedBy = pques.AssignedBy,
-                                                                AssigneeName = um.Name,
+                                                                AssigneeName = phc.Phcname,
                                                                 AssignedOn = pques.AssignedOn,
-                                                                Qualification = dm.Qualification,
-                                                                Specialization = sp.Specialization,
+                                                                Qualification = doct.Qualification,
+                                                                Specialization = sepm.Specialization,
                                                                 StatusOn = pques.StatusOn,
-                                                                PhoneNo = dm.PhoneNumber,
+                                                                PhoneNo = doct.PhoneNumber,
                                                                 DrImagePath = userdet.Photo
                                                             },
                                                             patientCaseMedicines = patientCaseMedicineDTOs
@@ -191,7 +196,7 @@ namespace TechMed.BL.Repository.BaseClasses
             catch (Exception ex)
             {
                 string message = ex.Message;
-                throw;
+                //throw;
             }
 
 

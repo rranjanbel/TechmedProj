@@ -921,15 +921,15 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<OnlineDrListDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> OnlineDrList(OnlineDrListVM doctorVM)
+        public async Task<IActionResult> OnlineDrList()
         {
             try
             {
-                if (doctorVM.BlockID < 1 || !ModelState.IsValid)
-                {
-                    return BadRequest(doctorVM);
-                }
-                var DTO = await _doctorRepository.OnlineDrList(doctorVM);
+                //if (doctorVM.BlockID < 1 || !ModelState.IsValid)
+                //{
+                //    return BadRequest(doctorVM);
+                //}
+                var DTO = await _doctorRepository.OnlineDrList();
                 if (DTO.Count > 0)
                 {
                     return Ok(DTO);

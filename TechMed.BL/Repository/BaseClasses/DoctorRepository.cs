@@ -758,13 +758,13 @@ namespace TechMed.BL.Repository.BaseClasses
                 return doctorMaster.IsOnline;
             }
         }
-        public async Task<List<OnlineDrListDTO>> OnlineDrList(OnlineDrListVM doctorVM)
+        public async Task<List<OnlineDrListDTO>> OnlineDrList()
         {
             List<OnlineDrListDTO> onlineDrList = new List<OnlineDrListDTO>();
             var doctorMaster = await _teleMedecineContext
                 .DoctorMasters
                 .Include(a => a.Specialization)
-                .Where(a => a.BlockId == doctorVM.BlockID && a.IsOnline == true).ToListAsync();
+                .Where(a => a.IsOnline == true).ToListAsync();
             foreach (var item in doctorMaster)
             {
                 UserDetail userDetail = _teleMedecineContext.UserDetails.Where(a => a.UserId == item.UserId).FirstOrDefault();

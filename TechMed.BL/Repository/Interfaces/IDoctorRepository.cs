@@ -42,7 +42,7 @@ namespace TechMed.BL.Repository.Interfaces
         public Task<bool> UpdateIsDrOnline(UpdateIsDrOnlineVM updateIsOnlineDrVM);
         public Task<bool> UpdateIsDrOnlineByUserLoginName(UpdateIsDrOnlineByUserLoginNameVM updateIsOnlineDrVM);
         public Task<bool> IsDrOnline(DoctorVM doctorVM);
-        public Task<List<OnlineDrListDTO>> OnlineDrList(OnlineDrListVM doctorVM);
+        public Task<List<OnlineDrListDTO>> OnlineDrList();
         public Task<DoctorMaster> AddDoctor(DoctorMaster doctorMaster, UserMaster userMaster, UserDetail userDetail, AddDoctorDTO doctorDTO, string BasePath,string webRootPath);
 
         public Task<string> CheckEmail(string Email);
