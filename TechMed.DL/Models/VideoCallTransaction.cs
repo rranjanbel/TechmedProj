@@ -15,6 +15,9 @@ namespace TechMed.DL.Models
         public string? RecordingLink { get; set; }
         public DateTime? CallStartTime { get; set; }
         public DateTime? CallEndTime { get; set; }
+        public string? RoomName { get; set; }
+        public string? RoomSid { get; set; }
+        public string? CompositionSid { get; set; }
 
         public virtual UserMaster FromUser { get; set; } = null!;
         public virtual PatientMaster Patient { get; set; } = null!;

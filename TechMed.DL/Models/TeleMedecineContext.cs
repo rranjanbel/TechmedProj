@@ -27,6 +27,8 @@ namespace TechMed.DL.Models
         public virtual DbSet<DistrictMaster> DistrictMasters { get; set; } = null!;
         public virtual DbSet<DivisionMaster> DivisionMasters { get; set; } = null!;
         public virtual DbSet<DoctorMaster> DoctorMasters { get; set; } = null!;
+        public virtual DbSet<EmployeeTraining> EmployeeTrainings { get; set; } = null!;
+        public virtual DbSet<EquipmentUptimeReport> EquipmentUptimeReports { get; set; } = null!;
         public virtual DbSet<FeedbackQuestionMaster> FeedbackQuestionMasters { get; set; } = null!;
         public virtual DbSet<GenderMaster> GenderMasters { get; set; } = null!;
         public virtual DbSet<HolidayMaster> HolidayMasters { get; set; } = null!;
@@ -36,6 +38,7 @@ namespace TechMed.DL.Models
         public virtual DbSet<MaritalStatus> MaritalStatuses { get; set; } = null!;
         public virtual DbSet<MedicineMaster> MedicineMasters { get; set; } = null!;
         public virtual DbSet<Notification> Notifications { get; set; } = null!;
+        public virtual DbSet<OfficialWorkingHour> OfficialWorkingHours { get; set; } = null!;
         public virtual DbSet<PageAccess> PageAccesses { get; set; } = null!;
         public virtual DbSet<PageMaster> PageMasters { get; set; } = null!;
         public virtual DbSet<PatientCase> PatientCases { get; set; } = null!;
@@ -390,6 +393,80 @@ namespace TechMed.DL.Models
                     .HasConstraintName("FK_DoctorMaster_UserMaster");
             });
 
+            modelBuilder.Entity<EmployeeTraining>(entity =>
+            {
+                entity.ToTable("EmployeeTraining");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.CreatedOn).HasColumnType("datetime");
+
+                entity.Property(e => e.EmployeeName)
+                    .HasMaxLength(150)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PhcId).HasColumnName("PhcID");
+
+                entity.Property(e => e.TraingDate).HasColumnType("datetime");
+
+                entity.Property(e => e.TraingPeriod)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.TrainingBy)
+                    .HasMaxLength(150)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.TrainingSubject)
+                    .HasMaxLength(250)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
+
+                entity.HasOne(d => d.CreatedByNavigation)
+                    .WithMany(p => p.EmployeeTrainingCreatedByNavigations)
+                    .HasForeignKey(d => d.CreatedBy)
+                    .HasConstraintName("FK_EmployeeTraining_UserMaster");
+
+                entity.HasOne(d => d.Phc)
+                    .WithMany(p => p.EmployeeTrainings)
+                    .HasForeignKey(d => d.PhcId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_EmployeeTraining_PHCMaster");
+
+                entity.HasOne(d => d.UpdatedByNavigation)
+                    .WithMany(p => p.EmployeeTrainingUpdatedByNavigations)
+                    .HasForeignKey(d => d.UpdatedBy)
+                    .HasConstraintName("FK_EmployeeTraining_UserMaster1");
+            });
+
+            modelBuilder.Entity<EquipmentUptimeReport>(entity =>
+            {
+                entity.ToTable("EquipmentUptimeReport");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.CreatedOn).HasColumnType("datetime");
+
+                entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
+
+                entity.HasOne(d => d.CreatedByNavigation)
+                    .WithMany(p => p.EquipmentUptimeReportCreatedByNavigations)
+                    .HasForeignKey(d => d.CreatedBy)
+                    .HasConstraintName("FK_EquipmentUptimeReport_UserMaster");
+
+                entity.HasOne(d => d.Phc)
+                    .WithMany(p => p.EquipmentUptimeReports)
+                    .HasForeignKey(d => d.PhcId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_EquipmentUptimeReport_PHCMaster");
+
+                entity.HasOne(d => d.UpdatedByNavigation)
+                    .WithMany(p => p.EquipmentUptimeReportUpdatedByNavigations)
+                    .HasForeignKey(d => d.UpdatedBy)
+                    .HasConstraintName("FK_EquipmentUptimeReport_UserMaster1");
+            });
+
             modelBuilder.Entity<FeedbackQuestionMaster>(entity =>
             {
                 entity.ToTable("FeedbackQuestionMaster");
@@ -539,6 +616,11 @@ namespace TechMed.DL.Models
                     .HasForeignKey(d => d.ToUser)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Notification_UserMasterTo");
+            });
+
+            modelBuilder.Entity<OfficialWorkingHour>(entity =>
+            {
+                entity.Property(e => e.Id).HasColumnName("ID");
             });
 
             modelBuilder.Entity<PageAccess>(entity =>
@@ -1010,6 +1092,10 @@ namespace TechMed.DL.Models
 
                 entity.Property(e => e.DivisionId).HasColumnName("DivisionID");
 
+                entity.Property(e => e.EmployeeName)
+                    .HasMaxLength(150)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.MailId)
                     .HasMaxLength(150)
                     .IsUnicode(false)
@@ -1390,6 +1476,11 @@ namespace TechMed.DL.Models
 
                 entity.Property(e => e.CallStartTime).HasColumnType("datetime");
 
+                entity.Property(e => e.CompositionSid)
+                    .HasMaxLength(150)
+                    .IsUnicode(false)
+                    .HasColumnName("CompositionSID");
+
                 entity.Property(e => e.CreatedOn).HasColumnType("datetime");
 
                 entity.Property(e => e.FromUserId).HasColumnName("FromUserID");
@@ -1398,14 +1489,19 @@ namespace TechMed.DL.Models
 
                 entity.Property(e => e.PatientId).HasColumnName("PatientID");
 
-                entity.Property(e => e.RecordingLink)
-                    .HasMaxLength(1000)
-                    .IsUnicode(false);
-
                 entity.Property(e => e.RoomId)
                     .HasMaxLength(150)
                     .IsUnicode(false)
                     .HasColumnName("RoomID");
+
+                entity.Property(e => e.RoomName)
+                    .HasMaxLength(150)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RoomSid)
+                    .HasMaxLength(150)
+                    .IsUnicode(false)
+                    .HasColumnName("RoomSID");
 
                 entity.Property(e => e.ToUserId).HasColumnName("ToUserID");
 

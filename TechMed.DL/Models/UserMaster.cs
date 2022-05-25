@@ -16,6 +16,10 @@ namespace TechMed.DL.Models
             DoctorMasterCreatedByNavigations = new HashSet<DoctorMaster>();
             DoctorMasterUpdatedByNavigations = new HashSet<DoctorMaster>();
             DoctorMasterUsers = new HashSet<DoctorMaster>();
+            EmployeeTrainingCreatedByNavigations = new HashSet<EmployeeTraining>();
+            EmployeeTrainingUpdatedByNavigations = new HashSet<EmployeeTraining>();
+            EquipmentUptimeReportCreatedByNavigations = new HashSet<EquipmentUptimeReport>();
+            EquipmentUptimeReportUpdatedByNavigations = new HashSet<EquipmentUptimeReport>();
             InverseCreatedByNavigation = new HashSet<UserMaster>();
             InverseUpdatedByNavigation = new HashSet<UserMaster>();
             LoginHistories = new HashSet<LoginHistory>();
@@ -60,6 +64,10 @@ namespace TechMed.DL.Models
         public virtual ICollection<DoctorMaster> DoctorMasterCreatedByNavigations { get; set; }
         public virtual ICollection<DoctorMaster> DoctorMasterUpdatedByNavigations { get; set; }
         public virtual ICollection<DoctorMaster> DoctorMasterUsers { get; set; }
+        public virtual ICollection<EmployeeTraining> EmployeeTrainingCreatedByNavigations { get; set; }
+        public virtual ICollection<EmployeeTraining> EmployeeTrainingUpdatedByNavigations { get; set; }
+        public virtual ICollection<EquipmentUptimeReport> EquipmentUptimeReportCreatedByNavigations { get; set; }
+        public virtual ICollection<EquipmentUptimeReport> EquipmentUptimeReportUpdatedByNavigations { get; set; }
         public virtual ICollection<UserMaster> InverseCreatedByNavigation { get; set; }
         public virtual ICollection<UserMaster> InverseUpdatedByNavigation { get; set; }
         public virtual ICollection<LoginHistory> LoginHistories { get; set; }

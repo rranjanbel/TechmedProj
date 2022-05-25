@@ -7,6 +7,8 @@ namespace TechMed.DL.Models
     {
         public Phcmaster()
         {
+            EmployeeTrainings = new HashSet<EmployeeTraining>();
+            EquipmentUptimeReports = new HashSet<EquipmentUptimeReport>();
             PatientMasterCreatedByNavigations = new HashSet<PatientMaster>();
             PatientMasterPhcs = new HashSet<PatientMaster>();
             PatientMasterUpdatedByNavigations = new HashSet<PatientMaster>();
@@ -28,6 +30,7 @@ namespace TechMed.DL.Models
         public DateTime? CreatedOn { get; set; }
         public int? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
+        public string? EmployeeName { get; set; }
 
         public virtual BlockMaster Block { get; set; } = null!;
         public virtual ClusterMaster Cluster { get; set; } = null!;
@@ -36,6 +39,8 @@ namespace TechMed.DL.Models
         public virtual DivisionMaster Division { get; set; } = null!;
         public virtual UserMaster? UpdatedByNavigation { get; set; }
         public virtual UserMaster User { get; set; } = null!;
+        public virtual ICollection<EmployeeTraining> EmployeeTrainings { get; set; }
+        public virtual ICollection<EquipmentUptimeReport> EquipmentUptimeReports { get; set; }
         public virtual ICollection<PatientMaster> PatientMasterCreatedByNavigations { get; set; }
         public virtual ICollection<PatientMaster> PatientMasterPhcs { get; set; }
         public virtual ICollection<PatientMaster> PatientMasterUpdatedByNavigations { get; set; }
