@@ -487,6 +487,43 @@ namespace TechMed.API.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("GetAllPHC")]
+        [ProducesResponseType(200, Type = typeof(List<PHCMasterDTO>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetAllPHC()
+        {
+            List<PHCMasterDTO> phcs = new List<PHCMasterDTO>();
+            PHCMasterDTO phc;
+            try
+            {
+                var phclist = await _teleMedecineContext.Phcmasters.ToListAsync();
+               
+                foreach (var item in phclist)
+                {
+                    phc = new PHCMasterDTO();
+                    phc.ID = item.Id;
+                    phc.PHCName = item.Phcname;
+                    phcs.Add(phc);
+                }
+                if (phcs != null)
+                {
+                    return Ok(phcs);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetAllSpecialization", "Specialization detail did not find");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("GetAllSpecialization", $"Something went wrong when Get all Specialization {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
+
         ////CaseFileStatusMaster
         ////CountryMaster
         ////DistrictMaster
