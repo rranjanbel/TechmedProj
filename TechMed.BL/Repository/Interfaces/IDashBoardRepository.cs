@@ -24,6 +24,8 @@ namespace TechMed.BL.Repository.Interfaces
         Task<List<DashboardReportConsultationVM>> GetDashboardReportConsultation(GetDashboardReportConsultationVM getDashboardReportSummaryVM);
         PHCMainpowerResultSetVM GetPHCManpowerReport(int year, int month);
         List<RegisterPatientVM> GetRegisterPatientReport(DateTime? fromDate, DateTime? toDate);
+        Task<EquipmentUptimeReportDTO> AddEquipmentUptimeReport(EquipmentUptimeReportDTO equipmentUptimeReport);
+
 
     }
 }

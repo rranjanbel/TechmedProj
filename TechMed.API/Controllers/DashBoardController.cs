@@ -451,5 +451,61 @@ namespace TechMed.API.Controllers
 
         }
 
+
+        [HttpPost]
+        [Route("AddEquipmentUptimeReport")]
+        [ProducesResponseType(201, Type = typeof(EquipmentUptimeReportDTO))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> AddEquipmentUptimeReport([FromBody] EquipmentUptimeReportDTO equipmentUptime)
+        {
+
+            try
+            {
+                EquipmentUptimeReportDTO equipmentUptimedto = new EquipmentUptimeReportDTO();
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                else
+                {
+                    if (equipmentUptime != null)
+                    {
+                        equipmentUptimedto = await _dashBoardRepository.AddEquipmentUptimeReport(equipmentUptime);
+
+                        if (equipmentUptimedto != null)
+                        {
+                            if (equipmentUptimedto.Id > 0)
+                            {
+                                return CreatedAtRoute(201, equipmentUptimedto);
+                            }
+                            else
+                            {
+                                ModelState.AddModelError("AddEquipmentUptimeReport", $"Something went wrong when add equipment Uptime ");
+                                return StatusCode(404, ModelState);
+                            }
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("AddEquipmentUptimeReport", $"Something went wrong when add equipment Uptime");
+                            return StatusCode(404, ModelState);
+                        }
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("AddEquipmentUptimeReport", $"Something went wrong when add equipment Uptime");
+                        return StatusCode(404, ModelState);
+                    }
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("AddEquipmentUptimeReport", $"Something went wrong when Add equipment Uptime {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
+
     }
 }

@@ -443,5 +443,32 @@ namespace TechMed.BL.Repository.BaseClasses
 
             return registerPatientReports;
         }
+
+        public async Task<EquipmentUptimeReportDTO> AddEquipmentUptimeReport(EquipmentUptimeReportDTO equipmentUptimeReport)
+        {
+            int i = 0;
+            EquipmentUptimeReport equipmentUptime = new EquipmentUptimeReport();
+
+            EquipmentUptimeReportDTO equipmentUptimeReportdto = new EquipmentUptimeReportDTO();
+            try
+            {
+                if (equipmentUptimeReport != null)
+                {
+                    equipmentUptime = _mapper.Map<EquipmentUptimeReport>(equipmentUptimeReport);
+                    var ressult = _teleMedecineContext.EquipmentUptimeReports.AddAsync(equipmentUptime);
+                    i = await _teleMedecineContext.SaveChangesAsync();
+                    if (i > 0)
+                    {
+                        equipmentUptimeReportdto = _mapper.Map<EquipmentUptimeReportDTO>(equipmentUptime);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                string excpMessage = ex.Message;
+            }
+
+            return equipmentUptimeReportdto;
+        }
     }
 }

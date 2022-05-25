@@ -184,6 +184,34 @@ namespace TechMed.BL.Repository.BaseClasses
             return phcList;
         }
 
+        public async Task<EmployeeTrainingDTO> AddEmployeeTraining(EmployeeTrainingDTO employeeTraining)
+        {
+            int i = 0;            
+            EmployeeTraining employee = new EmployeeTraining();         
 
+            EmployeeTrainingDTO insertedEmployeeTraining = new EmployeeTrainingDTO();
+            try
+            {
+                if (employeeTraining != null)
+                {
+                    employee = _mapper.Map<EmployeeTraining>(employeeTraining);
+                    var ressult = _teleMedecineContext.EmployeeTrainings.AddAsync(employee);
+                    i = await _teleMedecineContext.SaveChangesAsync();
+                    if (i > 0)
+                    {
+                        insertedEmployeeTraining = _mapper.Map<EmployeeTrainingDTO>(employee);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                string excpMessage = ex.Message;
+            }
+          
+           
+           
+
+            return insertedEmployeeTraining;
+        }
     }
 }

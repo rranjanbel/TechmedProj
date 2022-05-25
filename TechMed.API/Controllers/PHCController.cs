@@ -239,5 +239,61 @@ namespace TechMed.API.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("AddEmployeeTraining")]
+        [ProducesResponseType(201, Type = typeof(EmployeeTrainingDTO))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> AddEmployeeTraining([FromBody] EmployeeTrainingDTO employeeTrainingDTO)
+        {
+           
+            try
+            {
+                EmployeeTrainingDTO employeeTraining = new EmployeeTrainingDTO();
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                } 
+                else 
+                {
+                    if(employeeTrainingDTO != null)
+                    {
+                        employeeTraining = await _phcRepository.AddEmployeeTraining(employeeTrainingDTO);
+
+                        if(employeeTraining != null)
+                        {
+                            if(employeeTraining.Id > 0)
+                            {
+                                return CreatedAtRoute(201, employeeTraining);
+                            }
+                            else
+                            {
+                                ModelState.AddModelError("AddEmployeeTraining", $"Something went wrong when add employee training {employeeTrainingDTO.TrainingSubject}");
+                                return StatusCode(404, ModelState);
+                            }
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("AddEmployeeTraining", $"Something went wrong when add employee training {employeeTrainingDTO.TrainingSubject}");
+                            return StatusCode(404, ModelState);
+                        }
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("AddEmployeeTraining", $"Something went wrong when add employee training {employeeTrainingDTO.TrainingSubject}");
+                        return StatusCode(404, ModelState);
+                    }
+                }
+              
+               
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError("AddPHC", $"Something went wrong when create PHC {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
+
     }
 }

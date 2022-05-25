@@ -498,8 +498,8 @@ namespace TechMed.API.Controllers
             PHCMasterDTO phc;
             try
             {
-                var phclist = await _teleMedecineContext.Phcmasters.ToListAsync();
-               
+                var phclist = await _teleMedecineContext.Phcmasters.ToListAsync();               
+
                 foreach (var item in phclist)
                 {
                     phc = new PHCMasterDTO();

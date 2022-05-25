@@ -18,5 +18,6 @@ namespace TechMed.BL.Repository.Interfaces
         Task<Phcmaster> AddPHCUser(Phcmaster phcmaster, UserMaster userMaster);
         Task<List<PHCMasterDTO>> GetAllPHC(int districtId);
         bool IsPHCExit(string name);
+        Task<EmployeeTrainingDTO> AddEmployeeTraining(EmployeeTrainingDTO employeeTraining);
     }
 }
