@@ -18,21 +18,18 @@ namespace TechMed.BL.CommanClassesAndFunctions
             DateTime dtOfBirth = dateOfBirth.Date;
             TimeSpan diffResult = dtToday - dtOfBirth;
             double totalDays = diffResult.TotalDays;
-            if (diffResult != TimeSpan.Zero)
-            {
-                if (totalDays > 365)
-                {
-                    int year = (int)(totalDays / 365);
-                    return year;
-                }               
-                else
-                {
-                    return 0;
-                }
 
+            if (totalDays > 365)
+            {
+                int year = (int)(totalDays / 365);
+                return year;
             }
             else
+            {
                 return 0;
+            }
+
+
         }
 
         public static long GetPatientNumber()
