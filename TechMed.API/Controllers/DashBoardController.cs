@@ -428,8 +428,8 @@ namespace TechMed.API.Controllers
             if (fromDate != null)
                 fromDateUtc = fromDate.Value;
             DateTime? toDateUtc = null;
-            if (toDateUtc != null)
-                toDateUtc = toDateUtc.Value;
+            if (toDate != null)
+                toDateUtc = toDate.Value;
             try
             {
                 patientResiter = _dashBoardRepository.GetRegisterPatientReport(fromDateUtc, toDateUtc);
@@ -505,6 +505,77 @@ namespace TechMed.API.Controllers
                 ModelState.AddModelError("AddEquipmentUptimeReport", $"Something went wrong when Add equipment Uptime {ex.Message}");
                 return StatusCode(500, ModelState);
             }
+        }
+
+
+        [HttpGet]
+        [Route("GetReferredPatientReport")]
+        [ProducesResponseType(200, Type = typeof(List<GetReferredPatientVM>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult GetReferredPatientReport(DateTime? fromDate = null, DateTime? toDate = null)
+        {
+            List<GetReferredPatientVM> patientResiter = new List<GetReferredPatientVM>();
+            DateTime? fromDateUtc = null;
+            if (fromDate != null)
+                fromDateUtc = fromDate.Value;
+            DateTime? toDateUtc = null;
+            if (toDate != null)
+                toDateUtc = toDate.Value;
+            try
+            {
+                patientResiter = _dashBoardRepository.GetReferredPatientReport(fromDateUtc, toDateUtc);
+                if (patientResiter != null)
+                {
+                    return Ok(patientResiter);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetReferredPatientReport", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("GetReferredPatientReport", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+
+        }
+
+        [HttpGet]
+        [Route("GetReviewPatientReport")]
+        [ProducesResponseType(200, Type = typeof(List<GetReviewPatientVM>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult GetReviewPatientReport(DateTime? fromDate = null, DateTime? toDate = null)
+        {
+            List<GetReviewPatientVM> patientResiter = new List<GetReviewPatientVM>();
+            DateTime? fromDateUtc = null;
+            if (fromDate != null)
+                fromDateUtc = fromDate.Value;
+            DateTime? toDateUtc = null;
+            if (toDate != null)
+                toDateUtc = toDate.Value;
+            try
+            {
+                patientResiter = _dashBoardRepository.GetReviewPatientReport(fromDateUtc, toDateUtc);
+                if (patientResiter != null)
+                {
+                    return Ok(patientResiter);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetReviewPatientReport", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("GetReviewPatientReport", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+
         }
 
     }

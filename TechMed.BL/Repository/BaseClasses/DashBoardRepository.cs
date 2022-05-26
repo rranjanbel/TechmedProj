@@ -196,7 +196,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     //SrNo = SrNo + 1;
                     CompletedConsultantReport = new DashboardReportSummaryVM();
 
-                    CompletedConsultantReport.SLNo =item.SLNo;
+                    CompletedConsultantReport.SLNo = item.SLNo;
                     CompletedConsultantReport.District = item.District;
                     CompletedConsultantReport.Block = item.Block;
                     CompletedConsultantReport.PHC = item.PHC;
@@ -215,9 +215,9 @@ namespace TechMed.BL.Repository.BaseClasses
         public List<PHCLoginHistoryReportVM> GetPHCLoginHistoryReport(int PHCId, DateTime? fromDate, DateTime? toDate)
         {
             List<PHCLoginHistoryReportVM> phcLoginReports = new List<PHCLoginHistoryReportVM>();
-            PHCLoginHistoryReportVM phcLoginHistoryReport;         
+            PHCLoginHistoryReportVM phcLoginHistoryReport;
             try
-            {             
+            {
 
                 if (PHCId > 0)
                 {
@@ -243,8 +243,8 @@ namespace TechMed.BL.Repository.BaseClasses
             {
                 string message = ex.Message;
             }
-           
-           
+
+
             return phcLoginReports;
         }
 
@@ -382,7 +382,7 @@ namespace TechMed.BL.Repository.BaseClasses
         {
             List<PHCManpowerVM> phcManpowerReports = new List<PHCManpowerVM>();
             PHCManpowerVM phcManpowerReport;
-            PHCMainpowerResultSetVM phcmanpowerresultset = new  PHCMainpowerResultSetVM();
+            PHCMainpowerResultSetVM phcmanpowerresultset = new PHCMainpowerResultSetVM();
             int totalWorkingDays = 0;
             int totaldaysPresnt = 0;
             if (year > 0 && month > 0)
@@ -399,7 +399,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     phcManpowerReport.DaysPresent = item.DaysPresent;
                     phcManpowerReport.DaysAbsent = item.DaysAbsent;
                     phcManpowerReport.NoOfDaysInMonth = item.NoOfDaysInMonth;
-                    phcManpowerReport.PHCID = item.PHCID; 
+                    phcManpowerReport.PHCID = item.PHCID;
                     phcManpowerReports.Add(phcManpowerReport);
                 }
             }
@@ -407,7 +407,7 @@ namespace TechMed.BL.Repository.BaseClasses
             phcmanpowerresultset.NoOfDaysInMonth = phcManpowerReports.Select(a => a.NoOfDaysInMonth).FirstOrDefault();
             phcmanpowerresultset.TotalPresentDays = totaldaysPresnt = phcManpowerReports.Sum(a => a.DaysPresent);
             phcmanpowerresultset.TotalWorkingDays = totalWorkingDays = phcManpowerReports.Sum(a => a.WorkingDays);
-            phcmanpowerresultset.AvailabilityPercentage = ((totaldaysPresnt * 100)/ totalWorkingDays);
+            phcmanpowerresultset.AvailabilityPercentage = ((totaldaysPresnt * 100) / totalWorkingDays);
 
             return phcmanpowerresultset;
         }
@@ -426,7 +426,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     registerPatientReport.DistrictName = item.DistrictName;
                     registerPatientReport.BlockName = item.BlockName;
                     registerPatientReport.PHCName = item.PHCName;
-                    registerPatientReport.PatientName  = item.PatientName;
+                    registerPatientReport.PatientName = item.PatientName;
                     registerPatientReport.Gender = item.Gender;
                     registerPatientReport.Age = item.Age;
                     registerPatientReport.RegistrationDate = item.RegistrationDate;
@@ -470,5 +470,73 @@ namespace TechMed.BL.Repository.BaseClasses
 
             return equipmentUptimeReportdto;
         }
+
+
+        public List<GetReferredPatientVM> GetReferredPatientReport(DateTime? fromDate, DateTime? toDate)
+        {
+            List<GetReferredPatientVM> registerPatientReports = new List<GetReferredPatientVM>();
+            GetReferredPatientVM registerPatientReport;
+            try
+            {
+                var Results = _teleMedecineContext.ReferredPatientReports.FromSqlInterpolated($"EXEC [dbo].[GetReferredPatientReport] @FromDate ={fromDate}, @ToDate ={toDate}");
+                foreach (var item in Results)
+                {
+                    registerPatientReport = new GetReferredPatientVM();
+                    registerPatientReport.SrNo = item.SrNo;
+                    registerPatientReport.DistrictName = item.DistrictName;
+                    registerPatientReport.BlockName = item.BlockName;
+                    registerPatientReport.PHCName = item.PHCName;
+                    registerPatientReport.PatientName = item.PatientName;
+                    registerPatientReport.DoctorName = item.DoctorName;
+                    registerPatientReport.Consultdate = item.Consultdate;
+                    registerPatientReport.ReferralNote = item.ReferralNote;
+                    registerPatientReport.Complaints = item.Complaints;
+                    registerPatientReport.Prescription = item.Prescription;
+                    registerPatientReports.Add(registerPatientReport);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
+            }
+
+
+            return registerPatientReports;
+        }
+        public List<GetReviewPatientVM> GetReviewPatientReport(DateTime? fromDate, DateTime? toDate)
+        {
+            List<GetReviewPatientVM> registerPatientReports = new List<GetReviewPatientVM>();
+            GetReviewPatientVM registerPatientReport;
+            try
+            {
+                var Results = _teleMedecineContext.ReviewPatientReport.FromSqlInterpolated($"EXEC [dbo].[GetReviewPatientReport] @FromDate ={fromDate}, @ToDate ={toDate}");
+                foreach (var item in Results)
+                {
+                    registerPatientReport = new GetReviewPatientVM();
+                    registerPatientReport.SrNo = item.SrNo;
+                    registerPatientReport.DistrictName = item.DistrictName;
+                    registerPatientReport.BlockName = item.BlockName;
+                    registerPatientReport.PHCName = item.PHCName;
+                    registerPatientReport.PatientName = item.PatientName;
+                    registerPatientReport.DoctorName = item.DoctorName;
+                    registerPatientReport.Consultdate = item.Consultdate;
+                    registerPatientReport.ReviewDate = item.ReviewDate;
+                    registerPatientReport.Complaints = item.Complaints;
+                    registerPatientReport.Prescription = item.Prescription;
+                    registerPatientReports.Add(registerPatientReport);
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
+            }
+
+
+            return registerPatientReports;
+        }
+
     }
 }
