@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
@@ -303,10 +304,10 @@ namespace TechMed.BL.Repository.BaseClasses
                                     patientCaseVital.Value = vital.Value;
                                     this._teleMedecineContext.Entry(patientCaseVital).State = EntityState.Added;
                                     k = await this.Context.SaveChangesAsync();
-                                    if (k > 0)
-                                    {
-                                        _logger.LogInformation($"Patient vital added : sucessfully {patientCase.Id}");
-                                    }
+                                    //if (k > 0)
+                                    //{
+                                    //    _logger.LogInformation($"Patient vital added : sucessfully {patientCase.Id}");
+                                    //}
                                 }
 
                                 patientcasecreateVM.vitals = patientCaseVM.vitals;
@@ -494,12 +495,8 @@ namespace TechMed.BL.Repository.BaseClasses
             return patientCaseQue;
         }
 
-        public string SaveImage(string ImgBase64Str, string rootPath)
+        public string SaveDocument(IFormFile file, string rootPath)
         {
-            //string strm = "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
-            //ImgBase64Str = strm;
-            //string webRootPath = _webHostEnvironment.WebRootPath;
-
             string contentRootPath = rootPath;
             string path = @"\\MyStaticFiles\\CaseDocuments\\";
             //path = Path.Combine(webRootPath, "CSS");
@@ -511,15 +508,57 @@ namespace TechMed.BL.Repository.BaseClasses
             var myfilename = string.Format(@"{0}", Guid.NewGuid());
 
             //Generate unique filename
-            string filepath = path + myfilename + ".pdf";// png
-            var bytess = Convert.FromBase64String(ImgBase64Str);
-            using (var imageFile = new FileStream(filepath, FileMode.Create))
+            if(file.Length > 0)
             {
-                imageFile.Write(bytess, 0, bytess.Length);
-                imageFile.Flush();
+                var fileType = Path.GetExtension(file.FileName);
+                //var ext = file.;
+                if (fileType.ToLower() == ".pdf" || fileType.ToLower() == ".jpg" || fileType.ToLower() == ".png" || fileType.ToLower() == ".jpeg")
+                {
+                    var filePath = Path.Combine(contentRootPath, file.FileName);
+                    FileInfo fileInfo = new FileInfo(filePath);
+                    using (Stream stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        stream.Flush();
+                    }
+                }
             }
-            myfilename = myfilename + ".pdf";
+            
+            //myfilename = myfilename + ".pdf";
             return myfilename;
+        }
+
+        public bool SaveCaseDocument(List<CaseDocumentVM> caseDocuments, string contentRootPath)
+        {
+            PatientCaseDocument patientCaseDocument  ;
+            List<PatientCaseDocDTO> patientCaseDocuments = new List<PatientCaseDocDTO>();
+            int l = 0;
+            if (caseDocuments != null)
+            {              
+                foreach (var doc in caseDocuments)
+                {
+                    l = 0;
+                    //string fileName = SaveDocument()
+                    patientCaseDocument = new PatientCaseDocument();
+                    patientCaseDocument.PatientCaseId = doc.patientCaseId;
+                    patientCaseDocument.DocumentPath = "";
+                    patientCaseDocument.DocumentName = doc.name;
+                    patientCaseDocument.Description = "";
+
+
+                    this._teleMedecineContext.Entry(patientCaseDocument).State = EntityState.Added;
+                    l = this.Context.SaveChanges();
+                    //l = await this.Context.SaveChangesAsync();
+
+                    PatientCaseDocDTO docDTO = _mapper.Map<PatientCaseDocDTO>(patientCaseDocument);
+                    patientCaseDocuments.Add(docDTO);
+                }              
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
         }
     }
 

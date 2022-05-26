@@ -20,6 +20,7 @@ namespace TechMed.BL.Repository.Interfaces
         Task<PatientReferToDoctorVM> PostPatientReferToDoctor(PatientReferToDoctorVM patientReferToDoctorVM);
         Task<PatientFeedbackDTO> PostPatientFeedBack(PatientFeedbackDTO patientFeedback);
         bool IsPatientCaseExist(PatientCaseCreateVM patientCase);
+        bool SaveCaseDocument(List<CaseDocumentVM> caseDocuments, string contentRootPath);
         long GetCaseFileNumber();
     }
 }

@@ -17,11 +17,13 @@ namespace TechMed.API.Controllers
         private readonly IMapper _mapper;
         private readonly IPatientCaseRepository _patientCaeRepository;
         private readonly ILogger<PatientCaseController> _logger;
-        public PatientCaseController(IMapper mapper, TeleMedecineContext teleMedecineContext, IPatientCaseRepository patientCaeRepository, ILogger<PatientCaseController> logger)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        public PatientCaseController(IMapper mapper, TeleMedecineContext teleMedecineContext, IPatientCaseRepository patientCaeRepository, ILogger<PatientCaseController> logger, IWebHostEnvironment webHostEnvironment)
         {
             this._mapper = mapper;
             this._patientCaeRepository = patientCaeRepository;
             this._logger = logger;
+            this._webHostEnvironment = webHostEnvironment;
         }
         [HttpPost]
         [Route("CreatePatientCase")]
@@ -298,6 +300,8 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UploadCaseDoc([FromForm] List<CaseDocumentVM> caseDocumentVM)
         {
+            bool status = false;
+            string contentRootPath = _webHostEnvironment.ContentRootPath;
             try
             {
                 if (!ModelState.IsValid)
@@ -309,26 +313,23 @@ namespace TechMed.API.Controllers
                 {
                     if(caseDocumentVM != null)
                     {
-                        foreach (var item in caseDocumentVM)
+                        status = _patientCaeRepository.SaveCaseDocument(caseDocumentVM, contentRootPath);
+                        if (status)
                         {
-                            //foreach (var doc in patientCaseVM.caseDocuments)
-                            //{
-                            //    l = 0;
-                            //    patientCaseDocument = new PatientCaseDocument();
-                            //    patientCaseDocument = _mapper.Map<PatientCaseDocument>(doc);
-                            //    this._teleMedecineContext.Entry(patientCaseDocument).State = EntityState.Added;
-                            //    l = await this.Context.SaveChangesAsync();
-
-                            //    PatientCaseDocDTO docDTO = _mapper.Map<PatientCaseDocDTO>(patientCaseDocument);
-                            //    caseDocumentsList.Add(docDTO);
-                            //}
-                            //if (l > 0)
-                            //{
-                            //    _logger.LogInformation($"Patient case document added : sucessfully {patientCase.Id}");
-                            //}
+                            return Ok();
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("UploadCaseDoc", "File did not save.");
+                            return BadRequest(ModelState);
                         }
                     }
-                    return Ok();
+                    else
+                    {
+                        ModelState.AddModelError("UploadCaseDoc", "Model has null value.");
+                        return BadRequest(ModelState);
+                    }
+
                 }
             }
             catch (Exception ex)
