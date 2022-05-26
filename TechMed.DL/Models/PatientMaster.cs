@@ -7,6 +7,7 @@ namespace TechMed.DL.Models
     {
         public PatientMaster()
         {
+            DoctorMeetingRoomInfos = new HashSet<DoctorMeetingRoomInfo>();
             PatientCases = new HashSet<PatientCase>();
             VideoCallTransactions = new HashSet<VideoCallTransaction>();
         }
@@ -47,6 +48,7 @@ namespace TechMed.DL.Models
         public virtual Phcmaster Phc { get; set; } = null!;
         public virtual StateMaster State { get; set; } = null!;
         public virtual Phcmaster? UpdatedByNavigation { get; set; }
+        public virtual ICollection<DoctorMeetingRoomInfo> DoctorMeetingRoomInfos { get; set; }
         public virtual ICollection<PatientCase> PatientCases { get; set; }
         public virtual ICollection<VideoCallTransaction> VideoCallTransactions { get; set; }
     }
