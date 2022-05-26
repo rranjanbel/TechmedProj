@@ -86,6 +86,8 @@ namespace TechMed.DL.Models
         public virtual DbSet<DashboardReportConsultationVM> GetDashboardReportConsultation { get; set; } = null!;
         public virtual DbSet<PHCManpowerVM> PHCManpowerReports { get; set; } = null!;
         public virtual DbSet<RegisterPatientVM> RegisterPatientReports { get; set; } = null!;
+        public virtual DbSet<GetReferredPatientVM> ReferredPatientReports { get; set; } = null!;
+        public virtual DbSet<GetReviewPatientVM> ReviewPatientReport { get; set; } = null!;
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

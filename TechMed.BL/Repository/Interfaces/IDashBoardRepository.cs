@@ -26,6 +26,7 @@ namespace TechMed.BL.Repository.Interfaces
         List<RegisterPatientVM> GetRegisterPatientReport(DateTime? fromDate, DateTime? toDate);
         Task<EquipmentUptimeReportDTO> AddEquipmentUptimeReport(EquipmentUptimeReportDTO equipmentUptimeReport);
 
-
+        List<GetReferredPatientVM> GetReferredPatientReport(DateTime? fromDate, DateTime? toDate);
+        List<GetReviewPatientVM> GetReviewPatientReport(DateTime? fromDate, DateTime? toDate);
     }
 }
