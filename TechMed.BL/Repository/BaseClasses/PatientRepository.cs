@@ -196,15 +196,15 @@ namespace TechMed.BL.Repository.BaseClasses
                                    Gender = (pm.GenderId == 1 ? "Male" : "Female")
                                }).ToListAsync();
             todaysPatientList = await patientList;
-            foreach (var item in todaysPatientList)
-            {
-                if (item.DocterID == 0)
-                {
-                    todaysNocConPatientList.Add(item);
-                }
-            }
+            //foreach (var item in todaysPatientList)
+            //{
+            //    if (item.DocterID == 0)
+            //    {
+            //        todaysNocConPatientList.Add(item);
+            //    }
+            //}
 
-            return todaysNocConPatientList;
+            return todaysPatientList;
         }
 
         public Task<List<PatientMaster>> GetUnCheckedPatientList(int Id)
