@@ -291,5 +291,53 @@ namespace TechMed.API.Controllers
                 return StatusCode(500, ModelState);
             }
         }
+
+        [HttpPost]
+        [Route("UploadCaseDoc")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UploadCaseDoc([FromForm] List<CaseDocumentVM> caseDocumentVM)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    ModelState.AddModelError("UploadCaseDoc", "Please check did not get data");
+                    return BadRequest(ModelState);
+                }
+                else
+                {
+                    if(caseDocumentVM != null)
+                    {
+                        foreach (var item in caseDocumentVM)
+                        {
+                            //foreach (var doc in patientCaseVM.caseDocuments)
+                            //{
+                            //    l = 0;
+                            //    patientCaseDocument = new PatientCaseDocument();
+                            //    patientCaseDocument = _mapper.Map<PatientCaseDocument>(doc);
+                            //    this._teleMedecineContext.Entry(patientCaseDocument).State = EntityState.Added;
+                            //    l = await this.Context.SaveChangesAsync();
+
+                            //    PatientCaseDocDTO docDTO = _mapper.Map<PatientCaseDocDTO>(patientCaseDocument);
+                            //    caseDocumentsList.Add(docDTO);
+                            //}
+                            //if (l > 0)
+                            //{
+                            //    _logger.LogInformation($"Patient case document added : sucessfully {patientCase.Id}");
+                            //}
+                        }
+                    }
+                    return Ok();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError("UploadCaseDoc", $"Something went wrong when add patient feedback {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+           
+        }
     }
 }

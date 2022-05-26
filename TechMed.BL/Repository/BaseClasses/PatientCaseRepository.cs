@@ -221,7 +221,7 @@ namespace TechMed.BL.Repository.BaseClasses
             PatientCaseDetailsVM patientcasecreateVM = new PatientCaseDetailsVM();
             PatientCase patientCase;
             PatientCaseVital patientCaseVital;
-            PatientCaseDocument patientCaseDocument;
+            //PatientCaseDocument patientCaseDocument;
             int i = 0;
             int j = 0;
             int k = 0;
@@ -310,22 +310,22 @@ namespace TechMed.BL.Repository.BaseClasses
                                 }
 
                                 patientcasecreateVM.vitals = patientCaseVM.vitals;
-                                foreach (var doc in patientCaseVM.caseDocuments)
-                                {
-                                    l = 0;
-                                    patientCaseDocument = new PatientCaseDocument();
-                                    patientCaseDocument = _mapper.Map<PatientCaseDocument>(doc);
-                                    this._teleMedecineContext.Entry(patientCaseDocument).State = EntityState.Added;
-                                    l = await this.Context.SaveChangesAsync();
+                                //foreach (var doc in patientCaseVM.caseDocuments)
+                                //{
+                                //    l = 0;
+                                //    patientCaseDocument = new PatientCaseDocument();
+                                //    patientCaseDocument = _mapper.Map<PatientCaseDocument>(doc);
+                                //    this._teleMedecineContext.Entry(patientCaseDocument).State = EntityState.Added;
+                                //    l = await this.Context.SaveChangesAsync();
 
-                                    PatientCaseDocDTO docDTO = _mapper.Map<PatientCaseDocDTO>(patientCaseDocument);
-                                    caseDocumentsList.Add(docDTO);
-                                }
-                                if (l > 0)
-                                {
-                                    _logger.LogInformation($"Patient case document added : sucessfully {patientCase.Id}");
-                                }
-                                patientcasecreateVM.caseDocuments = caseDocumentsList;
+                                //    PatientCaseDocDTO docDTO = _mapper.Map<PatientCaseDocDTO>(patientCaseDocument);
+                                //    caseDocumentsList.Add(docDTO);
+                                //}
+                                //if (l > 0)
+                                //{
+                                //    _logger.LogInformation($"Patient case document added : sucessfully {patientCase.Id}");
+                                //}
+                                //patientcasecreateVM.caseDocuments = caseDocumentsList;
 
                                 patientcasecreateVM.PatientID = patientCaseVM.PatientID;
                                 patientcasecreateVM.PHCUserId = patientCaseVM.PHCUserId;
@@ -492,6 +492,34 @@ namespace TechMed.BL.Repository.BaseClasses
             }
 
             return patientCaseQue;
+        }
+
+        public string SaveImage(string ImgBase64Str, string rootPath)
+        {
+            //string strm = "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+            //ImgBase64Str = strm;
+            //string webRootPath = _webHostEnvironment.WebRootPath;
+
+            string contentRootPath = rootPath;
+            string path = @"\\MyStaticFiles\\CaseDocuments\\";
+            //path = Path.Combine(webRootPath, "CSS");
+            //path = Path.Combine(contentRootPath, path);
+            path = contentRootPath + path;
+
+            //Create     
+
+            var myfilename = string.Format(@"{0}", Guid.NewGuid());
+
+            //Generate unique filename
+            string filepath = path + myfilename + ".pdf";// png
+            var bytess = Convert.FromBase64String(ImgBase64Str);
+            using (var imageFile = new FileStream(filepath, FileMode.Create))
+            {
+                imageFile.Write(bytess, 0, bytess.Length);
+                imageFile.Flush();
+            }
+            myfilename = myfilename + ".pdf";
+            return myfilename;
         }
     }
 
