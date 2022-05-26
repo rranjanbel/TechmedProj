@@ -511,69 +511,85 @@ namespace TechMed.BL.Repository.BaseClasses
         public string SaveDocument(IFormFile file, string rootPath)
         {
             string contentRootPath = rootPath;
-            string path = @"\\MyStaticFiles\\CaseDocuments\\";
-            //path = Path.Combine(webRootPath, "CSS");
-            //path = Path.Combine(contentRootPath, path);
+            string path = @"\\MyStaticFiles\\CaseDocuments\\";          
             path = contentRootPath + path;
 
             //Create     
 
             var myfilename = string.Format(@"{0}", Guid.NewGuid());
 
+            //myfilename = myfilename + file.FileName;
             //Generate unique filename
-            if(file.Length > 0)
-            {
+          
                 var fileType = Path.GetExtension(file.FileName);
-                //var ext = file.;
+               
                 if (fileType.ToLower() == ".pdf" || fileType.ToLower() == ".jpg" || fileType.ToLower() == ".png" || fileType.ToLower() == ".jpeg")
                 {
-                    var filePath = Path.Combine(contentRootPath, file.FileName);
+                    var filePath = Path.Combine(path, file.FileName);
                     //FileInfo fileInfo = new FileInfo(filePath);
                     //fileInfo.Create();
                     using (Stream stream = new FileStream(filePath, FileMode.Create))
                     {
-                        FileStream fileStream = File.Create(filePath, (int)stream.Length);
-                        // Initialize the bytes array with the stream length and then fill it with data
-                        byte[] bytesInStream = new byte[stream.Length];
-                        stream.Read(bytesInStream, 0, bytesInStream.Length);
-                        // Use write method to write to the file specified above
-                        fileStream.Write(bytesInStream, 0, bytesInStream.Length);
-                        //Close the filestream
-                        fileStream.Close();
+                         file.CopyToAsync(stream);
+
+                        //FileStream fileStream = File.Create(filePath, (int)stream.Length);
+                        //// Initialize the bytes array with the stream length and then fill it with data
+                        //byte[] bytesInStream = new byte[stream.Length];
+                        //stream.Read(bytesInStream, 0, bytesInStream.Length);
+                        //// Use write method to write to the file specified above
+                        //fileStream.Write(bytesInStream, 0, bytesInStream.Length);
+                        ////Close the filestream
+                        //fileStream.Close();
                     }
                 }
-            }
+                return file.FileName;
+          
             
             //myfilename = myfilename + ".pdf";
-            return myfilename;
+           
         }
 
         public bool SaveCaseDocument(List<CaseDocumentVM> caseDocuments, string contentRootPath)
         {
             PatientCaseDocument patientCaseDocument  ;
-            List<PatientCaseDocDTO> patientCaseDocuments = new List<PatientCaseDocDTO>();
+            //List<PatientCaseDocDTO> patientCaseDocuments = new List<PatientCaseDocDTO>();
             int l = 0;
+            string path = @"\\MyStaticFiles\\CaseDocuments\\";
             if (caseDocuments != null)
             {              
                 foreach (var doc in caseDocuments)
                 {
-                    l = 0;
-                    string fileName = SaveDocument(doc.file, contentRootPath);
-                    patientCaseDocument = new PatientCaseDocument();
-                    patientCaseDocument.PatientCaseId = doc.patientCaseId;
-                    patientCaseDocument.DocumentPath = "";
-                    patientCaseDocument.DocumentName = doc.name;
-                    patientCaseDocument.Description = "";
+                    if(doc.file.Length >0)
+                    {
+                        l = 0;
+                        string fileName = SaveDocument(doc.file, contentRootPath);
+                        string fullPath = Path.Combine(path, fileName);
+                        patientCaseDocument = new PatientCaseDocument();
+                        patientCaseDocument.PatientCaseId = doc.patientCaseId;
+                        patientCaseDocument.DocumentPath = fullPath;
+                        patientCaseDocument.DocumentName = doc.name;
+                        patientCaseDocument.Description = doc.file.Name + " , " + doc.file.Length;
 
 
-                    this._teleMedecineContext.Entry(patientCaseDocument).State = EntityState.Added;
-                    l = this.Context.SaveChanges();
+                        this._teleMedecineContext.Entry(patientCaseDocument).State = EntityState.Added;
+                        l = this.Context.SaveChanges();                      
+                    }
+                   
+
                     //l = await this.Context.SaveChangesAsync();
+                    //PatientCaseDocDTO docDTO = _mapper.Map<PatientCaseDocDTO>(patientCaseDocument);
+                    //patientCaseDocuments.Add(docDTO);
+                }
+                if (l > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
 
-                    PatientCaseDocDTO docDTO = _mapper.Map<PatientCaseDocDTO>(patientCaseDocument);
-                    patientCaseDocuments.Add(docDTO);
-                }              
-                return true;
+
             }
             else
             {

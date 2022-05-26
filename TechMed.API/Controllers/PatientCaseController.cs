@@ -336,7 +336,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
 
-                ModelState.AddModelError("UploadCaseDoc", $"Something went wrong when add patient feedback {ex.Message}");
+                ModelState.AddModelError("UploadCaseDoc", $"Something went wrong when uplod file {ex.Message}");
                 return StatusCode(500, ModelState);
             }
            
