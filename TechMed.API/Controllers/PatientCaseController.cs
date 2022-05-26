@@ -313,16 +313,17 @@ namespace TechMed.API.Controllers
                 {
                     if(caseDocumentVM != null)
                     {
-                        status = _patientCaeRepository.SaveCaseDocument(caseDocumentVM, contentRootPath);
-                        if (status)
-                        {
-                            return Ok();
-                        }
-                        else
-                        {
-                            ModelState.AddModelError("UploadCaseDoc", "File did not save.");
-                            return BadRequest(ModelState);
-                        }
+                        //status = _patientCaeRepository.SaveCaseDocument(caseDocumentVM, contentRootPath);
+                        //if (status)
+                        //{
+                        //    return Ok();
+                        //}
+                        //else
+                        //{
+                        //    ModelState.AddModelError("UploadCaseDoc", "File did not save.");
+                        //    return BadRequest(ModelState);
+                        //}
+                        return Ok();
                     }
                     else
                     {
