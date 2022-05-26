@@ -27,6 +27,7 @@ namespace TechMed.DL.Models
         public virtual DbSet<DistrictMaster> DistrictMasters { get; set; } = null!;
         public virtual DbSet<DivisionMaster> DivisionMasters { get; set; } = null!;
         public virtual DbSet<DoctorMaster> DoctorMasters { get; set; } = null!;
+        public virtual DbSet<DoctorMeetingRoomInfo> DoctorMeetingRoomInfos { get; set; } = null!;
         public virtual DbSet<EmployeeTraining> EmployeeTrainings { get; set; } = null!;
         public virtual DbSet<EquipmentUptimeReport> EquipmentUptimeReports { get; set; } = null!;
         public virtual DbSet<FeedbackQuestionMaster> FeedbackQuestionMasters { get; set; } = null!;
@@ -391,6 +392,56 @@ namespace TechMed.DL.Models
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_DoctorMaster_UserMaster");
+            });
+
+            modelBuilder.Entity<DoctorMeetingRoomInfo>(entity =>
+            {
+                entity.ToTable("DoctorMeetingRoomInfo");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.CaseId).HasColumnName("CaseID");
+
+                entity.Property(e => e.CloseDate).HasColumnType("datetime");
+
+                entity.Property(e => e.CreateDate)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.DoctorId).HasColumnName("DoctorID");
+
+                entity.Property(e => e.IsClosed).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.MeetingSid)
+                    .HasMaxLength(250)
+                    .HasColumnName("MeetingSID");
+
+                entity.Property(e => e.PatientId).HasColumnName("PatientID");
+
+                entity.Property(e => e.PhcId).HasColumnName("PhcID");
+
+                entity.Property(e => e.RoomName).HasMaxLength(500);
+
+                entity.HasOne(d => d.Case)
+                    .WithMany(p => p.DoctorMeetingRoomInfos)
+                    .HasForeignKey(d => d.CaseId)
+                    .HasConstraintName("FK__DoctorMee__CaseI__477199F1");
+
+                entity.HasOne(d => d.Doctor)
+                    .WithMany(p => p.DoctorMeetingRoomInfos)
+                    .HasForeignKey(d => d.DoctorId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__DoctorMee__Docto__467D75B8");
+
+                entity.HasOne(d => d.Patient)
+                    .WithMany(p => p.DoctorMeetingRoomInfos)
+                    .HasForeignKey(d => d.PatientId)
+                    .HasConstraintName("FK__DoctorMee__Patie__4865BE2A");
+
+                entity.HasOne(d => d.Phc)
+                    .WithMany(p => p.DoctorMeetingRoomInfos)
+                    .HasForeignKey(d => d.PhcId)
+                    .HasConstraintName("FK__DoctorMee__PhcID__4959E263");
             });
 
             modelBuilder.Entity<EmployeeTraining>(entity =>
@@ -771,10 +822,6 @@ namespace TechMed.DL.Models
 
                 entity.Property(e => e.DocumentName)
                     .HasMaxLength(250)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.DocumentPath)
-                    .HasMaxLength(1000)
                     .IsUnicode(false);
 
                 entity.Property(e => e.PatientCaseId).HasColumnName("PatientCaseID");
