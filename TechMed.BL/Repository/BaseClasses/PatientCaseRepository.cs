@@ -263,7 +263,10 @@ namespace TechMed.BL.Repository.BaseClasses
                                 patientCase.Prescription = "";
                                 patientCase.Observation = patientCaseVM.patientCase.Observation;
                                 patientCase.FamilyHistory = patientCaseVM.patientCase.FamilyHistory;
-                                patientCase.SuggestedDiagnosis = patientCaseVM.patientCase.Diagnosis;
+                                patientCase.SuggestedDiagnosis = patientCaseVM.patientCase.SuggestedDiagnosis;
+                                patientCase.ProvisionalDiagnosis = patientCaseVM.patientCase.ProvisionalDiagnosis;
+                                patientCase.ReferredTo = patientCaseVM.patientCase.ReferredTo;
+                               
 
                                 this._teleMedecineContext.Entry(patientCase).State = EntityState.Modified;
                                 i = await this.Context.SaveChangesAsync();
@@ -289,7 +292,10 @@ namespace TechMed.BL.Repository.BaseClasses
                                 patientCase.Prescription = "";
                                 patientCase.Observation = patientCaseVM.patientCase.Observation;
                                 patientCase.FamilyHistory = patientCaseVM.patientCase.FamilyHistory;
-                                patientCase.SuggestedDiagnosis = patientCaseVM.patientCase.Diagnosis;
+                                patientCase.SuggestedDiagnosis = patientCaseVM.patientCase.SuggestedDiagnosis;                               
+                                patientCase.ProvisionalDiagnosis = patientCaseVM.patientCase.ProvisionalDiagnosis;
+                                patientCase.ReferredTo = patientCaseVM.patientCase.ReferredTo;
+                                patientCase.Opdno = patientCaseVM.patientCase.Opdno;
                                 patientCase.UpdatedBy = patientCaseVM.patientCase.UpdatedBy;
                                 patientCase.UpdatedOn = DateTime.Now;
                                 patientCase.CreatedBy = patientCaseVM.patientCase.CreatedBy;
