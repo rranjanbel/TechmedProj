@@ -18,12 +18,15 @@ namespace TechMed.API.Controllers
         private readonly TeleMedecineContext _teleMedecineContext;
         private readonly ICaseFileStatusMasterRpository _CaseFileStatusMasterRpository;
         private readonly IDigonisisRepository _digonisisRepository;
+        private readonly IDrugsRepository _drugsRepository;
 
 
         public MasterController(IMapper mapper, ISpecializationRepository specializationRepository, ILogger<MasterController> logger
             , TeleMedecineContext teleMedecineContext
             , ICaseFileStatusMasterRpository caseFileStatusMasterRpository,
-            IDigonisisRepository digonisisRepository
+            IDigonisisRepository digonisisRepository,
+            IDrugsRepository drugsRepository
+
             )
         {
             this._mapper = mapper;
@@ -33,6 +36,7 @@ namespace TechMed.API.Controllers
             this._teleMedecineContext = teleMedecineContext;
             this._CaseFileStatusMasterRpository = caseFileStatusMasterRpository;
             this._digonisisRepository = digonisisRepository;
+            this._drugsRepository = drugsRepository;
         }
 
         [HttpGet]
@@ -552,6 +556,35 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetDiagnosticTest", $"Something went wrong when Get all Diagnostic {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
+
+        [HttpGet]
+        [Route("GetAllDrugsName")]
+        [ProducesResponseType(200, Type = typeof(List<DrugsMasterDTO>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetAllDrugsName()
+        {
+            List<DrugsMasterDTO> dugsList = new List<DrugsMasterDTO>();
+            try
+            {
+                dugsList = await this._drugsRepository.GetAllDrugs();
+
+                if (dugsList != null)
+                {
+                    return Ok(dugsList);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetAllDrugsName", "Diagnostic test detail did not find");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("GetAllDrugsName", $"Something went wrong when get all Diagnostic {ex.Message}");
                 return StatusCode(500, ModelState);
             }
         }
