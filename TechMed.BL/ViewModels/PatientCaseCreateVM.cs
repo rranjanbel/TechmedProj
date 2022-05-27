@@ -14,5 +14,6 @@ namespace TechMed.BL.ViewModels
         public string CaseTitle { get; set; }
         public int SpecializationID { get; set; }
         public int CreatedBy { get; set; }
+        public string OPDNumber { get; set; }
     }
 }

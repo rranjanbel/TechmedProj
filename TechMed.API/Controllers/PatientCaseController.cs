@@ -54,6 +54,7 @@ namespace TechMed.API.Controllers
                     patientcase.PatientId = patientCasevm.PatientID;
                     patientcase.SpecializationId = patientCasevm.SpecializationID;
                     patientcase.CaseHeading = patientCasevm.CaseTitle;
+                    patientcase.Opdno = patientCasevm.OPDNumber;
                     patientcase.CreatedBy = patientCasevm.CreatedBy;
                     patientcase.UpdatedBy = patientCasevm.CreatedBy;
                     patientcase.CreatedOn = DateTime.Now;
@@ -73,6 +74,7 @@ namespace TechMed.API.Controllers
                         createdPatientCase.CaseFileID = patientCaseNew.Id;
                         createdPatientCase.CreatedBy = patientCaseNew.CreatedBy;
                         createdPatientCase.CaseTitle = patientCaseNew.CaseHeading;
+                        createdPatientCase.OPDNumber = patientCaseNew.Opdno;
                     }
 
                 }
