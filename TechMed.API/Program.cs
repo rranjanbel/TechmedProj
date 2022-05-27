@@ -66,6 +66,7 @@ builder.Services.AddScoped<IMISRepository, MISRepository>();
 builder.Services.AddScoped<ICaseFileStatusMasterRpository, CaseFileStatusMasterRpository>();
 builder.Services.AddScoped<IVideoCallTransactionRespository, VideoCallTransactionRespository>();
 builder.Services.AddScoped<IEquipmentUptimeReport,EquipmentUptimeReportRepositry>();
+builder.Services.AddScoped<IDigonisisRepository, DigonisisRepository>();
 builder.Services.Configure<TwilioSettings>(
     settings =>
     {

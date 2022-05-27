@@ -17,11 +17,13 @@ namespace TechMed.API.Controllers
         private readonly ILogger<MasterController> _logger;
         private readonly TeleMedecineContext _teleMedecineContext;
         private readonly ICaseFileStatusMasterRpository _CaseFileStatusMasterRpository;
+        private readonly IDigonisisRepository _digonisisRepository;
 
-        
+
         public MasterController(IMapper mapper, ISpecializationRepository specializationRepository, ILogger<MasterController> logger
             , TeleMedecineContext teleMedecineContext
-            , ICaseFileStatusMasterRpository caseFileStatusMasterRpository
+            , ICaseFileStatusMasterRpository caseFileStatusMasterRpository,
+            IDigonisisRepository digonisisRepository
             )
         {
             this._mapper = mapper;
@@ -30,6 +32,7 @@ namespace TechMed.API.Controllers
             this._specializationRepository = specializationRepository;
             this._teleMedecineContext = teleMedecineContext;
             this._CaseFileStatusMasterRpository = caseFileStatusMasterRpository;
+            this._digonisisRepository = digonisisRepository;
         }
 
         [HttpGet]
@@ -520,6 +523,35 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetAllSpecialization", $"Something went wrong when Get all Specialization {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
+
+        [HttpGet]
+        [Route("GetDiagnosticTest")]
+        [ProducesResponseType(200, Type = typeof(List<DiagnosticTestMaster>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetDiagnosticTest()
+        {
+            List<DiagnosticTestMaster> diagnosticTestList = new List<DiagnosticTestMaster>();
+            try
+            {
+                diagnosticTestList = await this._digonisisRepository.GetAllDignosis();
+                
+                if (diagnosticTestList != null)
+                {
+                    return Ok(diagnosticTestList);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetDiagnosticTest", "Diagnostic test detail did not find");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("GetDiagnosticTest", $"Something went wrong when Get all Diagnostic {ex.Message}");
                 return StatusCode(500, ModelState);
             }
         }
