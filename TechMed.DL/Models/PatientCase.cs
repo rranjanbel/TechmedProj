@@ -25,20 +25,20 @@ namespace TechMed.DL.Models
         public string? Observation { get; set; }
         public string? Allergies { get; set; }
         public string? FamilyHistory { get; set; }
-        public string? Diagnosis { get; set; }
+        public string? SuggestedDiagnosis { get; set; }
+        public string? ProvisionalDiagnosis { get; set; }
+        public string? ReferredTo { get; set; }
         public string? Instruction { get; set; }
         public string? Test { get; set; }
         public string? Finding { get; set; }
+        public string? Opdno { get; set; }
         public string? Prescription { get; set; }
         public int CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
         public int? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
 
-        public virtual UserMaster CreatedByNavigation { get; set; } = null!;
         public virtual PatientMaster Patient { get; set; } = null!;
-        public virtual SpecializationMaster Specialization { get; set; } = null!;
-        public virtual UserMaster? UpdatedByNavigation { get; set; }
         public virtual ICollection<DoctorMeetingRoomInfo> DoctorMeetingRoomInfos { get; set; }
         public virtual ICollection<PatientCaseDocument> PatientCaseDocuments { get; set; }
         public virtual ICollection<PatientCaseFeedback> PatientCaseFeedbacks { get; set; }

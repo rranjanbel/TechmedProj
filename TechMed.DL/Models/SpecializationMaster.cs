@@ -8,7 +8,6 @@ namespace TechMed.DL.Models
         public SpecializationMaster()
         {
             DoctorMasters = new HashSet<DoctorMaster>();
-            PatientCases = new HashSet<PatientCase>();
             SubSpecializationMasters = new HashSet<SubSpecializationMaster>();
         }
 
@@ -16,7 +15,6 @@ namespace TechMed.DL.Models
         public string Specialization { get; set; } = null!;
 
         public virtual ICollection<DoctorMaster> DoctorMasters { get; set; }
-        public virtual ICollection<PatientCase> PatientCases { get; set; }
         public virtual ICollection<SubSpecializationMaster> SubSpecializationMasters { get; set; }
     }
 }

@@ -24,10 +24,12 @@ namespace TechMed.DL.Models
         public virtual DbSet<CdssguidelineMaster> CdssguidelineMasters { get; set; } = null!;
         public virtual DbSet<ClusterMaster> ClusterMasters { get; set; } = null!;
         public virtual DbSet<CountryMaster> CountryMasters { get; set; } = null!;
+        public virtual DbSet<DiagnosticTestMaster> DiagnosticTestMasters { get; set; } = null!;
         public virtual DbSet<DistrictMaster> DistrictMasters { get; set; } = null!;
         public virtual DbSet<DivisionMaster> DivisionMasters { get; set; } = null!;
         public virtual DbSet<DoctorMaster> DoctorMasters { get; set; } = null!;
         public virtual DbSet<DoctorMeetingRoomInfo> DoctorMeetingRoomInfos { get; set; } = null!;
+        public virtual DbSet<DrugsMaster> DrugsMasters { get; set; } = null!;
         public virtual DbSet<EmployeeTraining> EmployeeTrainings { get; set; } = null!;
         public virtual DbSet<EquipmentUptimeReport> EquipmentUptimeReports { get; set; } = null!;
         public virtual DbSet<FeedbackQuestionMaster> FeedbackQuestionMasters { get; set; } = null!;
@@ -58,6 +60,7 @@ namespace TechMed.DL.Models
         public virtual DbSet<Setting> Settings { get; set; } = null!;
         public virtual DbSet<SpecialityMasterDelete> SpecialityMasterDeletes { get; set; } = null!;
         public virtual DbSet<SpecializationMaster> SpecializationMasters { get; set; } = null!;
+        public virtual DbSet<SpokeMaintenance> SpokeMaintenances { get; set; } = null!;
         public virtual DbSet<StateMaster> StateMasters { get; set; } = null!;
         public virtual DbSet<SubSpecializationMaster> SubSpecializationMasters { get; set; } = null!;
         public virtual DbSet<SymptomsMaster> SymptomsMasters { get; set; } = null!;
@@ -106,7 +109,6 @@ namespace TechMed.DL.Models
                 optionsBuilder.UseSqlServer(connectionString);
             }
         }
-
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -212,6 +214,15 @@ namespace TechMed.DL.Models
                 entity.Property(e => e.CountryName)
                     .HasMaxLength(150)
                     .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<DiagnosticTestMaster>(entity =>
+            {
+                entity.ToTable("DiagnosticTestMaster");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.Name).HasMaxLength(150);
             });
 
             modelBuilder.Entity<DistrictMaster>(entity =>
@@ -404,15 +415,11 @@ namespace TechMed.DL.Models
 
                 entity.Property(e => e.Id).HasColumnName("ID");
 
-                entity.Property(e => e.CaseId).HasColumnName("CaseID");
-
                 entity.Property(e => e.CloseDate).HasColumnType("datetime");
 
                 entity.Property(e => e.CreateDate)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(getdate())");
-
-                entity.Property(e => e.DoctorId).HasColumnName("DoctorID");
 
                 entity.Property(e => e.IsClosed).HasDefaultValueSql("((0))");
 
@@ -420,32 +427,60 @@ namespace TechMed.DL.Models
                     .HasMaxLength(250)
                     .HasColumnName("MeetingSID");
 
-                entity.Property(e => e.PatientId).HasColumnName("PatientID");
-
-                entity.Property(e => e.PhcId).HasColumnName("PhcID");
+                entity.Property(e => e.PatientCaseId).HasColumnName("PatientCaseID");
 
                 entity.Property(e => e.RoomName).HasMaxLength(500);
 
-                entity.HasOne(d => d.Case)
+                entity.HasOne(d => d.PatientCase)
                     .WithMany(p => p.DoctorMeetingRoomInfos)
-                    .HasForeignKey(d => d.CaseId)
-                    .HasConstraintName("FK__DoctorMee__CaseI__477199F1");
+                    .HasForeignKey(d => d.PatientCaseId)
+                    .HasConstraintName("FK__DoctorMee__Patie__50FB042B");
+            });
 
-                entity.HasOne(d => d.Doctor)
-                    .WithMany(p => p.DoctorMeetingRoomInfos)
-                    .HasForeignKey(d => d.DoctorId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__DoctorMee__Docto__467D75B8");
+            modelBuilder.Entity<DrugsMaster>(entity =>
+            {
+                entity.ToTable("DrugsMaster");
 
-                entity.HasOne(d => d.Patient)
-                    .WithMany(p => p.DoctorMeetingRoomInfos)
-                    .HasForeignKey(d => d.PatientId)
-                    .HasConstraintName("FK__DoctorMee__Patie__4865BE2A");
+                entity.Property(e => e.Id).HasColumnName("ID");
 
-                entity.HasOne(d => d.Phc)
-                    .WithMany(p => p.DoctorMeetingRoomInfos)
-                    .HasForeignKey(d => d.PhcId)
-                    .HasConstraintName("FK__DoctorMee__PhcID__4959E263");
+                entity.Property(e => e.Category).HasMaxLength(150);
+
+                entity.Property(e => e.CreatedOn).HasColumnType("datetime");
+
+                entity.Property(e => e.DrugCode)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DrugformAndStrength).HasMaxLength(150);
+
+                entity.Property(e => e.GroupOfDrug)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.MpaushidhiCode)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasColumnName("MPAushidhiCode");
+
+                entity.Property(e => e.NameOfDrug)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PakAndVolume).HasMaxLength(150);
+
+                entity.Property(e => e.Reference)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Remark)
+                    .HasMaxLength(150)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.SubGroupOfDrug)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
             });
 
             modelBuilder.Entity<EmployeeTraining>(entity =>
@@ -754,10 +789,6 @@ namespace TechMed.DL.Models
 
                 entity.Property(e => e.CreatedOn).HasColumnType("datetime");
 
-                entity.Property(e => e.Diagnosis)
-                    .HasMaxLength(2000)
-                    .IsUnicode(false);
-
                 entity.Property(e => e.FamilyHistory)
                     .HasMaxLength(2000)
                     .IsUnicode(false);
@@ -774,11 +805,28 @@ namespace TechMed.DL.Models
                     .HasMaxLength(2000)
                     .IsUnicode(false);
 
+                entity.Property(e => e.Opdno)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasColumnName("OPDNo");
+
                 entity.Property(e => e.PatientId).HasColumnName("PatientID");
 
                 entity.Property(e => e.Prescription).IsUnicode(false);
 
+                entity.Property(e => e.ProvisionalDiagnosis)
+                    .HasMaxLength(2000)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ReferredTo)
+                    .HasMaxLength(2000)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.SpecializationId).HasColumnName("SpecializationID");
+
+                entity.Property(e => e.SuggestedDiagnosis)
+                    .HasMaxLength(2000)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Symptom)
                     .HasMaxLength(2000)
@@ -790,28 +838,11 @@ namespace TechMed.DL.Models
 
                 entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
 
-                entity.HasOne(d => d.CreatedByNavigation)
-                    .WithMany(p => p.PatientCaseCreatedByNavigations)
-                    .HasForeignKey(d => d.CreatedBy)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_PatientCase_UserMasterCreatedBy");
-
                 entity.HasOne(d => d.Patient)
                     .WithMany(p => p.PatientCases)
                     .HasForeignKey(d => d.PatientId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_PatientCase_PatientMaster");
-
-                entity.HasOne(d => d.Specialization)
-                    .WithMany(p => p.PatientCases)
-                    .HasForeignKey(d => d.SpecializationId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_PatientCase_SpecializationMaster");
-
-                entity.HasOne(d => d.UpdatedByNavigation)
-                    .WithMany(p => p.PatientCaseUpdatedByNavigations)
-                    .HasForeignKey(d => d.UpdatedBy)
-                    .HasConstraintName("FK_PatientCase_UserMasterUpdatedBy");
             });
 
             modelBuilder.Entity<PatientCaseDocument>(entity =>
@@ -1270,6 +1301,27 @@ namespace TechMed.DL.Models
                 entity.Property(e => e.Specialization)
                     .HasMaxLength(50)
                     .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<SpokeMaintenance>(entity =>
+            {
+                entity.ToTable("SpokeMaintenance");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.Date).HasColumnType("datetime");
+
+                entity.Property(e => e.FilePath)
+                    .HasMaxLength(150)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Phcid).HasColumnName("PHCID");
+
+                entity.HasOne(d => d.Phc)
+                    .WithMany(p => p.SpokeMaintenances)
+                    .HasForeignKey(d => d.Phcid)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_SpokeMaintenance_PHCMaster");
             });
 
             modelBuilder.Entity<StateMaster>(entity =>

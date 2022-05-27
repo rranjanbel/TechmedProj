@@ -6,10 +6,7 @@ namespace TechMed.DL.Models
     public partial class DoctorMeetingRoomInfo
     {
         public long Id { get; set; }
-        public int DoctorId { get; set; }
-        public long? CaseId { get; set; }
-        public int? PatientId { get; set; }
-        public int? PhcId { get; set; }
+        public long? PatientCaseId { get; set; }
         public string RoomName { get; set; } = null!;
         public string MeetingSid { get; set; } = null!;
         public int? Duration { get; set; }
@@ -17,9 +14,6 @@ namespace TechMed.DL.Models
         public DateTime? CloseDate { get; set; }
         public DateTime? CreateDate { get; set; }
 
-        public virtual PatientCase? Case { get; set; }
-        public virtual DoctorMaster Doctor { get; set; } = null!;
-        public virtual PatientMaster? Patient { get; set; }
-        public virtual Phcmaster? Phc { get; set; }
+        public virtual PatientCase? PatientCase { get; set; }
     }
 }

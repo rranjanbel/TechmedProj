@@ -263,7 +263,7 @@ namespace TechMed.BL.Repository.BaseClasses
                                 patientCase.Prescription = "";
                                 patientCase.Observation = patientCaseVM.patientCase.Observation;
                                 patientCase.FamilyHistory = patientCaseVM.patientCase.FamilyHistory;
-                                patientCase.Diagnosis = patientCaseVM.patientCase.Diagnosis;
+                                patientCase.SuggestedDiagnosis = patientCaseVM.patientCase.Diagnosis;
 
                                 this._teleMedecineContext.Entry(patientCase).State = EntityState.Modified;
                                 i = await this.Context.SaveChangesAsync();
@@ -289,7 +289,7 @@ namespace TechMed.BL.Repository.BaseClasses
                                 patientCase.Prescription = "";
                                 patientCase.Observation = patientCaseVM.patientCase.Observation;
                                 patientCase.FamilyHistory = patientCaseVM.patientCase.FamilyHistory;
-                                patientCase.Diagnosis = patientCaseVM.patientCase.Diagnosis;
+                                patientCase.SuggestedDiagnosis = patientCaseVM.patientCase.Diagnosis;
                                 patientCase.UpdatedBy = patientCaseVM.patientCase.UpdatedBy;
                                 patientCase.UpdatedOn = DateTime.Now;
                                 patientCase.CreatedBy = patientCaseVM.patientCase.CreatedBy;

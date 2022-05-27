@@ -437,7 +437,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 patientQueue.StatusOn = DateTime.Now;
 
                 var patientCase = patientQueue.PatientCase;
-                patientCase.Diagnosis = treatmentVM.Diagnosis;
+                patientCase.SuggestedDiagnosis = treatmentVM.Diagnosis;
                 patientCase.Instruction = treatmentVM.Instruction;
                 patientCase.Test = treatmentVM.Test;
                 patientCase.Finding = treatmentVM.Findings;
@@ -499,7 +499,7 @@ namespace TechMed.BL.Repository.BaseClasses
             {
                 Age = CommanFunction.GetAge(masters.PatientCase.Patient.Dob),
                 Sex = masters.PatientCase.Patient.Gender.Gender,
-                Diagnosis = masters.PatientCase.Diagnosis,
+                Diagnosis = masters.PatientCase.SuggestedDiagnosis,
                 PatientName = masters.PatientCase.Patient.FirstName + " " + masters.PatientCase.Patient.LastName,
                 Prescription = masters.PatientCase.Finding,
                 PriviousCaseDate = masters.PatientCase.CreatedOn,

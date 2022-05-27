@@ -27,8 +27,6 @@ namespace TechMed.DL.Models
             NotificationToUserNavigations = new HashSet<Notification>();
             PageMasterCreatedByNavigations = new HashSet<PageMaster>();
             PageMasterUpdatedByNavigations = new HashSet<PageMaster>();
-            PatientCaseCreatedByNavigations = new HashSet<PatientCase>();
-            PatientCaseUpdatedByNavigations = new HashSet<PatientCase>();
             PhcmasterCreatedByNavigations = new HashSet<Phcmaster>();
             PhcmasterUpdatedByNavigations = new HashSet<Phcmaster>();
             PhcmasterUsers = new HashSet<Phcmaster>();
@@ -75,8 +73,6 @@ namespace TechMed.DL.Models
         public virtual ICollection<Notification> NotificationToUserNavigations { get; set; }
         public virtual ICollection<PageMaster> PageMasterCreatedByNavigations { get; set; }
         public virtual ICollection<PageMaster> PageMasterUpdatedByNavigations { get; set; }
-        public virtual ICollection<PatientCase> PatientCaseCreatedByNavigations { get; set; }
-        public virtual ICollection<PatientCase> PatientCaseUpdatedByNavigations { get; set; }
         public virtual ICollection<Phcmaster> PhcmasterCreatedByNavigations { get; set; }
         public virtual ICollection<Phcmaster> PhcmasterUpdatedByNavigations { get; set; }
         public virtual ICollection<Phcmaster> PhcmasterUsers { get; set; }

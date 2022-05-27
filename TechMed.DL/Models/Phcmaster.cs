@@ -7,13 +7,13 @@ namespace TechMed.DL.Models
     {
         public Phcmaster()
         {
-            DoctorMeetingRoomInfos = new HashSet<DoctorMeetingRoomInfo>();
             EmployeeTrainings = new HashSet<EmployeeTraining>();
             EquipmentUptimeReports = new HashSet<EquipmentUptimeReport>();
             PatientMasterCreatedByNavigations = new HashSet<PatientMaster>();
             PatientMasterPhcs = new HashSet<PatientMaster>();
             PatientMasterUpdatedByNavigations = new HashSet<PatientMaster>();
             PatientQueues = new HashSet<PatientQueue>();
+            SpokeMaintenances = new HashSet<SpokeMaintenance>();
         }
 
         public int Id { get; set; }
@@ -40,12 +40,12 @@ namespace TechMed.DL.Models
         public virtual DivisionMaster Division { get; set; } = null!;
         public virtual UserMaster? UpdatedByNavigation { get; set; }
         public virtual UserMaster User { get; set; } = null!;
-        public virtual ICollection<DoctorMeetingRoomInfo> DoctorMeetingRoomInfos { get; set; }
         public virtual ICollection<EmployeeTraining> EmployeeTrainings { get; set; }
         public virtual ICollection<EquipmentUptimeReport> EquipmentUptimeReports { get; set; }
         public virtual ICollection<PatientMaster> PatientMasterCreatedByNavigations { get; set; }
         public virtual ICollection<PatientMaster> PatientMasterPhcs { get; set; }
         public virtual ICollection<PatientMaster> PatientMasterUpdatedByNavigations { get; set; }
         public virtual ICollection<PatientQueue> PatientQueues { get; set; }
+        public virtual ICollection<SpokeMaintenance> SpokeMaintenances { get; set; }
     }
 }
