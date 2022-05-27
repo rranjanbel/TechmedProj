@@ -17,5 +17,6 @@ namespace TechMed.DL.ViewModel
         public string PhoneNumber { get; set; }
         public int DocterID { get; set; }
         public string Doctor { get; set; }
+        public int ID { get; set; } 
     }
 }

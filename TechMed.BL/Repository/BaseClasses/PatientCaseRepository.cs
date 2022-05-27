@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
@@ -77,46 +78,57 @@ namespace TechMed.BL.Repository.BaseClasses
         public async Task<PatientCaseVM> GetPatientCaseDetails(int PHCID, int PatientID)
         {
             PatientCaseVM patientCase = new PatientCaseVM();
-            if (PHCID > 0 && PatientID > 0)
+            try
             {
-                List<PatientCaseVitalsVM> vitals = new List<PatientCaseVitalsVM>();
-                PatientCaseVitalsVM vitalvm;
-                var vitalMasters = _teleMedecineContext.PatientCaseVitals
-                    .Include(a => a.Vital)
-                    .Include(p => p.PatientCase)
-                    .Where(a => a.PatientCase.PatientId == PatientID).ToList();
-                foreach (var vital in vitalMasters)
+                
+                if (PHCID > 0 && PatientID > 0)
                 {
-                    vitalvm = new PatientCaseVitalsVM();
-                    vitalvm.PatientCaseId = vital.PatientCaseId;
-                    vitalvm.VitalId = vital.VitalId;
-                    vitalvm.Value = vital.Value;
-                    vitalvm.VitalName = vital.Vital.Vital;
-                    vitalvm.Date = vital.Date;
-                    vitalvm.Id = vital.Vital.Id;
-                    vitals.Add(vitalvm);
+                    List<PatientCaseVitalsVM> vitals = new List<PatientCaseVitalsVM>();
+                    PatientCaseVitalsVM vitalvm;
+                    var vitalMasters = _teleMedecineContext.PatientCaseVitals
+                        .Include(a => a.Vital)
+                        .Include(p => p.PatientCase)
+                        .Where(a => a.PatientCase.PatientId == PatientID).ToList();
+                    foreach (var vital in vitalMasters)
+                    {
+                        vitalvm = new PatientCaseVitalsVM();
+                        vitalvm.PatientCaseId = vital.PatientCaseId;
+                        vitalvm.VitalId = vital.VitalId;
+                        vitalvm.Value = vital.Value;
+                        vitalvm.VitalName = vital.Vital.Vital;
+                        vitalvm.Date = vital.Date;
+                        vitalvm.Id = vital.Vital.Id;
+                        vitals.Add(vitalvm);
+                    }
+
+                    var phcresult = await (from pm in _teleMedecineContext.PatientMasters
+                                           where pm.Id == PatientID && pm.Phcid == PHCID
+                                           join pc in _teleMedecineContext.PatientCases on pm.Id equals pc.PatientId into pcase
+                                           from pcdet in pcase.DefaultIfEmpty()
+                                           join pd in _teleMedecineContext.PatientCaseDocuments on pcdet.Id equals pd.PatientCaseId into pdoc
+                                           from pcdoc in pdoc.DefaultIfEmpty()
+                                           select new PatientCaseVM
+                                           {
+                                               PatientID = pm.Id,
+                                               PHCId = PHCID,
+                                               PHCUserId = pm.CreatedBy,
+                                               patientMaster = _mapper.Map<PatientMasterDTO>(pm),
+                                               patientCase = _mapper.Map<PatientCaseDTO>(pcdet),
+                                               vitals = vitals,
+                                               caseDocuments = _mapper.Map<PatientCaseDocDTO>(pcdoc)
+
+                                           }).FirstOrDefaultAsync();
+
+                    patientCase = (PatientCaseVM)phcresult;
+                    patientCase.patientMaster.Age = UtilityMaster.GetAgeOfPatient(_teleMedecineContext.PatientMasters.FirstOrDefault(p => p.Id == PatientID && p.Phcid == PHCID).Dob);
                 }
 
-                var phcresult = await (from pm in _teleMedecineContext.PatientMasters
-                                       where pm.Id == PatientID && pm.Phcid == PHCID
-                                       join pc in _teleMedecineContext.PatientCases on pm.Id equals pc.PatientId into pcase
-                                       from pcdet in pcase.DefaultIfEmpty()
-                                       join pd in _teleMedecineContext.PatientCaseDocuments on pcdet.Id equals pd.PatientCaseId into pdoc
-                                       from pcdoc in pdoc.DefaultIfEmpty()
-                                       select new PatientCaseVM
-                                       {
-                                           PatientID = pm.Id,
-                                           PHCId = PHCID,
-                                           PHCUserId = pm.CreatedBy,
-                                           patientMaster = _mapper.Map<PatientMasterDTO>(pm),
-                                           patientCase = _mapper.Map<PatientCaseDTO>(pcdet),
-                                           vitals = vitals,
-                                           caseDocuments = _mapper.Map<PatientCaseDocDTO>(pcdoc)
-
-                                       }).FirstOrDefaultAsync();
-
-                patientCase = (PatientCaseVM)phcresult;
             }
+            catch (Exception ex)
+            {
+                string exMessage = ex.Message;
+                
+            }          
 
             return patientCase;
         }
@@ -183,6 +195,8 @@ namespace TechMed.BL.Repository.BaseClasses
 
                     patientCaseQueue = (PatientCaseWithDoctorVM)patientCaseQueueresult;
 
+                    patientCaseQueue.patientMaster.Age = UtilityMaster.GetAgeOfPatient(_teleMedecineContext.PatientMasters.FirstOrDefault(p => p.Id == PatientID && p.Phcid == PHCID).Dob);
+
                     patientCaseMedicines = _teleMedecineContext.PatientCaseMedicines.Where(a => a.PatientCaseId == patientCaseQueue.PatientCaseID).ToList();
                     foreach (var item in patientCaseMedicines)
                     {
@@ -221,7 +235,7 @@ namespace TechMed.BL.Repository.BaseClasses
             PatientCaseDetailsVM patientcasecreateVM = new PatientCaseDetailsVM();
             PatientCase patientCase;
             PatientCaseVital patientCaseVital;
-            PatientCaseDocument patientCaseDocument;
+            //PatientCaseDocument patientCaseDocument;
             int i = 0;
             int j = 0;
             int k = 0;
@@ -303,29 +317,29 @@ namespace TechMed.BL.Repository.BaseClasses
                                     patientCaseVital.Value = vital.Value;
                                     this._teleMedecineContext.Entry(patientCaseVital).State = EntityState.Added;
                                     k = await this.Context.SaveChangesAsync();
-                                    if (k > 0)
-                                    {
-                                        _logger.LogInformation($"Patient vital added : sucessfully {patientCase.Id}");
-                                    }
+                                    //if (k > 0)
+                                    //{
+                                    //    _logger.LogInformation($"Patient vital added : sucessfully {patientCase.Id}");
+                                    //}
                                 }
 
                                 patientcasecreateVM.vitals = patientCaseVM.vitals;
-                                foreach (var doc in patientCaseVM.caseDocuments)
-                                {
-                                    l = 0;
-                                    patientCaseDocument = new PatientCaseDocument();
-                                    patientCaseDocument = _mapper.Map<PatientCaseDocument>(doc);
-                                    this._teleMedecineContext.Entry(patientCaseDocument).State = EntityState.Added;
-                                    l = await this.Context.SaveChangesAsync();
+                                //foreach (var doc in patientCaseVM.caseDocuments)
+                                //{
+                                //    l = 0;
+                                //    patientCaseDocument = new PatientCaseDocument();
+                                //    patientCaseDocument = _mapper.Map<PatientCaseDocument>(doc);
+                                //    this._teleMedecineContext.Entry(patientCaseDocument).State = EntityState.Added;
+                                //    l = await this.Context.SaveChangesAsync();
 
-                                    PatientCaseDocDTO docDTO = _mapper.Map<PatientCaseDocDTO>(patientCaseDocument);
-                                    caseDocumentsList.Add(docDTO);
-                                }
-                                if (l > 0)
-                                {
-                                    _logger.LogInformation($"Patient case document added : sucessfully {patientCase.Id}");
-                                }
-                                patientcasecreateVM.caseDocuments = caseDocumentsList;
+                                //    PatientCaseDocDTO docDTO = _mapper.Map<PatientCaseDocDTO>(patientCaseDocument);
+                                //    caseDocumentsList.Add(docDTO);
+                                //}
+                                //if (l > 0)
+                                //{
+                                //    _logger.LogInformation($"Patient case document added : sucessfully {patientCase.Id}");
+                                //}
+                                //patientcasecreateVM.caseDocuments = caseDocumentsList;
 
                                 patientcasecreateVM.PatientID = patientCaseVM.PatientID;
                                 patientcasecreateVM.PHCUserId = patientCaseVM.PHCUserId;
@@ -492,6 +506,96 @@ namespace TechMed.BL.Repository.BaseClasses
             }
 
             return patientCaseQue;
+        }
+
+        public string SaveDocument(IFormFile file, string rootPath)
+        {
+            string contentRootPath = rootPath;
+            string path = @"\\MyStaticFiles\\CaseDocuments\\";          
+            path = contentRootPath + path;
+
+            //Create     
+
+            var myfilename = string.Format(@"{0}", Guid.NewGuid());
+
+            //myfilename = myfilename + file.FileName;
+            //Generate unique filename
+          
+                var fileType = Path.GetExtension(file.FileName);
+               
+                if (fileType.ToLower() == ".pdf" || fileType.ToLower() == ".jpg" || fileType.ToLower() == ".png" || fileType.ToLower() == ".jpeg")
+                {
+                    var filePath = Path.Combine(path, file.FileName);
+                    //FileInfo fileInfo = new FileInfo(filePath);
+                    //fileInfo.Create();
+                    using (Stream stream = new FileStream(filePath, FileMode.Create))
+                    {
+                         file.CopyToAsync(stream);
+
+                        //FileStream fileStream = File.Create(filePath, (int)stream.Length);
+                        //// Initialize the bytes array with the stream length and then fill it with data
+                        //byte[] bytesInStream = new byte[stream.Length];
+                        //stream.Read(bytesInStream, 0, bytesInStream.Length);
+                        //// Use write method to write to the file specified above
+                        //fileStream.Write(bytesInStream, 0, bytesInStream.Length);
+                        ////Close the filestream
+                        //fileStream.Close();
+                    }
+                }
+                return file.FileName;
+          
+            
+            //myfilename = myfilename + ".pdf";
+           
+        }
+
+        public bool SaveCaseDocument(List<CaseDocumentVM> caseDocuments, string contentRootPath)
+        {
+            PatientCaseDocument patientCaseDocument  ;
+            //List<PatientCaseDocDTO> patientCaseDocuments = new List<PatientCaseDocDTO>();
+            int l = 0;
+            string path = @"\\MyStaticFiles\\CaseDocuments\\";
+            if (caseDocuments != null)
+            {              
+                foreach (var doc in caseDocuments)
+                {
+                    if(doc.file.Length >0)
+                    {
+                        l = 0;
+                        string fileName = SaveDocument(doc.file, contentRootPath);
+                        string fullPath = Path.Combine(path, fileName);
+                        patientCaseDocument = new PatientCaseDocument();
+                        patientCaseDocument.PatientCaseId = doc.patientCaseId;
+                        patientCaseDocument.DocumentPath = fullPath;
+                        patientCaseDocument.DocumentName = doc.name;
+                        patientCaseDocument.Description = doc.file.Name + " , " + doc.file.Length;
+
+
+                        this._teleMedecineContext.Entry(patientCaseDocument).State = EntityState.Added;
+                        l = this.Context.SaveChanges();                      
+                    }
+                   
+
+                    //l = await this.Context.SaveChangesAsync();
+                    //PatientCaseDocDTO docDTO = _mapper.Map<PatientCaseDocDTO>(patientCaseDocument);
+                    //patientCaseDocuments.Add(docDTO);
+                }
+                if (l > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+
+
+            }
+            else
+            {
+                return false;
+            }
+
         }
     }
 

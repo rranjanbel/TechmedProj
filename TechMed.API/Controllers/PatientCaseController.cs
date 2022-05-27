@@ -17,11 +17,13 @@ namespace TechMed.API.Controllers
         private readonly IMapper _mapper;
         private readonly IPatientCaseRepository _patientCaeRepository;
         private readonly ILogger<PatientCaseController> _logger;
-        public PatientCaseController(IMapper mapper, TeleMedecineContext teleMedecineContext, IPatientCaseRepository patientCaeRepository, ILogger<PatientCaseController> logger)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        public PatientCaseController(IMapper mapper, TeleMedecineContext teleMedecineContext, IPatientCaseRepository patientCaeRepository, ILogger<PatientCaseController> logger, IWebHostEnvironment webHostEnvironment)
         {
             this._mapper = mapper;
             this._patientCaeRepository = patientCaeRepository;
             this._logger = logger;
+            this._webHostEnvironment = webHostEnvironment;
         }
         [HttpPost]
         [Route("CreatePatientCase")]
@@ -290,6 +292,54 @@ namespace TechMed.API.Controllers
                 ModelState.AddModelError("PostFeedback", $"Something went wrong when add patient feedback {ex.Message}");
                 return StatusCode(500, ModelState);
             }
+        }
+
+        [HttpPost]
+        [Route("UploadCaseDoc")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UploadCaseDoc([FromForm] List<CaseDocumentVM> caseDocumentVM)
+        {
+            bool status = false;
+            string contentRootPath = _webHostEnvironment.ContentRootPath;
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    ModelState.AddModelError("UploadCaseDoc", "Please check did not get data");
+                    return BadRequest(ModelState);
+                }
+                else
+                {
+                    if(caseDocumentVM != null)
+                    {
+                        status = _patientCaeRepository.SaveCaseDocument(caseDocumentVM, contentRootPath);
+                        if (status)
+                        {
+                            return Ok();
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("UploadCaseDoc", "File did not save.");
+                            return BadRequest(ModelState);
+                        }
+                        // return Ok();
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("UploadCaseDoc", "Model has null value.");
+                        return BadRequest(ModelState);
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError("UploadCaseDoc", $"Something went wrong when uplod file {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+           
         }
     }
 }

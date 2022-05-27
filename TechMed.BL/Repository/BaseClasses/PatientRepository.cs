@@ -535,6 +535,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 searchResult.Gender = item.Gender;
                 searchResult.Age = item.Age;
                 searchResult.PhoneNumber = item.PhoneNumber;
+                searchResult.ID = item.ID;
                 patientSearchResults.Add(searchResult);
             };
             return patientSearchResults;
