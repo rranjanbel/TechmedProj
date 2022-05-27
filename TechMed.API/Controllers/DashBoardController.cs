@@ -578,5 +578,77 @@ namespace TechMed.API.Controllers
 
         }
 
+
+
+        [HttpGet]
+        [Route("GetDashboardSpokeMaintenance")]
+        [ProducesResponseType(200, Type = typeof(List<GetDashboardSpokeMaintenanceVM>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult GetDashboardSpokeMaintenance(DateTime? fromDate = null, DateTime? toDate = null)
+        {
+            List<GetDashboardSpokeMaintenanceVM> patientResiter = new List<GetDashboardSpokeMaintenanceVM>();
+            DateTime? fromDateUtc = null;
+            if (fromDate != null)
+                fromDateUtc = fromDate.Value;
+            DateTime? toDateUtc = null;
+            if (toDate != null)
+                toDateUtc = toDate.Value;
+            try
+            {
+                patientResiter = _dashBoardRepository.GetDashboardSpokeMaintenance(fromDateUtc, toDateUtc);
+                if (patientResiter != null)
+                {
+                    return Ok(patientResiter);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetDashboardSpokeMaintenance", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("GetDashboardSpokeMaintenance", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+
+        }
+
+        [HttpGet]
+        [Route("GetDashboardEmployeeFeedback")]
+        [ProducesResponseType(200, Type = typeof(List<GetDashboardEmployeeFeedbackVM>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult GetDashboardEmployeeFeedback(DateTime? fromDate = null, DateTime? toDate = null)
+        {
+            List<GetDashboardEmployeeFeedbackVM> patientResiter = new List<GetDashboardEmployeeFeedbackVM>();
+            DateTime? fromDateUtc = null;
+            if (fromDate != null)
+                fromDateUtc = fromDate.Value;
+            DateTime? toDateUtc = null;
+            if (toDate != null)
+                toDateUtc = toDate.Value;
+            try
+            {
+                patientResiter = _dashBoardRepository.GetDashboardEmployeeFeedback(fromDateUtc, toDateUtc);
+                if (patientResiter != null)
+                {
+                    return Ok(patientResiter);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetDashboardEmployeeFeedback", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("GetDashboardEmployeeFeedback", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+
+        }
+
     }
 }

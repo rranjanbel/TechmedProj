@@ -538,5 +538,68 @@ namespace TechMed.BL.Repository.BaseClasses
             return registerPatientReports;
         }
 
+        public List<GetDashboardSpokeMaintenanceVM> GetDashboardSpokeMaintenance(DateTime? fromDate, DateTime? toDate)
+        {
+            List<GetDashboardSpokeMaintenanceVM> registerPatientReports = new List<GetDashboardSpokeMaintenanceVM>();
+            GetDashboardSpokeMaintenanceVM registerPatientReport;
+            try
+            {
+                var Results = _teleMedecineContext.GetDashboardSpokeMaintenance.FromSqlInterpolated($"EXEC [dbo].[GetDashboardSpokeMaintenance] @FromDate ={fromDate}, @ToDate ={toDate}");
+                foreach (var item in Results)
+                {
+                    registerPatientReport = new GetDashboardSpokeMaintenanceVM();
+                    registerPatientReport.SrNo = item.SrNo;
+                    registerPatientReport.DistrictName = item.DistrictName;
+                    registerPatientReport.BlockName = item.BlockName;
+                    registerPatientReport.PHCName = item.PHCName;
+                    registerPatientReport.DC = item.DC;
+                    registerPatientReport.Date = item.Date;
+                    registerPatientReport.FilePath = item.FilePath;
+                    registerPatientReports.Add(registerPatientReport);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
+            }
+
+
+            return registerPatientReports;
+        }
+
+        public List<GetDashboardEmployeeFeedbackVM> GetDashboardEmployeeFeedback(DateTime? fromDate, DateTime? toDate)
+        {
+            List<GetDashboardEmployeeFeedbackVM> registerPatientReports = new List<GetDashboardEmployeeFeedbackVM>();
+            GetDashboardEmployeeFeedbackVM registerPatientReport;
+            try
+            {
+                var Results = _teleMedecineContext.GetDashboardEmployeeFeedback.FromSqlInterpolated($"EXEC [dbo].[GetDashboardEmployeeFeedback] @FromDate ={fromDate}, @ToDate ={toDate}");
+                foreach (var item in Results)
+                {
+                    registerPatientReport = new GetDashboardEmployeeFeedbackVM();
+                    registerPatientReport.SrNo = item.SrNo;
+                    registerPatientReport.DistrictName = item.DistrictName;
+                    registerPatientReport.BlockName = item.BlockName;
+                    registerPatientReport.PHCName = item.PHCName;
+                    registerPatientReport.EmployeeName = item.EmployeeName;
+                    registerPatientReport.TrainingSubject = item.TrainingSubject;
+                    registerPatientReport.TrainingBy = item.TrainingBy;
+                    registerPatientReport.TraingDate = item.TraingDate;
+                    registerPatientReport.EmployeeFeedback = item.EmployeeFeedback;
+                   
+                    registerPatientReports.Add(registerPatientReport);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
+            }
+
+
+            return registerPatientReports;
+        }
+
     }
 }

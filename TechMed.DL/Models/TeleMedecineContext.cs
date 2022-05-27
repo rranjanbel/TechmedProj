@@ -88,6 +88,8 @@ namespace TechMed.DL.Models
         public virtual DbSet<RegisterPatientVM> RegisterPatientReports { get; set; } = null!;
         public virtual DbSet<GetReferredPatientVM> ReferredPatientReports { get; set; } = null!;
         public virtual DbSet<GetReviewPatientVM> ReviewPatientReport { get; set; } = null!;
+        public virtual DbSet<GetDashboardSpokeMaintenanceVM> GetDashboardSpokeMaintenance { get; set; } = null!;
+        public virtual DbSet<GetDashboardEmployeeFeedbackVM> GetDashboardEmployeeFeedback { get; set; } = null!;
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

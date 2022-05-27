@@ -28,5 +28,9 @@ namespace TechMed.BL.Repository.Interfaces
 
         List<GetReferredPatientVM> GetReferredPatientReport(DateTime? fromDate, DateTime? toDate);
         List<GetReviewPatientVM> GetReviewPatientReport(DateTime? fromDate, DateTime? toDate);
+
+        List<GetDashboardSpokeMaintenanceVM> GetDashboardSpokeMaintenance(DateTime? fromDate, DateTime? toDate);
+        List<GetDashboardEmployeeFeedbackVM> GetDashboardEmployeeFeedback(DateTime? fromDate, DateTime? toDate);
+
     }
 }
