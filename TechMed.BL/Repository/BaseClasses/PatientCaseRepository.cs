@@ -604,7 +604,6 @@ namespace TechMed.BL.Repository.BaseClasses
 
         }
 
-
         public async Task<PatientCaseVM> GetPatientCaseDetailsByCaseID(int PatientCaseID)
         {
             PatientCaseVM patientCase = new PatientCaseVM();
@@ -615,7 +614,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 {
                     List<PatientCaseVitalsVM> vitals = new List<PatientCaseVitalsVM>();
                     PatientCaseVitalsVM vitalvm;
-                    var patientCaseDetails = _teleMedecineContext.PatientCases.Include(a => a.Patient).Include(a => a.PatientCaseDocuments).Include(a => a.PatientCaseVitals).ThenInclude(a => a.Vital).FirstOrDefault(a => a.Id == PatientCaseID);
+                    var patientCaseDetails = _teleMedecineContext.PatientCases.Include(a => a.Patient).ThenInclude(a => a.Phc).Include(a => a.PatientCaseDocuments).Include(a => a.PatientCaseVitals).ThenInclude(a => a.Vital).FirstOrDefault(a => a.Id == PatientCaseID);
                     if (patientCaseDetails == null)
                     {
                         return null;
@@ -624,6 +623,8 @@ namespace TechMed.BL.Repository.BaseClasses
                     patientCase.PatientID = patientCaseDetails.Patient.Id;
                     patientCase.PHCId = patientCaseDetails.Patient.Id;
                     patientCase.PHCUserId = patientCaseDetails.Patient.CreatedBy;
+                    patientCase.PHCName = patientCaseDetails.Patient.Phc.Phcname;
+                    patientCase.PHCMoname = patientCaseDetails.Patient.Phc.Moname;
                     patientCase.patientMaster = _mapper.Map<PatientMasterDTO>(patientCaseDetails.Patient);
                     patientCase.patientCase = _mapper.Map<PatientCaseDTO>(patientCaseDetails);
                     patientCase.vitals = patientCaseDetails.PatientCaseVitals.Select(vitals => new PatientCaseVitalsVM()
@@ -680,6 +681,21 @@ namespace TechMed.BL.Repository.BaseClasses
 
             return patientCaseLevel;
 
+        }
+
+        public async Task<List<PatientCaseDocDTO>> GetPatientCaseDocList(int PatientCaseID)
+        {
+            PatientCaseDocDTO patientCaseDoc;
+            List<PatientCaseDocDTO> patientCaseDocs = new List<PatientCaseDocDTO>();
+            var resultDocList = await _teleMedecineContext.PatientCaseDocuments.Where(a => a.PatientCaseId == PatientCaseID).ToListAsync();
+            foreach (var item in resultDocList)
+            {
+                patientCaseDoc = new PatientCaseDocDTO();
+                patientCaseDoc = _mapper.Map<PatientCaseDocDTO>(item);
+                patientCaseDocs.Add(patientCaseDoc);
+
+            }
+            return patientCaseDocs;
         }
     }
 

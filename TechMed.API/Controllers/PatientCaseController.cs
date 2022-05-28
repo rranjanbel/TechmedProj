@@ -345,6 +345,40 @@ namespace TechMed.API.Controllers
         }
 
         [HttpGet]
+        [Route("GetPatientCaseDocList")]
+        [ProducesResponseType(200, Type = typeof(List<PatientCaseDocDTO>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetPatientCaseDocList(int PatientCaseID = 0)
+        {
+            List<PatientCaseDocDTO> caseDocList = new List<PatientCaseDocDTO>();
+            try
+            {
+                if (PatientCaseID == 0)
+                {
+                    ModelState.AddModelError("GetPatientCaseDocList", "Please provide patient case Id");
+                    return StatusCode(404, ModelState);
+                }
+                caseDocList = await _patientCaeRepository.GetPatientCaseDocList(PatientCaseID);
+                if (caseDocList != null)
+                {
+                    return StatusCode(200, caseDocList);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetPatientCaseDocList", $"Something went wrong when get patient case {PatientCaseID}");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError("GetPatientCaseDocList", $"Something went wrong when get patient case {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
+
+        [HttpGet]
         [Route("GetPatientCaseDetailsByCaseID")]
         [ProducesResponseType(200, Type = typeof(PatientCaseVM))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

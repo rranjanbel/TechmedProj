@@ -21,6 +21,8 @@ namespace TechMed.BL.ViewModels
         public int? PHCUserId { get; set; }
         public int PHCId { get; set; }
         public int PatientID { get; set; }
+        public string PHCName { get; set; }
+        public string PHCMoname { get; set; }
         public PatientMasterDTO patientMaster { get; set; }
         public PatientCaseDTO patientCase { get; set; }
         public List<PatientCaseVitalsVM> vitals { get; set; }
