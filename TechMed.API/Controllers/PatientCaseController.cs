@@ -341,7 +341,7 @@ namespace TechMed.API.Controllers
                 ModelState.AddModelError("UploadCaseDoc", $"Something went wrong when uplod file {ex.Message}");
                 return StatusCode(500, ModelState);
             }
-           
+
         }
 
         [HttpGet]
@@ -374,6 +374,40 @@ namespace TechMed.API.Controllers
             {
 
                 ModelState.AddModelError("GetPatientCaseDetails", $"Something went wrong when get patient case {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+        }
+
+        [HttpGet]
+        [Route("GetPatientCaseLevels")]
+        [ProducesResponseType(200, Type = typeof(PatientCaseLevelDTO))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetPatientCaseLevels(int PatientID = 0)
+        {
+            PatientCaseLevelDTO patientcase = new PatientCaseLevelDTO();
+            try
+            {
+                if (PatientID == 0)
+                {
+                    ModelState.AddModelError("GetPatientCaseLevels", "Please provide patient case Id");
+                    return StatusCode(404, ModelState);
+                }
+                patientcase = await _patientCaeRepository.GetPatientCaseLevels(PatientID);
+                if (patientcase != null)
+                {
+                    return StatusCode(200, patientcase);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetPatientCaseLevels", $"Something went wrong when get patient case {PatientID}");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError("GetPatientCaseLevels", $"Something went wrong when get patient case {ex.Message}");
                 return StatusCode(500, ModelState);
             }
         }

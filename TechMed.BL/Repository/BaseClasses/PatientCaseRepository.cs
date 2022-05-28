@@ -615,7 +615,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 {
                     List<PatientCaseVitalsVM> vitals = new List<PatientCaseVitalsVM>();
                     PatientCaseVitalsVM vitalvm;
-                    var patientCaseDetails = _teleMedecineContext.PatientCases.Include(a => a.Patient).Include(a => a.PatientCaseDocuments).Include(a => a.PatientCaseVitals).FirstOrDefault(a => a.Id == PatientCaseID);
+                    var patientCaseDetails = _teleMedecineContext.PatientCases.Include(a => a.Patient).Include(a => a.PatientCaseDocuments).Include(a => a.PatientCaseVitals).ThenInclude(a => a.Vital).FirstOrDefault(a => a.Id == PatientCaseID);
                     if (patientCaseDetails == null)
                     {
                         return null;
@@ -657,7 +657,30 @@ namespace TechMed.BL.Repository.BaseClasses
             return patientCase;
         }
 
- 
+        public async Task<PatientCaseLevelDTO> GetPatientCaseLevels(int patientID)
+        {
+            PatientCaseLevelDTO patientCaseLevel = new PatientCaseLevelDTO();
+            List<GetCaseLabelDTO> getCaseLabelDTOs = new List<GetCaseLabelDTO>();
+            var patientCaseLevels = await _teleMedecineContext.PatientCases.Where(a => a.PatientId == patientID).ToListAsync();
+
+            foreach (var item in patientCaseLevels)
+            {
+                getCaseLabelDTOs.Add(new GetCaseLabelDTO
+                {
+                    CaseDateTime = item.CreatedOn,
+                    CaseLabel = item.CaseHeading,
+                    CaseID = item.Id
+                });
+            }
+
+            patientCaseLevel.caseLabelDTOs = getCaseLabelDTOs;
+            var patientMaster = _teleMedecineContext.PatientMasters.FirstOrDefault(a => a.Id == patientID);
+            patientCaseLevel.patientMaster = _mapper.Map<PatientMasterDTO>(patientMaster) ;
+            patientCaseLevel.patientMaster.Age = UtilityMaster.GetAgeOfPatient(patientCaseLevel.patientMaster.Dob);
+
+            return patientCaseLevel;
+
+        }
     }
 
 }
