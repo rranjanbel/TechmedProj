@@ -603,6 +603,61 @@ namespace TechMed.BL.Repository.BaseClasses
             }
 
         }
+
+
+        public async Task<PatientCaseVM> GetPatientCaseDetailsByCaseID(int PatientCaseID)
+        {
+            PatientCaseVM patientCase = new PatientCaseVM();
+            try
+            {
+
+                if (PatientCaseID > 0)
+                {
+                    List<PatientCaseVitalsVM> vitals = new List<PatientCaseVitalsVM>();
+                    PatientCaseVitalsVM vitalvm;
+                    var patientCaseDetails = _teleMedecineContext.PatientCases.Include(a => a.Patient).Include(a => a.PatientCaseDocuments).Include(a => a.PatientCaseVitals).FirstOrDefault(a => a.Id == PatientCaseID);
+                    if (patientCaseDetails == null)
+                    {
+                        return null;
+                    }
+
+                    patientCase.PatientID = patientCaseDetails.Patient.Id;
+                    patientCase.PHCId = patientCaseDetails.Patient.Id;
+                    patientCase.PHCUserId = patientCaseDetails.Patient.CreatedBy;
+                    patientCase.patientMaster = _mapper.Map<PatientMasterDTO>(patientCaseDetails.Patient);
+                    patientCase.patientCase = _mapper.Map<PatientCaseDTO>(patientCaseDetails);
+                    patientCase.vitals = patientCaseDetails.PatientCaseVitals.Select(vitals => new PatientCaseVitalsVM()
+                    {
+                        PatientCaseId = vitals.PatientCaseId,
+                        VitalId = vitals.VitalId,
+                        Value = vitals.Value,
+                        VitalName = vitals.Vital.Vital,
+                        Date = vitals.Date,
+                        Id = vitals.Vital.Id
+                    }).ToList();
+                    patientCase.caseDocumentList = patientCaseDetails.PatientCaseDocuments.Select(doc => new PatientCaseDocDTO()
+                    {
+                        DocumentName = doc.DocumentName,
+                        DocumentPath = doc.DocumentPath,
+                        Description = doc.Description,
+                        Id = doc.Id,
+                        PatientCaseId = doc.PatientCaseId
+                    }).ToList();
+                    patientCase.patientMaster.Age = UtilityMaster.GetAgeOfPatient(patientCase.patientMaster.Dob);
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                string exMessage = ex.Message;
+
+            }
+
+            return patientCase;
+        }
+
+ 
     }
 
 }
