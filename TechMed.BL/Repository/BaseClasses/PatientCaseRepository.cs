@@ -615,39 +615,37 @@ namespace TechMed.BL.Repository.BaseClasses
                     List<PatientCaseVitalsVM> vitals = new List<PatientCaseVitalsVM>();
                     PatientCaseVitalsVM vitalvm;
                     var patientCaseDetails = _teleMedecineContext.PatientCases.Include(a => a.Patient).ThenInclude(a => a.Phc).Include(a => a.PatientCaseDocuments).Include(a => a.PatientCaseVitals).ThenInclude(a => a.Vital).FirstOrDefault(a => a.Id == PatientCaseID);
-                    // var pattientQuue = _teleMedecineContext.DoctorMasters.Include(a => a.PatientQueues).Include(s => s.Specialization).Include(b => b.User).ThenInclude(c => c.UserDetailUsers).Where(x => x.PatientQueues.Any()).FirstOrDefault(x => x.Id == PatientCaseID);
-                    var patientCaseQueueresult = await (from pc in _teleMedecineContext.PatientCases where pc.Id == PatientCaseID
-                                                        join pq in _teleMedecineContext.PatientQueues on pc.Id equals pq.PatientCaseId into pque
-                                                        from pques in pque.DefaultIfEmpty()
-                                                        join dm in _teleMedecineContext.DoctorMasters on pques.AssignedDoctorId equals dm.Id into doc
-                                                        from doct in doc.DefaultIfEmpty()
-                                                        join du in _teleMedecineContext.UserMasters on doct.UserId equals du.Id into user
-                                                        from usr in user.DefaultIfEmpty()
-                                                        join ud in _teleMedecineContext.UserDetails on usr.Id equals ud.UserId into udet
-                                                        from userdet in udet.DefaultIfEmpty()
-                                                        join cs in _teleMedecineContext.CaseFileStatusMasters on pques.CaseFileStatusId equals cs.Id into cfs
-                                                        from cfsm in cfs.DefaultIfEmpty()
-                                                        join sp in _teleMedecineContext.SpecializationMasters on doct.SpecializationId equals sp.Id into spm
-                                                        from sepm in spm.DefaultIfEmpty()
-                                                            //join pcm in _teleMedecineContext.PatientCaseMedicines on pcdet.Id equals pcm.PatientCaseId into pcmed
-                                                            //from pcmedicine in pcmed.DefaultIfEmpty()
-                                                        select new PatientCaseQueueVM
-                                                        {                                                           
+                    var pattientQuue = _teleMedecineContext.PatientQueues.Include(a => a.AssignedDoctor).ThenInclude(s => s.User).ThenInclude(c => c.UserDetailUsers).FirstOrDefault(x => x.PatientCaseId == PatientCaseID);
+                    //var patientCaseQueueresult = await (from pc in _teleMedecineContext.PatientCases where pc.Id == PatientCaseID
+                    //                                    join pq in _teleMedecineContext.PatientQueues on pc.Id equals pq.PatientCaseId into pque
+                    //                                    from pques in pque.DefaultIfEmpty()
+                    //                                    join dm in _teleMedecineContext.DoctorMasters on pques.AssignedDoctorId equals dm.Id into doc
+                    //                                    from doct in doc.DefaultIfEmpty()
+                    //                                    join du in _teleMedecineContext.UserMasters on doct.UserId equals du.Id into user
+                    //                                    from usr in user.DefaultIfEmpty()
+                    //                                    join ud in _teleMedecineContext.UserDetails on usr.Id equals ud.UserId into udet
+                    //                                    from userdet in udet.DefaultIfEmpty()
+                    //                                    join cs in _teleMedecineContext.CaseFileStatusMasters on pques.CaseFileStatusId equals cs.Id into cfs
+                    //                                    from cfsm in cfs.DefaultIfEmpty()
+                    //                                    join sp in _teleMedecineContext.SpecializationMasters on doct.SpecializationId equals sp.Id into spm
+                    //                                    from sepm in spm.DefaultIfEmpty()                                                        
+                    //                                    select new PatientCaseQueueVM
+                    //                                    {                                                           
                                                            
-                                                                PatientCaseID = pc.Id,
-                                                                DoctorID = pques.AssignedDoctorId,
-                                                                DocterName = userdet.FirstName + " " + userdet.LastName,
-                                                                CaseFileStatusID = pques.CaseFileStatusId,
-                                                                CaseStatus = cfsm.FileStatus,
-                                                                AssignedBy = pques.AssignedBy,
-                                                                AssigneeName = "",
-                                                                AssignedOn = pques.AssignedOn,
-                                                                Qualification = doct.Qualification,
-                                                                Specialization = sepm.Specialization,
-                                                                StatusOn = pques.StatusOn,
-                                                                PhoneNo = doct.PhoneNumber,
-                                                                DrImagePath = userdet.Photo
-                                                        }).FirstOrDefaultAsync();
+                    //                                            PatientCaseID = pc.Id,
+                    //                                            DoctorID = pques.AssignedDoctorId,
+                    //                                            DocterName = userdet.FirstName + " " + userdet.LastName,
+                    //                                            CaseFileStatusID = pques.CaseFileStatusId,
+                    //                                            CaseStatus = cfsm.FileStatus,
+                    //                                            AssignedBy = pques.AssignedBy,
+                    //                                            AssigneeName = "",
+                    //                                            AssignedOn = pques.AssignedOn,
+                    //                                            Qualification = doct.Qualification,
+                    //                                            Specialization = sepm.Specialization,
+                    //                                            StatusOn = pques.StatusOn,
+                    //                                            PhoneNo = doct.PhoneNumber,
+                    //                                            DrImagePath = userdet.Photo
+                    //                                    }).FirstOrDefaultAsync();
 
                     
                     if (patientCaseDetails == null)
@@ -662,9 +660,19 @@ namespace TechMed.BL.Repository.BaseClasses
                     patientCase.PHCMoname = patientCaseDetails.Patient.Phc.Moname;
                     patientCase.patientMaster = _mapper.Map<PatientMasterDTO>(patientCaseDetails.Patient);
                     patientCase.patientCase = _mapper.Map<PatientCaseDTO>(patientCaseDetails);
-                    patientCase.DoctorName = patientCaseQueueresult.DocterName;
-                    patientCase.DoctorMobileNo = patientCaseQueueresult.PhoneNo;
-                    patientCase.DoctorSpecialization = patientCaseQueueresult.Specialization;
+                    if(pattientQuue !=null)
+                    {
+                        patientCase.DoctorName = pattientQuue.AssignedDoctor.User.Name;
+                        patientCase.DoctorMobileNo = pattientQuue.AssignedDoctor.PhoneNumber;
+                        patientCase.DoctorSpecialization = pattientQuue.AssignedDoctor.Specialization.Specialization;
+                    }
+                    else
+                    {
+                        patientCase.DoctorName = String.Empty;
+                        patientCase.DoctorMobileNo = String.Empty;
+                        patientCase.DoctorSpecialization = String.Empty;
+                    }
+                    
 
                     patientCase.vitals = patientCaseDetails.PatientCaseVitals.Select(vitals => new PatientCaseVitalsVM()
                     {

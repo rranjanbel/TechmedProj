@@ -10,9 +10,7 @@ namespace TechMed.DL.ViewModel
     public class TreatmentVM
     {
         [Required]
-        public long PatientCaseID { get; set; }
-        [Required]
-        public string Diagnosis { get; set; }
+        public long PatientCaseID { get; set; }    
         //[Required]
         public string Instruction { get; set; }
         //[Required]
@@ -21,8 +19,12 @@ namespace TechMed.DL.ViewModel
         public string Findings { get; set; }
         [Required]
         public string Prescription { get; set; }
-        
+        public string? SuggestedDiagnosis { get; set; }
+        public string? ProvisionalDiagnosis { get; set; }
+        public string? ReferredTo { get; set; }
+
         public List<MedicineVM> medicineVMs { get; set; }
+       
         public TreatmentVM()
         {
             medicineVMs = new List<MedicineVM>();

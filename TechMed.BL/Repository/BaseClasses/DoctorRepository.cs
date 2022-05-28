@@ -436,14 +436,17 @@ namespace TechMed.BL.Repository.BaseClasses
                 patientQueue.CaseFileStatusId = caseFileStatus.Id;
                 patientQueue.StatusOn = DateTime.Now;
 
-                var patientCase = patientQueue.PatientCase;
-                patientCase.SuggestedDiagnosis = treatmentVM.Diagnosis;
+                var patientCase = patientQueue.PatientCase;               
                 patientCase.Instruction = treatmentVM.Instruction;
                 patientCase.Test = treatmentVM.Test;
                 patientCase.Finding = treatmentVM.Findings;
                 patientCase.Prescription = treatmentVM.Prescription;
+                patientCase.SuggestedDiagnosis = treatmentVM.SuggestedDiagnosis;
+                patientCase.ProvisionalDiagnosis = treatmentVM.ProvisionalDiagnosis;
+                patientCase.ReferredTo = treatmentVM.ReferredTo;
                 //add in medicine 
                 //delete medicine
+
                 var patientCaseMedicine = await _teleMedecineContext.PatientCaseMedicines.Where(m => m.PatientCaseId == treatmentVM.PatientCaseID).ToListAsync();
                 foreach (var item in patientCaseMedicine)
                 {
