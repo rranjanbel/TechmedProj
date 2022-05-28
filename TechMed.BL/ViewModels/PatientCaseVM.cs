@@ -16,17 +16,21 @@ namespace TechMed.BL.ViewModels
             this.patientCase = new PatientCaseDTO();
             this.vitals = new List<PatientCaseVitalsVM>();
             this.caseDocuments = new PatientCaseDocDTO();
-            this.caseDocumentList = new List<PatientCaseDocDTO>();
+            this.caseDocumentList = new List<PatientCaseDocDTO>();           
         }
         public int? PHCUserId { get; set; }
         public int PHCId { get; set; }
         public int PatientID { get; set; }
         public string PHCName { get; set; }
         public string PHCMoname { get; set; }
+        public string DoctorName { get; set; }
+        public string DoctorMobileNo { get; set; }
+        public string DoctorSpecialization { get; set; }
         public PatientMasterDTO patientMaster { get; set; }
         public PatientCaseDTO patientCase { get; set; }
         public List<PatientCaseVitalsVM> vitals { get; set; }
         public PatientCaseDocDTO caseDocuments { get; set; }
         public List<PatientCaseDocDTO> caseDocumentList { get; set; }
+       
     }
 }
