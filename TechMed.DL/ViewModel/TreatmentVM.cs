@@ -4,17 +4,24 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TechMed.DL.Models;
+
 
 namespace TechMed.DL.ViewModel
 {
     public class TreatmentVM
     {
+        public TreatmentVM()
+        {
+            medicineVMs = new List<MedicineVM>();
+
+            PatientCaseDiagonostics = new List<PatientCaseDiagonisticTestVM>();
+        }
         [Required]
         public long PatientCaseID { get; set; }    
         //[Required]
         public string Instruction { get; set; }
-        //[Required]
-        public string Test { get; set; }
+      
         [Required]
         public string Findings { get; set; }
         [Required]
@@ -22,18 +29,15 @@ namespace TechMed.DL.ViewModel
         public string? SuggestedDiagnosis { get; set; }
         public string? ProvisionalDiagnosis { get; set; }
         public string? ReferredTo { get; set; }
-
         public List<MedicineVM> medicineVMs { get; set; }
+        public List<PatientCaseDiagonisticTestVM> PatientCaseDiagonostics { get; set; }
        
-        public TreatmentVM()
-        {
-            medicineVMs = new List<MedicineVM>();
-        }
+      
     }
     public class MedicineVM
     {
         [Required]
-        public string Medicine { get; set; }
+        public int DrugID { get; set; }
         [Required]
         public bool Morning { get; set; }
         [Required]
@@ -51,5 +55,12 @@ namespace TechMed.DL.ViewModel
         [Required]
         public bool TD { get; set; }
 
+    }
+
+    public class PatientCaseDiagonisticTestVM
+    {
+        public long Id { get; set; }
+        public long PatientCaseID { get; set; }
+        public int DiagonosticTestID { get; set; }       
     }
 }

@@ -5,6 +5,10 @@ namespace TechMed.DL.Models
 {
     public partial class DrugsMaster
     {
+        public DrugsMaster()
+        {
+            PatientCaseMedicines = new HashSet<PatientCaseMedicine>();
+        }
         public int Id { get; set; }
         public string? DrugCode { get; set; }
         public string? GroupOfDrug { get; set; }
@@ -20,5 +24,9 @@ namespace TechMed.DL.Models
         public int? CreatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
         public int? UpdatedBy { get; set; }
+
+        public virtual ICollection<PatientCaseMedicine> PatientCaseMedicines { get; set; }
+
+
     }
 }

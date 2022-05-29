@@ -71,6 +71,7 @@ namespace TechMed.DL.Models
         public virtual DbSet<UserUsertype> UserUsertypes { get; set; } = null!;
         public virtual DbSet<VideoCallTransaction> VideoCallTransactions { get; set; } = null!;
         public virtual DbSet<VitalMaster> VitalMasters { get; set; } = null!;
+        public virtual DbSet<PatientCaseDiagonosticTest> PatientCaseDiagonostics { get; set; } = null!;
 
         public virtual DbSet<SPResultGetPatientDetails> SPResultGetPatientDetails { get; set; } = null!;
         public virtual DbSet<SpecializationReportVM> SpecializationReport { get; set; } = null!;
@@ -895,15 +896,7 @@ namespace TechMed.DL.Models
 
                 entity.Property(e => e.Id).HasColumnName("ID");
 
-                entity.Property(e => e.Bd).HasColumnName("BD");
-
-                entity.Property(e => e.Dose)
-                    .HasMaxLength(500)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Medicine)
-                    .HasMaxLength(500)
-                    .IsUnicode(false);
+                entity.Property(e => e.Bd).HasColumnName("BD");              
 
                 entity.Property(e => e.Od).HasColumnName("OD");
 
@@ -916,6 +909,12 @@ namespace TechMed.DL.Models
                     .HasForeignKey(d => d.PatientCaseId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_PatientCaseMedicine_PatientCase");
+
+                entity.HasOne(d => d.Drugs)
+                   .WithMany(p => p.PatientCaseMedicines)
+                   .HasForeignKey(d => d.DrugMasterID)
+                   .OnDelete(DeleteBehavior.ClientSetNull)
+                   .HasConstraintName("FK_PatientCaseMedicine_DrugsMaster");
             });
 
             modelBuilder.Entity<PatientCasePrescriptionDelete>(entity =>
@@ -963,6 +962,31 @@ namespace TechMed.DL.Models
                     .HasForeignKey(d => d.VitalId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_PatientCaseVital_VitalMaster");
+            });
+
+            modelBuilder.Entity<PatientCaseDiagonosticTest>(entity =>
+            {
+                entity.ToTable("PatientCaseDiagonosticTest");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.CreatedOn).HasColumnType("CreatedOn");
+
+                entity.Property(e => e.PatientCaseID).HasColumnName("PatientCaseID");
+
+                entity.Property(e => e.DiagonosticTestID).HasColumnName("DiagonosticTestID");
+
+                entity.HasOne(d => d.PatientCase)
+                    .WithMany(p => p.PatientCaseDiagonostics)
+                    .HasForeignKey(d => d.PatientCaseID)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PatientCaseDiagonosticTest_PatientCase");
+
+                entity.HasOne(d => d.DiagnosticTest)
+                    .WithMany(p => p.PatientCaseDiagonostics)
+                    .HasForeignKey(d => d.DiagonosticTestID)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PatientCaseDiagonosticTest_DiagnosticTestMaster");
             });
 
             modelBuilder.Entity<PatientMaster>(entity =>

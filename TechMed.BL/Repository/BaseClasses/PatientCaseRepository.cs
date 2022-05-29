@@ -613,45 +613,67 @@ namespace TechMed.BL.Repository.BaseClasses
                 if (PatientCaseID > 0)
                 {
                     List<PatientCaseVitalsVM> vitals = new List<PatientCaseVitalsVM>();
+                    PatientCaseMedicineDTO pcaseMedicine;                   
+                    List<PatientCaseMedicineDTO> pcaseMedicineList = new List<PatientCaseMedicineDTO>();
+                    PatientCaseDiagnosisTestsVM patientCaseDiagnosis = new PatientCaseDiagnosisTestsVM();
+                    List<PatientCaseDiagnosisTestsVM> patientCaseDiagnosisList = new List<PatientCaseDiagnosisTestsVM>();
                     PatientCaseVitalsVM vitalvm;
                     var patientCaseDetails = _teleMedecineContext.PatientCases.Include(a => a.Patient).ThenInclude(a => a.Phc).Include(a => a.PatientCaseDocuments).Include(a => a.PatientCaseVitals).ThenInclude(a => a.Vital).FirstOrDefault(a => a.Id == PatientCaseID);
                     var pattientQuue = _teleMedecineContext.PatientQueues.Include(a => a.AssignedDoctor).ThenInclude(s => s.User).ThenInclude(c => c.UserDetailUsers).FirstOrDefault(x => x.PatientCaseId == PatientCaseID);
-                    //var patientCaseQueueresult = await (from pc in _teleMedecineContext.PatientCases where pc.Id == PatientCaseID
-                    //                                    join pq in _teleMedecineContext.PatientQueues on pc.Id equals pq.PatientCaseId into pque
-                    //                                    from pques in pque.DefaultIfEmpty()
-                    //                                    join dm in _teleMedecineContext.DoctorMasters on pques.AssignedDoctorId equals dm.Id into doc
-                    //                                    from doct in doc.DefaultIfEmpty()
-                    //                                    join du in _teleMedecineContext.UserMasters on doct.UserId equals du.Id into user
-                    //                                    from usr in user.DefaultIfEmpty()
-                    //                                    join ud in _teleMedecineContext.UserDetails on usr.Id equals ud.UserId into udet
-                    //                                    from userdet in udet.DefaultIfEmpty()
-                    //                                    join cs in _teleMedecineContext.CaseFileStatusMasters on pques.CaseFileStatusId equals cs.Id into cfs
-                    //                                    from cfsm in cfs.DefaultIfEmpty()
-                    //                                    join sp in _teleMedecineContext.SpecializationMasters on doct.SpecializationId equals sp.Id into spm
-                    //                                    from sepm in spm.DefaultIfEmpty()                                                        
-                    //                                    select new PatientCaseQueueVM
-                    //                                    {                                                           
-                                                           
-                    //                                            PatientCaseID = pc.Id,
-                    //                                            DoctorID = pques.AssignedDoctorId,
-                    //                                            DocterName = userdet.FirstName + " " + userdet.LastName,
-                    //                                            CaseFileStatusID = pques.CaseFileStatusId,
-                    //                                            CaseStatus = cfsm.FileStatus,
-                    //                                            AssignedBy = pques.AssignedBy,
-                    //                                            AssigneeName = "",
-                    //                                            AssignedOn = pques.AssignedOn,
-                    //                                            Qualification = doct.Qualification,
-                    //                                            Specialization = sepm.Specialization,
-                    //                                            StatusOn = pques.StatusOn,
-                    //                                            PhoneNo = doct.PhoneNumber,
-                    //                                            DrImagePath = userdet.Photo
-                    //                                    }).FirstOrDefaultAsync();
+                    var patientCaseMedicine = await _teleMedecineContext.PatientCases.Include(a => a.PatientCaseMedicines).ThenInclude(d => d.Drugs).Where(x => x.Id == PatientCaseID).ToListAsync();
+                    //var patientCaseDiagonisis = await _teleMedecineContext.PatientCases.Include(b => b.PatientCaseDiagonostics).ThenInclude(e => e.DiagnosticTest).Where(x => x.Id == PatientCaseID).ToListAsync();
 
-                    
+
+
                     if (patientCaseDetails == null)
                     {
                         return null;
                     }
+
+                    if(patientCaseMedicine != null)
+                    {
+                        foreach (var item in patientCaseMedicine)
+                        {
+                            foreach (var med in item.PatientCaseMedicines.ToList())
+                            {
+                                pcaseMedicine = new PatientCaseMedicineDTO();
+                                pcaseMedicine.Id = med.Id;
+                                pcaseMedicine.PatientCaseId = med.PatientCaseId;
+                                pcaseMedicine.DrugMasterID = med.DrugMasterID;
+                                pcaseMedicine.DrugName = med.Drugs.NameOfDrug;
+                                pcaseMedicine.DrugFormAndVolume = med.Drugs.DrugformAndStrength;
+                                pcaseMedicine.Morning = med.Morning;
+                                pcaseMedicine.Night = med.Night;
+                                pcaseMedicine.AfterMeal = med.AfterMeal;
+                                pcaseMedicine.EmptyStomach = med.EmptyStomach;
+                                pcaseMedicine.Od = med.Od;
+                                pcaseMedicine.Bd = med.Bd;
+                                pcaseMedicine.Td = med.Td;
+                                pcaseMedicineList.Add(pcaseMedicine);
+                            }                         
+
+                        }
+
+                        patientCase.caseMedicineList = pcaseMedicineList;
+                        patientCase.caseDiagnosisTestList = patientCaseDiagnosisList;
+
+                    }
+                    //if (patientCaseDiagonisis != null)
+                    //{
+                    //    foreach (var item in patientCaseDiagonisis)
+                    //    {
+                    //        foreach (var diagno in item.PatientCaseDiagonostics.ToList())
+                    //        {
+                    //            patientCaseDiagnosis = new PatientCaseDiagnosisTestsVM();
+                    //            patientCaseDiagnosis.Id = Convert.ToInt32(diagno.Id);
+                    //            patientCaseDiagnosis.PatientCaseID = diagno.PatientCaseID;
+                    //            patientCaseDiagnosis.DiagonosticTestID = diagno.DiagonosticTestID;
+                    //            patientCaseDiagnosis.CreatedOn = diagno.CreatedOn;
+                    //            patientCaseDiagnosisList.Add(patientCaseDiagnosis);
+                    //        }
+                    //    }
+                    //    patientCase.caseDiagnosisTestList = patientCaseDiagnosisList;
+                    //}
 
                     patientCase.PatientID = patientCaseDetails.Patient.Id;
                     patientCase.PHCId = patientCaseDetails.Patient.Id;
@@ -664,7 +686,8 @@ namespace TechMed.BL.Repository.BaseClasses
                     {
                         patientCase.DoctorName = pattientQuue.AssignedDoctor.User.Name;
                         patientCase.DoctorMobileNo = pattientQuue.AssignedDoctor.PhoneNumber;
-                        patientCase.DoctorSpecialization = pattientQuue.AssignedDoctor.Specialization.Specialization;
+                        patientCase.DoctorSpecialization = "";
+                       // patientCase.DoctorSpecialization = pattientQuue.AssignedDoctor.Specialization.Specialization;
                     }
                     else
                     {
@@ -691,6 +714,7 @@ namespace TechMed.BL.Repository.BaseClasses
                         Id = doc.Id,
                         PatientCaseId = doc.PatientCaseId
                     }).ToList();
+                  
                     patientCase.patientMaster.Age = UtilityMaster.GetAgeOfPatient(patientCase.patientMaster.Dob);
 
                 }

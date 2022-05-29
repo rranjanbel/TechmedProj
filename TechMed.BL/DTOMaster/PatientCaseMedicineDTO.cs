@@ -10,7 +10,7 @@ namespace TechMed.BL.DTOMaster
     {
         public long Id { get; set; }
         public long PatientCaseId { get; set; }
-        public string Medicine { get; set; } = null!;
+        public int DrugMasterID { get; set; }     
         public bool? Morning { get; set; }
         public bool? Noon { get; set; }
         public bool? Night { get; set; }
@@ -19,6 +19,7 @@ namespace TechMed.BL.DTOMaster
         public bool? Od { get; set; }
         public bool? Bd { get; set; }
         public bool? Td { get; set; }
-        public string? Dose { get; set; }
+        public string DrugName { get; set; }
+        public string DrugFormAndVolume { get; set; }
     }
 }

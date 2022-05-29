@@ -420,60 +420,81 @@ namespace TechMed.BL.Repository.BaseClasses
         }
         public async Task<bool> PostTreatmentPlan(TreatmentVM treatmentVM)
         {
-            //check caseid
-            PatientQueue patientQueue = await _teleMedecineContext.PatientQueues
-              .Include(d => d.PatientCase.Patient.Gender)
-              .Include(c => c.AssignedByNavigation)
-              .Include(a => a.PatientCase)
-              .Include(b => b.PatientCase.Patient)
-              .Where(a => a.CaseFileStatusId == 4 && a.PatientCaseId == treatmentVM.PatientCaseID
-              ).FirstOrDefaultAsync();
-            if (patientQueue != null)
+            try
             {
-                CaseFileStatusMaster caseFileStatus = await _teleMedecineContext.CaseFileStatusMasters.Where(m => m.FileStatus.ToLower() == "Closed".ToLower()).FirstOrDefaultAsync();
-
-                //update case table
-                patientQueue.CaseFileStatusId = caseFileStatus.Id;
-                patientQueue.StatusOn = DateTime.Now;
-
-                var patientCase = patientQueue.PatientCase;               
-                patientCase.Instruction = treatmentVM.Instruction;
-                patientCase.Test = treatmentVM.Test;
-                patientCase.Finding = treatmentVM.Findings;
-                patientCase.Prescription = treatmentVM.Prescription;
-                patientCase.SuggestedDiagnosis = treatmentVM.SuggestedDiagnosis;
-                patientCase.ProvisionalDiagnosis = treatmentVM.ProvisionalDiagnosis;
-                patientCase.ReferredTo = treatmentVM.ReferredTo;
-                //add in medicine 
-                //delete medicine
-
-                var patientCaseMedicine = await _teleMedecineContext.PatientCaseMedicines.Where(m => m.PatientCaseId == treatmentVM.PatientCaseID).ToListAsync();
-                foreach (var item in patientCaseMedicine)
+                //check caseid
+                PatientQueue patientQueue = await _teleMedecineContext.PatientQueues
+                  .Include(d => d.PatientCase.Patient.Gender)
+                  .Include(c => c.AssignedByNavigation)
+                  .Include(a => a.PatientCase)
+                  .Include(b => b.PatientCase.Patient)
+                  .Where(a => a.CaseFileStatusId == 4 && a.PatientCaseId == treatmentVM.PatientCaseID
+                  ).FirstOrDefaultAsync();
+                if (patientQueue != null)
                 {
-                    _teleMedecineContext.Remove(item);
-                }
-                foreach (var item in treatmentVM.medicineVMs)
-                {
-                    _teleMedecineContext.PatientCaseMedicines.Add(
-                        new PatientCaseMedicine
-                        {
-                            AfterMeal = item.AfterMeal,
-                            Bd = item.BD,
-                            EmptyStomach = item.EmptyStomach,
-                            Morning = item.Morning,
-                            Night = item.Night,
-                            Noon = item.Noon,
-                            Od = item.OD,
-                            Td = item.TD,
+                    CaseFileStatusMaster caseFileStatus = await _teleMedecineContext.CaseFileStatusMasters.Where(m => m.FileStatus.ToLower() == "Closed".ToLower()).FirstOrDefaultAsync();
 
-                            Medicine = item.Medicine,
-                            PatientCaseId = treatmentVM.PatientCaseID
-                        });
-                }
-                _teleMedecineContext.SaveChanges();
-                return true;
+                    //update case table
+                    patientQueue.CaseFileStatusId = caseFileStatus.Id;
+                    patientQueue.StatusOn = DateTime.Now;
 
+                    var patientCase = patientQueue.PatientCase;
+                    patientCase.Instruction = treatmentVM.Instruction;                
+                    patientCase.Finding = treatmentVM.Findings;
+                    patientCase.Prescription = treatmentVM.Prescription;
+                    patientCase.SuggestedDiagnosis = treatmentVM.SuggestedDiagnosis;
+                    patientCase.ProvisionalDiagnosis = treatmentVM.ProvisionalDiagnosis;
+                    patientCase.ReferredTo = treatmentVM.ReferredTo;
+                    //add in medicine 
+                    //delete medicine
+
+                    //var patientCaseMedicine = await _teleMedecineContext.PatientCaseMedicines.Where(m => m.PatientCaseId == treatmentVM.PatientCaseID).ToListAsync();
+                    //foreach (var item in patientCaseMedicine)
+                    //{
+                    //    _teleMedecineContext.Remove(item);
+                    //}
+                    foreach (var item in treatmentVM.medicineVMs)
+                    {
+                        _teleMedecineContext.PatientCaseMedicines.Add(
+                            new PatientCaseMedicine
+                            {
+                                AfterMeal = item.AfterMeal,
+                                Bd = item.BD,
+                                EmptyStomach = item.EmptyStomach,
+                                Morning = item.Morning,
+                                Night = item.Night,
+                                Noon = item.Noon,
+                                Od = item.OD,
+                                Td = item.TD,
+
+                                DrugMasterID = item.DrugID,
+                                PatientCaseId = treatmentVM.PatientCaseID
+                            });
+                    }
+                    //Add diagonistic PatientCaseDiagonosticTest
+                    PatientCaseDiagonosticTest patientCaseDiagonosticTest;
+                    foreach (var diagonist in treatmentVM.PatientCaseDiagonostics)
+                    {
+                        patientCaseDiagonosticTest = new PatientCaseDiagonosticTest();
+                        patientCaseDiagonosticTest.PatientCaseID = diagonist.PatientCaseID;
+                        patientCaseDiagonosticTest.DiagonosticTestID = diagonist.DiagonosticTestID;
+                        patientCaseDiagonosticTest.CreatedOn = DateTime.Now;
+                        _teleMedecineContext.Add(patientCaseDiagonosticTest);
+                    }
+                    int i = _teleMedecineContext.SaveChanges();
+                    return true;
+                }
+              
             }
+            catch (Exception ex)
+            {
+                string expMesg = ex.Message;
+                return false;
+            }
+           
+              
+
+           
             return false;
         }
         public async Task<bool> DeleteNotification(long NotificationID)
@@ -512,15 +533,15 @@ namespace TechMed.BL.Repository.BaseClasses
             };
             var medicne = await _teleMedecineContext.PatientCaseMedicines
                 .Where(a => a.PatientCaseId == getEHRVM.PatientCaseID).ToArrayAsync();
-            foreach (var item in medicne)
-            {
-                getEHRDTO.medicineVMs.Add(new MedicineDTO
-                {
-                    Dose = item.Dose,
-                    Medicine = item.Medicine,
+            //foreach (var item in medicne)
+            //{
+            //    getEHRDTO.medicineVMs.Add(new MedicineDTO
+            //    {
+            //        Dose = item.Dose,
+            //        Medicine = item.Medicine,
 
-                });
-            }
+            //    });
+            //}
             return getEHRDTO;
 
         }
