@@ -8,7 +8,7 @@ namespace TechMed.DL.Models
 {
     public partial class PatientCaseDiagonosticTest
     {
-        public long Id { get; set; }
+        public int Id { get; set; }
         public long PatientCaseID { get; set; }
         public int DiagonosticTestID { get; set; }      
         public DateTime CreatedOn { get; set; }
