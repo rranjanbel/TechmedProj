@@ -676,7 +676,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     }
 
                     patientCase.PatientID = patientCaseDetails.Patient.Id;
-                    patientCase.PHCId = patientCaseDetails.Patient.Id;
+                    patientCase.PHCId = patientCaseDetails.Patient.Phc.Id;
                     patientCase.PHCUserId = patientCaseDetails.Patient.CreatedBy;
                     patientCase.PHCName = patientCaseDetails.Patient.Phc.Phcname;
                     patientCase.PHCMoname = patientCaseDetails.Patient.Phc.Moname;
