@@ -263,6 +263,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     phcconsultationReport.BlockName = item.BlockName;
                     phcconsultationReport.PHCName = item.PHCName;
                     phcconsultationReport.NoOfConsultation = item.NoOfConsultation;
+                    phcconsultationReport.ConsultationDate = item.ConsultationDate;
 
                     phcconsultationReports.Add(phcconsultationReport);
                 }
