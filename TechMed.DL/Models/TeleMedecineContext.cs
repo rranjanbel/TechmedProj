@@ -95,6 +95,9 @@ namespace TechMed.DL.Models
         public virtual DbSet<GetDashboardSpokeMaintenanceVM> GetDashboardSpokeMaintenance { get; set; } = null!;
         public virtual DbSet<GetDashboardEmployeeFeedbackVM> GetDashboardEmployeeFeedback { get; set; } = null!;
 
+        public virtual DbSet<GetDashboardEquipmentUptimeReportVM> GetDashboardEquipmentUptimeReport { get; set; } = null!;
+        public virtual DbSet<GetDashboardAppointmentVM> GetDashboardAppointment { get; set; } = null!;
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
