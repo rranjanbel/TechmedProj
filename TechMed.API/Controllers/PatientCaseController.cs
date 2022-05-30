@@ -313,7 +313,7 @@ namespace TechMed.API.Controllers
                 }
                 else
                 {
-                    if(caseDocumentVM != null)
+                    if(caseDocumentVM.Count > 0)
                     {
                         status = _patientCaeRepository.SaveCaseDocument(caseDocumentVM, contentRootPath);
                         if (status)
