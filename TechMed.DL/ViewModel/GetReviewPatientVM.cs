@@ -17,7 +17,7 @@ namespace TechMed.DL.ViewModel
         public string PatientName { get; set; }
         public string DoctorName { get; set; }
         public string Consultdate { get; set; }
-        public string ReviewDate { get; set; }
+        public DateTime ReviewDate { get; set; }
         public string Complaints { get; set; }
         public string Prescription { get; set; }
     }
