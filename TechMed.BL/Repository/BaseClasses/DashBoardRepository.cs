@@ -396,6 +396,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     phcManpowerReport.DistrictName = item.DistrictName;
                     phcManpowerReport.BlockName = item.BlockName;
                     phcManpowerReport.PHCName = item.PHCName;
+                    phcManpowerReport.TotalWorkingDays = item.TotalWorkingDays;
                     phcManpowerReport.WorkingDays = item.WorkingDays;
                     phcManpowerReport.DaysPresent = item.DaysPresent;
                     phcManpowerReport.DaysAbsent = item.DaysAbsent;
@@ -407,7 +408,7 @@ namespace TechMed.BL.Repository.BaseClasses
             phcmanpowerresultset.PHCManpowerReports = phcManpowerReports;
             phcmanpowerresultset.NoOfDaysInMonth = phcManpowerReports.Select(a => a.NoOfDaysInMonth).FirstOrDefault();
             phcmanpowerresultset.TotalPresentDays = totaldaysPresnt = phcManpowerReports.Sum(a => a.DaysPresent);
-            phcmanpowerresultset.TotalWorkingDays = totalWorkingDays = phcManpowerReports.Sum(a => a.WorkingDays);
+            phcmanpowerresultset.TotalWorkingDays = totalWorkingDays = phcManpowerReports.Select(a => a.TotalWorkingDays).FirstOrDefault();
             phcmanpowerresultset.AvailabilityPercentage = ((totaldaysPresnt * 100) / totalWorkingDays);
 
             return phcmanpowerresultset;
@@ -589,6 +590,77 @@ namespace TechMed.BL.Repository.BaseClasses
                     registerPatientReport.TraingDate = item.TraingDate;
                     registerPatientReport.EmployeeFeedback = item.EmployeeFeedback;
                    
+                    registerPatientReports.Add(registerPatientReport);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
+            }
+
+
+            return registerPatientReports;
+        }
+
+        public List<GetDashboardEquipmentUptimeReportVM> GetDashboardEquipmentUptimeReport(int month, int year)
+        {
+            List<GetDashboardEquipmentUptimeReportVM> registerPatientReports = new List<GetDashboardEquipmentUptimeReportVM>();
+            GetDashboardEquipmentUptimeReportVM registerPatientReport;
+            try
+            {
+                var Results = _teleMedecineContext.GetDashboardEquipmentUptimeReport.FromSqlInterpolated($"EXEC [dbo].[GetDashboardEquipmentUptimeReport] @month ={month}, @year ={year}");
+                foreach (var item in Results)
+                {
+                    registerPatientReport = new GetDashboardEquipmentUptimeReportVM();
+                    registerPatientReport.SrNo = item.SrNo;
+                    registerPatientReport.DistrictName = item.DistrictName;
+                    registerPatientReport.BlockName = item.BlockName;
+                    registerPatientReport.PHCName = item.PHCName;
+                    registerPatientReport.WokingDays = item.WokingDays;
+                    registerPatientReport.Otoscope = item.Otoscope;
+                    registerPatientReport.Dermascope = item.Dermascope;
+                    registerPatientReport.FetalDoppler = item.FetalDoppler;
+                    registerPatientReport.Headphone = item.Headphone;
+                    registerPatientReport.WebCam = item.WebCam;
+                    registerPatientReport.Printer = item.Printer;
+                    registerPatientReport.Inverter = item.Inverter;
+                    registerPatientReport.Computer = item.Computer;
+                    registerPatientReports.Add(registerPatientReport);
+                                       
+                }
+
+            }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
+            }
+
+
+            return registerPatientReports;
+        }
+
+        public List<GetDashboardAppointmentVM> GetDashboardAppointment(DateTime? fromDate, DateTime? toDate)
+        {
+            List<GetDashboardAppointmentVM> registerPatientReports = new List<GetDashboardAppointmentVM>();
+            GetDashboardAppointmentVM registerPatientReport;
+            try
+            {
+                var Results = _teleMedecineContext.GetDashboardAppointment.FromSqlInterpolated($"EXEC [dbo].[GetDashboardAppointment] @FromDate ={fromDate}, @ToDate ={toDate}");
+                foreach (var item in Results)
+                {
+                    registerPatientReport = new GetDashboardAppointmentVM();
+                    registerPatientReport.SrNo = item.SrNo;
+                    registerPatientReport.DistrictName = item.DistrictName;
+                    registerPatientReport.BlockName = item.BlockName;
+                    registerPatientReport.PHCName = item.PHCName;
+                    registerPatientReport.PatientName = item.PatientName;
+                    registerPatientReport.MobileNo = item.MobileNo;
+                    registerPatientReport.Doctor = item.Doctor;
+                    registerPatientReport.AppointmentTime = item.AppointmentTime;
+                    registerPatientReport.ConsultStatus = item.ConsultStatus;
+                    registerPatientReport.DoctorAvailable = item.DoctorAvailable;
+                    registerPatientReport.PatientAvailable = item.PatientAvailable;  
                     registerPatientReports.Add(registerPatientReport);
                 }
 

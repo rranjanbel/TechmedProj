@@ -15,6 +15,7 @@ namespace TechMed.DL.ViewModel
         public string BlockName { get; set; }
         public string PHCName { get; set; }
         public int NoOfDaysInMonth { get; set; }
+        public int TotalWorkingDays { get; set; }
         public int WorkingDays { get; set; }
         public int DaysPresent { get; set; }
         public int DaysAbsent { get; set; }

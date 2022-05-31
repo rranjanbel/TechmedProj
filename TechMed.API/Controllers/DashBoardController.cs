@@ -650,5 +650,68 @@ namespace TechMed.API.Controllers
 
         }
 
+        [HttpGet]
+        [Route("GetDashboardEquipmentUptimeReport")]
+        [ProducesResponseType(200, Type = typeof(List<GetDashboardEquipmentUptimeReportVM>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult GetDashboardEquipmentUptimeReport(int month , int year)
+        {
+            List<GetDashboardEquipmentUptimeReportVM> patientResiter = new List<GetDashboardEquipmentUptimeReportVM>();
+            try
+            {
+                patientResiter = _dashBoardRepository.GetDashboardEquipmentUptimeReport(month, year);
+                if (patientResiter != null)
+                {
+                    return Ok(patientResiter);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetDashboardEquipmentUptimeReport", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("GetDashboardEquipmentUptimeReport", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+
+        }
+        [HttpGet]
+        [Route("GetDashboardAppointment")]
+        [ProducesResponseType(200, Type = typeof(List<GetDashboardAppointmentVM>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult GetDashboardAppointment(DateTime? fromDate = null, DateTime? toDate = null)
+        {
+            List<GetDashboardAppointmentVM> patientResiter = new List<GetDashboardAppointmentVM>();
+            DateTime? fromDateUtc = null;
+            if (fromDate != null)
+                fromDateUtc = fromDate.Value;
+            DateTime? toDateUtc = null;
+            if (toDate != null)
+                toDateUtc = toDate.Value;
+            try
+            {
+                patientResiter = _dashBoardRepository.GetDashboardAppointment(fromDateUtc, toDateUtc);
+                if (patientResiter != null)
+                {
+                    return Ok(patientResiter);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetDashboardAppointmentVM", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("GetDashboardAppointmentVM", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+
+        }
+
     }
 }
