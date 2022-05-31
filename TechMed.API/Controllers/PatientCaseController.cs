@@ -366,14 +366,14 @@ namespace TechMed.API.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("GetPatientCaseDocList", $"Something went wrong when get patient case {PatientCaseID}");
+                    ModelState.AddModelError("GetPatientCaseDocList", $"Something went wrong when get patient case doc {PatientCaseID}");
                     return StatusCode(404, ModelState);
                 }
             }
             catch (Exception ex)
             {
 
-                ModelState.AddModelError("GetPatientCaseDocList", $"Something went wrong when get patient case {ex.Message}");
+                ModelState.AddModelError("GetPatientCaseDocList", $"Something went wrong when get patient case doc {ex.Message}");
                 return StatusCode(500, ModelState);
             }
         }

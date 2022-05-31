@@ -28,6 +28,7 @@ namespace TechMed.BL.ViewModels
         public string DoctorName { get; set; }
         public string DoctorMobileNo { get; set; }
         public string DoctorSpecialization { get; set; }
+        public int CaseFileStatusID { get; set; }
         public PatientMasterDTO patientMaster { get; set; }
         public PatientCaseDTO patientCase { get; set; }
         public List<PatientCaseVitalsVM> vitals { get; set; }
