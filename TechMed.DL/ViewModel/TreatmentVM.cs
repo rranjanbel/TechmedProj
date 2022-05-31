@@ -20,12 +20,9 @@ namespace TechMed.DL.ViewModel
         [Required]
         public long PatientCaseID { get; set; }    
         //[Required]
-        public string Instruction { get; set; }
-      
-        [Required]
-        public string Findings { get; set; }
-        [Required]
-        public string Prescription { get; set; }
+        public string Instruction { get; set; }     
+        public string? Findings { get; set; }        
+        public string? Prescription { get; set; }
         public string? SuggestedDiagnosis { get; set; }
         public string? ProvisionalDiagnosis { get; set; }
         public string? ReferredTo { get; set; }
