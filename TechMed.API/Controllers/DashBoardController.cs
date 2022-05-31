@@ -678,6 +678,7 @@ namespace TechMed.API.Controllers
             }
 
         }
+       
         [HttpGet]
         [Route("GetDashboardAppointment")]
         [ProducesResponseType(200, Type = typeof(List<GetDashboardAppointmentVM>))]
@@ -708,6 +709,109 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetDashboardAppointmentVM", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+
+        }
+
+
+
+
+        [HttpGet]
+        [Route("GetDashboardDoctorAvgTime")]
+        [ProducesResponseType(200, Type = typeof(List<GetDashboardDoctorAvgTimeVM>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult GetDashboardDoctorAvgTime(DateTime? fromDate = null, DateTime? toDate = null)
+        {
+            List<GetDashboardDoctorAvgTimeVM> patientResiter = new List<GetDashboardDoctorAvgTimeVM>();
+            DateTime? fromDateUtc = null;
+            if (fromDate != null)
+                fromDateUtc = fromDate.Value;
+            DateTime? toDateUtc = null;
+            if (toDate != null)
+                toDateUtc = toDate.Value;
+            try
+            {
+                patientResiter = _dashBoardRepository.GetDashboardDoctorAvgTime(fromDateUtc, toDateUtc);
+                if (patientResiter != null)
+                {
+                    return Ok(patientResiter);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetDashboardDoctorAvgTime", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("GetDashboardDoctorAvgTime", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+
+        }
+
+        [HttpGet]
+        [Route("GetDashboardDoctorAvailability")]
+        [ProducesResponseType(200, Type = typeof(List<GetDashboardDoctorAvailabilityVM>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult GetDashboardDoctorAvailability(DateTime? fromDate = null, DateTime? toDate = null)
+        {
+            List<GetDashboardDoctorAvailabilityVM> patientResiter = new List<GetDashboardDoctorAvailabilityVM>();
+            DateTime? fromDateUtc = null;
+            if (fromDate != null)
+                fromDateUtc = fromDate.Value;
+            DateTime? toDateUtc = null;
+            if (toDate != null)
+                toDateUtc = toDate.Value;
+            try
+            {
+                patientResiter = _dashBoardRepository.GetDashboardDoctorAvailability(fromDateUtc, toDateUtc);
+                if (patientResiter != null)
+                {
+                    return Ok(patientResiter);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetDashboardDoctorAvailability", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("GetDashboardDoctorAvailability", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+
+        }
+
+        [HttpGet]
+        [Route("GetDashboardEquipmentHeaderReport")]
+        [ProducesResponseType(200, Type = typeof(List<GetDashboardEquipmentHeaderReportVM>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult GetDashboardEquipmentHeaderReport(int month, int year)
+        {
+            List<GetDashboardEquipmentHeaderReportVM> patientResiter = new List<GetDashboardEquipmentHeaderReportVM>();
+           
+            try
+            {
+                patientResiter = _dashBoardRepository.GetDashboardEquipmentHeaderReport( month, year);
+                if (patientResiter != null)
+                {
+                    return Ok(patientResiter);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetDashboardEquipmentHeaderReport", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("GetDashboardEquipmentHeaderReport", $"Something went wrong {ex.Message}");
                 return StatusCode(500, ModelState);
             }
 
