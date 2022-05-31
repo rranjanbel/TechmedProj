@@ -32,6 +32,7 @@
   <ItemGroup>
     <Folder Include="Logs\" />
     <Folder Include="MyStaticFiles\CaseDocuments\" />
+    <Folder Include="MyStaticFiles\PHCDocuments\" />
   </ItemGroup>
 
 </Project>
