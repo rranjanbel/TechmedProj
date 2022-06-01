@@ -220,22 +220,31 @@ namespace TechMed.BL.Repository.BaseClasses
             SpokeMaintenance spokeMaintenance;
             //List<PatientCaseDocDTO> patientCaseDocuments = new List<PatientCaseDocDTO>();
             int l = 0;
-            string path = @"\\MyStaticFiles\\PHCDocuments\\";
+            
+
             if (spokeDTO != null)
-            {
+            {                
+                string relativePath = @"/MyFiles/PHCDocuments/";
+                var myfilename = string.Format(@"{0}", Guid.NewGuid());
 
                 if (spokeDTO.file.Length > 0)
                 {
                     l = 0;
-                    string fileName = SaveDocument(spokeDTO.file, contentRootPath);
-                    string fullPath = Path.Combine(path, fileName);
-                    spokeMaintenance = new SpokeMaintenance();
-                    spokeMaintenance.Phcid = spokeDTO.Phcid;
-                    spokeMaintenance.FilePath = fullPath;
-                    spokeMaintenance.Date = DateTime.Now;    
+                    myfilename = myfilename+"_"+ spokeDTO.file.FileName;
+                    string fileName = SaveDocument(spokeDTO.file, contentRootPath, myfilename);
+                    if(fileName != null)
+                    {
+                        //string fullPath = Path.Combine(path, fileName);
+                        string fullRelativePath = Path.Combine(relativePath, myfilename);
+                        spokeMaintenance = new SpokeMaintenance();
+                        spokeMaintenance.Phcid = spokeDTO.Phcid;
+                        spokeMaintenance.FilePath = fullRelativePath;
+                        spokeMaintenance.Date = DateTime.Now;
 
-                    this._teleMedecineContext.Entry(spokeMaintenance).State = EntityState.Added;
-                    l = this.Context.SaveChanges();
+                        this._teleMedecineContext.Entry(spokeMaintenance).State = EntityState.Added;
+                        l = this.Context.SaveChanges();
+                    }
+                  
                 }
                 if (l > 0)
                 {
@@ -255,45 +264,34 @@ namespace TechMed.BL.Repository.BaseClasses
 
         }
 
-        public string SaveDocument(IFormFile file, string rootPath)
+        public string SaveDocument(IFormFile file, string rootPath, string updatedFileName)
         {
-            string contentRootPath = rootPath;
-            string path = @"\\MyStaticFiles\\PHCDocuments\\";
-            path = contentRootPath + path;
-
-            //Create     
-
-            var myfilename = string.Format(@"{0}", Guid.NewGuid());
-
-            //myfilename = myfilename + file.FileName;
-            //Generate unique filename
-
-            var fileType = Path.GetExtension(file.FileName);
-
-            if (fileType.ToLower() == ".pdf" || fileType.ToLower() == ".jpg" || fileType.ToLower() == ".png" || fileType.ToLower() == ".jpeg")
+            try
             {
-                var filePath = Path.Combine(path, file.FileName);
-                //FileInfo fileInfo = new FileInfo(filePath);
-                //fileInfo.Create();
-                using (Stream stream = new FileStream(filePath, FileMode.Create))
+                string contentRootPath = rootPath;
+                string path = @"\\MyStaticFiles\\PHCDocuments\\";
+                path = contentRootPath + path;
+
+                //Create   
+                var filePath = Path.Combine(path, updatedFileName);
+                var fileType = Path.GetExtension(file.FileName);
+
+                if (fileType.ToLower() == ".pdf" || fileType.ToLower() == ".jpg" || fileType.ToLower() == ".png" || fileType.ToLower() == ".jpeg")
                 {
-                    file.CopyToAsync(stream);
-
-                    //FileStream fileStream = File.Create(filePath, (int)stream.Length);
-                    //// Initialize the bytes array with the stream length and then fill it with data
-                    //byte[] bytesInStream = new byte[stream.Length];
-                    //stream.Read(bytesInStream, 0, bytesInStream.Length);
-                    //// Use write method to write to the file specified above
-                    //fileStream.Write(bytesInStream, 0, bytesInStream.Length);
-                    ////Close the filestream
-                    //fileStream.Close();
+                    //var filePath = Path.Combine(path, file.FileName);
+                   
+                    using (Stream stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        file.CopyToAsync(stream);
+                    }
                 }
+                return filePath;
             }
-            return file.FileName;
-
-
-            //myfilename = myfilename + ".pdf";
-
+            catch
+            {
+                return "";
+            }
+           
         }
     }
 }

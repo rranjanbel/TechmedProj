@@ -514,53 +514,53 @@ namespace TechMed.BL.Repository.BaseClasses
             return patientCaseQue;
         }
 
-        public string SaveDocument(IFormFile file, string rootPath)
+        public string SaveDocument(IFormFile file, string rootPath, string uniqeFileName)
         {
-            string contentRootPath = rootPath;
-            string path = @"\\MyStaticFiles\\CaseDocuments\\";          
-            path = contentRootPath + path;
+            try
+            {
+                string contentRootPath = rootPath;
+                string path = @"\\MyStaticFiles\\CaseDocuments\\";
+                path = contentRootPath + path;
 
-            //Create     
+                //Generate unique filename  
 
-            var myfilename = string.Format(@"{0}", Guid.NewGuid());
+                var filePath = Path.Combine(path, uniqeFileName);
 
-            //myfilename = myfilename + file.FileName;
-            //Generate unique filename
-          
+
                 var fileType = Path.GetExtension(file.FileName);
-               
-                if (fileType.ToLower() == ".pdf" || fileType.ToLower() == ".jpg" || fileType.ToLower() == ".png" || fileType.ToLower() == ".jpeg")
-                {
-                    var filePath = Path.Combine(path, file.FileName);
-                    //FileInfo fileInfo = new FileInfo(filePath);
-                    //fileInfo.Create();
-                    using (Stream stream = new FileStream(filePath, FileMode.Create))
-                    {
-                         file.CopyToAsync(stream);
 
-                        //FileStream fileStream = File.Create(filePath, (int)stream.Length);
-                        //// Initialize the bytes array with the stream length and then fill it with data
-                        //byte[] bytesInStream = new byte[stream.Length];
-                        //stream.Read(bytesInStream, 0, bytesInStream.Length);
-                        //// Use write method to write to the file specified above
-                        //fileStream.Write(bytesInStream, 0, bytesInStream.Length);
-                        ////Close the filestream
-                        //fileStream.Close();
-                    }
+                //if (fileType.ToLower() == ".pdf" || fileType.ToLower() == ".jpg" || fileType.ToLower() == ".png" || fileType.ToLower() == ".jpeg")
+                //{
+                //    //var filePath = Path.Combine(path, file.FileName);
+
+                //}
+
+                using (Stream stream = new FileStream(filePath, FileMode.Create))
+                {
+                    file.CopyToAsync(stream);
                 }
                 return file.FileName;
-          
+            }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
+                return "";
+            }
             
-            //myfilename = myfilename + ".pdf";
-           
+
+
+            
+
         }
 
         public bool SaveCaseDocument(List<CaseDocumentVM> caseDocuments, string contentRootPath)
         {
-            PatientCaseDocument patientCaseDocument  ;
-            //List<PatientCaseDocDTO> patientCaseDocuments = new List<PatientCaseDocDTO>();
-            int l = 0;
-            string path = @"\\MyStaticFiles\\CaseDocuments\\";
+            PatientCaseDocument patientCaseDocument  ;       
+            int l = 0;           
+            string path = @"/MyFiles/CaseDocuments/";
+            var myfilename = string.Format(@"{0}", Guid.NewGuid());
+
+           
             if (caseDocuments != null)
             {              
                 foreach (var doc in caseDocuments)
@@ -568,23 +568,24 @@ namespace TechMed.BL.Repository.BaseClasses
                     if(doc.file.Length >0)
                     {
                         l = 0;
-                        string fileName = SaveDocument(doc.file, contentRootPath);
-                        string fullPath = Path.Combine(path, fileName);
-                        patientCaseDocument = new PatientCaseDocument();
-                        patientCaseDocument.PatientCaseId = doc.patientCaseId;
-                        patientCaseDocument.DocumentPath = fullPath;
-                        patientCaseDocument.DocumentName = doc.name;
-                        patientCaseDocument.Description = doc.file.Name + " , " + doc.file.Length;
+                        myfilename = myfilename +"_"+ doc.file.Name;
+                        string fileName = SaveDocument(doc.file, contentRootPath, myfilename);
+                        if(fileName != null)
+                        {
+                            string fullPath = Path.Combine(path, myfilename);
+                            patientCaseDocument = new PatientCaseDocument();
+                            patientCaseDocument.PatientCaseId = doc.patientCaseId;
+                            patientCaseDocument.DocumentPath = fullPath;
+                            patientCaseDocument.DocumentName = doc.name;
+                            patientCaseDocument.Description = doc.file.Name + " , " + doc.file.Length;
 
 
-                        this._teleMedecineContext.Entry(patientCaseDocument).State = EntityState.Added;
-                        l = this.Context.SaveChanges();                      
+                            this._teleMedecineContext.Entry(patientCaseDocument).State = EntityState.Added;
+                            l = this.Context.SaveChanges();
+                        }
+                                          
                     }
                    
-
-                    //l = await this.Context.SaveChangesAsync();
-                    //PatientCaseDocDTO docDTO = _mapper.Map<PatientCaseDocDTO>(patientCaseDocument);
-                    //patientCaseDocuments.Add(docDTO);
                 }
                 if (l > 0)
                 {
