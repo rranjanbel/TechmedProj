@@ -568,7 +568,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     if(doc.file.Length >0)
                     {
                         l = 0;
-                        myfilename = myfilename +"_"+ doc.file.Name;
+                        myfilename = myfilename +"_"+ doc.file.FileName;
                         string fileName = SaveDocument(doc.file, contentRootPath, myfilename);
                         if(fileName != null)
                         {
@@ -577,7 +577,7 @@ namespace TechMed.BL.Repository.BaseClasses
                             patientCaseDocument.PatientCaseId = doc.patientCaseId;
                             patientCaseDocument.DocumentPath = fullPath;
                             patientCaseDocument.DocumentName = doc.name;
-                            patientCaseDocument.Description = doc.file.Name + " , " + doc.file.Length;
+                            patientCaseDocument.Description = doc.file.FileName + " , " + doc.file.Length;
 
 
                             this._teleMedecineContext.Entry(patientCaseDocument).State = EntityState.Added;
