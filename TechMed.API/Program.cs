@@ -30,6 +30,19 @@ builder.Services.AddDbContext<TeleMedecineContext>(
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAutoMapper(typeof(MappingMaster));
 builder.Services.AddSwaggerGen();
+//builder.Services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
+//{
+//    builder
+//    .AllowAnyMethod()
+//    .AllowAnyHeader()
+//    .AllowCredentials()
+//    .AllowAnyOrigin();
+//}));
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder => { builder.SetIsOriginAllowed(origin => true).AllowAnyMethod().AllowAnyHeader().AllowCredentials(); });
+});
 var jwtTokenConfig = builder.Configuration.GetSection("jwtTokenConfig").Get<JwtTokenConfig>();
 builder.Services.AddSingleton(jwtTokenConfig);
 builder.Services.AddAuthentication(x =>
@@ -65,9 +78,10 @@ builder.Services.AddScoped<IDashBoardRepository, DashBoardRepository>();
 builder.Services.AddScoped<IMISRepository, MISRepository>();
 builder.Services.AddScoped<ICaseFileStatusMasterRpository, CaseFileStatusMasterRpository>();
 builder.Services.AddScoped<IVideoCallTransactionRespository, VideoCallTransactionRespository>();
-builder.Services.AddScoped<IEquipmentUptimeReport,EquipmentUptimeReportRepositry>();
+builder.Services.AddScoped<IEquipmentUptimeReport, EquipmentUptimeReportRepositry>();
 builder.Services.AddScoped<IDigonisisRepository, DigonisisRepository>();
 builder.Services.AddScoped<IDrugsRepository, DrugsRepository>();
+builder.Services.AddScoped<ITwilioMeetingRepository, TwilioMeetingRepository>();
 builder.Services.Configure<TwilioSettings>(
     settings =>
     {
@@ -76,7 +90,7 @@ builder.Services.Configure<TwilioSettings>(
         settings.ApiKey = builder.Configuration.GetValue<string>("Twilio:TwilioApiKey");
         settings.AuthToken = builder.Configuration.GetValue<string>("Twilio:TwilioAuthToken");
     })
-    .AddTransient<IVideoService, VideoService>();
+    .AddTransient<ITwilioVideoSDKService, TwilioVideoSDKService>();
 
 builder.Services.AddSignalR();
 builder.Services.AddSwaggerGen(c =>
@@ -104,19 +118,19 @@ builder.Services.AddSwaggerGen(c =>
                 });
 });
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAll",
-        builder => { builder.SetIsOriginAllowed(origin => true).AllowAnyMethod().AllowAnyHeader().AllowCredentials(); });
-});
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy("AllowAll",
+//        builder => { builder.SetIsOriginAllowed(origin => true).AllowAnyMethod().AllowAnyHeader().AllowCredentials(); });
+//});
 var app = builder.Build();
 var log = new LoggerFactory();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-  
-   // app.UseSwagger();
-   // app.UseSwaggerUI();
+
+    // app.UseSwagger();
+    // app.UseSwaggerUI();
     app.UseDeveloperExceptionPage();
 }
 // need to remove on production deployment
@@ -124,12 +138,13 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseMiddleware<ExceptionMiddleware>();
-
+app.UseCors("AllowAll");
 app.UseRouting();
 
-app.UseCors("AllowAll");
+//app.UseCors("AllowAll");
 
-app.MapHub<NotificationHub>("/notificationHub");
+
+app.MapHub<SignalRBroadcastHub>("/notificationHub");
 
 app.UseHttpsRedirection();
 
