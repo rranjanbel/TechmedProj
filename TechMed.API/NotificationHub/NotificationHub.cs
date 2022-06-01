@@ -27,8 +27,6 @@ namespace TechMed.API.NotificationHub
         Task BroadcastMessage(SignalRNotificationModel signalRNotificationModel);
     }
 
-
-
     public class SignalRBroadcastHub : Hub<IHubClient>
     {
         public SignalRBroadcastHub()

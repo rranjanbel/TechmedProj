@@ -363,4 +363,3 @@ MigrationBackup/
 FodyWeavers.xsd
 /TechMed.API/.config/dotnet-tools.json
 /TechMed.API/Properties/ServiceDependencies/MedTeleAPI - Web Deploy/profile.arm.json
-/TechMed.API/web.config
