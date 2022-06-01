@@ -32,5 +32,11 @@ namespace TechMed.BL.Repository.Interfaces
         List<GetDashboardSpokeMaintenanceVM> GetDashboardSpokeMaintenance(DateTime? fromDate, DateTime? toDate);
         List<GetDashboardEmployeeFeedbackVM> GetDashboardEmployeeFeedback(DateTime? fromDate, DateTime? toDate);
 
+        List<GetDashboardEquipmentUptimeReportVM> GetDashboardEquipmentUptimeReport(int month, int year);
+        List<GetDashboardAppointmentVM> GetDashboardAppointment(DateTime? fromDate, DateTime? toDate);
+
+        List<GetDashboardDoctorAvgTimeVM> GetDashboardDoctorAvgTime(DateTime? fromDate, DateTime? toDate);
+        List<GetDashboardDoctorAvailabilityVM> GetDashboardDoctorAvailability(DateTime? fromDate, DateTime? toDate);
+        List<GetDashboardEquipmentHeaderReportVM> GetDashboardEquipmentHeaderReport(int month, int year);
     }
 }

@@ -198,7 +198,20 @@ namespace TechMed.BL.Repository.BaseClasses
                         {
                             await Update(userMaster);
 
+                            if(userUsertype.UserTypeId == 4)
+                            {
+                                DoctorMaster doctor = _teleMedecineContext.DoctorMasters.FirstOrDefault(a => a.UserId == userUsertype.UserId);
+                                
+                                if(doctor != null)
+                                {
+                                    doctor.IsOnline = true;
+                                    _teleMedecineContext.Entry(doctor).State = EntityState.Modified;
+                                }
+                                
+                            }
+
                             _teleMedecineContext.Entry(loginHistory).State = EntityState.Added;
+                            
                             _teleMedecineContext.SaveChanges();
                         }
                         catch (Exception ex)
@@ -346,9 +359,17 @@ namespace TechMed.BL.Repository.BaseClasses
         {
             LoginHistory loginHistory = new LoginHistory();
             loginHistory = await _teleMedecineContext.LoginHistories.Include( a => a.User).Where(a => a.User.Email == userEmail).OrderByDescending(a => a.Id).FirstOrDefaultAsync();
+
             if(loginHistory != null)
             {
                 loginHistory.LogedoutTime = DateTime.Now;
+                DoctorMaster doctor = _teleMedecineContext.DoctorMasters.FirstOrDefault(a => a.UserId == loginHistory.UserId);                
+                if (doctor != null)
+                {
+                    doctor.IsOnline = false;
+                    _teleMedecineContext.Entry(doctor).State = EntityState.Modified;
+                }
+                
 
                 this._teleMedecineContext.Entry(loginHistory).State = EntityState.Modified;
                 int i = await this._teleMedecineContext.SaveChangesAsync();

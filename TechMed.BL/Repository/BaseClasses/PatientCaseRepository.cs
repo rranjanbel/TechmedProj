@@ -256,7 +256,7 @@ namespace TechMed.BL.Repository.BaseClasses
                                 patientCase.PatientId = patientCaseVM.patientCase.PatientId;
                                 patientCase.Allergies = patientCaseVM.patientCase.Allergies;
                                 patientCase.CaseFileNumber = patientCaseVM.patientCase.CaseFileNumber;
-                                patientCase.Test = patientCaseVM.patientCase.Test;
+                                patientCase.Test = "";
                                 patientCase.Instruction = patientCaseVM.patientCase.Instruction;
                                 patientCase.CaseHeading = patientCaseVM.patientCase.CaseHeading;
                                 patientCase.Symptom = patientCaseVM.patientCase.Symptom;
@@ -278,37 +278,37 @@ namespace TechMed.BL.Repository.BaseClasses
 
 
                             }
-                            else
-                            {
-                                patientCase = new PatientCase();
-                                patientCase.Id = 0;
-                                patientCase.PatientId = patientCaseVM.patientCase.PatientId;
-                                patientCase.Allergies = patientCaseVM.patientCase.Allergies;
-                                patientCase.CaseFileNumber = patientCaseVM.patientCase.CaseFileNumber;
-                                patientCase.Test = patientCaseVM.patientCase.Test;
-                                patientCase.Instruction = patientCaseVM.patientCase.Instruction;
-                                patientCase.CaseHeading = patientCaseVM.patientCase.CaseHeading;
-                                patientCase.Symptom = patientCaseVM.patientCase.Symptom;
-                                patientCase.Prescription = "";
-                                patientCase.Observation = patientCaseVM.patientCase.Observation;
-                                patientCase.FamilyHistory = patientCaseVM.patientCase.FamilyHistory;
-                                patientCase.SuggestedDiagnosis = patientCaseVM.patientCase.SuggestedDiagnosis;                               
-                                patientCase.ProvisionalDiagnosis = patientCaseVM.patientCase.ProvisionalDiagnosis;
-                                patientCase.ReferredTo = patientCaseVM.patientCase.ReferredTo;
-                                patientCase.Opdno = patientCaseVM.patientCase.Opdno;
-                                patientCase.UpdatedBy = patientCaseVM.patientCase.UpdatedBy;
-                                patientCase.UpdatedOn = DateTime.Now;
-                                patientCase.CreatedBy = patientCaseVM.patientCase.CreatedBy;
-                                patientCase.CreatedOn = DateTime.Now;
+                            //else
+                            //{
+                            //    patientCase = new PatientCase();
+                            //    patientCase.Id = 0;
+                            //    patientCase.PatientId = patientCaseVM.patientCase.PatientId;
+                            //    patientCase.Allergies = patientCaseVM.patientCase.Allergies;
+                            //    patientCase.CaseFileNumber = patientCaseVM.patientCase.CaseFileNumber;
+                            //    patientCase.Test = patientCaseVM.patientCase.Test;
+                            //    patientCase.Instruction = patientCaseVM.patientCase.Instruction;
+                            //    patientCase.CaseHeading = patientCaseVM.patientCase.CaseHeading;
+                            //    patientCase.Symptom = patientCaseVM.patientCase.Symptom;
+                            //    patientCase.Prescription = "";
+                            //    patientCase.Observation = patientCaseVM.patientCase.Observation;
+                            //    patientCase.FamilyHistory = patientCaseVM.patientCase.FamilyHistory;
+                            //    patientCase.SuggestedDiagnosis = patientCaseVM.patientCase.SuggestedDiagnosis;                               
+                            //    patientCase.ProvisionalDiagnosis = patientCaseVM.patientCase.ProvisionalDiagnosis;
+                            //    patientCase.ReferredTo = patientCaseVM.patientCase.ReferredTo;
+                            //    patientCase.Opdno = patientCaseVM.patientCase.Opdno;
+                            //    patientCase.UpdatedBy = patientCaseVM.patientCase.UpdatedBy;
+                            //    patientCase.UpdatedOn = DateTime.Now;
+                            //    patientCase.CreatedBy = patientCaseVM.patientCase.CreatedBy;
+                            //    patientCase.CreatedOn = DateTime.Now;
 
-                                this._teleMedecineContext.Entry(patientCase).State = EntityState.Added;
-                                j = await this.Context.SaveChangesAsync();
-                                patientcasecreateVM.patientCase = _mapper.Map<PatientCaseDTO>(patientCase);
-                                if (j > 0)
-                                {
-                                    _logger.LogInformation($"Patient case added : sucessfully {patientCase.Id}");
-                                }
-                            }
+                            //    this._teleMedecineContext.Entry(patientCase).State = EntityState.Added;
+                            //    j = await this.Context.SaveChangesAsync();
+                            //    patientcasecreateVM.patientCase = _mapper.Map<PatientCaseDTO>(patientCase);
+                            //    if (j > 0)
+                            //    {
+                            //        _logger.LogInformation($"Patient case added : sucessfully {patientCase.Id}");
+                            //    }
+                            //}
 
                             if (i > 0 || j > 0)
                             {
@@ -619,7 +619,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     List<PatientCaseDiagnosisTestsVM> patientCaseDiagnosisList = new List<PatientCaseDiagnosisTestsVM>();
                     PatientCaseVitalsVM vitalvm;
                     var patientCaseDetails = _teleMedecineContext.PatientCases.Include(a => a.Patient).ThenInclude(a => a.Phc).Include(a => a.PatientCaseDocuments).Include(a => a.PatientCaseVitals).ThenInclude(a => a.Vital).FirstOrDefault(a => a.Id == PatientCaseID);
-                    var pattientQuue = _teleMedecineContext.PatientQueues.Include(a => a.AssignedDoctor).ThenInclude(s => s.User).ThenInclude(c => c.UserDetailUsers).Include(f => f.AssignedDoctor.Specialization).FirstOrDefault(x => x.PatientCaseId == PatientCaseID);
+                    var patientQuue = _teleMedecineContext.PatientQueues.Include(a => a.AssignedDoctor).ThenInclude(s => s.User).ThenInclude(c => c.UserDetailUsers).Include(f => f.AssignedDoctor.Specialization).FirstOrDefault(x => x.PatientCaseId == PatientCaseID);
                     var patientCaseMedicine = await _teleMedecineContext.PatientCases.Include(a => a.PatientCaseMedicines).ThenInclude(d => d.Drugs).Where(x => x.Id == PatientCaseID).ToListAsync();
                     var patientCaseDiagonisis = await _teleMedecineContext.PatientCases.Include(b => b.PatientCaseDiagonostics).ThenInclude(e => e.DiagnosticTest).Where(x => x.Id == PatientCaseID).ToListAsync();
 
@@ -682,12 +682,12 @@ namespace TechMed.BL.Repository.BaseClasses
                     patientCase.PHCMoname = patientCaseDetails.Patient.Phc.Moname;
                     patientCase.patientMaster = _mapper.Map<PatientMasterDTO>(patientCaseDetails.Patient);
                     patientCase.patientCase = _mapper.Map<PatientCaseDTO>(patientCaseDetails);
-                    if(pattientQuue !=null)
+                    if(patientQuue != null)
                     {
-                        patientCase.DoctorName = pattientQuue.AssignedDoctor.User.Name;
-                        patientCase.DoctorMobileNo = pattientQuue.AssignedDoctor.PhoneNumber;
-                        //patientCase.DoctorSpecialization = "";
-                       patientCase.DoctorSpecialization = pattientQuue.AssignedDoctor.Specialization.Specialization;
+                        patientCase.DoctorName = patientQuue.AssignedDoctor.User.Name;
+                        patientCase.DoctorMobileNo = patientQuue.AssignedDoctor.PhoneNumber;
+                        patientCase.CaseFileStatusID = patientQuue.CaseFileStatusId;
+                       patientCase.DoctorSpecialization = patientQuue.AssignedDoctor.Specialization.Specialization;
                     }
                     else
                     {

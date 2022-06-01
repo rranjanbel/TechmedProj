@@ -18,11 +18,13 @@ namespace TechMed.API.Controllers
         private readonly IMapper _mapper;       
         private readonly IPHCRepository _phcRepository;
         private readonly ILogger<PHCController> _logger;
-        public PHCController(IMapper mapper, TeleMedecineContext teleMedecineContext, IPHCRepository phcRepository, ILogger<PHCController> logger)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        public PHCController(IMapper mapper, TeleMedecineContext teleMedecineContext, IPHCRepository phcRepository, ILogger<PHCController> logger, IWebHostEnvironment webHostEnvironment)
         {
-            this._mapper = mapper;           
+            this._mapper = mapper;
             this._phcRepository = phcRepository;
             this._logger = logger;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         [HttpGet]
@@ -293,6 +295,55 @@ namespace TechMed.API.Controllers
                 ModelState.AddModelError("AddPHC", $"Something went wrong when create PHC {ex.Message}");
                 return StatusCode(500, ModelState);
             }
+        }
+
+        [HttpPost]
+        [Route("UploadPHCDoc")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UploadPHCDoc([FromForm] SpokeMaintenanceDTO spokeMaintenances)
+        {
+            bool status = false;
+            string contentRootPath = _webHostEnvironment.ContentRootPath;
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    ModelState.AddModelError("UploadPHCDoc", "Please check did not get data");
+                    return BadRequest(ModelState);
+                }
+                else
+                {
+                    if (spokeMaintenances != null)
+                    {
+                        status = _phcRepository.PostSpokeMaintenance(spokeMaintenances, contentRootPath);
+                        if (status)
+                        {
+                            return Ok();
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("UploadPHCDoc", "File did not save.");
+                            return BadRequest(ModelState);
+                        }
+                        // return Ok();
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("UploadPHCDoc", "Model has null value.");
+                        return BadRequest(ModelState);
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError("UploadPHCDoc", $"Something went wrong when uplod file {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+
         }
 
     }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
@@ -212,6 +213,87 @@ namespace TechMed.BL.Repository.BaseClasses
            
 
             return insertedEmployeeTraining;
+        }
+
+        public bool PostSpokeMaintenance(SpokeMaintenanceDTO spokeDTO, string contentRootPath)
+        {
+            SpokeMaintenance spokeMaintenance;
+            //List<PatientCaseDocDTO> patientCaseDocuments = new List<PatientCaseDocDTO>();
+            int l = 0;
+            string path = @"\\MyStaticFiles\\PHCDocuments\\";
+            if (spokeDTO != null)
+            {
+
+                if (spokeDTO.file.Length > 0)
+                {
+                    l = 0;
+                    string fileName = SaveDocument(spokeDTO.file, contentRootPath);
+                    string fullPath = Path.Combine(path, fileName);
+                    spokeMaintenance = new SpokeMaintenance();
+                    spokeMaintenance.Phcid = spokeDTO.Phcid;
+                    spokeMaintenance.FilePath = fullPath;
+                    spokeMaintenance.Date = DateTime.Now;    
+
+                    this._teleMedecineContext.Entry(spokeMaintenance).State = EntityState.Added;
+                    l = this.Context.SaveChanges();
+                }
+                if (l > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+
+
+            }
+            else
+            {
+                return false;
+            }
+
+        }
+
+        public string SaveDocument(IFormFile file, string rootPath)
+        {
+            string contentRootPath = rootPath;
+            string path = @"\\MyStaticFiles\\PHCDocuments\\";
+            path = contentRootPath + path;
+
+            //Create     
+
+            var myfilename = string.Format(@"{0}", Guid.NewGuid());
+
+            //myfilename = myfilename + file.FileName;
+            //Generate unique filename
+
+            var fileType = Path.GetExtension(file.FileName);
+
+            if (fileType.ToLower() == ".pdf" || fileType.ToLower() == ".jpg" || fileType.ToLower() == ".png" || fileType.ToLower() == ".jpeg")
+            {
+                var filePath = Path.Combine(path, file.FileName);
+                //FileInfo fileInfo = new FileInfo(filePath);
+                //fileInfo.Create();
+                using (Stream stream = new FileStream(filePath, FileMode.Create))
+                {
+                    file.CopyToAsync(stream);
+
+                    //FileStream fileStream = File.Create(filePath, (int)stream.Length);
+                    //// Initialize the bytes array with the stream length and then fill it with data
+                    //byte[] bytesInStream = new byte[stream.Length];
+                    //stream.Read(bytesInStream, 0, bytesInStream.Length);
+                    //// Use write method to write to the file specified above
+                    //fileStream.Write(bytesInStream, 0, bytesInStream.Length);
+                    ////Close the filestream
+                    //fileStream.Close();
+                }
+            }
+            return file.FileName;
+
+
+            //myfilename = myfilename + ".pdf";
+
         }
     }
 }

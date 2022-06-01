@@ -94,8 +94,15 @@ namespace TechMed.DL.Models
         public virtual DbSet<GetReviewPatientVM> ReviewPatientReport { get; set; } = null!;
         public virtual DbSet<GetDashboardSpokeMaintenanceVM> GetDashboardSpokeMaintenance { get; set; } = null!;
         public virtual DbSet<GetDashboardEmployeeFeedbackVM> GetDashboardEmployeeFeedback { get; set; } = null!;
-        public virtual DbSet<TwilioMeetingRoomInfo> TwilioMeetingRoomInfos { get; set; } = null!;
 
+        public virtual DbSet<TwilioMeetingRoomInfo> TwilioMeetingRoomInfos { get; set; } = null!;
+        public virtual DbSet<GetDashboardEquipmentUptimeReportVM> GetDashboardEquipmentUptimeReport { get; set; } = null!;
+        public virtual DbSet<GetDashboardAppointmentVM> GetDashboardAppointment { get; set; } = null!;
+
+        public virtual DbSet<GetDashboardDoctorAvgTimeVM> GetDashboardDoctorAvgTime { get; set; } = null!;
+        public virtual DbSet<GetDashboardDoctorAvailabilityVM> GetDashboardDoctorAvailability { get; set; } = null!;
+        public virtual DbSet<GetDashboardEquipmentHeaderReportVM> GetDashboardEquipmentHeaderReport { get; set; } = null!;
+        public virtual DbSet<VisitedPatientsVM> VisitedPatientsList { get; set; } = null!;//
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
