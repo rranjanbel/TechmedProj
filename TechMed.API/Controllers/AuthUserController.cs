@@ -99,11 +99,7 @@ namespace TechMed.API.Controllers
             _jwtAuthManager.RemoveRefreshTokenByUserName(userName);
             _logger.LogInformation($"User [{userName}] logged out the system.");
             bool result = await _userService.LogoutUsers(userName);
-            //_doctorRepository.UpdateIsDrOnlineByUserLoginName(new UpdateIsDrOnlineByUserLoginNameVM
-            //{
-            //    IsOnline = false,
-            //    UserLoginName = userName
-            //});
+            
             return Ok();
         }
         [HttpPost("api/refresh-token")]
