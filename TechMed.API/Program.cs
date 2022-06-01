@@ -30,15 +30,19 @@ builder.Services.AddDbContext<TeleMedecineContext>(
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAutoMapper(typeof(MappingMaster));
 builder.Services.AddSwaggerGen();
-//builder.Services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
+builder.Services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
+{
+    builder
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .AllowCredentials()
+    .AllowAnyOrigin();
+}));
+//builder.Services.AddCors(options =>
 //{
-//    builder
-//    .AllowAnyMethod()
-//    .AllowAnyHeader()
-//    .AllowCredentials()
-//    .AllowAnyOrigin();
-//}));
-
+//    options.AddPolicy("AllowAll",
+//        builder => { builder.SetIsOriginAllowed(origin => true).AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().AllowCredentials(); });
+//});
 var jwtTokenConfig = builder.Configuration.GetSection("jwtTokenConfig").Get<JwtTokenConfig>();
 builder.Services.AddSingleton(jwtTokenConfig);
 builder.Services.AddAuthentication(x =>
@@ -114,11 +118,11 @@ builder.Services.AddSwaggerGen(c =>
                 });
 });
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAll",
-        builder => { builder.SetIsOriginAllowed(origin => true).AllowAnyMethod().AllowAnyHeader().AllowCredentials(); });
-});
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy("AllowAll",
+//        builder => { builder.SetIsOriginAllowed(origin => true).AllowAnyMethod().AllowAnyHeader().AllowCredentials(); });
+//});
 var app = builder.Build();
 var log = new LoggerFactory();
 // Configure the HTTP request pipeline.
@@ -134,7 +138,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseMiddleware<ExceptionMiddleware>();
-app.UseCors("AllowAll");
+app.UseCors("CorsPolicy");
 app.UseRouting();
 
 //app.UseCors("AllowAll");
