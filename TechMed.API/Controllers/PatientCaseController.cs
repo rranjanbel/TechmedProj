@@ -318,7 +318,7 @@ namespace TechMed.API.Controllers
                         status = _patientCaeRepository.SaveCaseDocument(caseDocumentVM, contentRootPath);
                         if (status)
                         {
-                            return Ok("File uploaded successfully");
+                            return Ok(new { status = "success" });
                         }
                         else
                         {
