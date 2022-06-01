@@ -28,7 +28,7 @@ namespace TechMed.DL.Models
         public virtual DbSet<DistrictMaster> DistrictMasters { get; set; } = null!;
         public virtual DbSet<DivisionMaster> DivisionMasters { get; set; } = null!;
         public virtual DbSet<DoctorMaster> DoctorMasters { get; set; } = null!;
-        public virtual DbSet<DoctorMeetingRoomInfo> DoctorMeetingRoomInfos { get; set; } = null!;
+        //public virtual DbSet<DoctorMeetingRoomInfo> DoctorMeetingRoomInfos { get; set; } = null!;
         public virtual DbSet<DrugsMaster> DrugsMasters { get; set; } = null!;
         public virtual DbSet<EmployeeTraining> EmployeeTrainings { get; set; } = null!;
         public virtual DbSet<EquipmentUptimeReport> EquipmentUptimeReports { get; set; } = null!;
@@ -94,7 +94,7 @@ namespace TechMed.DL.Models
         public virtual DbSet<GetReviewPatientVM> ReviewPatientReport { get; set; } = null!;
         public virtual DbSet<GetDashboardSpokeMaintenanceVM> GetDashboardSpokeMaintenance { get; set; } = null!;
         public virtual DbSet<GetDashboardEmployeeFeedbackVM> GetDashboardEmployeeFeedback { get; set; } = null!;
-
+        public virtual DbSet<TwilioMeetingRoomInfo> TwilioMeetingRoomInfos { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -410,11 +410,11 @@ namespace TechMed.DL.Models
                     .HasConstraintName("FK_DoctorMaster_UserMaster");
             });
 
-            modelBuilder.Entity<DoctorMeetingRoomInfo>(entity =>
+            modelBuilder.Entity<TwilioMeetingRoomInfo>(entity =>
             {
-                entity.ToTable("DoctorMeetingRoomInfo");
+                entity.ToTable("TwilioMeetingRoomInfo");
 
-                entity.Property(e => e.Id).HasColumnName("ID");
+                entity.Property(e => e.ID).HasColumnName("ID");
 
                 entity.Property(e => e.CloseDate).HasColumnType("datetime");
 
@@ -424,17 +424,17 @@ namespace TechMed.DL.Models
 
                 entity.Property(e => e.IsClosed).HasDefaultValueSql("((0))");
 
-                entity.Property(e => e.MeetingSid)
+                entity.Property(e => e.MeetingSID)
                     .HasMaxLength(250)
                     .HasColumnName("MeetingSID");
 
-                entity.Property(e => e.PatientCaseId).HasColumnName("PatientCaseID");
+                entity.Property(e => e.PatientCaseID).HasColumnName("PatientCaseID");
 
                 entity.Property(e => e.RoomName).HasMaxLength(500);
 
-                entity.HasOne(d => d.PatientCase)
-                    .WithMany(p => p.DoctorMeetingRoomInfos)
-                    .HasForeignKey(d => d.PatientCaseId)
+                entity.HasOne(d => d.PatientCaseInfo)
+                    .WithMany(p => p.TwilioMeetingRoomInfos)
+                    .HasForeignKey(d => d.PatientCaseID)
                     .HasConstraintName("FK__DoctorMee__Patie__50FB042B");
             });
 
