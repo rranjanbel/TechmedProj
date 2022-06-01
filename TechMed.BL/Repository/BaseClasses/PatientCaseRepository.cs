@@ -558,7 +558,7 @@ namespace TechMed.BL.Repository.BaseClasses
             PatientCaseDocument patientCaseDocument  ;       
             int l = 0;           
             string path = @"/MyFiles/CaseDocuments/";
-            var myfilename = string.Format(@"{0}", Guid.NewGuid());
+            
 
            
             if (caseDocuments != null)
@@ -568,6 +568,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     if(doc.file.Length >0)
                     {
                         l = 0;
+                        var myfilename = string.Format(@"{0}", Guid.NewGuid());
                         myfilename = myfilename +"_"+ doc.file.FileName;
                         string fileName = SaveDocument(doc.file, contentRootPath, myfilename);
                         if(fileName != null)
