@@ -30,19 +30,19 @@ builder.Services.AddDbContext<TeleMedecineContext>(
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAutoMapper(typeof(MappingMaster));
 builder.Services.AddSwaggerGen();
-builder.Services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
-{
-    builder
-    .AllowAnyMethod()
-    .AllowAnyHeader()
-    .AllowCredentials()
-    .AllowAnyOrigin();
-}));
-//builder.Services.AddCors(options =>
+//builder.Services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
 //{
-//    options.AddPolicy("AllowAll",
-//        builder => { builder.SetIsOriginAllowed(origin => true).AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().AllowCredentials(); });
-//});
+//    builder
+//    .AllowAnyMethod()
+//    .AllowAnyHeader()
+//    .AllowCredentials()
+//    .AllowAnyOrigin();
+//}));
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder => { builder.SetIsOriginAllowed(origin => true).AllowAnyMethod().AllowAnyHeader().AllowCredentials(); });
+});
 var jwtTokenConfig = builder.Configuration.GetSection("jwtTokenConfig").Get<JwtTokenConfig>();
 builder.Services.AddSingleton(jwtTokenConfig);
 builder.Services.AddAuthentication(x =>
@@ -78,7 +78,7 @@ builder.Services.AddScoped<IDashBoardRepository, DashBoardRepository>();
 builder.Services.AddScoped<IMISRepository, MISRepository>();
 builder.Services.AddScoped<ICaseFileStatusMasterRpository, CaseFileStatusMasterRpository>();
 builder.Services.AddScoped<IVideoCallTransactionRespository, VideoCallTransactionRespository>();
-builder.Services.AddScoped<IEquipmentUptimeReport,EquipmentUptimeReportRepositry>();
+builder.Services.AddScoped<IEquipmentUptimeReport, EquipmentUptimeReportRepositry>();
 builder.Services.AddScoped<IDigonisisRepository, DigonisisRepository>();
 builder.Services.AddScoped<IDrugsRepository, DrugsRepository>();
 builder.Services.AddScoped<ITwilioMeetingRepository, TwilioMeetingRepository>();
@@ -138,7 +138,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseMiddleware<ExceptionMiddleware>();
-app.UseCors("CorsPolicy");
+app.UseCors("AllowAll");
 app.UseRouting();
 
 //app.UseCors("AllowAll");
