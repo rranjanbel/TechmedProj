@@ -8,6 +8,7 @@ namespace TechMed.DL
 {
     public class Dose
     {
+        //test
         public bool Morning { get; set; }
         public bool Noon { get; set; }
         public bool Night { get; set; }
