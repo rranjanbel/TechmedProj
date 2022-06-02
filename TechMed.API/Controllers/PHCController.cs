@@ -320,7 +320,7 @@ namespace TechMed.API.Controllers
                         status = _phcRepository.PostSpokeMaintenance(spokeMaintenances, contentRootPath);
                         if (status)
                         {
-                            return Ok("File uploaded successfully");
+                            return Ok(new { status = "success" }); 
                         }
                         else
                         {
