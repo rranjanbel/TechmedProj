@@ -9,6 +9,7 @@ namespace TechMed.DL.Models
         {
             PatientCaseMedicines = new HashSet<PatientCaseMedicine>();
         }
+
         public int Id { get; set; }
         public string? DrugCode { get; set; }
         public string? GroupOfDrug { get; set; }
@@ -26,7 +27,5 @@ namespace TechMed.DL.Models
         public int? UpdatedBy { get; set; }
 
         public virtual ICollection<PatientCaseMedicine> PatientCaseMedicines { get; set; }
-
-
     }
 }

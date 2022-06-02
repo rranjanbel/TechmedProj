@@ -58,9 +58,9 @@ namespace TechMed.API.Controllers
 
                     var isSaved = await _twilioRoomDb.MeetingRoomInfoAdd(new TwilioMeetingRoomInfo()
                     {
-                        MeetingSID = roomFromTwilio.Sid,
+                        MeetingSid = roomFromTwilio.Sid,
                         RoomName = roomFromTwilio.UniqueName,
-                        PatientCaseID = patientCaseId,
+                        PatientCaseId = patientCaseId,
                         RoomStatusCallback = roomFromTwilio.StatusCallback.ToString(),
                         TwilioRoomStatus = roomFromTwilio.Status.ToString()
                     });
@@ -72,17 +72,17 @@ namespace TechMed.API.Controllers
                 {
 
 
-                    var roomFromTwilio = await _twilioVideoSDK.GetRoomDetailFromTwilio(patientCaseInfo.MeetingSID);
+                    var roomFromTwilio = await _twilioVideoSDK.GetRoomDetailFromTwilio(patientCaseInfo.MeetingSid);
                     if (roomFromTwilio == null)
                     {
-                        await _twilioRoomDb.MeetingRoomCloseFlagUpdate(patientCaseInfo.ID, true);
+                        await _twilioRoomDb.MeetingRoomCloseFlagUpdate(patientCaseInfo.Id, true);
                         apiResponseModel.isSuccess = false;
                         apiResponseModel.errorMessage = "Room Closed";
                         return BadRequest(apiResponseModel);
                     }
                     else if (roomFromTwilio.Status != RoomResource.RoomStatusEnum.InProgress)
                     {
-                        await _twilioRoomDb.MeetingRoomCloseFlagUpdate(patientCaseInfo.ID, true);
+                        await _twilioRoomDb.MeetingRoomCloseFlagUpdate(patientCaseInfo.Id, true);
                         apiResponseModel.isSuccess = false;
                         apiResponseModel.errorMessage = "Room Closed";
                         return BadRequest(apiResponseModel);
@@ -128,17 +128,17 @@ namespace TechMed.API.Controllers
                 }
                 else
                 {
-                    var roomFromTwilio = await _twilioVideoSDK.GetRoomDetailFromTwilio(patientCaseInfo.MeetingSID);
+                    var roomFromTwilio = await _twilioVideoSDK.GetRoomDetailFromTwilio(patientCaseInfo.MeetingSid);
                     if (roomFromTwilio == null)
                     {
-                        await _twilioRoomDb.MeetingRoomCloseFlagUpdate(patientCaseInfo.ID, true);
+                        await _twilioRoomDb.MeetingRoomCloseFlagUpdate(patientCaseInfo.Id, true);
                         apiResponseModel.isSuccess = false;
                         apiResponseModel.errorMessage = "Room Closed";
                         return BadRequest(apiResponseModel);
                     }
                     else if (roomFromTwilio.Status != RoomResource.RoomStatusEnum.InProgress)
                     {
-                        await _twilioRoomDb.MeetingRoomCloseFlagUpdate(patientCaseInfo.ID, true);
+                        await _twilioRoomDb.MeetingRoomCloseFlagUpdate(patientCaseInfo.Id, true);
                         apiResponseModel.isSuccess = false;
                         apiResponseModel.errorMessage = "Room Closed";
                         return BadRequest(apiResponseModel);

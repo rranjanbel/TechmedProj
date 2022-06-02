@@ -7,14 +7,14 @@ namespace TechMed.DL.Models
     {
         public PatientCase()
         {
-            TwilioMeetingRoomInfos = new HashSet<TwilioMeetingRoomInfo>();
+            PatientCaseDiagonosticTests = new HashSet<PatientCaseDiagonosticTest>();
             PatientCaseDocuments = new HashSet<PatientCaseDocument>();
             PatientCaseFeedbacks = new HashSet<PatientCaseFeedback>();
             PatientCaseMedicines = new HashSet<PatientCaseMedicine>();
             PatientCaseVitals = new HashSet<PatientCaseVital>();
             PatientQueues = new HashSet<PatientQueue>();
+            TwilioMeetingRoomInfos = new HashSet<TwilioMeetingRoomInfo>();
             VideoCallTransactions = new HashSet<VideoCallTransaction>();
-            PatientCaseDiagonostics = new HashSet<PatientCaseDiagonosticTest>();
         }
 
         public long Id { get; set; }
@@ -40,13 +40,13 @@ namespace TechMed.DL.Models
         public DateTime? UpdatedOn { get; set; }
 
         public virtual PatientMaster Patient { get; set; } = null!;
-        public virtual ICollection<TwilioMeetingRoomInfo> TwilioMeetingRoomInfos { get; set; }
+        public virtual ICollection<PatientCaseDiagonosticTest> PatientCaseDiagonosticTests { get; set; }
         public virtual ICollection<PatientCaseDocument> PatientCaseDocuments { get; set; }
         public virtual ICollection<PatientCaseFeedback> PatientCaseFeedbacks { get; set; }
         public virtual ICollection<PatientCaseMedicine> PatientCaseMedicines { get; set; }
         public virtual ICollection<PatientCaseVital> PatientCaseVitals { get; set; }
         public virtual ICollection<PatientQueue> PatientQueues { get; set; }
+        public virtual ICollection<TwilioMeetingRoomInfo> TwilioMeetingRoomInfos { get; set; }
         public virtual ICollection<VideoCallTransaction> VideoCallTransactions { get; set; }
-        public virtual ICollection<PatientCaseDiagonosticTest> PatientCaseDiagonostics { get; set; }
     }
 }

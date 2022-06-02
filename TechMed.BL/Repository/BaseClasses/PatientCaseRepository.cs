@@ -622,8 +622,8 @@ namespace TechMed.BL.Repository.BaseClasses
                     PatientCaseVitalsVM vitalvm;
                     var patientCaseDetails = _teleMedecineContext.PatientCases.Include(a => a.Patient).ThenInclude(a => a.Phc).Include(a => a.PatientCaseDocuments).Include(a => a.PatientCaseVitals).ThenInclude(a => a.Vital).FirstOrDefault(a => a.Id == PatientCaseID);
                     var patientQuue = _teleMedecineContext.PatientQueues.Include(a => a.AssignedDoctor).ThenInclude(s => s.User).ThenInclude(c => c.UserDetailUsers).Include(f => f.AssignedDoctor.Specialization).FirstOrDefault(x => x.PatientCaseId == PatientCaseID);
-                    var patientCaseMedicine = await _teleMedecineContext.PatientCases.Include(a => a.PatientCaseMedicines).ThenInclude(d => d.Drugs).Where(x => x.Id == PatientCaseID).ToListAsync();
-                    var patientCaseDiagonisis = await _teleMedecineContext.PatientCases.Include(b => b.PatientCaseDiagonostics).ThenInclude(e => e.DiagnosticTest).Where(x => x.Id == PatientCaseID).ToListAsync();
+                    var patientCaseMedicine = await _teleMedecineContext.PatientCases.Include(a => a.PatientCaseMedicines).ThenInclude(d => d.DrugMaster).Where(x => x.Id == PatientCaseID).ToListAsync();
+                    var patientCaseDiagonisis = await _teleMedecineContext.PatientCases.Include(b => b.PatientCaseDiagonosticTests).ThenInclude(e => e.DiagonosticTest).Where(x => x.Id == PatientCaseID).ToListAsync();
 
 
 
@@ -641,9 +641,9 @@ namespace TechMed.BL.Repository.BaseClasses
                                 pcaseMedicine = new PatientCaseMedicineDTO();
                                 pcaseMedicine.Id = med.Id;
                                 pcaseMedicine.PatientCaseId = med.PatientCaseId;
-                                pcaseMedicine.DrugMasterID = med.DrugMasterID;
-                                pcaseMedicine.DrugName = med.Drugs.NameOfDrug;
-                                pcaseMedicine.DrugFormAndVolume = med.Drugs.DrugformAndStrength;
+                                pcaseMedicine.DrugMasterID = med.DrugMasterId;
+                                pcaseMedicine.DrugName = med.DrugMaster.NameOfDrug;
+                                pcaseMedicine.DrugFormAndVolume = med.DrugMaster.DrugformAndStrength;
                                 pcaseMedicine.Morning = med.Morning;
                                 pcaseMedicine.Night = med.Night;
                                 pcaseMedicine.AfterMeal = med.AfterMeal;
@@ -664,12 +664,12 @@ namespace TechMed.BL.Repository.BaseClasses
                     {
                         foreach (var item in patientCaseDiagonisis)
                         {
-                            foreach (var diagno in item.PatientCaseDiagonostics.ToList())
+                            foreach (var diagno in item.PatientCaseDiagonosticTests.ToList())
                             {
                                 patientCaseDiagnosis = new PatientCaseDiagnosisTestsVM();
                                 patientCaseDiagnosis.Id = Convert.ToInt32(diagno.Id);
-                                patientCaseDiagnosis.PatientCaseID = diagno.PatientCaseID;
-                                patientCaseDiagnosis.DiagonosticTestID = diagno.DiagonosticTestID;
+                                patientCaseDiagnosis.PatientCaseID = diagno.PatientCaseId;
+                                patientCaseDiagnosis.DiagonosticTestID = diagno.DiagonosticTestId;
                                 patientCaseDiagnosis.CreatedOn = diagno.CreatedOn;
                                 patientCaseDiagnosisList.Add(patientCaseDiagnosis);
                             }

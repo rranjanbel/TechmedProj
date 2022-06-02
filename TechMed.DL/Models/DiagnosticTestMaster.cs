@@ -7,11 +7,12 @@ namespace TechMed.DL.Models
     {
         public DiagnosticTestMaster()
         {
-            PatientCaseDiagonostics = new HashSet<PatientCaseDiagonosticTest>();
+            PatientCaseDiagonosticTests = new HashSet<PatientCaseDiagonosticTest>();
         }
+
         public int Id { get; set; }
         public string Name { get; set; } = null!;
 
-        public virtual ICollection<PatientCaseDiagonosticTest> PatientCaseDiagonostics { get; set; }
+        public virtual ICollection<PatientCaseDiagonosticTest> PatientCaseDiagonosticTests { get; set; }
     }
 }

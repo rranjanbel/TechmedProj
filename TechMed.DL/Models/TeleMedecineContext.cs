@@ -417,32 +417,15 @@ namespace TechMed.DL.Models
                     .HasConstraintName("FK_DoctorMaster_UserMaster");
             });
 
-            modelBuilder.Entity<TwilioMeetingRoomInfo>(entity =>
+            modelBuilder.Entity<DocumentMaster>(entity =>
             {
-                entity.ToTable("TwilioMeetingRoomInfo");
+                entity.ToTable("DocumentMaster");
 
-                entity.Property(e => e.ID).HasColumnName("ID");
+                entity.Property(e => e.Id).HasColumnName("ID");
 
-                entity.Property(e => e.CloseDate).HasColumnType("datetime");
-
-                entity.Property(e => e.CreateDate)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("(getdate())");
-
-                entity.Property(e => e.IsClosed).HasDefaultValueSql("((0))");
-
-                entity.Property(e => e.MeetingSID)
-                    .HasMaxLength(250)
-                    .HasColumnName("MeetingSID");
-
-                entity.Property(e => e.PatientCaseID).HasColumnName("PatientCaseID");
-
-                entity.Property(e => e.RoomName).HasMaxLength(500);
-
-                entity.HasOne(d => d.PatientCaseInfo)
-                    .WithMany(p => p.TwilioMeetingRoomInfos)
-                    .HasForeignKey(d => d.PatientCaseID)
-                    .HasConstraintName("FK__DoctorMee__Patie__50FB042B");
+                entity.Property(e => e.Name)
+                    .HasMaxLength(150)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<DrugsMaster>(entity =>
@@ -565,15 +548,23 @@ namespace TechMed.DL.Models
                     .HasConstraintName("FK_EquipmentUptimeReport_UserMaster1");
             });
 
-            modelBuilder.Entity<FeedbackQuestionMaster>(entity =>
+            modelBuilder.Entity<FirebaseUserToken>(entity =>
             {
-                entity.ToTable("FeedbackQuestionMaster");
+                entity.ToTable("FirebaseUserToken");
 
                 entity.Property(e => e.Id).HasColumnName("ID");
 
-                entity.Property(e => e.Question)
-                    .HasMaxLength(500)
-                    .IsUnicode(false);
+                entity.Property(e => e.CreatedDate)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.FirebaseToken).HasMaxLength(1000);
+
+                entity.HasOne(d => d.UserMaster)
+                    .WithMany(p => p.FirebaseUserTokens)
+                    .HasForeignKey(d => d.UserMasterId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__FirebaseU__UserM__02925FBF");
             });
 
             modelBuilder.Entity<GenderMaster>(entity =>
@@ -651,19 +642,6 @@ namespace TechMed.DL.Models
                     .HasForeignKey(d => d.UserTypeId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_LoginHistory_UserTypeMaster");
-            });
-
-            modelBuilder.Entity<LoginRoleDelete>(entity =>
-            {
-                entity.ToTable("LoginRole.delete");
-
-                entity.Property(e => e.Id)
-                    .ValueGeneratedNever()
-                    .HasColumnName("ID");
-
-                entity.Property(e => e.LoginId).HasColumnName("LoginID");
-
-                entity.Property(e => e.RoleId).HasColumnName("RoleID");
             });
 
             modelBuilder.Entity<MaritalStatus>(entity =>
@@ -853,6 +831,33 @@ namespace TechMed.DL.Models
                     .HasConstraintName("FK_PatientCase_PatientMaster");
             });
 
+            modelBuilder.Entity<PatientCaseDiagonosticTest>(entity =>
+            {
+                entity.ToTable("PatientCaseDiagonosticTest");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.CreatedOn)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.DiagonosticTestId).HasColumnName("DiagonosticTestID");
+
+                entity.Property(e => e.PatientCaseId).HasColumnName("PatientCaseID");
+
+                entity.HasOne(d => d.DiagonosticTest)
+                    .WithMany(p => p.PatientCaseDiagonosticTests)
+                    .HasForeignKey(d => d.DiagonosticTestId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PatientCaseDiagonosticTest_DiagnosticTestMaster");
+
+                entity.HasOne(d => d.PatientCase)
+                    .WithMany(p => p.PatientCaseDiagonosticTests)
+                    .HasForeignKey(d => d.PatientCaseId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PatientCaseDiagonosticTest_PatientCase");
+            });
+
             modelBuilder.Entity<PatientCaseDocument>(entity =>
             {
                 entity.ToTable("PatientCaseDocument");
@@ -867,7 +872,15 @@ namespace TechMed.DL.Models
                     .HasMaxLength(250)
                     .IsUnicode(false);
 
+                entity.Property(e => e.DocumentTypeId).HasColumnName("DocumentTypeID");
+
                 entity.Property(e => e.PatientCaseId).HasColumnName("PatientCaseID");
+
+                entity.HasOne(d => d.DocumentType)
+                    .WithMany(p => p.PatientCaseDocuments)
+                    .HasForeignKey(d => d.DocumentTypeId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PatientCaseDocument_DocumentMaster");
 
                 entity.HasOne(d => d.PatientCase)
                     .WithMany(p => p.PatientCaseDocuments)
@@ -903,7 +916,9 @@ namespace TechMed.DL.Models
 
                 entity.Property(e => e.Id).HasColumnName("ID");
 
-                entity.Property(e => e.Bd).HasColumnName("BD");              
+                entity.Property(e => e.Bd).HasColumnName("BD");
+
+                entity.Property(e => e.DrugMasterId).HasColumnName("DrugMasterID");
 
                 entity.Property(e => e.Od).HasColumnName("OD");
 
@@ -911,35 +926,17 @@ namespace TechMed.DL.Models
 
                 entity.Property(e => e.Td).HasColumnName("TD");
 
+                entity.HasOne(d => d.DrugMaster)
+                    .WithMany(p => p.PatientCaseMedicines)
+                    .HasForeignKey(d => d.DrugMasterId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PatientCaseMedicine_DrugsMaster");
+
                 entity.HasOne(d => d.PatientCase)
                     .WithMany(p => p.PatientCaseMedicines)
                     .HasForeignKey(d => d.PatientCaseId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_PatientCaseMedicine_PatientCase");
-
-                entity.HasOne(d => d.Drugs)
-                   .WithMany(p => p.PatientCaseMedicines)
-                   .HasForeignKey(d => d.DrugMasterID)
-                   .OnDelete(DeleteBehavior.ClientSetNull)
-                   .HasConstraintName("FK_PatientCaseMedicine_DrugsMaster");
-            });
-
-            modelBuilder.Entity<PatientCasePrescriptionDelete>(entity =>
-            {
-                entity.ToTable("PatientCasePrescription.delete");
-
-                entity.Property(e => e.Id)
-                    .ValueGeneratedNever()
-                    .HasColumnName("ID");
-            });
-
-            modelBuilder.Entity<PatientCaseSymptomDelete>(entity =>
-            {
-                entity.ToTable("PatientCaseSymptom.delete");
-
-                entity.Property(e => e.Id)
-                    .ValueGeneratedNever()
-                    .HasColumnName("ID");
             });
 
             modelBuilder.Entity<PatientCaseVital>(entity =>
@@ -969,31 +966,6 @@ namespace TechMed.DL.Models
                     .HasForeignKey(d => d.VitalId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_PatientCaseVital_VitalMaster");
-            });
-
-            modelBuilder.Entity<PatientCaseDiagonosticTest>(entity =>
-            {
-                entity.ToTable("PatientCaseDiagonosticTest");
-
-                entity.Property(e => e.Id).HasColumnName("ID");
-
-                entity.Property(e => e.CreatedOn).HasColumnType("CreatedOn");
-
-                entity.Property(e => e.PatientCaseID).HasColumnName("PatientCaseID");
-
-                entity.Property(e => e.DiagonosticTestID).HasColumnName("DiagonosticTestID");
-
-                entity.HasOne(d => d.PatientCase)
-                    .WithMany(p => p.PatientCaseDiagonostics)
-                    .HasForeignKey(d => d.PatientCaseID)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_PatientCaseDiagonosticTest_PatientCase");
-
-                entity.HasOne(d => d.DiagnosticTest)
-                    .WithMany(p => p.PatientCaseDiagonostics)
-                    .HasForeignKey(d => d.DiagonosticTestID)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_PatientCaseDiagonosticTest_DiagnosticTestMaster");
             });
 
             modelBuilder.Entity<PatientMaster>(entity =>
@@ -1273,19 +1245,6 @@ namespace TechMed.DL.Models
                     .HasConstraintName("FK_PHCMaster_UserMaster");
             });
 
-            modelBuilder.Entity<RoleMasterDelete>(entity =>
-            {
-                entity.ToTable("RoleMaster.delete");
-
-                entity.Property(e => e.Id)
-                    .ValueGeneratedNever()
-                    .HasColumnName("ID");
-
-                entity.Property(e => e.Role)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-            });
-
             modelBuilder.Entity<ServerHealth>(entity =>
             {
                 entity.ToTable("ServerHealth");
@@ -1308,19 +1267,6 @@ namespace TechMed.DL.Models
             modelBuilder.Entity<Setting>(entity =>
             {
                 entity.ToTable("Setting");
-            });
-
-            modelBuilder.Entity<SpecialityMasterDelete>(entity =>
-            {
-                entity.ToTable("SpecialityMaster.delete");
-
-                entity.Property(e => e.Id)
-                    .ValueGeneratedNever()
-                    .HasColumnName("ID");
-
-                entity.Property(e => e.Speciality)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<SpecializationMaster>(entity =>
@@ -1405,6 +1351,42 @@ namespace TechMed.DL.Models
                 entity.Property(e => e.Title)
                     .HasMaxLength(10)
                     .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<TwilioMeetingRoomInfo>(entity =>
+            {
+                entity.ToTable("TwilioMeetingRoomInfo");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.CloseDate).HasColumnType("datetime");
+
+                entity.Property(e => e.CompositeVideoSid)
+                    .HasMaxLength(250)
+                    .HasColumnName("CompositeVideoSID");
+
+                entity.Property(e => e.CreateDate)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.IsClosed).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.MeetingSid)
+                    .HasMaxLength(250)
+                    .HasColumnName("MeetingSID");
+
+                entity.Property(e => e.PatientCaseId).HasColumnName("PatientCaseID");
+
+                entity.Property(e => e.RoomName).HasMaxLength(500);
+
+                entity.Property(e => e.RoomStatusCallback).HasMaxLength(1000);
+
+                entity.Property(e => e.TwilioRoomStatus).HasMaxLength(250);
+
+                entity.HasOne(d => d.PatientCase)
+                    .WithMany(p => p.TwilioMeetingRoomInfos)
+                    .HasForeignKey(d => d.PatientCaseId)
+                    .HasConstraintName("FK__TwilioMee__Patie__28B808A7");
             });
 
             modelBuilder.Entity<UserDetail>(entity =>

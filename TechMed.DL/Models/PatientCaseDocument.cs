@@ -10,7 +10,9 @@ namespace TechMed.DL.Models
         public string? DocumentName { get; set; }
         public string? DocumentPath { get; set; }
         public string? Description { get; set; }
+        public int DocumentTypeId { get; set; }
 
+        public virtual DocumentMaster DocumentType { get; set; } = null!;
         public virtual PatientCase PatientCase { get; set; } = null!;
     }
 }

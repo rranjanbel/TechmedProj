@@ -20,6 +20,7 @@ namespace TechMed.DL.Models
             EmployeeTrainingUpdatedByNavigations = new HashSet<EmployeeTraining>();
             EquipmentUptimeReportCreatedByNavigations = new HashSet<EquipmentUptimeReport>();
             EquipmentUptimeReportUpdatedByNavigations = new HashSet<EquipmentUptimeReport>();
+            FirebaseUserTokens = new HashSet<FirebaseUserToken>();
             InverseCreatedByNavigation = new HashSet<UserMaster>();
             InverseUpdatedByNavigation = new HashSet<UserMaster>();
             LoginHistories = new HashSet<LoginHistory>();
@@ -66,6 +67,7 @@ namespace TechMed.DL.Models
         public virtual ICollection<EmployeeTraining> EmployeeTrainingUpdatedByNavigations { get; set; }
         public virtual ICollection<EquipmentUptimeReport> EquipmentUptimeReportCreatedByNavigations { get; set; }
         public virtual ICollection<EquipmentUptimeReport> EquipmentUptimeReportUpdatedByNavigations { get; set; }
+        public virtual ICollection<FirebaseUserToken> FirebaseUserTokens { get; set; }
         public virtual ICollection<UserMaster> InverseCreatedByNavigation { get; set; }
         public virtual ICollection<UserMaster> InverseUpdatedByNavigation { get; set; }
         public virtual ICollection<LoginHistory> LoginHistories { get; set; }

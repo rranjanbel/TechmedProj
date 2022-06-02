@@ -467,7 +467,7 @@ namespace TechMed.BL.Repository.BaseClasses
                                 Od = item.OD,
                                 Td = item.TD,
 
-                                DrugMasterID = item.DrugID,
+                                DrugMasterId = item.DrugID,
                                 PatientCaseId = treatmentVM.PatientCaseID
                             });
                     }
@@ -476,8 +476,8 @@ namespace TechMed.BL.Repository.BaseClasses
                     foreach (var diagonist in treatmentVM.PatientCaseDiagonostics)
                     {
                         patientCaseDiagonosticTest = new PatientCaseDiagonosticTest();
-                        patientCaseDiagonosticTest.PatientCaseID = diagonist.PatientCaseID;
-                        patientCaseDiagonosticTest.DiagonosticTestID = diagonist.DiagonosticTestID;
+                        patientCaseDiagonosticTest.PatientCaseId = diagonist.PatientCaseID;
+                        patientCaseDiagonosticTest.DiagonosticTestId = diagonist.DiagonosticTestID;
                         patientCaseDiagonosticTest.CreatedOn = DateTime.Now;
                         _teleMedecineContext.Add(patientCaseDiagonosticTest);
                     }

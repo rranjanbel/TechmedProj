@@ -52,7 +52,7 @@ namespace TechMed.BL.Repository.BaseClasses
         public async Task<bool> MeetingRoomCloseFlagUpdate(long ID, bool isClosed)
         {
 
-            var meetInfo = await _teleMedecineContext.TwilioMeetingRoomInfos.FirstOrDefaultAsync(x => x.ID == ID);
+            var meetInfo = await _teleMedecineContext.TwilioMeetingRoomInfos.FirstOrDefaultAsync(x => x.Id == ID);
             if (meetInfo != null)
             {
                 meetInfo.IsClosed = isClosed;
@@ -91,7 +91,7 @@ namespace TechMed.BL.Repository.BaseClasses
             if (meetInfo != null)
             {
                 meetInfo.IsClosed = true;
-                meetInfo.CompositeVideoSID = compositionResource.Sid;
+                meetInfo.CompositeVideoSid = compositionResource.Sid;
                 meetInfo.CompositeVideoSize = compositionResource.Size;
                 _teleMedecineContext.TwilioMeetingRoomInfos.Add(meetInfo);
                 _teleMedecineContext.Entry(meetInfo).State = EntityState.Modified;
