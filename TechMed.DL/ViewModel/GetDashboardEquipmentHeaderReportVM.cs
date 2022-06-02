@@ -10,12 +10,12 @@ namespace TechMed.DL.ViewModel
     [Keyless]
     public class GetDashboardEquipmentHeaderReportVM
     {
-        public Int64 SrNo { get; set; }
+        public int SrNo { get; set; }
         public int noOfPHC { get; set; }
         public int workingDays { get; set; }
-        public int EquipmentAtPHC { get; set; }
-        public string ExpectedUpTime { get; set; }
-        public string ActualUpTime { get; set; }
+        public Int64 EquipmentAtPHC { get; set; }
+        public Int64 ExpectedUpTime { get; set; }
+        public Int64 ActualUpTime { get; set; }
         public int Availability { get; set; }           
 
     }
