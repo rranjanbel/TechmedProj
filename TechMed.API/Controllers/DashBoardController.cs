@@ -225,7 +225,7 @@ namespace TechMed.API.Controllers
                 toDateUtc = toDate.Value;
             try
             {
-                loginHistoryPHC = _dashBoardRepository.GetPHCLoginHistoryReport(PHCId, fromDateUtc, toDateUtc);
+                loginHistoryPHC = _dashBoardRepository.GetPHCLoginHistoryReport(PHCId, fromDate, toDate);
                 if (loginHistoryPHC != null)
                 {
                     return Ok(loginHistoryPHC);

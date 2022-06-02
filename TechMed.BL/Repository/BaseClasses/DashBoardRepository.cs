@@ -235,6 +235,7 @@ namespace TechMed.BL.Repository.BaseClasses
                         phcLoginHistoryReport.LogoutTime = item.LogoutTime;
                         phcLoginHistoryReport.Remark = item.Remark;
                         phcLoginHistoryReport.Status = item.Status;
+                        phcLoginHistoryReport.TotalTime = item.TotalTime;
                         phcLoginReports.Add(phcLoginHistoryReport);
                     }
                 }
