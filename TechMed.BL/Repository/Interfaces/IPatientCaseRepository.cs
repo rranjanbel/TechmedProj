@@ -21,7 +21,7 @@ namespace TechMed.BL.Repository.Interfaces
         Task<PatientFeedbackDTO> PostPatientFeedBack(PatientFeedbackDTO patientFeedback);
         Task<PatientCaseVM> GetPatientCaseDetailsByCaseID(int PatientCaseID);
         Task<PatientCaseLevelDTO> GetPatientCaseLevels(int patientID);
-        Task<List<PatientCaseDocDTO>> GetPatientCaseDocList(int PatientCaseID);
+        Task<List<PatientCaseDocDTO>> GetPatientCaseDocList(int PatientCaseID, string rootUrl);
 
         bool IsPatientCaseExist(PatientCaseCreateVM patientCase);
         bool SaveCaseDocument(List<CaseDocumentVM> caseDocuments, string contentRootPath);
