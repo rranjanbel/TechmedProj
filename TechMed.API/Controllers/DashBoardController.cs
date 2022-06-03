@@ -620,18 +620,18 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<GetDashboardEmployeeFeedbackVM>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult GetDashboardEmployeeFeedback(DateTime? fromDate = null, DateTime? toDate = null)
+        public IActionResult GetDashboardEmployeeFeedback(int? Fromyear, string qtr)
         {
             List<GetDashboardEmployeeFeedbackVM> patientResiter = new List<GetDashboardEmployeeFeedbackVM>();
-            DateTime? fromDateUtc = null;
-            if (fromDate != null)
-                fromDateUtc = fromDate.Value;
-            DateTime? toDateUtc = null;
-            if (toDate != null)
-                toDateUtc = toDate.Value;
+            //DateTime? fromDateUtc = null;
+            //if (fromDate != null)
+            //    fromDateUtc = fromDate.Value;
+            //DateTime? toDateUtc = null;
+            //if (toDate != null)
+            //    toDateUtc = toDate.Value;
             try
             {
-                patientResiter = _dashBoardRepository.GetDashboardEmployeeFeedback(fromDateUtc, toDateUtc);
+                patientResiter = _dashBoardRepository.GetDashboardEmployeeFeedback(Fromyear, qtr);
                 if (patientResiter != null)
                 {
                     return Ok(patientResiter);

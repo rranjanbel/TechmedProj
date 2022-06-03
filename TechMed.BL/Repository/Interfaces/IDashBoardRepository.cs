@@ -30,7 +30,7 @@ namespace TechMed.BL.Repository.Interfaces
         List<GetReviewPatientVM> GetReviewPatientReport(DateTime? fromDate, DateTime? toDate);
 
         List<GetDashboardSpokeMaintenanceVM> GetDashboardSpokeMaintenance(DateTime? fromDate, DateTime? toDate);
-        List<GetDashboardEmployeeFeedbackVM> GetDashboardEmployeeFeedback(DateTime? fromDate, DateTime? toDate);
+        List<GetDashboardEmployeeFeedbackVM> GetDashboardEmployeeFeedback(int? Fromyear,string qtr);
 
         List<GetDashboardEquipmentUptimeReportVM> GetDashboardEquipmentUptimeReport(int month, int year);
         List<GetDashboardAppointmentVM> GetDashboardAppointment(DateTime? fromDate, DateTime? toDate);

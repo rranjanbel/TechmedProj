@@ -571,13 +571,36 @@ namespace TechMed.BL.Repository.BaseClasses
             return registerPatientReports;
         }
 
-        public List<GetDashboardEmployeeFeedbackVM> GetDashboardEmployeeFeedback(DateTime? fromDate, DateTime? toDate)
+        public List<GetDashboardEmployeeFeedbackVM> GetDashboardEmployeeFeedback(int? Fromyear, string qtr)
         {
             List<GetDashboardEmployeeFeedbackVM> registerPatientReports = new List<GetDashboardEmployeeFeedbackVM>();
             GetDashboardEmployeeFeedbackVM registerPatientReport;
             try
             {
-                var Results = _teleMedecineContext.GetDashboardEmployeeFeedback.FromSqlInterpolated($"EXEC [dbo].[GetDashboardEmployeeFeedback] @FromDate ={fromDate}, @ToDate ={toDate}");
+                int? Frommonth=0, ToMonth=0;
+                if ("1-Qtr" == qtr)
+                {
+                    Frommonth = 1;
+                    ToMonth = 3;
+                }
+                if ("2-Qtr" == qtr)
+                {
+                    Frommonth = 4;
+                    ToMonth = 6;
+                }
+                if ("3-Qtr" == qtr)
+                {
+                    Frommonth = 7;
+                    ToMonth = 9;
+                }
+                if ("4-Qtr" == qtr)
+                {
+                    Frommonth = 10;
+                    ToMonth = 12;
+                }
+
+
+                var Results = _teleMedecineContext.GetDashboardEmployeeFeedback.FromSqlInterpolated($"EXEC [dbo].[GetDashboardEmployeeFeedback] @Fromyear ={Fromyear}, @Frommonth ={Frommonth}, @ToMonth ={ToMonth}");
                 foreach (var item in Results)
                 {
                     registerPatientReport = new GetDashboardEmployeeFeedbackVM();
