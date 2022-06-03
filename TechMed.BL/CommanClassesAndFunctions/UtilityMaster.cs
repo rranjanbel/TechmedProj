@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -87,6 +88,75 @@ namespace TechMed.BL.CommanClassesAndFunctions
                 return currentNo + 1;
             }
             return 0;
+        }
+
+        public static string SaveFileFromBase64(string imgBase64Str, string rootPath, string relativePath, string extention)
+        {
+            try
+            {
+                string path = string.Empty;
+                string contentRootPath = rootPath;
+                //string path = @"\\MyStaticFiles\\Images\\Patients\\";
+                path = contentRootPath + relativePath;
+
+                //Create unique name of the file     
+
+                var myfilename = string.Format(@"{0}", Guid.NewGuid());
+
+                //Generate unique filename
+                //string filepath = path + myfilename + ".jpeg";// png
+                string[] extentionName =new string[7] {".pdf",".png",".jpeg", ".jpg", ".docx",".doc",".txt" };
+                string filepath = string.Empty;
+                if (extentionName.Contains(extention))
+                {
+                    filepath = path + myfilename + extention;
+                }
+                else
+                {
+                    filepath = path + myfilename + ".pdf";
+                }
+                
+                var bytess = Convert.FromBase64String(imgBase64Str);
+                using (var imageFile = new FileStream(filepath, FileMode.Create))
+                {
+                    imageFile.Write(bytess, 0, bytess.Length);
+                    imageFile.Flush();
+                }
+                string saveFileName = myfilename + extention;
+                return saveFileName;
+            }
+            catch (Exception ex)
+            {
+                string exception = ex.Message;
+                return "";
+            }
+            
+        }
+
+        public static string ConvertToBase64(IFormFile file)
+        {
+            string strBase64 = string.Empty;
+            try
+            {
+                
+                if (file.Length > 0)
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        file.CopyTo(ms);
+                        var fileBytes = ms.ToArray();
+                        strBase64 = Convert.ToBase64String(fileBytes);
+                        // act on the Base64 data
+                    }
+                }
+                return strBase64;
+            }
+            catch (Exception ex)
+            {
+                string exception = ex.Message;
+                return strBase64;
+            }
+
         }
     }
 }

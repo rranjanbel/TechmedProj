@@ -633,7 +633,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     var patientQuue = _teleMedecineContext.PatientQueues.Include(a => a.AssignedDoctor).ThenInclude(s => s.User).ThenInclude(c => c.UserDetailUsers).Include(f => f.AssignedDoctor.Specialization).FirstOrDefault(x => x.PatientCaseId == PatientCaseID);
                     var patientCaseMedicine = await _teleMedecineContext.PatientCases.Include(a => a.PatientCaseMedicines).ThenInclude(d => d.DrugMaster).Where(x => x.Id == PatientCaseID).ToListAsync();
                     var patientCaseDiagonisis = await _teleMedecineContext.PatientCases.Include(b => b.PatientCaseDiagonosticTests).ThenInclude(e => e.DiagonosticTest).Where(x => x.Id == PatientCaseID).ToListAsync();
-
+                    var IsVideoCallClosed = _teleMedecineContext.TwilioMeetingRoomInfos.FirstOrDefault(a => a.PatientCaseId == PatientCaseID);
 
 
                     if (patientCaseDetails == null)
@@ -684,6 +684,15 @@ namespace TechMed.BL.Repository.BaseClasses
                             }
                         }
                         patientCase.caseDiagnosisTestList = patientCaseDiagnosisList;
+                    }
+                    if(IsVideoCallClosed != null)
+                    {
+                        //bool isVideoCallCloased = IsVideoCallClosed.IsClosed == null?false : IsVideoCallClosed.IsClosed.Value;
+                        patientCase.VideoCallStatus = true;
+                    }
+                    else
+                    {
+                        patientCase.VideoCallStatus = false;
                     }
 
                     patientCase.PatientID = patientCaseDetails.Patient.Id;
@@ -781,6 +790,72 @@ namespace TechMed.BL.Repository.BaseClasses
 
             }
             return patientCaseDocs;
+        }
+
+        public bool UploadCaseDoc(List<CaseDocumentVM> caseDocuments, string contentRootPath)
+        {
+            PatientCaseDocument patientCaseDocument;
+            int l = 0;
+            string path = @"/MyFiles/CaseDocuments/";
+
+            string relativePathSaveFile = @"\\MyStaticFiles\\CaseDocuments\\";
+
+            if (caseDocuments != null)
+            {
+                foreach (var doc in caseDocuments)
+                {
+                    if (doc.file.Length > 0)
+                    {
+                        var fileType = Path.GetExtension(doc.file.FileName);
+                        //Convert to base64
+                        string base64Value = UtilityMaster.ConvertToBase64(doc.file);
+                        //Save File in disk
+                        string saveFilename = UtilityMaster.SaveFileFromBase64(base64Value, contentRootPath, relativePathSaveFile, fileType.ToLower());
+
+                        //Save file in database
+                        l = 0;
+                       
+                        if (saveFilename != null)
+                        {
+                            string fullPath = Path.Combine(path, saveFilename);
+                            patientCaseDocument = new PatientCaseDocument();
+                            patientCaseDocument.PatientCaseId = doc.patientCaseId;
+                            patientCaseDocument.DocumentPath = fullPath;
+                            patientCaseDocument.DocumentName = doc.name;
+                            patientCaseDocument.Description = doc.file.FileName + " , " + doc.file.Length;
+                            patientCaseDocument.DocumentTypeId = doc.DocumentTypeId;
+
+                            this._teleMedecineContext.Entry(patientCaseDocument).State = EntityState.Added;
+
+                            // update case file for prescription document
+                            if (doc.DocumentTypeId == 2)
+                            {
+                                PatientCase patientCase = this._teleMedecineContext.PatientCases.FirstOrDefault(a => a.Id == doc.patientCaseId);
+                                patientCase.Prescription = fullPath;
+                                this._teleMedecineContext.Entry(patientCase).State = EntityState.Modified;
+
+                            }
+                            l = this.Context.SaveChanges();
+                        }
+
+                    }
+
+                }
+                if (l > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+
+
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 

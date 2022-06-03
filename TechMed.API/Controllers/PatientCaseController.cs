@@ -318,7 +318,8 @@ namespace TechMed.API.Controllers
                 {
                     if(caseDocumentVM.Count > 0)
                     {
-                        status = _patientCaeRepository.SaveCaseDocument(caseDocumentVM, contentRootPath);
+                        //status = _patientCaeRepository.SaveCaseDocument(caseDocumentVM, contentRootPath);
+                        status = _patientCaeRepository.UploadCaseDoc(caseDocumentVM, contentRootPath);
                         if (status)
                         {
                             return Ok(new { status = "success" });

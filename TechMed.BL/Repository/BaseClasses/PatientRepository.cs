@@ -512,14 +512,8 @@ namespace TechMed.BL.Repository.BaseClasses
 
         public string SaveImage(string ImgBase64Str, string rootPath)
         {
-            //string strm = "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
-            //ImgBase64Str = strm;
-            //string webRootPath = _webHostEnvironment.WebRootPath;
-         
             string contentRootPath = rootPath;
-            string path = @"\\MyStaticFiles\\Images\\Patients\\";
-            //path = Path.Combine(webRootPath, "CSS");
-            //path = Path.Combine(contentRootPath, path);
+            string path = @"\\MyStaticFiles\\Images\\Patients\\";           
             path = contentRootPath + path;
 
             //Create     

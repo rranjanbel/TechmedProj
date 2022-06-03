@@ -551,7 +551,7 @@ namespace TechMed.BL.Repository.BaseClasses
             .Where(a => a.PatientCaseId == patientAbsentVM.CaseID).FirstOrDefaultAsync();
             if (patientQueue != null)
             {
-                CaseFileStatusMaster CaseFileStatus = await _teleMedecineContext.CaseFileStatusMasters.Where(a => a.FileStatus.ToLower() == "Pending patient absent".ToLower()).FirstOrDefaultAsync();
+                CaseFileStatusMaster CaseFileStatus = await _teleMedecineContext.CaseFileStatusMasters.Where(a => a.FileStatus.ToLower() == "Pending Patient Absent".ToLower()).FirstOrDefaultAsync();
                 if (CaseFileStatus != null && patientQueue.AssignedDoctorId == patientAbsentVM.DoctorID)
                 {
                     patientQueue.StatusOn = DateTime.Now;
