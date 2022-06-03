@@ -16,8 +16,8 @@ namespace TechMed.DL.ViewModel
         public string? OPDNo { get; set; }
         public DateTime ReviewDate { get; set; }
         public DateTime ConsultDate { get; set; }
-        public DateTime starttime { get; set; }
-        public DateTime endtime { get; set; }
+        public DateTime? starttime { get; set; }
+        public DateTime? endtime { get; set; }
         public string? specialization { get; set; }
         public int SrNo { get; set; }
         public string? DistrictName { get; set; }//
