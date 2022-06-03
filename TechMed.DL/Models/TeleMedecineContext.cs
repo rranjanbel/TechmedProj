@@ -628,6 +628,8 @@ namespace TechMed.DL.Models
                 entity.Property(e => e.LogedoutTime).HasColumnType("datetime");
 
                 entity.Property(e => e.UserId).HasColumnName("UserID");
+                entity.Property(e => e.UserToken).HasColumnName("UserToken");
+               // entity.Property(e => e.RefreshToken).HasColumnName("RefreshToken");
 
                 entity.Property(e => e.UserTypeId).HasColumnName("UserTypeID");
 
