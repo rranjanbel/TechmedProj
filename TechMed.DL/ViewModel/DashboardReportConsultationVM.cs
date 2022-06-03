@@ -37,5 +37,7 @@ namespace TechMed.DL.ViewModel
         public int PHCID { get; set; }
         public int CreatedBy { get; set; }
         public string? PatientCreatedBy { get; set; }
+        public string? Prescription { get; set; }
+
     }
 }
