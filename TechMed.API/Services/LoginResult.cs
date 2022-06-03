@@ -15,5 +15,13 @@ namespace TechMed.API.Services
 
         [JsonPropertyName("refreshToken")]
         public string RefreshToken { get; set; }
+
+        [JsonPropertyName("roleName")]
+        public string roleName { get; set; }
+
+        [JsonPropertyName("isOnOtherDevice")]
+        public bool isOnOtherDevice { get; set; }
+
+
     }
 }

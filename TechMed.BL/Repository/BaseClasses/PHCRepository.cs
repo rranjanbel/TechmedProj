@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TechMed.BL.CommanClassesAndFunctions;
 using TechMed.BL.DTOMaster;
 using TechMed.BL.Repository.Interfaces;
 using TechMed.BL.ViewModels;
@@ -268,24 +269,31 @@ namespace TechMed.BL.Repository.BaseClasses
         {
             try
             {
-                string contentRootPath = rootPath;
-                string path = @"\\MyStaticFiles\\PHCDocuments\\";
-                path = contentRootPath + path;
+               // string contentRootPath = rootPath;
+                //string path = @"\\MyStaticFiles\\PHCDocuments\\";
+                //path = contentRootPath + path;
+                string saveFilename = "";
+
+               string relativePath = @"\\MyStaticFiles\\PHCDocuments\\";
 
                 //Create   
-                var filePath = Path.Combine(path, updatedFileName);
+               // var filePath = Path.Combine(relativePath, updatedFileName);
                 var fileType = Path.GetExtension(file.FileName);
 
                 if (fileType.ToLower() == ".pdf" || fileType.ToLower() == ".jpg" || fileType.ToLower() == ".png" || fileType.ToLower() == ".jpeg")
                 {
                     //var filePath = Path.Combine(path, file.FileName);
-                   
-                    using (Stream stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        file.CopyToAsync(stream);
-                    }
+                    //Convert to base64
+                    string base64Value = UtilityMaster.ConvertToBase64(file);
+                    //Save File in disk
+                     saveFilename = UtilityMaster.SaveFileFromBase64(base64Value, rootPath, relativePath, fileType.ToLower());
+
+                    //using (Stream stream = new FileStream(filePath, FileMode.Create))
+                    //{
+                    //    file.CopyToAsync(stream);
+                    //}
                 }
-                return filePath;
+                return saveFilename;
             }
             catch
             {

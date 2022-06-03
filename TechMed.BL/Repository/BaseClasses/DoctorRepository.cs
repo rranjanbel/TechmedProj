@@ -53,7 +53,7 @@ namespace TechMed.BL.Repository.BaseClasses
         }
         public async Task<List<MedicineMasterDTO>> GetListOfMedicine()
         {
-            List<MedicineMaster> masters = await _teleMedecineContext.MedicineMasters.OrderByDescending(a=>a.Id).ToListAsync();
+            List<MedicineMaster> masters = await _teleMedecineContext.MedicineMasters.OrderByDescending(a => a.Id).ToListAsync();
             var DTOList = new List<MedicineMasterDTO>();
             foreach (var item in masters)
             {
@@ -209,6 +209,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 .Include(c => c.AssignedByNavigation)
                 .Include(a => a.PatientCase)
                 .Include(b => b.PatientCase.Patient)
+                .Include(b => b.PatientCase.TwilioMeetingRoomInfos)
                 .Where(a => a.CaseFileStatusId == 4 && a.AssignedDoctorId == doctorVM.DoctorID
                 && a.AssignedOn.Year == DateTime.Now.Year
                 && a.AssignedOn.Month == DateTime.Now.Month
@@ -228,6 +229,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 mapdata.PatientID = item.PatientCase.Patient.PatientId;
                 mapdata.id = item.PatientCase.Patient.Id;
                 mapdata.PatientCaseID = item.PatientCase.Id;
+                mapdata.canCallInitiate = item.PatientCase.TwilioMeetingRoomInfos.Count <= 0;
                 //mapdata.status = item.PatientCase.Patient.PatientStatus.PatientStatus;
                 DTOList.Add(mapdata);
             }
@@ -373,7 +375,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     getPatientCaseDetails.UpdatedOn = patientQueue.PatientCase.UpdatedOn;
                     getPatientCaseDetails.CreatedBy = patientQueue.PatientCase.CreatedBy;
                     getPatientCaseDetails.CreatedOn = patientQueue.PatientCase.CreatedOn;
-                    getPatientCaseDetails.maritalstatus = patientQueue.PatientCase.Patient.MaritalStatus.Name ;
+                    getPatientCaseDetails.maritalstatus = patientQueue.PatientCase.Patient.MaritalStatus.Name;
 
                     getPatientCaseDetails.FirstName = patientQueue.PatientCase.Patient.FirstName;
                     getPatientCaseDetails.LastName = patientQueue.PatientCase.Patient.LastName;
@@ -439,7 +441,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     patientQueue.StatusOn = DateTime.Now;
 
                     var patientCase = patientQueue.PatientCase;
-                    patientCase.Instruction = treatmentVM.Instruction;                
+                    patientCase.Instruction = treatmentVM.Instruction;
                     patientCase.Finding = treatmentVM.Findings;
                     patientCase.Prescription = treatmentVM.Prescription;
                     patientCase.SuggestedDiagnosis = treatmentVM.SuggestedDiagnosis;
@@ -484,17 +486,17 @@ namespace TechMed.BL.Repository.BaseClasses
                     int i = _teleMedecineContext.SaveChanges();
                     return true;
                 }
-              
+
             }
             catch (Exception ex)
             {
                 string expMesg = ex.Message;
                 return false;
             }
-           
-              
 
-           
+
+
+
             return false;
         }
         public async Task<bool> DeleteNotification(long NotificationID)
@@ -551,7 +553,7 @@ namespace TechMed.BL.Repository.BaseClasses
             .Where(a => a.PatientCaseId == patientAbsentVM.CaseID).FirstOrDefaultAsync();
             if (patientQueue != null)
             {
-                CaseFileStatusMaster CaseFileStatus = await _teleMedecineContext.CaseFileStatusMasters.Where(a => a.FileStatus.ToLower() == "Pending patient absent".ToLower()).FirstOrDefaultAsync();
+                CaseFileStatusMaster CaseFileStatus = await _teleMedecineContext.CaseFileStatusMasters.Where(a => a.FileStatus.ToLower() == "Pending Patient Absent".ToLower()).FirstOrDefaultAsync();
                 if (CaseFileStatus != null && patientQueue.AssignedDoctorId == patientAbsentVM.DoctorID)
                 {
                     patientQueue.StatusOn = DateTime.Now;

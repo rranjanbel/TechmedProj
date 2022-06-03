@@ -26,7 +26,6 @@ namespace TechMed.BL.Repository.BaseClasses
             this._mapper = mapper;
             this._logger = logger;
 
-
         }
         public async Task<UserLoginDTO> LogedUserDetails(string userEmail)
         {
@@ -142,7 +141,7 @@ namespace TechMed.BL.Repository.BaseClasses
             }
 
             return false;
-        }      
+        }
 
         public bool IsduplicateUser(string UserEmail)
         {
@@ -164,9 +163,9 @@ namespace TechMed.BL.Repository.BaseClasses
             if (userMaster != null)
             {
                 userMaster.HashPassword = EncodeAndDecordPassword.EncodePassword(changePassword.NewPassword);
-                userMaster = await  Update(userMaster);  
-                if(userMaster != null)
-                return userMaster;
+                userMaster = await Update(userMaster);
+                if (userMaster != null)
+                    return userMaster;
                 else
                     return userMaster;
             }
@@ -180,9 +179,9 @@ namespace TechMed.BL.Repository.BaseClasses
                 UserMaster userMaster = new UserMaster();
                 LoginHistory loginHistory = new LoginHistory();
                 UserUsertype userUsertype = new UserUsertype();
-                userUsertype = _teleMedecineContext.UserUsertypes.Include(a => a.User).Include(a => a.UserType).FirstOrDefault( a => a.User.Email == login.Email && a.User.IsActive == true);
+                userUsertype = _teleMedecineContext.UserUsertypes.Include(a => a.User).Include(a => a.UserType).FirstOrDefault(a => a.User.Email == login.Email && a.User.IsActive == true);
                 userMaster = _teleMedecineContext.UserMasters.FirstOrDefault(a => a.Email == login.Email && a.IsActive == true);
-                if (userMaster !=null)
+                if (userMaster != null)
                 {
                     //string hashPwd = _teleMedecineContext.UserMasters.FirstOrDefault(a => a.Email == login.Email).HashPassword;
                     bool resrult = EncodeAndDecordPassword.MatchPassword(login.Password, userMaster.HashPassword);
@@ -198,20 +197,20 @@ namespace TechMed.BL.Repository.BaseClasses
                         {
                             await Update(userMaster);
 
-                            if(userUsertype.UserTypeId == 4)
+                            if (userUsertype.UserTypeId == 4)
                             {
                                 DoctorMaster doctor = _teleMedecineContext.DoctorMasters.FirstOrDefault(a => a.UserId == userUsertype.UserId);
-                                
-                                if(doctor != null)
+
+                                if (doctor != null)
                                 {
                                     doctor.IsOnline = true;
                                     _teleMedecineContext.Entry(doctor).State = EntityState.Modified;
                                 }
-                                
+
                             }
 
                             _teleMedecineContext.Entry(loginHistory).State = EntityState.Added;
-                            
+
                             _teleMedecineContext.SaveChanges();
                         }
                         catch (Exception ex)
@@ -225,7 +224,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     {
                         return false;
                     }
-                }               
+                }
                 else
                 {
                     return false;
@@ -288,7 +287,7 @@ namespace TechMed.BL.Repository.BaseClasses
                             userDetails.UserID = phc.Id;
                             userDetails.UserName = phc.Phcname;
                         }
-                        else if(userUsertype.UserType.UserType == "Doctor")
+                        else if (userUsertype.UserType.UserType == "Doctor")
                         {
                             DoctorMaster doctor = _teleMedecineContext.DoctorMasters.FirstOrDefault(a => a.UserId == userMaster.Id);
                             userDetails.UserID = doctor.Id;
@@ -320,8 +319,8 @@ namespace TechMed.BL.Repository.BaseClasses
                             userDetails.UserID = userMaster.Id;
                             userDetails.UserName = userMaster.Name;
                         }
-                        
-                       
+
+
 
                         try
                         {
@@ -355,26 +354,143 @@ namespace TechMed.BL.Repository.BaseClasses
 
         }
 
-        public async Task<bool> LogoutUsers(string userEmail)
+        public async Task<bool> LogoutUsers(string Token)
         {
             LoginHistory loginHistory = new LoginHistory();
-            loginHistory = await _teleMedecineContext.LoginHistories.Include( a => a.User).Where(a => a.User.Email == userEmail).OrderByDescending(a => a.Id).FirstOrDefaultAsync();
+            loginHistory = await _teleMedecineContext.LoginHistories.FirstOrDefaultAsync(a => a.UserToken== Token);
 
-            if(loginHistory != null)
+            if (loginHistory != null)
             {
                 loginHistory.LogedoutTime = DateTime.Now;
-                DoctorMaster doctor = _teleMedecineContext.DoctorMasters.FirstOrDefault(a => a.UserId == loginHistory.UserId);                
+                DoctorMaster doctor = _teleMedecineContext.DoctorMasters.FirstOrDefault(a => a.UserId == loginHistory.UserId);
                 if (doctor != null)
                 {
                     doctor.IsOnline = false;
                     _teleMedecineContext.Entry(doctor).State = EntityState.Modified;
                 }
-                
+
 
                 this._teleMedecineContext.Entry(loginHistory).State = EntityState.Modified;
                 int i = await this._teleMedecineContext.SaveChangesAsync();
             }
             return true;
+        }
+
+
+        //public async Task<bool> isUserLoggedInAlready(int userId)
+        //{
+
+        //}
+        public async Task<Tuple<UserMaster?, UserUsertype?, bool>> LoginUser(LoginVM login)
+        {
+            try
+            {
+                Tuple<UserMaster?, UserUsertype?, bool> oResponse = new Tuple<UserMaster?, UserUsertype?, bool>(null, null, false);
+                if (login == null)
+                    return oResponse;
+
+                var userMaster = await _teleMedecineContext.UserMasters.FirstOrDefaultAsync(a => a.Email == login.Email && a.IsActive == true);
+                if (userMaster == null)
+                    return oResponse;
+
+                bool resrult = EncodeAndDecordPassword.MatchPassword(login.Password, userMaster.HashPassword);
+                if (!resrult)
+                    return oResponse;
+
+
+                var userUsertype = _teleMedecineContext.UserUsertypes.Include(a => a.UserType).FirstOrDefault(a => a.UserId == userMaster.Id);
+
+
+                var isOnOtherDevice = _teleMedecineContext.LoginHistories.Any(x => x.UserId == userMaster.Id && x.LogedInTime > DateTime.Now.AddHours(-1) && !x.LogedoutTime.HasValue);
+                if (!isOnOtherDevice)
+                {
+                    userMaster.LastLoginAt = DateTime.Now;
+
+                    await Update(userMaster);
+                    if (userUsertype.UserTypeId == 4)
+                    {
+                        DoctorMaster? doctor = await _teleMedecineContext.DoctorMasters.FirstOrDefaultAsync(a => a.UserId == userUsertype.UserId);
+
+                        if (doctor != null)
+                        {
+                            doctor.IsOnline = true;
+                            _teleMedecineContext.Entry(doctor).State = EntityState.Modified;
+                        }
+
+                    }
+                    _teleMedecineContext.SaveChanges();
+
+                }
+
+                oResponse = new Tuple<UserMaster?, UserUsertype?, bool>(userMaster, userUsertype, isOnOtherDevice);
+                return oResponse;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public async Task<bool> UpdateLoginHistory(string userEmail, bool logoutFromOtherDevice)
+        {
+            var userMaster = await _teleMedecineContext.UserMasters.FirstOrDefaultAsync(a => a.Email == userEmail);
+            if (userMaster != null)
+            {
+                if (logoutFromOtherDevice)
+                {
+                    var history = _teleMedecineContext.LoginHistories.Where(x => x.UserId == userMaster.Id).OrderByDescending(x => x.LogedInTime).FirstOrDefault();
+                    if (history != null)
+                    {
+                        history.LogedoutTime = DateTime.Now;
+                        _teleMedecineContext.Entry(history).State = EntityState.Modified;
+                    }
+                }
+
+                var userUsertype = _teleMedecineContext.UserUsertypes.Include(a => a.UserType).FirstOrDefault(a => a.UserId == userMaster.Id);
+                userMaster.LastLoginAt = DateTime.Now;
+                await Update(userMaster);
+                LoginHistory loginHistory = new LoginHistory();
+                loginHistory.UserId = userUsertype.UserId;
+                loginHistory.UserTypeId = userUsertype.UserTypeId;
+                loginHistory.LogedInTime = DateTime.Now;
+
+                if (userUsertype.UserTypeId == 4)
+                {
+                    DoctorMaster? doctor = await _teleMedecineContext.DoctorMasters.FirstOrDefaultAsync(a => a.UserId == userUsertype.UserId);
+
+                    if (doctor != null)
+                    {
+                        doctor.IsOnline = true;
+                        _teleMedecineContext.Entry(doctor).State = EntityState.Modified;
+                    }
+
+                }
+                _teleMedecineContext.SaveChanges();
+                return true;
+
+            }
+            else
+                return false;
+        }
+
+        public async Task<bool> InsertLoginHistory(string userEmail, LoginHistory loginHistory)
+        {
+            var userMaster = await _teleMedecineContext.UserMasters.FirstOrDefaultAsync(a => a.Email == userEmail);
+            if (userMaster != null)
+            {
+                var userUsertype = _teleMedecineContext.UserUsertypes.Include(a => a.UserType).FirstOrDefault(a => a.UserId == userMaster.Id);
+
+                loginHistory.UserId = userUsertype.UserId;
+                loginHistory.UserTypeId = userUsertype.UserTypeId;
+
+                _teleMedecineContext.LoginHistories.Add(loginHistory);
+                _teleMedecineContext.Entry(loginHistory).State = EntityState.Added;
+                _teleMedecineContext.SaveChanges();
+                return true;
+
+            }
+            else
+                return false;
         }
     }
 }

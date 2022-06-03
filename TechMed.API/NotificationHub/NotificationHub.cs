@@ -9,7 +9,8 @@ namespace TechMed.API.NotificationHub
         CallRejectedByPHC,
         CallRoomStartingForDoctor,
         CallRoomStartingForPHC,
-        MeetingRoomCloseByDoctor
+        MeetingRoomCloseByDoctor,
+        LogoutFromOtherDevices
     }
     public class SignalRNotificationModel
     {
@@ -75,6 +76,16 @@ namespace TechMed.API.NotificationHub
                 senderEmail = fromUser,
                 patientCaseId = patientCaseId,
                 patientId = patientId
+            });
+        }
+        public async Task onLogoutFromOtherDevices(string toUser)
+        {
+            await Clients.All.BroadcastMessage(new SignalRNotificationModel()
+            {
+                message = "You have Login to other device.",
+                messageType = enumSignRNotificationType.LogoutFromOtherDevices.ToString(),
+                receiverEmail = toUser,
+                senderEmail = toUser,
             });
         }
     }
