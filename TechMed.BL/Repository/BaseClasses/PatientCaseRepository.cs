@@ -579,9 +579,18 @@ namespace TechMed.BL.Repository.BaseClasses
                             patientCaseDocument.DocumentPath = fullPath;
                             patientCaseDocument.DocumentName = doc.name;
                             patientCaseDocument.Description = doc.file.FileName + " , " + doc.file.Length;
+                            patientCaseDocument.DocumentTypeId = doc.DocumentTypeId;
 
 
                             this._teleMedecineContext.Entry(patientCaseDocument).State = EntityState.Added;
+
+                            if(doc.DocumentTypeId == 2)
+                            {
+                                PatientCase patientCase = this._teleMedecineContext.PatientCases.FirstOrDefault(a => a.Id == doc.patientCaseId);
+                                patientCase.Prescription = fullPath;
+                                this._teleMedecineContext.Entry(patientCase).State = EntityState.Modified;
+
+                            }
                             l = this.Context.SaveChanges();
                         }
                                           
@@ -756,15 +765,18 @@ namespace TechMed.BL.Repository.BaseClasses
 
         }
 
-        public async Task<List<PatientCaseDocDTO>> GetPatientCaseDocList(int PatientCaseID)
+        public async Task<List<PatientCaseDocDTO>> GetPatientCaseDocList(int PatientCaseID,string rootUrl)
         {
             PatientCaseDocDTO patientCaseDoc;
             List<PatientCaseDocDTO> patientCaseDocs = new List<PatientCaseDocDTO>();
             var resultDocList = await _teleMedecineContext.PatientCaseDocuments.Where(a => a.PatientCaseId == PatientCaseID).ToListAsync();
             foreach (var item in resultDocList)
             {
+               
                 patientCaseDoc = new PatientCaseDocDTO();
                 patientCaseDoc = _mapper.Map<PatientCaseDocDTO>(item);
+                //string absolutePath = rootUrl + patientCaseDoc.DocumentPath;
+                //patientCaseDoc.DocumentPath = absolutePath;
                 patientCaseDocs.Add(patientCaseDoc);
 
             }

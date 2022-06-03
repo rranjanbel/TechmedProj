@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TechMed.BL.DTOMaster;
+using TechMed.BL.ModelMaster;
 using TechMed.BL.Repository.Interfaces;
 using TechMed.BL.ViewModels;
 using TechMed.DL.Models;
@@ -18,12 +19,14 @@ namespace TechMed.API.Controllers
         private readonly IPatientCaseRepository _patientCaeRepository;
         private readonly ILogger<PatientCaseController> _logger;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        public PatientCaseController(IMapper mapper, TeleMedecineContext teleMedecineContext, IPatientCaseRepository patientCaeRepository, ILogger<PatientCaseController> logger, IWebHostEnvironment webHostEnvironment)
+        private readonly ApplicationRootUri _myConfiguration;
+        public PatientCaseController(IMapper mapper, TeleMedecineContext teleMedecineContext, IPatientCaseRepository patientCaeRepository, ILogger<PatientCaseController> logger, IWebHostEnvironment webHostEnvironment, ApplicationRootUri myConfiguration)
         {
             this._mapper = mapper;
             this._patientCaeRepository = patientCaeRepository;
             this._logger = logger;
             this._webHostEnvironment = webHostEnvironment;
+            this._myConfiguration = myConfiguration;
         }
         [HttpPost]
         [Route("CreatePatientCase")]
@@ -352,6 +355,7 @@ namespace TechMed.API.Controllers
         public async Task<IActionResult> GetPatientCaseDocList(int PatientCaseID = 0)
         {
             List<PatientCaseDocDTO> caseDocList = new List<PatientCaseDocDTO>();
+            string rootUrl = string.Empty;
             try
             {
                 if (PatientCaseID == 0)
@@ -359,7 +363,8 @@ namespace TechMed.API.Controllers
                     ModelState.AddModelError("GetPatientCaseDocList", "Please provide patient case Id");
                     return StatusCode(404, ModelState);
                 }
-                caseDocList = await _patientCaeRepository.GetPatientCaseDocList(PatientCaseID);
+                rootUrl = this._myConfiguration.Url;
+                caseDocList = await _patientCaeRepository.GetPatientCaseDocList(PatientCaseID, rootUrl);
                 if (caseDocList != null)
                 {
                     return StatusCode(200, caseDocList);

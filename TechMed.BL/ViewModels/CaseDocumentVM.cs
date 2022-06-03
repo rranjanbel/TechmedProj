@@ -13,5 +13,6 @@ namespace TechMed.BL.ViewModels
         public IFormFile file { get; set; }
         public int id { get; set; }
         public int patientCaseId { get; set; }
+        public int DocumentTypeId { get; set; }
     }
 }

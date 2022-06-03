@@ -16,6 +16,7 @@ using Microsoft.Extensions.FileProviders;
 using TechMed.BL.TwilioAPI.Model;
 using TechMed.BL.TwilioAPI.Service;
 using TechMed.API.NotificationHub;
+using TechMed.BL.ModelMaster;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -91,7 +92,9 @@ builder.Services.Configure<TwilioSettings>(
         settings.AuthToken = builder.Configuration.GetValue<string>("Twilio:TwilioAuthToken");
     })
     .AddTransient<ITwilioVideoSDKService, TwilioVideoSDKService>();
-
+// services.AddSingleton(Configuration.GetSection("myConfiguration").Get<MyConfiguration>());
+var applicationRootUrl = builder.Configuration.GetSection("ApplicationRootUrl").Get<ApplicationRootUri>();
+builder.Services.AddSingleton(applicationRootUrl);
 builder.Services.AddSignalR();
 builder.Services.AddSwaggerGen(c =>
 {

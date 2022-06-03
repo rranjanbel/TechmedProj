@@ -13,5 +13,6 @@ namespace TechMed.BL.DTOMaster
         public string? DocumentName { get; set; }
         public string? DocumentPath { get; set; }
         public string? Description { get; set; }
+        public int DocumentTypeID { get; set; }
     }
 }
