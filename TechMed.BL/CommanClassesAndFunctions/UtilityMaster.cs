@@ -95,6 +95,7 @@ namespace TechMed.BL.CommanClassesAndFunctions
             try
             {
                 string path = string.Empty;
+                string saveFileName = string.Empty;
                 string contentRootPath = rootPath;
                 //string path = @"\\MyStaticFiles\\Images\\Patients\\";
                 path = contentRootPath + relativePath;
@@ -110,10 +111,12 @@ namespace TechMed.BL.CommanClassesAndFunctions
                 if (extentionName.Contains(extention))
                 {
                     filepath = path + myfilename + extention;
+                    saveFileName = myfilename + extention;
                 }
                 else
                 {
                     filepath = path + myfilename + ".pdf";
+                    saveFileName = myfilename + ".pdf";
                 }
                 
                 var bytess = Convert.FromBase64String(imgBase64Str);
@@ -122,7 +125,7 @@ namespace TechMed.BL.CommanClassesAndFunctions
                     imageFile.Write(bytess, 0, bytess.Length);
                     imageFile.Flush();
                 }
-                string saveFileName = myfilename + extention;
+                
                 return saveFileName;
             }
             catch (Exception ex)
