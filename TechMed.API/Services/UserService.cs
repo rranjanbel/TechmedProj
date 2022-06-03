@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
+using System.Security.Claims;
 using TechMed.BL.ModelMaster;
 using TechMed.BL.Repository.Interfaces;
 using TechMed.BL.ViewModels;
 using TechMed.DL.Models;
 using TechMed.DL.ViewModel;
+using TechMedAPI.JwtInfra;
 
 namespace TechMed.API.Services
 {
@@ -13,13 +15,17 @@ namespace TechMed.API.Services
         private readonly IMapper _mapper;
         UserBusinessMaster userBusinessMaster;
         private readonly IUserRepository _userRepository;
-        public UserService(IMapper mapper, TeleMedecineContext teleMedecineContext, ILogger<UserService> logger, IUserRepository userRepository)
+        private readonly IJwtAuthManager _jwtAuthManager;
+
+        public UserService(IMapper mapper, TeleMedecineContext teleMedecineContext, ILogger<UserService> logger, IUserRepository userRepository, IJwtAuthManager jwtAuthManager)
         {
             this._mapper = mapper;
-            _logger=logger;
+            _logger = logger;
             userBusinessMaster = new UserBusinessMaster(teleMedecineContext, mapper);
-            this._userRepository=userRepository;
+            this._userRepository = userRepository;
+            _jwtAuthManager = jwtAuthManager;
         }
+
 
 
         public async Task<bool> IsAnExistingUser(string userEmail)
@@ -36,7 +42,7 @@ namespace TechMed.API.Services
 
         public async Task<bool> IsValidUserCredentials(string userName, string password)
         {
-           // var userList = userBusinessMaster.GetUserMasters();
+            // var userList = userBusinessMaster.GetUserMasters();
             _logger.LogInformation($"Validating user [{userName}]");
             if (string.IsNullOrWhiteSpace(userName))
             {
@@ -56,18 +62,66 @@ namespace TechMed.API.Services
         public async Task<LoggedUserDetails> Authenticate(LoginVM login)
         {
             LoggedUserDetails userDetails = new LoggedUserDetails();
-            if(login != null)
+            if (login != null)
             {
                 userDetails = await _userRepository.AuthenticateUser(login);
             }
             return userDetails;
-          
+
         }
 
         public async Task<bool> LogoutUsers(string userEmail)
         {
-           bool result = await _userRepository.LogoutUsers(userEmail);
+            bool result = await _userRepository.LogoutUsers(userEmail);
             return result;
         }
+
+        public async Task<LoginResult?> LoginUser(LoginVM login)
+        {
+            var userInfo = await _userRepository.LoginUser(login);
+            if (userInfo.Item1 == null)
+                return null;
+
+            var claims = new[]{
+                new Claim(ClaimTypes.Name,login.Email)
+            };
+
+            var jwtResult = _jwtAuthManager.GenerateTokens(login.Email, claims, DateTime.Now);
+            var result = new LoginResult()
+            {
+                AccessToken = jwtResult.AccessToken,
+                RefreshToken = jwtResult.RefreshToken.TokenString,
+                isOnOtherDevice = userInfo.Item3,
+                UserName = login.Email,
+                roleName = userInfo?.Item2?.UserType.UserType,
+            };
+            if (userInfo.Item3 == false)
+            {
+                await _userRepository.InsertLoginHistory(login.Email, new LoginHistory()
+                {
+                    LogedInTime = DateTime.Now,
+                    UserToken = jwtResult.AccessToken,
+                    
+                });
+            }
+
+            return result;
+
+        }
+
+        public async Task<bool> UpdateLoginHistory(string userEmail, bool logoutFromOtherDevice)
+        {
+            return await _userRepository.UpdateLoginHistory(userEmail, logoutFromOtherDevice);
+        }
+
+        public async Task<bool> InsertLoginHistory(string userEmail, string token)
+        {
+            return await _userRepository.InsertLoginHistory(userEmail, new LoginHistory()
+            {
+                LogedInTime = DateTime.Now,
+                UserToken = token
+            });
+        }
+
     }
 }

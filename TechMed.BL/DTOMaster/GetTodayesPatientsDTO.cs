@@ -26,5 +26,6 @@ namespace TechMed.BL.DTOMaster
         public string ReferredbyPHCName { get; set; }
         public string Casefile { get; set; }
         public string status { get; set; }
+        public bool canCallInitiate { get; set; }
     }
 }
