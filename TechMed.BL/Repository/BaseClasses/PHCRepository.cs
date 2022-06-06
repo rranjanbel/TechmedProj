@@ -279,20 +279,20 @@ namespace TechMed.BL.Repository.BaseClasses
                 //Create   
                // var filePath = Path.Combine(relativePath, updatedFileName);
                 var fileType = Path.GetExtension(file.FileName);
+                //Convert to base64
+                string base64Value = UtilityMaster.ConvertToBase64(file);
+                //Save File in disk
+                saveFilename = UtilityMaster.SaveFileFromBase64(base64Value, rootPath, relativePath, fileType.ToLower());
 
-                if (fileType.ToLower() == ".pdf" || fileType.ToLower() == ".jpg" || fileType.ToLower() == ".png" || fileType.ToLower() == ".jpeg")
-                {
-                    //var filePath = Path.Combine(path, file.FileName);
-                    //Convert to base64
-                    string base64Value = UtilityMaster.ConvertToBase64(file);
-                    //Save File in disk
-                     saveFilename = UtilityMaster.SaveFileFromBase64(base64Value, rootPath, relativePath, fileType.ToLower());
+                //if (fileType.ToLower() == ".pdf" || fileType.ToLower() == ".jpg" || fileType.ToLower() == ".png" || fileType.ToLower() == ".jpeg")
+                //{
+                //    var filePath = Path.Combine(path, file.FileName);
 
-                    //using (Stream stream = new FileStream(filePath, FileMode.Create))
-                    //{
-                    //    file.CopyToAsync(stream);
-                    //}
-                }
+                //    using (Stream stream = new FileStream(filePath, FileMode.Create))
+                //    {
+                //        file.CopyToAsync(stream);
+                //    }
+                //}
                 return saveFilename;
             }
             catch

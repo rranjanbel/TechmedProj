@@ -102,7 +102,8 @@ namespace TechMed.DL.Models
         public virtual DbSet<GetDashboardDoctorAvgTimeVM> GetDashboardDoctorAvgTime { get; set; } = null!;
         public virtual DbSet<GetDashboardDoctorAvailabilityVM> GetDashboardDoctorAvailability { get; set; } = null!;
         public virtual DbSet<GetDashboardEquipmentHeaderReportVM> GetDashboardEquipmentHeaderReport { get; set; } = null!;
-        public virtual DbSet<VisitedPatientsVM> VisitedPatientsList { get; set; } = null!;//
+        public virtual DbSet<VisitedPatientsVM> VisitedPatientsList { get; set; } = null!;
+        public virtual DbSet<PrescribedMedicineVM> PrescribedMedicineReport { get; set; } = null!;
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)

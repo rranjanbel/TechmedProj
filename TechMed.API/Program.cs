@@ -83,6 +83,7 @@ builder.Services.AddScoped<IEquipmentUptimeReport, EquipmentUptimeReportRepositr
 builder.Services.AddScoped<IDigonisisRepository, DigonisisRepository>();
 builder.Services.AddScoped<IDrugsRepository, DrugsRepository>();
 builder.Services.AddScoped<ITwilioMeetingRepository, TwilioMeetingRepository>();
+builder.Services.AddScoped<IHolidayRepository, HolidayRepository>();
 builder.Services.Configure<TwilioSettings>(
     settings =>
     {

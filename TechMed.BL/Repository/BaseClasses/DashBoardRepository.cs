@@ -786,5 +786,31 @@ namespace TechMed.BL.Repository.BaseClasses
             return registerPatientReports;
         }
 
+        public async Task<List<PrescribedMedicineVM>> GetPrescribedMedicineList(DateTime? fromDate, DateTime? toDate)
+        {
+            List<PrescribedMedicineVM> prescribedMedicinesList = new List<PrescribedMedicineVM>();
+            PrescribedMedicineVM prescribedMedicine;
+            try
+            {
+                var Results = _teleMedecineContext.PrescribedMedicineReport.FromSqlInterpolated($"EXEC [dbo].[GetPrescribedMedicine] @FromDate ={fromDate}, @ToDate ={toDate}");
+                foreach (var item in Results)
+                {
+                    prescribedMedicine = new PrescribedMedicineVM();
+                    prescribedMedicine.SrNo = item.SrNo;
+                    prescribedMedicine.PrescribedMedicine = item.PrescribedMedicine;
+                    prescribedMedicine.NumberOfTimePrescribed = item.NumberOfTimePrescribed;
+
+                    prescribedMedicinesList.Add(prescribedMedicine);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
+            }
+
+
+            return prescribedMedicinesList;
+        }
     }
 }

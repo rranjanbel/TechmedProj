@@ -28,6 +28,7 @@ namespace TechMed.BL.Mapper
             CreateMap<PatientCaseMedicine, PatientCaseMedicineDTO>().ReverseMap();
             CreateMap<EmployeeTraining, EmployeeTrainingDTO>().ReverseMap();
             CreateMap<EquipmentUptimeReport, EquipmentUptimeReportDTO>().ReverseMap();
+            CreateMap<HolidayMaster, HolidayDTO>().ReverseMap();
 
             //Master Mapping
             CreateMap<SpecializationMaster, SpecializationDTO>().ReverseMap();

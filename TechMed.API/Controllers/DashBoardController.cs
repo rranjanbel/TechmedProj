@@ -817,5 +817,40 @@ namespace TechMed.API.Controllers
 
         }
 
+        [HttpGet]
+        [Route("GetPrescribedMedicine")]
+        [ProducesResponseType(200, Type = typeof(List<PrescribedMedicineVM>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetPrescribedMedicine(DateTime? fromDate = null, DateTime? toDate = null)
+        {
+            List<PrescribedMedicineVM> prescribedMedicines = new List<PrescribedMedicineVM>();
+            DateTime? fromDateUtc = null;
+            if (fromDate != null)
+                fromDateUtc = fromDate.Value;
+            DateTime? toDateUtc = null;
+            if (toDate != null)
+                toDateUtc = toDate.Value;
+            try
+            {
+                prescribedMedicines = await _dashBoardRepository.GetPrescribedMedicineList(fromDateUtc, toDateUtc);
+                if (prescribedMedicines != null)
+                {
+                    return Ok(prescribedMedicines);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetPrescribedMedicine", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("GetPrescribedMedicine", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+
+        }
+
     }
 }
