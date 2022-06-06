@@ -102,5 +102,51 @@ namespace TechMed.BL.Repository.BaseClasses
                 return true;
             }
         }
+        public async Task<bool> UpdateRoomStatusFromTwilioWebHook(RoomStatusRequest roomStatusRequest)
+        {
+
+            var meetInfo = await _teleMedecineContext.TwilioMeetingRoomInfos.FirstOrDefaultAsync(x => x.RoomName == roomStatusRequest.RoomName);
+            if (meetInfo != null)
+            {
+                if (meetInfo.IsClosed.GetValueOrDefault(false) == false)
+                {
+                    if (roomStatusRequest.RoomStatus.ToLower() == "completed")
+                    {
+                        meetInfo.TwilioRoomStatus = roomStatusRequest.RoomStatus;
+                        meetInfo.IsClosed = true;
+                        meetInfo.CloseDate = DateTime.Now;
+                        _teleMedecineContext.TwilioMeetingRoomInfos.Add(meetInfo);
+                        _teleMedecineContext.Entry(meetInfo).State = EntityState.Modified;
+                        return (await _teleMedecineContext.SaveChangesAsync()) > 0;
+                    }
+                }
+            }
+            return true;
+        }
+        public async Task<bool> UpdateComposeVideoStatusFromTwilioWebHook(VideoCompositionStatusRequest videoCompositionStatusRequest)
+        {
+            var meetInfo = await _teleMedecineContext.TwilioMeetingRoomInfos.FirstOrDefaultAsync(x => x.MeetingSid == videoCompositionStatusRequest.RoomSid);
+            if (meetInfo != null)
+            {
+                meetInfo.CompositionStatus = videoCompositionStatusRequest.StatusCallbackEvent;
+                meetInfo.CompositeVideoSid = !string.IsNullOrEmpty(videoCompositionStatusRequest.CompositionSid) ?
+                        videoCompositionStatusRequest.CompositionSid : meetInfo.CompositeVideoSid;
+
+                meetInfo.Duration = videoCompositionStatusRequest.Duration > 0 ?
+                        videoCompositionStatusRequest.Duration : meetInfo.Duration;
+
+                meetInfo.MediaUri = !string.IsNullOrEmpty(videoCompositionStatusRequest.MediaUri) ?
+                        videoCompositionStatusRequest.MediaUri : meetInfo.MediaUri;
+
+                meetInfo.CompositionUri = !string.IsNullOrEmpty(videoCompositionStatusRequest.CompositionUri) ?
+                        videoCompositionStatusRequest.CompositionUri : meetInfo.CompositionUri;
+
+                _teleMedecineContext.TwilioMeetingRoomInfos.Add(meetInfo);
+                _teleMedecineContext.Entry(meetInfo).State = EntityState.Modified;
+                return (await _teleMedecineContext.SaveChangesAsync()) > 0;
+
+            }
+            return true;
+        }
     }
 }

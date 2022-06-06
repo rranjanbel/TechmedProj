@@ -99,7 +99,7 @@ namespace TechMed.API.Services
             {
                 await _userRepository.InsertLoginHistory(login.Email, new LoginHistory()
                 {
-                    LogedInTime = DateTime.Now,
+                    LogedInTime = DateTime.UtcNow,
                     UserToken = jwtResult.AccessToken,
                     
                 });
@@ -118,7 +118,7 @@ namespace TechMed.API.Services
         {
             return await _userRepository.InsertLoginHistory(userEmail, new LoginHistory()
             {
-                LogedInTime = DateTime.Now,
+                LogedInTime = DateTime.UtcNow,
                 UserToken = token
             });
         }

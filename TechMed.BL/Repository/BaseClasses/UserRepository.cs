@@ -191,7 +191,7 @@ namespace TechMed.BL.Repository.BaseClasses
 
                         loginHistory.UserId = userUsertype.UserId;
                         loginHistory.UserTypeId = userUsertype.UserTypeId;
-                        loginHistory.LogedInTime = DateTime.Now;
+                        loginHistory.LogedInTime = DateTime.UtcNow;
 
                         try
                         {
@@ -276,7 +276,7 @@ namespace TechMed.BL.Repository.BaseClasses
 
                         loginHistory.UserId = userUsertype.UserId;
                         loginHistory.UserTypeId = userUsertype.UserTypeId;
-                        loginHistory.LogedInTime = DateTime.Now;
+                        loginHistory.LogedInTime = DateTime.UtcNow;
 
                         userDetails.UserRole = userUsertype.UserType.UserType;
                         userDetails.IsPasswordChanged = userMaster.IsPasswordChanged;
@@ -361,7 +361,7 @@ namespace TechMed.BL.Repository.BaseClasses
 
             if (loginHistory != null)
             {
-                loginHistory.LogedoutTime = DateTime.Now;
+                loginHistory.LogedoutTime = DateTime.UtcNow;
                 DoctorMaster doctor = _teleMedecineContext.DoctorMasters.FirstOrDefault(a => a.UserId == loginHistory.UserId);
                 if (doctor != null)
                 {
@@ -401,7 +401,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 var userUsertype = _teleMedecineContext.UserUsertypes.Include(a => a.UserType).FirstOrDefault(a => a.UserId == userMaster.Id);
 
 
-                var isOnOtherDevice = _teleMedecineContext.LoginHistories.Any(x => x.UserId == userMaster.Id && x.LogedInTime > DateTime.Now.AddHours(-1) && !x.LogedoutTime.HasValue);
+                var isOnOtherDevice = _teleMedecineContext.LoginHistories.Any(x => x.UserId == userMaster.Id && x.LogedInTime > DateTime.UtcNow.AddHours(-1) && !x.LogedoutTime.HasValue);
                 if (!isOnOtherDevice)
                 {
                     userMaster.LastLoginAt = DateTime.Now;
@@ -441,7 +441,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     var history = _teleMedecineContext.LoginHistories.Where(x => x.UserId == userMaster.Id).OrderByDescending(x => x.LogedInTime).FirstOrDefault();
                     if (history != null)
                     {
-                        history.LogedoutTime = DateTime.Now;
+                        history.LogedoutTime = DateTime.UtcNow;
                         _teleMedecineContext.Entry(history).State = EntityState.Modified;
                     }
                 }
@@ -452,7 +452,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 LoginHistory loginHistory = new LoginHistory();
                 loginHistory.UserId = userUsertype.UserId;
                 loginHistory.UserTypeId = userUsertype.UserTypeId;
-                loginHistory.LogedInTime = DateTime.Now;
+                loginHistory.LogedInTime = DateTime.UtcNow;
 
                 if (userUsertype.UserTypeId == 4)
                 {
