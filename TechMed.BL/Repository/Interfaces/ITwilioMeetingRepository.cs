@@ -19,5 +19,7 @@ namespace TechMed.BL.Repository.Interfaces
         Task<bool> MeetingRoomCloseFlagUpdate(long ID, bool isClosed);
         Task<bool> SetMeetingRoomClosed(string roomName);
         Task<bool> MeetingRoomComposeVideoUpdate(CompositionResource compositionResource, string roomName);
+        Task<bool> UpdateRoomStatusFromTwilioWebHook(RoomStatusRequest roomStatusRequest);
+        Task<bool> UpdateComposeVideoStatusFromTwilioWebHook(VideoCompositionStatusRequest videoCompositionStatusRequest);
     }
 }

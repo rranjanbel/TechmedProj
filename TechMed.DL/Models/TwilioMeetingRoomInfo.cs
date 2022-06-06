@@ -17,6 +17,9 @@ namespace TechMed.DL.Models
         public string? TwilioRoomStatus { get; set; }
         public string? RoomStatusCallback { get; set; }
         public long? CompositeVideoSize { get; set; }
+        public string? CompositionUri { get; set; }
+        public string? MediaUri { get; set; }
+        public string? CompositionStatus { get; set; }
 
         public virtual PatientCase? PatientCase { get; set; }
     }
