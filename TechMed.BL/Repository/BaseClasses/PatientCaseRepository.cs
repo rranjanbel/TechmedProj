@@ -680,6 +680,7 @@ namespace TechMed.BL.Repository.BaseClasses
                                 patientCaseDiagnosis.PatientCaseID = diagno.PatientCaseId;
                                 patientCaseDiagnosis.DiagonosticTestID = diagno.DiagonosticTestId;
                                 patientCaseDiagnosis.CreatedOn = diagno.CreatedOn;
+                                patientCaseDiagnosis.DiagonosticTestName = diagno.DiagonosticTest.Name;
                                 patientCaseDiagnosisList.Add(patientCaseDiagnosis);
                             }
                         }
