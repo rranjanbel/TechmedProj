@@ -852,6 +852,78 @@ namespace TechMed.API.Controllers
 
         }
 
+
+        [HttpGet]
+        [Route("GetDashboardDiagnosticPrescribedTestWise")]
+        [ProducesResponseType(200, Type = typeof(List<GetDashboardDiagnosticPrescribedTestWiseVM>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetDashboardDiagnosticPrescribedTestWise(DateTime? fromDate = null, DateTime? toDate = null)
+        {
+            List<GetDashboardDiagnosticPrescribedTestWiseVM> prescribedMedicines = new List<GetDashboardDiagnosticPrescribedTestWiseVM>();
+            //DateTime? fromDateUtc = null;
+            //if (fromDate != null)
+            //    fromDateUtc = fromDate.Value;
+            //DateTime? toDateUtc = null;
+            //if (toDate != null)
+            //    toDateUtc = toDate.Value;
+            try
+            {
+                prescribedMedicines = await _dashBoardRepository.GetDashboardDiagnosticPrescribedTestWise(fromDate, toDate);
+                if (prescribedMedicines != null)
+                {
+                    return Ok(prescribedMedicines);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetDashboardDiagnosticPrescribedTestWise", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("GetDashboardDiagnosticPrescribedTestWise", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+
+        }
+
+        [HttpGet]
+        [Route("GetDashboardDiagnosticPrescribedPHCWise")]
+        [ProducesResponseType(200, Type = typeof(List<GetDashboardDiagnosticPrescribedPHCWiseVM>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetDashboardDiagnosticPrescribedPHCWise(DateTime? fromDate, DateTime? toDate)
+        {
+            List<GetDashboardDiagnosticPrescribedPHCWiseVM> prescribedMedicines = new List<GetDashboardDiagnosticPrescribedPHCWiseVM>();
+            //DateTime? fromDateUtc = null;
+            //if (fromDate != null)
+            //    fromDateUtc = fromDate.Value;
+            //DateTime? toDateUtc = null;
+            //if (toDate != null)
+            //    toDateUtc = toDate.Value;
+            try
+            {
+                prescribedMedicines = await _dashBoardRepository.GetDashboardDiagnosticPrescribedPHCWise(fromDate, toDate);
+                if (prescribedMedicines != null)
+                {
+                    return Ok(prescribedMedicines);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetDashboardDiagnosticPrescribedPHCWise", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("GetDashboardDiagnosticPrescribedPHCWise", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+
+        }
+
+
         [HttpGet]
         [Route("GetPrescribedMedicinePHCWise")]
         [ProducesResponseType(200, Type = typeof(List<PrescribedMedicinePHCWiseVM>))]
