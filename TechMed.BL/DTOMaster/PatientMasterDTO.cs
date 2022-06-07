@@ -24,9 +24,9 @@ namespace TechMed.BL.DTOMaster
         public string? Address { get; set; }      
         public int CountryId { get; set; }        
         public int StateId { get; set; }
-        public string State { get; set; }
+        public string? State { get; set; }
         public int DistrictId { get; set; }
-        public string District { get; set; }
+        public string? District { get; set; }
         public string? City { get; set; }
         public string PinCode { get; set; }
         public string? Photo { get; set; }
