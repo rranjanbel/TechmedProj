@@ -786,7 +786,6 @@ namespace TechMed.BL.Repository.BaseClasses
 
             return registerPatientReports;
         }
-
         public async Task<List<PrescribedMedicineVM>> GetPrescribedMedicineList(DateTime? fromDate, DateTime? toDate)
         {
             List<PrescribedMedicineVM> prescribedMedicinesList = new List<PrescribedMedicineVM>();
@@ -800,6 +799,37 @@ namespace TechMed.BL.Repository.BaseClasses
                     prescribedMedicine.SrNo = item.SrNo;
                     prescribedMedicine.PrescribedMedicine = item.PrescribedMedicine;
                     prescribedMedicine.NumberOfTimePrescribed = item.NumberOfTimePrescribed;
+
+                    prescribedMedicinesList.Add(prescribedMedicine);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
+            }
+
+
+            return prescribedMedicinesList;
+        }
+        public async Task<List<PrescribedMedicinePHCWiseVM>> GetPrescribedMedicinePHCWiseList(DateTime? fromDate, DateTime? toDate)
+        {
+            List<PrescribedMedicinePHCWiseVM> prescribedMedicinesList = new List<PrescribedMedicinePHCWiseVM>();
+            PrescribedMedicinePHCWiseVM prescribedMedicine;
+            try
+            {
+                var Results = _teleMedecineContext.PrescribedMedicinePHCWiseReport.FromSqlInterpolated($"EXEC [dbo].[GetPrescribedMedicinePHCWise] @FromDate ={fromDate}, @ToDate ={toDate}");
+                foreach (var item in Results)
+                {
+                    prescribedMedicine = new PrescribedMedicinePHCWiseVM();
+                    prescribedMedicine.SrNo = item.SrNo;
+                    prescribedMedicine.DistrictName = item.DistrictName;
+                    prescribedMedicine.BlockName = item.BlockName;
+                    prescribedMedicine.PHCName = item.PHCName;
+                    prescribedMedicine.PrescribedMedicine = item.PrescribedMedicine;
+                    prescribedMedicine.NumberOfTimePrescribed = item.NumberOfTimePrescribed;
+                    prescribedMedicine.EAushadhiStock = item.EAushadhiStock;
+                    prescribedMedicine.QuantityPrescribed = item.QuantityPrescribed;
 
                     prescribedMedicinesList.Add(prescribedMedicine);
                 }

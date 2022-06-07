@@ -39,5 +39,6 @@ namespace TechMed.BL.Repository.Interfaces
         List<GetDashboardDoctorAvailabilityVM> GetDashboardDoctorAvailability(DateTime? fromDate, DateTime? toDate);
         List<GetDashboardEquipmentHeaderReportVM> GetDashboardEquipmentHeaderReport(int month, int year);
         Task<List<PrescribedMedicineVM>> GetPrescribedMedicineList(DateTime? fromDate, DateTime? toDate);
+        Task<List<PrescribedMedicinePHCWiseVM>> GetPrescribedMedicinePHCWiseList(DateTime? fromDate, DateTime? toDate);
     }
 }
