@@ -578,7 +578,7 @@ namespace TechMed.BL.Repository.BaseClasses
             GetDashboardEmployeeFeedbackVM registerPatientReport;
             try
             {
-                int? Frommonth=0, ToMonth=0;
+                int? Frommonth = 0, ToMonth = 0;
                 if ("1-Qtr" == qtr)
                 {
                     Frommonth = 1;
@@ -801,6 +801,60 @@ namespace TechMed.BL.Repository.BaseClasses
                     prescribedMedicine.PrescribedMedicine = item.PrescribedMedicine;
                     prescribedMedicine.NumberOfTimePrescribed = item.NumberOfTimePrescribed;
 
+                    prescribedMedicinesList.Add(prescribedMedicine);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
+            }
+
+
+            return prescribedMedicinesList;
+        }
+
+        public async Task<List<GetDashboardDiagnosticPrescribedTestWiseVM>> GetDashboardDiagnosticPrescribedTestWise(DateTime? fromDate, DateTime? toDate)
+        {
+            List<GetDashboardDiagnosticPrescribedTestWiseVM> prescribedMedicinesList = new List<GetDashboardDiagnosticPrescribedTestWiseVM>();
+            GetDashboardDiagnosticPrescribedTestWiseVM prescribedMedicine;
+            try
+            {
+                var Results = _teleMedecineContext.GetDashboardDiagnosticPrescribedTestWise.FromSqlInterpolated($"EXEC [dbo].[GetDashboardDiagnosticPrescribedTestWise] @FromDate ={fromDate}, @ToDate ={toDate}");
+                foreach (var item in Results)
+                {
+                    prescribedMedicine = new GetDashboardDiagnosticPrescribedTestWiseVM();
+                    prescribedMedicine.SrNo = item.SrNo;
+                    prescribedMedicine.Diagnostic = item.Diagnostic;
+                    prescribedMedicine.NoOfTimePrescribed = item.NoOfTimePrescribed;
+                    prescribedMedicinesList.Add(prescribedMedicine);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
+            }
+
+
+            return prescribedMedicinesList;
+        }
+        public async Task<List<GetDashboardDiagnosticPrescribedPHCWiseVM>> GetDashboardDiagnosticPrescribedPHCWise(DateTime? fromDate, DateTime? toDate)
+        {
+            List<GetDashboardDiagnosticPrescribedPHCWiseVM> prescribedMedicinesList = new List<GetDashboardDiagnosticPrescribedPHCWiseVM>();
+            GetDashboardDiagnosticPrescribedPHCWiseVM prescribedMedicine;
+            try
+            {
+                var Results = _teleMedecineContext.GetDashboardDiagnosticPrescribedPHCWise.FromSqlInterpolated($"EXEC [dbo].[GetDashboardDiagnosticPrescribedPHCWise] @FromDate ={fromDate}, @ToDate ={toDate}");
+                foreach (var item in Results)
+                {
+                    prescribedMedicine = new GetDashboardDiagnosticPrescribedPHCWiseVM();
+                    prescribedMedicine.SrNo = item.SrNo;
+                    prescribedMedicine.DistrictName = item.DistrictName;
+                    prescribedMedicine.BlockName = item.BlockName;
+                    prescribedMedicine.PHCName = item.PHCName;
+                    prescribedMedicine.Diagnostic = item.Diagnostic;
+                    prescribedMedicine.NoOfTimePrescribed = item.NoOfTimePrescribed;
                     prescribedMedicinesList.Add(prescribedMedicine);
                 }
 
