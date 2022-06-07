@@ -28,6 +28,8 @@ namespace TechMed.BL.ViewModels
         public string DoctorName { get; set; }
         public string DoctorMobileNo { get; set; }
         public string DoctorSpecialization { get; set; }
+        public string DoctorQalification { get; set; }
+        public string DoctorMCINo { get; set; }
         public int CaseFileStatusID { get; set; }
         public bool VideoCallStatus { get; set; }
         public PatientMasterDTO patientMaster { get; set; }

@@ -634,7 +634,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     var patientCaseMedicine = await _teleMedecineContext.PatientCases.Include(a => a.PatientCaseMedicines).ThenInclude(d => d.DrugMaster).Where(x => x.Id == PatientCaseID).ToListAsync();
                     var patientCaseDiagonisis = await _teleMedecineContext.PatientCases.Include(b => b.PatientCaseDiagonosticTests).ThenInclude(e => e.DiagonosticTest).Where(x => x.Id == PatientCaseID).ToListAsync();
                     var IsVideoCallClosed = _teleMedecineContext.TwilioMeetingRoomInfos.FirstOrDefault(a => a.PatientCaseId == PatientCaseID);
-
+                    var patientDetails = _teleMedecineContext.PatientCases.Include(p => p.Patient).ThenInclude(s => s.State).ThenInclude(d => d.DistrictMasters).FirstOrDefault(a => a.Id == PatientCaseID);
 
                     if (patientCaseDetails == null)
                     {
@@ -702,12 +702,19 @@ namespace TechMed.BL.Repository.BaseClasses
                     patientCase.PHCMoname = patientCaseDetails.Patient.Phc.Moname;
                     patientCase.patientMaster = _mapper.Map<PatientMasterDTO>(patientCaseDetails.Patient);
                     patientCase.patientCase = _mapper.Map<PatientCaseDTO>(patientCaseDetails);
+                    if(patientDetails !=null)
+                    {
+                        patientCase.patientMaster.District = patientDetails.Patient.District.DistrictName;
+                        patientCase.patientMaster.State = patientDetails.Patient.State.StateName;
+                    }
                     if(patientQuue != null)
                     {
                         patientCase.DoctorName = patientQuue.AssignedDoctor.User.Name;
                         patientCase.DoctorMobileNo = patientQuue.AssignedDoctor.PhoneNumber;
                         patientCase.CaseFileStatusID = patientQuue.CaseFileStatusId;
-                       patientCase.DoctorSpecialization = patientQuue.AssignedDoctor.Specialization.Specialization;
+                        patientCase.DoctorSpecialization = patientQuue.AssignedDoctor.Specialization.Specialization;
+                        patientCase.DoctorMCINo = patientQuue.AssignedDoctor.Mciid;
+                        patientCase.DoctorQalification = patientQuue.AssignedDoctor.Qualification;
                     }
                     else
                     {
