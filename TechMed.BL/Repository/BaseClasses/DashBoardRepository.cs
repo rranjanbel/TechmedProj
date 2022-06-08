@@ -897,5 +897,30 @@ namespace TechMed.BL.Repository.BaseClasses
 
             return prescribedMedicinesList;
         }
+
+        public async Task<List<GetDashboardGraphVM>> GetDashboardGraph()
+        {
+            List<GetDashboardGraphVM> prescribedMedicinesList = new List<GetDashboardGraphVM>();
+            GetDashboardGraphVM prescribedMedicine;
+            try
+            {
+                var Results = _teleMedecineContext.GetDashboardGraph.FromSqlInterpolated($"EXEC [dbo].[GetDashboardGraph]");
+                foreach (var item in Results)
+                {
+                    prescribedMedicine = new GetDashboardGraphVM();
+                    prescribedMedicine.PatientCount = item.PatientCount;
+                    prescribedMedicine.DistrictName = item.DistrictName;                   
+                    prescribedMedicinesList.Add(prescribedMedicine);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
+            }
+
+
+            return prescribedMedicinesList;
+        }
     }
 }

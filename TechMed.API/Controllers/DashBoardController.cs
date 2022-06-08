@@ -959,5 +959,35 @@ namespace TechMed.API.Controllers
 
         }
 
+        [HttpGet]
+        [Route("GetDashboardGraph")]
+        [ProducesResponseType(200, Type = typeof(List<GetDashboardGraphVM>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetDashboardGraph()
+        {
+            List<GetDashboardGraphVM> prescribedMedicines = new List<GetDashboardGraphVM>();
+            
+            try
+            {
+                prescribedMedicines = await _dashBoardRepository.GetDashboardGraph();
+                if (prescribedMedicines != null)
+                {
+                    return Ok(prescribedMedicines);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetDashboardGraph", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("GetDashboardGraph", $"Something went wrong {ex.Message}");
+                return StatusCode(500, ModelState);
+            }
+
+        }
+
     }
 }
