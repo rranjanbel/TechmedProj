@@ -92,15 +92,7 @@ namespace TechMed.API.Controllers
 
 
         //}
-        [HttpGet("api/logout")]
-        [AllowAnonymous]
-        public async Task<ActionResult> Logout()
-        {
-            var _bearer_token = Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
-            var users = await _userService.LogoutUsers(_bearer_token);
-
-            return Ok();
-        }
+     
         //[HttpPost("api/refresh-token")]
         //[Authorize]
         //public async Task<ActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
@@ -137,24 +129,45 @@ namespace TechMed.API.Controllers
         public async Task<ActionResult> LoginUserWithToken([FromBody] LoginRequest request)
         {
             ApiResponseModel<LoginResult> apiResponse = new ApiResponseModel<LoginResult>();
-            if (!ModelState.IsValid)
+            try
             {
-                apiResponse.isSuccess = false;
-                apiResponse.errorMessage = "Invalid Credentials";
+               
+                if (!ModelState.IsValid)
+                {
+                    apiResponse.isSuccess = false;
+                    apiResponse.errorMessage = "Invalid Credentials";
 
+                    return BadRequest(apiResponse);
+                }
+                var user = await _userService.LoginUser(new LoginVM() { Email = request.UserName, Password = request.Password });
+
+                if (user == null)
+                {
+                    apiResponse.isSuccess = false;
+                    apiResponse.errorMessage = "Invalid Credentials";
+                    return BadRequest(apiResponse);
+                }
+                apiResponse.isSuccess = true;
+                apiResponse.data = user;
+                return Ok(apiResponse);
+            }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
+                _logger.LogInformation("Exception in login module " + ex.Message);
                 return BadRequest(apiResponse);
             }
-            var user = await _userService.LoginUser(new LoginVM() { Email = request.UserName, Password = request.Password });
+           
+        }
 
-            if (user == null)
-            {
-                apiResponse.isSuccess = false;
-                apiResponse.errorMessage = "Invalid Credentials";
-                return BadRequest(apiResponse);
-            }
-            apiResponse.isSuccess = true;
-            apiResponse.data = user;
-            return Ok(apiResponse);
+        [HttpGet("api/logout")]
+        [AllowAnonymous]
+        public async Task<ActionResult> Logout()
+        {
+            var _bearer_token = Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
+            var users = await _userService.LogoutUsers(_bearer_token);
+
+            return Ok();
         }
 
         [HttpGet("api/logout-from-other-device")]

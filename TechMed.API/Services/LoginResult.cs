@@ -22,6 +22,9 @@ namespace TechMed.API.Services
         [JsonPropertyName("isOnOtherDevice")]
         public bool isOnOtherDevice { get; set; }
 
+        [JsonPropertyName("isPasswordChanged")]
+        public bool? isPasswordChanged { get; set; }
+
 
     }
 }

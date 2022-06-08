@@ -20,6 +20,14 @@ using TechMed.BL.ModelMaster;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add services for logger.
+var logger = new LoggerConfiguration()
+  .ReadFrom.Configuration(builder.Configuration)
+  .Enrich.FromLogContext()
+  .CreateLogger();
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog(logger);
+
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -128,7 +136,7 @@ builder.Services.AddSwaggerGen(c =>
 //        builder => { builder.SetIsOriginAllowed(origin => true).AllowAnyMethod().AllowAnyHeader().AllowCredentials(); });
 //});
 var app = builder.Build();
-var log = new LoggerFactory();
+//var log = new LoggerFactory();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -163,7 +171,7 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
-log.AddSerilog();
+//log.AddSerilog();
 
 app.MapControllers();
 

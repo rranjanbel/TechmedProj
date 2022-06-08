@@ -311,6 +311,7 @@ namespace TechMed.API.Controllers
                 if (!ModelState.IsValid)
                 {
                     ModelState.AddModelError("UploadPHCDoc", "Please check did not get data");
+                    _logger.LogInformation("UploadPHCDoc model state is invalid " );
                     return BadRequest(ModelState);
                 }
                 else
@@ -320,6 +321,7 @@ namespace TechMed.API.Controllers
                         status = _phcRepository.PostSpokeMaintenance(spokeMaintenances, contentRootPath);
                         if (status)
                         {
+                            _logger.LogInformation("UploadPHCDoc Sending successfull response");
                             return Ok(new { status = "success" }); 
                         }
                         else
@@ -339,7 +341,7 @@ namespace TechMed.API.Controllers
             }
             catch (Exception ex)
             {
-
+                _logger.LogInformation("Exception in PHC module " + ex.Message);
                 ModelState.AddModelError("UploadPHCDoc", $"Something went wrong when uplod file {ex.Message}");
                 return StatusCode(500, ModelState);
             }
