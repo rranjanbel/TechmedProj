@@ -94,6 +94,7 @@ namespace TechMed.API.Services
                 isOnOtherDevice = userInfo.Item3,
                 UserName = login.Email,
                 roleName = userInfo?.Item2?.UserType.UserType,
+                isPasswordChanged = userInfo?.Item1?.IsPasswordChanged,
             };
             if (userInfo.Item3 == false)
             {
