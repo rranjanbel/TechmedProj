@@ -21,11 +21,13 @@ namespace TechMed.BL.Repository.BaseClasses
         private readonly TeleMedecineContext _teleMedecineContext;
         private readonly IMapper _mapper;
         private readonly ILogger<PatientCaseRepository> _logger;
-        public PatientCaseRepository(ILogger<PatientCaseRepository> logger, TeleMedecineContext teleMedecineContext, IMapper mapper) : base(teleMedecineContext)
+        private readonly IDoctorRepository _doctorRepository; 
+        public PatientCaseRepository(ILogger<PatientCaseRepository> logger, TeleMedecineContext teleMedecineContext, IMapper mapper, IDoctorRepository doctorRepository) : base(teleMedecineContext)
         {
             this._teleMedecineContext = teleMedecineContext;
             this._mapper = mapper;
             this._logger = logger;
+            this._doctorRepository = doctorRepository;
         }
 
         public async Task<PatientCase> CreateAsync(PatientCase patientCase)
@@ -425,10 +427,13 @@ namespace TechMed.BL.Repository.BaseClasses
             PatientReferToDoctorVM outPatientReferToDoctorVM = new PatientReferToDoctorVM();
             PatientQueue patientQueue = new PatientQueue();
             string message = string.Empty;
+            int autoAssignDoctorID = 0;
+           
             try
             {
                 if (patientReferToDoctorVM != null)
                 {
+                   // autoAssignDoctorID = AutoAssignDoctor(patientReferToDoctorVM.PatientCaseID);
                     patientQueue.PatientCaseId = patientReferToDoctorVM.PatientCaseID;
                     patientQueue.AssignedDoctorId = patientReferToDoctorVM.AssignedDocterID;
                     patientQueue.AssignedBy = patientReferToDoctorVM.PHCID;
@@ -660,6 +665,7 @@ namespace TechMed.BL.Repository.BaseClasses
                                 pcaseMedicine.Od = med.Od;
                                 pcaseMedicine.Bd = med.Bd;
                                 pcaseMedicine.Td = med.Td;
+                                pcaseMedicine.Duration = med.Duration;
                                 pcaseMedicineList.Add(pcaseMedicine);
                             }                         
 
@@ -864,6 +870,24 @@ namespace TechMed.BL.Repository.BaseClasses
             {
                 return false;
             }
+        }
+
+        public int AutoAssignDoctor(long PatientCaseID)
+        {
+            int doctorId =0;
+            //1. Get online doctorlist
+            int specializationID = _teleMedecineContext.PatientCases.Where(p => p.Id == PatientCaseID).Select(s => s.SpecializationId).FirstOrDefault();
+            var onlineDoctors =  _teleMedecineContext.DoctorMasters.Where(a => a.IsOnline == true && a.SpecializationId == specializationID).Select(d => d.Id).ToList();
+            //2. Get Doctor id who has minimum patient in Queue
+            var doctorIDsAndNoOfPatients = _teleMedecineContext.PatientQueues
+                .Where( a => onlineDoctors.Contains(a.AssignedDoctorId))
+                .GroupBy(a => a.AssignedDoctorId)
+                .Select(g => new { DoctorId = g.Key, Count = g.Count() });
+            //3. Assign patient to the doctor who has minimum queue
+            var minimumCount = doctorIDsAndNoOfPatients.Min(m => m.Count);
+            var assinToDoctor = doctorIDsAndNoOfPatients.Where(a => a.Count == minimumCount).OrderBy(o => o.DoctorId);
+            doctorId = assinToDoctor.Select(s => s.DoctorId).FirstOrDefault();
+            return doctorId;
         }
     }
 

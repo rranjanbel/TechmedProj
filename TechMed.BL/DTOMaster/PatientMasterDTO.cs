@@ -42,5 +42,6 @@ namespace TechMed.BL.DTOMaster
         public DateTime? UpdatedOn { get; set; }
         public int Age { get; set; }
         public int MaritalStatusID { get; set; }
+        public string? GuardianName { get; set; }
     }
 }

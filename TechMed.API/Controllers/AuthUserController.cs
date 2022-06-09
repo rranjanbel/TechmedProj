@@ -153,8 +153,8 @@ namespace TechMed.API.Controllers
             }
             catch (Exception ex)
             {
-                string message = ex.Message;
-                _logger.LogInformation("Exception in login module " + ex.Message);
+                string message = ex.Message;               
+                _logger.LogError("Exception in login module " + ex.Message);
                 return BadRequest(apiResponse);
             }
            
@@ -164,28 +164,47 @@ namespace TechMed.API.Controllers
         [AllowAnonymous]
         public async Task<ActionResult> Logout()
         {
-            var _bearer_token = Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
-            var users = await _userService.LogoutUsers(_bearer_token);
+            try
+            {
+                var _bearer_token = Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
+                var users = await _userService.LogoutUsers(_bearer_token);
 
-            return Ok();
+                return Ok(new { status = "Sucess" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Exception in Logout module " + ex.Message);
+                return BadRequest(new {status ="Fail" });
+            }
+          
         }
 
         [HttpGet("api/logout-from-other-device")]
         public async Task<ActionResult> LogoutFromOtherDevice()
         {
             ApiResponseModel<bool> apiResponse = new ApiResponseModel<bool>();
-
-            var user = await _userService.UpdateLoginHistory(User.Identity.Name, true);
-            if (!user)
+            try
             {
-                apiResponse.isSuccess = false;
-                apiResponse.errorMessage = "Unable to Logout";
+                var user = await _userService.UpdateLoginHistory(User.Identity.Name, true);
+                if (!user)
+                {
+                    apiResponse.isSuccess = false;
+                    apiResponse.errorMessage = "Unable to Logout";
+                    return BadRequest(apiResponse);
+                }
+                var _bearer_token = Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
+                var users = await _userService.InsertLoginHistory(User.Identity.Name, _bearer_token);
+                apiResponse.isSuccess = true;
+                return Ok(apiResponse);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Exception in Logout From Other Device module " + ex.Message);
                 return BadRequest(apiResponse);
             }
-            var _bearer_token = Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
-            var users = await _userService.InsertLoginHistory(User.Identity.Name, _bearer_token);
-            apiResponse.isSuccess = true;
-            return Ok(apiResponse);
+           
+
+            
         }
     }
 }
