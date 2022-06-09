@@ -909,7 +909,145 @@ namespace TechMed.BL.Repository.BaseClasses
                 {
                     prescribedMedicine = new GetDashboardGraphVM();
                     prescribedMedicine.PatientCount = item.PatientCount;
-                    prescribedMedicine.DistrictName = item.DistrictName;                   
+                    prescribedMedicine.DistrictName = item.DistrictName;
+                    prescribedMedicinesList.Add(prescribedMedicine);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
+            }
+
+
+            return prescribedMedicinesList;
+        }
+
+        public async Task<List<GetDashboardFeedbackSummaryReportVM>> GetDashboardFeedbackSummaryReport()
+        {
+            List<GetDashboardFeedbackSummaryReportVM> prescribedMedicinesList = new List<GetDashboardFeedbackSummaryReportVM>();
+            GetDashboardFeedbackSummaryReportVM prescribedMedicine;
+            try
+            {
+                var Results = _teleMedecineContext.GetDashboardFeedbackSummaryReport.FromSqlInterpolated($"EXEC [dbo].[GetDashboardFeedbackSummaryReport]");
+                foreach (var item in Results)
+                {
+                    prescribedMedicine = new GetDashboardFeedbackSummaryReportVM();
+                    prescribedMedicine.Feedback = item.Feedback;
+                    prescribedMedicine.FeedbackCount = item.FeedbackCount;
+                    prescribedMedicinesList.Add(prescribedMedicine);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
+            }
+
+
+            return prescribedMedicinesList;
+        }
+        public async Task<List<GetDashboardFeedbackReportVM>> GetDashboardFeedbackReport(DateTime? fromDate, DateTime? toDate)
+        {
+            List<GetDashboardFeedbackReportVM> prescribedMedicinesList = new List<GetDashboardFeedbackReportVM>();
+            GetDashboardFeedbackReportVM prescribedMedicine;
+            try
+            {
+                var Results = _teleMedecineContext.GetDashboardFeedbackReport.FromSqlInterpolated($"EXEC [dbo].[GetDashboardFeedbackReport] @FromDate ={fromDate}, @ToDate ={toDate}");
+                foreach (var item in Results)
+                {
+                    prescribedMedicine = new GetDashboardFeedbackReportVM();
+                    prescribedMedicine.SrNo = item.SrNo;
+                    prescribedMedicine.DistrictName = item.DistrictName;
+                    prescribedMedicine.BlockName = item.BlockName;
+                    prescribedMedicine.PHCName = item.PHCName;
+                    prescribedMedicine.PatientName = item.PatientName;
+                    prescribedMedicine.MobileNo = item.MobileNo;
+                    prescribedMedicine.DoctorName = item.DoctorName;
+                    prescribedMedicine.Feedback = item.Feedback;
+                    prescribedMedicine.Comments = item.Comments;
+                    prescribedMedicinesList.Add(prescribedMedicine);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
+            }
+
+
+            return prescribedMedicinesList;
+        }
+        public async Task<List<GetDashboardDignosisSpecialityWiseVM>> GetDashboardDignosisSpecialityWise(DateTime? fromDate, DateTime? toDate, int Specialityid)
+        {
+            List<GetDashboardDignosisSpecialityWiseVM> prescribedMedicinesList = new List<GetDashboardDignosisSpecialityWiseVM>();
+            GetDashboardDignosisSpecialityWiseVM prescribedMedicine;
+            try
+            {
+                var Results = _teleMedecineContext.GetDashboardDignosisSpecialityWise.FromSqlInterpolated($"EXEC [dbo].[GetDashboardDignosisSpecialityWise] @FromDate ={fromDate}, @ToDate ={toDate}, @Specialityid={Specialityid}");
+                foreach (var item in Results)
+                {
+                    prescribedMedicine = new GetDashboardDignosisSpecialityWiseVM();
+                    prescribedMedicine.SrNo = item.SrNo;
+                    prescribedMedicine.DistrictName = item.DistrictName;
+                    prescribedMedicine.BlockName = item.BlockName;
+                    prescribedMedicine.PHCName = item.PHCName;
+                    prescribedMedicine.Disease = item.Disease;
+                    prescribedMedicine.Occurrence = item.Occurrence;
+                    prescribedMedicinesList.Add(prescribedMedicine);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
+            }
+
+
+            return prescribedMedicinesList;
+        }
+        public async Task<List<GetDashboardDiseasephcWiseVM>> GetDashboardDiseasephcWise(DateTime? fromDate, DateTime? toDate)
+        {
+            List<GetDashboardDiseasephcWiseVM> prescribedMedicinesList = new List<GetDashboardDiseasephcWiseVM>();
+            GetDashboardDiseasephcWiseVM prescribedMedicine;
+            try
+            {
+                var Results = _teleMedecineContext.GetDashboardDiseasephcWise.FromSqlInterpolated($"EXEC [dbo].[GetDashboardDiseasephcWise] @FromDate ={fromDate}, @ToDate ={toDate}");
+                foreach (var item in Results)
+                {
+                    prescribedMedicine = new GetDashboardDiseasephcWiseVM();
+                    prescribedMedicine.SrNo = item.SrNo;
+                    prescribedMedicine.DistrictName = item.DistrictName;
+                    prescribedMedicine.BlockName = item.BlockName;
+                    prescribedMedicine.PHCName = item.PHCName;
+                    prescribedMedicine.Disease = item.Disease;
+                    prescribedMedicine.Occurrence = item.Occurrence;
+                    prescribedMedicinesList.Add(prescribedMedicine);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
+            }
+
+
+            return prescribedMedicinesList;
+        }
+        public async Task<List<GetDashboardDiseaseAgeWiseVM>> GetDashboardDiseaseAgeWise(DateTime? fromDate, DateTime? toDate)
+        {
+            List<GetDashboardDiseaseAgeWiseVM> prescribedMedicinesList = new List<GetDashboardDiseaseAgeWiseVM>();
+            GetDashboardDiseaseAgeWiseVM prescribedMedicine;
+            try
+            {
+                var Results = _teleMedecineContext.GetDashboardDiseaseAgeWise.FromSqlInterpolated($"EXEC [dbo].[GetDashboardDiseaseAgeWise] @FromDate ={fromDate}, @ToDate ={toDate}");
+                foreach (var item in Results)
+                {
+                    prescribedMedicine = new GetDashboardDiseaseAgeWiseVM();
+                    prescribedMedicine.SrNo = item.SrNo;
+                    prescribedMedicine.Age = item.Age;
+                    prescribedMedicine.Disease = item.Disease;
+                    prescribedMedicine.Occurrence = item.Occurrence;
                     prescribedMedicinesList.Add(prescribedMedicine);
                 }
 
