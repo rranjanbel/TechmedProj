@@ -311,7 +311,7 @@ namespace TechMed.API.Controllers
                 if (!ModelState.IsValid)
                 {
                     ModelState.AddModelError("UploadPHCDoc", "Please check did not get data");
-                    _logger.LogInformation("UploadPHCDoc model state is invalid " );
+                    _logger.LogError("UploadPHCDoc model state is invalid " );
                     return BadRequest(ModelState);
                 }
                 else
@@ -327,6 +327,7 @@ namespace TechMed.API.Controllers
                         else
                         {
                             ModelState.AddModelError("UploadPHCDoc", "File did not save.");
+                            _logger.LogError("UploadPHCDoc File did not save.");
                             return BadRequest(ModelState);
                         }
                         // return Ok();
@@ -334,6 +335,7 @@ namespace TechMed.API.Controllers
                     else
                     {
                         ModelState.AddModelError("UploadPHCDoc", "Model has null value.");
+                        _logger.LogError("UploadPHCDoc Model has null value.");
                         return BadRequest(ModelState);
                     }
 
@@ -341,8 +343,9 @@ namespace TechMed.API.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogInformation("Exception in PHC module " + ex.Message);
+                //_logger.LogInformation("Exception in PHC module " + ex.Message);
                 ModelState.AddModelError("UploadPHCDoc", $"Something went wrong when uplod file {ex.Message}");
+                _logger.LogError("Exception in UploadPHCDoc module " + ex.Message);
                 return StatusCode(500, ModelState);
             }
 

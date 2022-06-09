@@ -18,8 +18,7 @@ namespace TechMed.DL.ViewModel
             PatientCaseDiagonostics = new List<PatientCaseDiagonisticTestVM>();
         }
         [Required]
-        public long PatientCaseID { get; set; }    
-        //[Required]
+        public long PatientCaseID { get; set; } 
         public string Instruction { get; set; }     
         public string? Findings { get; set; }        
         public string? Prescription { get; set; }
@@ -51,6 +50,7 @@ namespace TechMed.DL.ViewModel
         public bool BD { get; set; }
         [Required]
         public bool TD { get; set; }
+        public int Duration { get; set; } = 0;
 
     }
 

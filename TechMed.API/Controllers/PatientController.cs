@@ -94,6 +94,7 @@ namespace TechMed.API.Controllers
             {
 
                 ModelState.AddModelError("AddPatient", $"Something went wrong when create Patient {ex.Message}");
+                _logger.LogError("Exception in Add Patient module " + ex.Message);
                 return StatusCode(500, ModelState);
             }  
         }

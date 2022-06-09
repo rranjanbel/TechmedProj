@@ -470,7 +470,9 @@ namespace TechMed.BL.Repository.BaseClasses
                                 Td = item.TD,
 
                                 DrugMasterId = item.DrugID,
-                                PatientCaseId = treatmentVM.PatientCaseID
+                                PatientCaseId = treatmentVM.PatientCaseID,
+                                Duration = item.Duration,
+                                
                             });
                     }
                     //Add diagonistic PatientCaseDiagonosticTest
