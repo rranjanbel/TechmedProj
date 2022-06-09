@@ -48,7 +48,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     {
                         _logger.LogInformation($"Add Patient : call save method");
                         var patient = await _teleMedecineContext.PatientMasters.AddAsync(patientMaster);                       
-                        System.Threading.Thread.Sleep(4000);//delay
+                        //System.Threading.Thread.Sleep(4000);//delay
                         int i = await _teleMedecineContext.SaveChangesAsync();
                         //updatedPatientMaster = await Create(patientMaster);
 
@@ -76,11 +76,14 @@ namespace TechMed.BL.Repository.BaseClasses
                     return updatedPatientMaster;
                 }
             }
-            catch (Exception )
+            catch (Exception ex)
             {
                 //_logger.LogInformation($"Add Patient : get exception " +ex.Message);
                 //return updatedPatientMaster;
-                throw;
+                _logger.LogError("Add Patient got exception when adding patient "+ex.Message);
+                updatedPatientMaster = new PatientMaster();
+                return updatedPatientMaster;
+
             }
           
         }

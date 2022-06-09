@@ -54,12 +54,13 @@ namespace TechMed.API.Controllers
                 }
                 _logger.LogInformation($"Add Patient : relative Path : " + webRootPath);
                 _logger.LogInformation($"Add Patient : call web api add patient");
-                var patientDetails = _mapper.Map<PatientMaster>(patientdto);
+                
                 if (!ModelState.IsValid)
                 {
                     _logger.LogInformation($"Add Patient : model state is invalid");
                     return BadRequest(ModelState);
                 }
+                var patientDetails = _mapper.Map<PatientMaster>(patientdto);
                 _logger.LogInformation($"Add Patient : going to check Is Patient Exist.");
                 if (_patientRepository.IsPatientExist(patientDetails))
                 {

@@ -36,6 +36,8 @@ namespace TechMed.DL.Models
         public int? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
         public int MaritalStatusId { get; set; }
+        public string? GuardianName { get; set; }
+        
 
         public virtual CountryMaster Country { get; set; } = null!;
         public virtual Phcmaster? CreatedByNavigation { get; set; }
