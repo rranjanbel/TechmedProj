@@ -167,6 +167,8 @@ namespace TechMed.BL.Repository.BaseClasses
                 if (resrult)
                 {
                     userMaster.HashPassword = EncodeAndDecordPassword.EncodePassword(changePassword.NewPassword);
+                    userMaster.IsPasswordChanged = true;
+
                     userMaster = await Update(userMaster);
                     if (userMaster != null)
                     {
