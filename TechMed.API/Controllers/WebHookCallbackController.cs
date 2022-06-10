@@ -19,7 +19,7 @@ namespace TechMed.API.Controllers
             _twilioRoomDb = twilioRoomDb;
         }
         [HttpPost("twilioroomstatuscallback")]
-        public async Task<IActionResult> TwilioRoomStatusCallback([FromBody]RoomStatusRequest roomStatusRequest)
+        public async Task<IActionResult> TwilioRoomStatusCallback([FromQuery]RoomStatusRequest roomStatusRequest)
         {
             try
             {
@@ -39,7 +39,7 @@ namespace TechMed.API.Controllers
         }
 
         [HttpPost("twiliocomposevideostatuscallback")]
-        public async Task<IActionResult> TwilioComposeVideoStatusCallback([FromBody] VideoCompositionStatusRequest videoCompositionStatusRequest)
+        public async Task<IActionResult> TwilioComposeVideoStatusCallback([FromQuery] VideoCompositionStatusRequest videoCompositionStatusRequest)
         {
             try
             {

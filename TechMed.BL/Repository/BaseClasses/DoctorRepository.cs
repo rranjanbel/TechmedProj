@@ -229,7 +229,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 mapdata.PatientID = item.PatientCase.Patient.PatientId;
                 mapdata.id = item.PatientCase.Patient.Id;
                 mapdata.PatientCaseID = item.PatientCase.Id;
-                mapdata.canCallInitiate = item.PatientCase.TwilioMeetingRoomInfos.Count <= 0;
+                mapdata.canCallInitiate = !item.PatientCase.TwilioMeetingRoomInfos.Any(y=>y.IsClosed.GetValueOrDefault(false)==true);
                 //mapdata.status = item.PatientCase.Patient.PatientStatus.PatientStatus;
                 DTOList.Add(mapdata);
             }
