@@ -16,6 +16,7 @@ namespace TechMed.DL.ViewModel
         public int Age { get; set; }
         public string PhoneNumber { get; set; }
         public int ID { get; set; }
+        public DateTime DateOfRegistration { get; set; }
 
     }
 }

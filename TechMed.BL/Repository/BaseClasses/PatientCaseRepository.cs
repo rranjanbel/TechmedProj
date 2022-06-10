@@ -433,11 +433,22 @@ namespace TechMed.BL.Repository.BaseClasses
             {
                 if (patientReferToDoctorVM != null)
                 {
-                   // autoAssignDoctorID = AutoAssignDoctor(patientReferToDoctorVM.PatientCaseID);
-                    patientQueue.PatientCaseId = patientReferToDoctorVM.PatientCaseID;
-                    patientQueue.AssignedDoctorId = patientReferToDoctorVM.AssignedDocterID;
+                    //autoAssignDoctorID = AutoAssignDoctor(patientReferToDoctorVM.PatientCaseID);
+                    //if(autoAssignDoctorID > 0)
+                    //{
+                    //    patientQueue.AssignedDoctorId = autoAssignDoctorID;
+                    //    patientQueue.Comment = "Auto assign doctor";
+                    //}
+                    //else
+                    //{
+                    //    patientQueue.AssignedDoctorId = patientReferToDoctorVM.AssignedDocterID;
+                    //    patientQueue.Comment = "Manually assign doctor";
+                    //}
+                    patientQueue.PatientCaseId = patientReferToDoctorVM.PatientCaseID;                   
                     patientQueue.AssignedBy = patientReferToDoctorVM.PHCID;
                     patientQueue.CaseFileStatusId = await GetCaseFileStatus();
+                    patientQueue.AssignedDoctorId = patientReferToDoctorVM.AssignedDocterID;
+                    patientQueue.Comment = "Manually assign doctor";
                     patientQueue.StatusOn = DateTime.Now;
                     patientQueue.Comment = "Assigned by PHC";
                     patientQueue.AssignedOn = DateTime.Now;
@@ -875,18 +886,24 @@ namespace TechMed.BL.Repository.BaseClasses
         public int AutoAssignDoctor(long PatientCaseID)
         {
             int doctorId =0;
+
             //1. Get online doctorlist
             int specializationID = _teleMedecineContext.PatientCases.Where(p => p.Id == PatientCaseID).Select(s => s.SpecializationId).FirstOrDefault();
             var onlineDoctors =  _teleMedecineContext.DoctorMasters.Where(a => a.IsOnline == true && a.SpecializationId == specializationID).Select(d => d.Id).ToList();
+
             //2. Get Doctor id who has minimum patient in Queue
-            var doctorIDsAndNoOfPatients = _teleMedecineContext.PatientQueues
-                .Where( a => onlineDoctors.Contains(a.AssignedDoctorId))
-                .GroupBy(a => a.AssignedDoctorId)
-                .Select(g => new { DoctorId = g.Key, Count = g.Count() });
-            //3. Assign patient to the doctor who has minimum queue
-            var minimumCount = doctorIDsAndNoOfPatients.Min(m => m.Count);
-            var assinToDoctor = doctorIDsAndNoOfPatients.Where(a => a.Count == minimumCount).OrderBy(o => o.DoctorId);
-            doctorId = assinToDoctor.Select(s => s.DoctorId).FirstOrDefault();
+            if(onlineDoctors != null)
+            {
+                var doctorIDsAndNoOfPatients = _teleMedecineContext.PatientQueues
+               .Where(a => onlineDoctors.Contains(a.AssignedDoctorId))
+               .GroupBy(a => a.AssignedDoctorId)
+               .Select(g => new { DoctorId = g.Key, Count = g.Count() });
+
+                //3. Assign patient to the doctor who has minimum queue
+                var minimumCount = doctorIDsAndNoOfPatients.Min(m => m.Count);
+                var assinToDoctor = doctorIDsAndNoOfPatients.Where(a => a.Count == minimumCount).OrderBy(o => o.DoctorId);
+                doctorId = assinToDoctor.Select(s => s.DoctorId).FirstOrDefault();
+            }  
             return doctorId;
         }
     }
