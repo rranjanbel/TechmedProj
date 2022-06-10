@@ -24,8 +24,10 @@ namespace TechMed.BL.DTOMaster
         public int Age { get; set; }
         public string PhoneNumber { get; set; }
         public string ReferredbyPHCName { get; set; }
-        public string Casefile { get; set; }
+        public string CaseHeading { get; set; }
         public string status { get; set; }
         public bool canCallInitiate { get; set; }
+        public DateTime? DateOfRegistration { get; set; }
+
     }
 }

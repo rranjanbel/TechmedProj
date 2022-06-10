@@ -151,7 +151,7 @@ namespace TechMed.API.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("ChangeUserPassword", $"User password change fail for user ID  : {login.UserId}");
+                    ModelState.AddModelError("ChangeUserPassword", $"User password change fail for user ID  : {login.UserNameOrEmail}");
                     return StatusCode(404, ModelState);
                 }
 

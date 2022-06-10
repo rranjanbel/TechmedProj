@@ -159,15 +159,22 @@ namespace TechMed.BL.Repository.BaseClasses
         public async Task<UserMaster> ChangeUserPassword(ChangePassword changePassword)
         {
             UserMaster userMaster = new UserMaster();
-            userMaster = _teleMedecineContext.UserMasters.FirstOrDefault(x => x.Id == changePassword.UserId && x.IsActive == true);
+            userMaster = _teleMedecineContext.UserMasters.FirstOrDefault(x => x.Email == changePassword.UserNameOrEmail && x.IsActive == true);
             if (userMaster != null)
             {
-                userMaster.HashPassword = EncodeAndDecordPassword.EncodePassword(changePassword.NewPassword);
-                userMaster = await Update(userMaster);
-                if (userMaster != null)
-                    return userMaster;
+                bool resrult = EncodeAndDecordPassword.MatchPassword(changePassword.OldPassword, userMaster.HashPassword);
+                if (resrult)
+                {
+                    userMaster.HashPassword = EncodeAndDecordPassword.EncodePassword(changePassword.NewPassword);
+                    userMaster = await Update(userMaster);
+                    if (userMaster != null)
+                        return userMaster;
+                    else
+                        return userMaster;
+                }
                 else
                     return userMaster;
+
             }
             return userMaster;
         }

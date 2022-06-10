@@ -230,6 +230,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 mapdata.id = item.PatientCase.Patient.Id;
                 mapdata.PatientCaseID = item.PatientCase.Id;
                 mapdata.canCallInitiate = item.PatientCase.TwilioMeetingRoomInfos.Count <= 0;
+                mapdata.CaseHeading = item.PatientCase.CaseHeading;
                 //mapdata.status = item.PatientCase.Patient.PatientStatus.PatientStatus;
                 DTOList.Add(mapdata);
             }
@@ -262,6 +263,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 mapdata.PatientID = item.PatientCase.Patient.PatientId;
                 mapdata.id = item.PatientCase.Patient.Id;
                 mapdata.PatientCaseID = item.PatientCase.Id;
+                mapdata.CaseHeading = item.PatientCase.CaseHeading;
                 //mapdata.status = item.PatientCase.Patient.PatientStatus.PatientStatus;
                 DTOList.Add(mapdata);
             }
@@ -294,6 +296,8 @@ namespace TechMed.BL.Repository.BaseClasses
                 mapdata.PatientID = item.PatientCase.Patient.PatientId;
                 mapdata.id = item.PatientCase.Patient.Id;
                 mapdata.PatientCaseID = item.PatientCase.Id;
+                mapdata.CaseHeading = item.PatientCase.CaseHeading;
+                mapdata.DateOfRegistration = item.PatientCase.Patient.CreatedOn;
                 //mapdata.status = item.PatientCase.Patient.PatientStatus.PatientStatus;
                 DTOList.Add(mapdata);
             }
