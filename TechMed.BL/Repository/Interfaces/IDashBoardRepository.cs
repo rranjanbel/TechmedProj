@@ -43,5 +43,10 @@ namespace TechMed.BL.Repository.Interfaces
         Task<List<GetDashboardDiagnosticPrescribedTestWiseVM>> GetDashboardDiagnosticPrescribedTestWise(DateTime? fromDate, DateTime? toDate);
         Task<List<GetDashboardDiagnosticPrescribedPHCWiseVM>> GetDashboardDiagnosticPrescribedPHCWise(DateTime? fromDate, DateTime? toDate);
         Task<List<GetDashboardGraphVM>> GetDashboardGraph();
+        Task<List<GetDashboardFeedbackSummaryReportVM>> GetDashboardFeedbackSummaryReport();
+        Task<List<GetDashboardFeedbackReportVM>> GetDashboardFeedbackReport(DateTime? fromDate, DateTime? toDate);
+        Task<List<GetDashboardDignosisSpecialityWiseVM>> GetDashboardDignosisSpecialityWise(DateTime? fromDate, DateTime? toDate, int Specialityid);
+        Task<List<GetDashboardDiseasephcWiseVM>> GetDashboardDiseasephcWise(DateTime? fromDate, DateTime? toDate);
+        Task<List<GetDashboardDiseaseAgeWiseVM>> GetDashboardDiseaseAgeWise(DateTime? fromDate, DateTime? toDate);
     }
 }
