@@ -156,9 +156,10 @@ namespace TechMed.BL.Repository.BaseClasses
             }
         }
 
-        public async Task<UserMaster> ChangeUserPassword(ChangePassword changePassword)
+        public async Task<ChangePassword> ChangeUserPassword(ChangePassword changePassword)
         {
             UserMaster userMaster = new UserMaster();
+            ChangePassword change = new ChangePassword();
             userMaster = _teleMedecineContext.UserMasters.FirstOrDefault(x => x.Email == changePassword.UserNameOrEmail && x.IsActive == true);
             if (userMaster != null)
             {
@@ -168,15 +169,46 @@ namespace TechMed.BL.Repository.BaseClasses
                     userMaster.HashPassword = EncodeAndDecordPassword.EncodePassword(changePassword.NewPassword);
                     userMaster = await Update(userMaster);
                     if (userMaster != null)
-                        return userMaster;
+                    {
+                        change.ErrorMessage = "";
+                        change.Status = "Sucess";
+                        change.NewPassword = "";
+                        change.OldPassword = "";
+                        change.UserNameOrEmail = changePassword.UserNameOrEmail;
+                        return change;
+                    }
+                       
                     else
-                        return userMaster;
+                    {
+                        change.ErrorMessage = "Did not update password";
+                        change.Status = "Fail";
+                        change.NewPassword = "";
+                        change.OldPassword = "";
+                        change.UserNameOrEmail = changePassword.UserNameOrEmail;
+                        return change;
+                    }
+                        
                 }
                 else
-                    return userMaster;
+                {
+                    change.ErrorMessage = "Old Password did not match";
+                    change.Status = "Fail";
+                    change.NewPassword = "";
+                    change.OldPassword = "";
+                    change.UserNameOrEmail = changePassword.UserNameOrEmail;
+                    return change;
+                }
 
             }
-            return userMaster;
+            else
+            {
+                change.ErrorMessage = "user mail did not find";
+                change.Status = "Fail";
+                change.NewPassword = "";
+                change.OldPassword = "";
+                change.UserNameOrEmail = changePassword.UserNameOrEmail;
+                return change;
+            }
         }
 
         public async Task<bool> IsValidUser(LoginVM login)

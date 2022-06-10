@@ -134,7 +134,7 @@ namespace TechMed.API.Controllers
 
         [HttpPost]
         [Route("ChangePassword")]
-        [ProducesResponseType(200, Type = typeof(bool))]
+        [ProducesResponseType(200, Type = typeof(ChangePassword))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ChangePassword(ChangePassword login)
@@ -142,12 +142,12 @@ namespace TechMed.API.Controllers
             bool response = false;
             try
             {
-                UserMaster userMaster = new UserMaster();
+                ChangePassword userMaster = new ChangePassword();
                 userMaster = await this._userRepository.ChangeUserPassword(login);
                 if (userMaster != null)
                 {
                     response = true;
-                    return Ok(response);
+                    return Ok(userMaster);
                 }
                 else
                 {
