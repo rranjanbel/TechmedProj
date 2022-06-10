@@ -110,7 +110,7 @@ namespace TechMed.BL.Repository.BaseClasses
             {
                 if (meetInfo.IsClosed.GetValueOrDefault(false) == false)
                 {
-                    if (roomStatusRequest.RoomStatus.ToLower() == "completed")
+                    if (!string.IsNullOrEmpty(roomStatusRequest.RoomStatus) && roomStatusRequest.RoomStatus.ToLower() == "completed")
                     {
                         meetInfo.TwilioRoomStatus = roomStatusRequest.RoomStatus;
                         meetInfo.IsClosed = true;
