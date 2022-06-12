@@ -831,12 +831,22 @@ namespace TechMed.BL.Repository.BaseClasses
                 {
                     if (doc.file.Length > 0)
                     {
-                        var fileType = Path.GetExtension(doc.file.FileName);
-                        //Convert to base64
-                        string base64Value = UtilityMaster.ConvertToBase64(doc.file);
-                        //Save File in disk
-                        string saveFilename = UtilityMaster.SaveFileFromBase64(base64Value, contentRootPath, relativePathSaveFile, fileType.ToLower());
+                        string saveFilename = String.Empty;
+                        try
+                        {
+                            var fileType = Path.GetExtension(doc.file.FileName);
+                            //Convert to base64
+                            string base64Value = UtilityMaster.ConvertToBase64(doc.file);
+                            //Save File in disk
+                             saveFilename = UtilityMaster.SaveFileFromBase64(base64Value, contentRootPath, relativePathSaveFile, fileType.ToLower());
 
+                        }
+                        catch (Exception)
+                        {
+
+                            throw;
+                        }
+                      
                         //Save file in database
                         l = 0;
                        
