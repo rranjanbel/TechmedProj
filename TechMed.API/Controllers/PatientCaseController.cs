@@ -148,11 +148,11 @@ namespace TechMed.API.Controllers
                 {
                     ModelState.AddModelError("AddPatientCaseDetails", "Patient case model state is not valid");
                     return BadRequest(ModelState);
-                }          
+                }
                 if (patientCasevm != null)
                 {
                     updatedPatientCasevm = await _patientCaeRepository.PostPatientCaseDetails(patientCasevm);
-                    if(updatedPatientCasevm != null)
+                    if (updatedPatientCasevm != null)
                     {
                         return CreatedAtRoute(201, updatedPatientCasevm);
                     }
@@ -316,7 +316,7 @@ namespace TechMed.API.Controllers
                 }
                 else
                 {
-                    if(caseDocumentVM.Count > 0)
+                    if (caseDocumentVM.Count > 0)
                     {
                         //status = _patientCaeRepository.SaveCaseDocument(caseDocumentVM, contentRootPath);
                         status = _patientCaeRepository.UploadCaseDoc(caseDocumentVM, contentRootPath);
@@ -342,7 +342,11 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
 
-                ModelState.AddModelError("UploadCaseDoc", $"Something went wrong when uplod file {ex.Message}");
+                ModelState.AddModelError("UploadCaseDoc", $"Something went wrong when uplod file {ex.Message }");
+                if (ex.InnerException != null)
+                {
+                    ModelState.AddModelError("UploadCaseDoc", $"Something went wrong when uplod file {ex.Message + ex.InnerException.StackTrace }");
+                }
                 return StatusCode(500, ModelState);
             }
 
