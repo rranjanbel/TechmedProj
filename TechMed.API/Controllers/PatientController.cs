@@ -125,7 +125,7 @@ namespace TechMed.API.Controllers
             {
 
                 ModelState.AddModelError("GetTodaysPatient", $"Something went wrong when get today's patient list {ex.Message}");
-                _logger.LogError("Exception in Add Patient module " + ex.Message);
+                _logger.LogError("Exception in GetTodaysPatient API " + ex.Message);
                 return StatusCode(500, ModelState);
             }
         }
@@ -155,7 +155,7 @@ namespace TechMed.API.Controllers
             {
 
                 ModelState.AddModelError("GetConsultedPatient", $"Something went wrong when get today's patient list {ex.Message}");
-                _logger.LogError("Exception in Add Patient module " + ex.Message);
+                _logger.LogError("Exception in GetConsultedPatient API " + ex.Message);
                 return StatusCode(500, ModelState);
             }
         }
@@ -185,7 +185,7 @@ namespace TechMed.API.Controllers
             {
 
                 ModelState.AddModelError("GetPatientCount", $"Something went wrong when get today's patient count {ex.Message}");
-                _logger.LogError("Exception in Add Patient module " + ex.Message);
+                _logger.LogError("Exception in GetTodaysPatientCount API " + ex.Message);
                 return StatusCode(500, ModelState);
             }
         }
@@ -215,7 +215,7 @@ namespace TechMed.API.Controllers
             {
 
                 ModelState.AddModelError("GetTodaysPatient", $"Something went wrong when get today's patient list {ex.Message}");
-                _logger.LogError("Exception in Add Patient module " + ex.Message);
+                _logger.LogError("Exception in GetTodaysSearchedPatients API " + ex.Message);
                 return StatusCode(500, ModelState);
             }
         }
@@ -245,7 +245,7 @@ namespace TechMed.API.Controllers
             {
 
                 ModelState.AddModelError("GetYesterdaysPatient", $"Something went wrong when get yesterday's patient list {ex.Message}");
-                _logger.LogError("Exception in Add Patient module " + ex.Message);
+                _logger.LogError("Exception in GetYesterdaysPatient API " + ex.Message);
                 return StatusCode(500, ModelState);
             }
         }
@@ -276,7 +276,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("AdvanceSearchResult", $"Something went wrong when get yesterday's patient list {ex.Message}");
-                _logger.LogError("Exception in Add Patient module " + ex.Message);
+                _logger.LogError("Exception in AdvanceSearchResult API " + ex.Message);
                 return StatusCode(500, ModelState);
             }
           

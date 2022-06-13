@@ -24,5 +24,6 @@ namespace TechMed.DL.ViewModel
         public int ReferredBy { get; set; }
         public string Gender { get; set; }
         public string CaseHeading { get; set; }
+        public DateTime DateOfRegistration { get; set; }
     }
 }
