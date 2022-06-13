@@ -225,12 +225,12 @@ namespace TechMed.API.Controllers
         public IActionResult GetPHCLoginHistoryReport(int PHCId, DateTime? fromDate, DateTime? toDate)
         {
             List<PHCLoginHistoryReportVM> loginHistoryPHC = new List<PHCLoginHistoryReportVM>();
-            DateTime? fromDateUtc = null;
-            if (fromDate != null)
-                fromDateUtc = fromDate.Value;
-            DateTime? toDateUtc = null;
-            if (toDate != null)
-                toDateUtc = toDate.Value;
+            //DateTime? fromDateUtc = null;
+            //if (fromDate != null)
+            //    fromDateUtc = fromDate.Value;
+            //DateTime? toDateUtc = null;
+            //if (toDate != null)
+            //    toDateUtc = toDate.Value;
             try
             {
                 loginHistoryPHC = _dashBoardRepository.GetPHCLoginHistoryReport(PHCId, fromDate, toDate);
@@ -261,15 +261,15 @@ namespace TechMed.API.Controllers
         public IActionResult GetPHCConsultationReport(int PHCId, DateTime? fromDate =null, DateTime? toDate =null)
         {
             List<PHCConsultationVM> phcConsultation = new List<PHCConsultationVM>();
-            DateTime? fromDateUtc = null;
-            if(fromDate != null)
-                fromDateUtc = fromDate.Value;
-            DateTime? toDateUtc = null;
-            if (toDateUtc != null)
-                toDateUtc = toDateUtc.Value;
+            //DateTime? fromDateUtc = null;
+            //if(fromDate != null)
+            //    fromDateUtc = fromDate.Value;
+            //DateTime? toDateUtc = null;
+            //if (toDateUtc != null)
+            //    toDateUtc = toDateUtc.Value;
             try
             {
-                phcConsultation = _dashBoardRepository.GetPHCConsultationReport(PHCId, fromDateUtc, toDateUtc);
+                phcConsultation = _dashBoardRepository.GetPHCConsultationReport(PHCId, fromDate, toDate);
                 if (phcConsultation != null)
                 {
                     return Ok(phcConsultation);
@@ -436,15 +436,15 @@ namespace TechMed.API.Controllers
         public IActionResult GetPatientRegisterReport(DateTime? fromDate = null, DateTime? toDate = null)
         {
             List<RegisterPatientVM> patientResiter = new List<RegisterPatientVM>();
-            DateTime? fromDateUtc = null;
-            if (fromDate != null)
-                fromDateUtc = fromDate.Value;
-            DateTime? toDateUtc = null;
-            if (toDate != null)
-                toDateUtc = toDate.Value;
+            //DateTime? fromDateUtc = null;
+            //if (fromDate != null)
+            //    fromDateUtc = fromDate.Value;
+            //DateTime? toDateUtc = null;
+            //if (toDate != null)
+            //    toDateUtc = toDate.Value;
             try
             {
-                patientResiter = _dashBoardRepository.GetRegisterPatientReport(fromDateUtc, toDateUtc);
+                patientResiter = _dashBoardRepository.GetRegisterPatientReport(fromDate, toDate);
                 if (patientResiter != null)
                 {
                     return Ok(patientResiter);
@@ -530,15 +530,15 @@ namespace TechMed.API.Controllers
         public IActionResult GetReferredPatientReport(DateTime? fromDate = null, DateTime? toDate = null)
         {
             List<GetReferredPatientVM> patientResiter = new List<GetReferredPatientVM>();
-            DateTime? fromDateUtc = null;
-            if (fromDate != null)
-                fromDateUtc = fromDate.Value;
-            DateTime? toDateUtc = null;
-            if (toDate != null)
-                toDateUtc = toDate.Value;
+            //DateTime? fromDateUtc = null;
+            //if (fromDate != null)
+            //    fromDateUtc = fromDate.Value;
+            //DateTime? toDateUtc = null;
+            //if (toDate != null)
+            //    toDateUtc = toDate.Value;
             try
             {
-                patientResiter = _dashBoardRepository.GetReferredPatientReport(fromDateUtc, toDateUtc);
+                patientResiter = _dashBoardRepository.GetReferredPatientReport(fromDate, toDate);
                 if (patientResiter != null)
                 {
                     return Ok(patientResiter);
@@ -566,15 +566,15 @@ namespace TechMed.API.Controllers
         public IActionResult GetReviewPatientReport(DateTime? fromDate = null, DateTime? toDate = null)
         {
             List<GetReviewPatientVM> patientResiter = new List<GetReviewPatientVM>();
-            DateTime? fromDateUtc = null;
-            if (fromDate != null)
-                fromDateUtc = fromDate.Value;
-            DateTime? toDateUtc = null;
-            if (toDate != null)
-                toDateUtc = toDate.Value;
+            //DateTime? fromDateUtc = null;
+            //if (fromDate != null)
+            //    fromDateUtc = fromDate.Value;
+            //DateTime? toDateUtc = null;
+            //if (toDate != null)
+            //    toDateUtc = toDate.Value;
             try
             {
-                patientResiter = _dashBoardRepository.GetReviewPatientReport(fromDateUtc, toDateUtc);
+                patientResiter = _dashBoardRepository.GetReviewPatientReport(fromDate, toDate);
                 if (patientResiter != null)
                 {
                     return Ok(patientResiter);
@@ -706,15 +706,15 @@ namespace TechMed.API.Controllers
         public IActionResult GetDashboardAppointment(DateTime? fromDate = null, DateTime? toDate = null)
         {
             List<GetDashboardAppointmentVM> patientResiter = new List<GetDashboardAppointmentVM>();
-            DateTime? fromDateUtc = null;
-            if (fromDate != null)
-                fromDateUtc = fromDate.Value;
-            DateTime? toDateUtc = null;
-            if (toDate != null)
-                toDateUtc = toDate.Value;
+            //DateTime? fromDateUtc = null;
+            //if (fromDate != null)
+            //    fromDateUtc = fromDate.Value;
+            //DateTime? toDateUtc = null;
+            //if (toDate != null)
+            //    toDateUtc = toDate.Value;
             try
             {
-                patientResiter = _dashBoardRepository.GetDashboardAppointment(fromDateUtc, toDateUtc);
+                patientResiter = _dashBoardRepository.GetDashboardAppointment(fromDate, toDate);
                 if (patientResiter != null)
                 {
                     return Ok(patientResiter);
@@ -745,15 +745,15 @@ namespace TechMed.API.Controllers
         public IActionResult GetDashboardDoctorAvgTime(DateTime? fromDate = null, DateTime? toDate = null)
         {
             List<GetDashboardDoctorAvgTimeVM> patientResiter = new List<GetDashboardDoctorAvgTimeVM>();
-            DateTime? fromDateUtc = null;
-            if (fromDate != null)
-                fromDateUtc = fromDate.Value;
-            DateTime? toDateUtc = null;
-            if (toDate != null)
-                toDateUtc = toDate.Value;
+            //DateTime? fromDateUtc = null;
+            //if (fromDate != null)
+            //    fromDateUtc = fromDate.Value;
+            //DateTime? toDateUtc = null;
+            //if (toDate != null)
+            //    toDateUtc = toDate.Value;
             try
             {
-                patientResiter = _dashBoardRepository.GetDashboardDoctorAvgTime(fromDateUtc, toDateUtc);
+                patientResiter = _dashBoardRepository.GetDashboardDoctorAvgTime(fromDate, toDate);
                 if (patientResiter != null)
                 {
                     return Ok(patientResiter);
@@ -781,15 +781,15 @@ namespace TechMed.API.Controllers
         public IActionResult GetDashboardDoctorAvailability(DateTime? fromDate = null, DateTime? toDate = null)
         {
             List<GetDashboardDoctorAvailabilityVM> patientResiter = new List<GetDashboardDoctorAvailabilityVM>();
-            DateTime? fromDateUtc = null;
-            if (fromDate != null)
-                fromDateUtc = fromDate.Value;
-            DateTime? toDateUtc = null;
-            if (toDate != null)
-                toDateUtc = toDate.Value;
+            //DateTime? fromDateUtc = null;
+            //if (fromDate != null)
+            //    fromDateUtc = fromDate.Value;
+            //DateTime? toDateUtc = null;
+            //if (toDate != null)
+            //    toDateUtc = toDate.Value;
             try
             {
-                patientResiter = _dashBoardRepository.GetDashboardDoctorAvailability(fromDateUtc, toDateUtc);
+                patientResiter = _dashBoardRepository.GetDashboardDoctorAvailability(fromDate, toDate);
                 if (patientResiter != null)
                 {
                     return Ok(patientResiter);
