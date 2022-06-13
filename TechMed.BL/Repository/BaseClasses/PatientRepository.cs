@@ -125,6 +125,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     todaysPatient.DoctorName = item.Doctor;
                     todaysPatient.Gender = item.Gender;
                     todaysPatient.CaseHeading = item.CaseHeading;
+                    todaysPatient.DateOfRegistration = item.DateOfRegistration;
                     todaysPatientList.Add(todaysPatient);
                 }
             }
@@ -215,6 +216,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     todaysPatient.DoctorName = item.Doctor;
                     todaysPatient.Gender = item.Gender;
                     todaysPatient.CaseHeading = item.CaseHeading;
+                    todaysPatient.DateOfRegistration = item.DateOfRegistration;
                     todaysPatientList.Add(todaysPatient);
                 }
             }
@@ -479,6 +481,8 @@ namespace TechMed.BL.Repository.BaseClasses
                     todaysPatient.DoctorName = item.Doctor;
                     todaysPatient.Gender = item.Gender;
                     todaysPatient.CaseHeading = item.CaseHeading;
+                    todaysPatient.DateOfRegistration = item.DateOfRegistration;
+
                     patientList.Add(todaysPatient);
                 }
             }
