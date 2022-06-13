@@ -248,10 +248,18 @@ namespace TechMed.API.Controllers
                     apiResponseModel.errorMessage = "Invalid Information";
                     BadRequest(apiResponseModel);
                 }
-                var roomInfoFromTwilio = await _twilioVideoSDK.CloseRoomAsync(roomInstance);
-                var composeVideo = await _twilioVideoSDK.ComposeVideo(roomInfoFromTwilio.Sid, callBackUrlForTwilio);
+                try
+                {
+                    var roomInfoFromTwilio = await _twilioVideoSDK.CloseRoomAsync(roomInstance);
+                    var composeVideo = await _twilioVideoSDK.ComposeVideo(roomInfoFromTwilio.Sid, callBackUrlForTwilio);
+                    await _twilioRoomDb.MeetingRoomComposeVideoUpdate(composeVideo, roomInstance);
+                }
+                catch (Exception ex)
+                {
+
+                }
                 await _twilioRoomDb.SetMeetingRoomClosed(roomInstance);
-                await _twilioRoomDb.MeetingRoomComposeVideoUpdate(composeVideo, roomInstance);
+               
 
                 apiResponseModel.data = new
                 {
