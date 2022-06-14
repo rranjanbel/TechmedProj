@@ -410,7 +410,7 @@ namespace TechMed.BL.Repository.BaseClasses
             phcmanpowerresultset.PHCManpowerReports = phcManpowerReports;
             phcmanpowerresultset.NoOfDaysInMonth = phcManpowerReports.Select(a => a.NoOfDaysInMonth).FirstOrDefault();
             phcmanpowerresultset.TotalPresentDays = totaldaysPresnt = phcManpowerReports.Sum(a => a.DaysPresent);
-            phcmanpowerresultset.TotalWorkingDays = totalWorkingDays = phcManpowerReports.Select(a => a.TotalWorkingDays).FirstOrDefault();
+            phcmanpowerresultset.TotalWorkingDays = totalWorkingDays = phcManpowerReports.Sum(a => a.TotalWorkingDays);
             phcmanpowerresultset.AvailabilityPercentage = ((totaldaysPresnt * 100) / totalWorkingDays);
 
             return phcmanpowerresultset;
