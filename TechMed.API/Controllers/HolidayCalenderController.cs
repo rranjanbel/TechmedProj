@@ -49,7 +49,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("AddHoliday", $"Something went wrong when GetHolidayList {ex.Message}");
-                _logger.LogError("Exception in AddHoliday API " + ex.Message);
+                _logger.LogError("Exception in AddHoliday API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -78,7 +78,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetHolidayList", $"Something went wrong when GetHolidayList {ex.Message}");
-                _logger.LogError("Exception in GetHolidayList API " + ex.Message);
+                _logger.LogError("Exception in GetHolidayList API " + ex);
                 return StatusCode(500, ModelState);
             }
         }

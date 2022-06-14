@@ -70,7 +70,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetAllSpecialization", $"Something went wrong when Get all Specialization {ex.Message}");
-                _logger.LogError("Exception in GetAllSpecialization API " + ex.Message);
+                _logger.LogError("Exception in GetAllSpecialization API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -106,7 +106,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetAllCaseFileStatusMaster", $"Something went wrong when GetAllCaseFileStatusMaster {ex.Message}");
-                _logger.LogError("Exception in GetAllCaseFileStatusMaster API " + ex.Message);
+                _logger.LogError("Exception in GetAllCaseFileStatusMaster API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -142,7 +142,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetAllCountryMaster", $"Something went wrong when GetAllCountryMaster {ex.Message}");
-                _logger.LogError("Exception in GetAllCountryMaster API " + ex.Message);
+                _logger.LogError("Exception in GetAllCountryMaster API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -178,7 +178,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetAllCountryMaster", $"Something went wrong when GetAllCountryMaster {ex.Message}");
-                _logger.LogError("Exception in GetAllMaritalStatus API " + ex.Message);
+                _logger.LogError("Exception in GetAllMaritalStatus API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -214,7 +214,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetAllDistrictMaster", $"Something went wrong when GetAllDistrictMaster {ex.Message}");
-                _logger.LogError("Exception in GetAllDistrictMaster API " + ex.Message);
+                _logger.LogError("Exception in GetAllDistrictMaster API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -250,7 +250,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetAllGenderMaster", $"Something went wrong when GetAllGenderMaster {ex.Message}");
-                _logger.LogError("Exception in GetAllGenderMaster API " + ex.Message);
+                _logger.LogError("Exception in GetAllGenderMaster API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -286,7 +286,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetAllIDProofTypeMaster", $"Something went wrong when GetAllIDProofTypeMaster {ex.Message}");
-                _logger.LogError("Exception in GetAllIDProofTypeMaster API " + ex.Message);
+                _logger.LogError("Exception in GetAllIDProofTypeMaster API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -322,7 +322,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetAllTitleMaster", $"Something went wrong when GetAllTitleMaster {ex.Message}");
-                _logger.LogError("Exception in GetAllTitleMaster API " + ex.Message);
+                _logger.LogError("Exception in GetAllTitleMaster API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -358,7 +358,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetAllTitleMaster", $"Something went wrong when GetAllTitleMaster {ex.Message}");
-                _logger.LogError("Exception in GetAllUserTypeMaster API " + ex.Message);
+                _logger.LogError("Exception in GetAllUserTypeMaster API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -394,7 +394,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetAllClusterMaster", $"Something went wrong when GetAllClusterMaster {ex.Message}");
-                _logger.LogError("Exception in GetAllUserTypeMaster API " + ex.Message);
+                _logger.LogError("Exception in GetAllUserTypeMaster API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -430,7 +430,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetAllZoneMaster", $"Something went wrong when GetAllZoneMaster {ex.Message}");
-                _logger.LogError("Exception in GetAllBlockMaster API " + ex.Message);
+                _logger.LogError("Exception in GetAllBlockMaster API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -466,7 +466,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetAllStateMaster", $"Something went wrong when GetAllStateMaster {ex.Message}");
-                _logger.LogError("Exception in GetAllStateMaster API " + ex.Message);
+                _logger.LogError("Exception in GetAllStateMaster API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -502,7 +502,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetAllStateMaster", $"Something went wrong when GetAllStateMaster {ex.Message}");
-                _logger.LogError("Exception in GetAllPatientStatusMaster API " + ex.Message);
+                _logger.LogError("Exception in GetAllPatientStatusMaster API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -540,7 +540,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetAllSpecialization", $"Something went wrong when Get all Specialization {ex.Message}");
-                _logger.LogError("Exception in GetAllSpecialization API " + ex.Message);
+                _logger.LogError("Exception in GetAllSpecialization API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -570,6 +570,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetDiagnosticTest", $"Something went wrong when Get all Diagnostic {ex.Message}");
+                _logger.LogError("Exception in GetDiagnosticTest API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -599,6 +600,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetAllDrugsName", $"Something went wrong when get all Diagnostic {ex.Message}");
+                _logger.LogError("Exception in GetAllDrugsName API " + ex);
                 return StatusCode(500, ModelState);
             }
         }

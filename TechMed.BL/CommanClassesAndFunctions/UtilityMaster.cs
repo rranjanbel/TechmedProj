@@ -13,6 +13,7 @@ namespace TechMed.BL.CommanClassesAndFunctions
     {
         public static int Age = 0;
         private static TeleMedecineContext _teleMedecineContext = new TeleMedecineContext();
+        private static TimeZoneInfo India_Standard_Time = TimeZoneInfo.FindSystemTimeZoneById("India Standard Time");
         public static int GetAgeOfPatient(DateTime dateOfBirth)
         {
             DateTime dtToday = DateTime.Now.Date;
@@ -160,6 +161,22 @@ namespace TechMed.BL.CommanClassesAndFunctions
                 return strBase64;
             }
 
+        }
+
+        public static DateTime GetLocalDateTime()
+        {
+            DateTime dateTime = DateTime.Now;
+            
+            try
+            {                
+                 dateTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, India_Standard_Time);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return dateTime;
         }
     }
 }

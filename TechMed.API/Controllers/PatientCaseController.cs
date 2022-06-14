@@ -83,18 +83,21 @@ namespace TechMed.API.Controllers
                 }
                 if (patientCaseNew == null)
                 {
-                    ModelState.AddModelError("AddPHC", $"Something went wrong when create PHC {patientCasevm.PatientID}");
+                    ModelState.AddModelError("CreatePatientCase", $"did not create patient case {patientCasevm?.PatientID}");
+                    _logger.LogError("CreatePatientCase : did not create patient case ");
                     return StatusCode(404, ModelState);
                 }
                 else
                 {
+                    _logger.LogInformation($"CreatePatientCase : Sucess response returned ");
                     return CreatedAtRoute(201, createdPatientCase);
                 }
             }
             catch (Exception ex)
             {
 
-                ModelState.AddModelError("AddPHC", $"Something went wrong when create PHC {ex.Message}");
+                ModelState.AddModelError("CreatePatientCase", $"Something went wrong when create patient case {ex.Message}");
+                _logger.LogError("Exception in CreatePatientCase API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -112,16 +115,19 @@ namespace TechMed.API.Controllers
                 if (PatientId == 0 && PHCId == 0)
                 {
                     ModelState.AddModelError("GetPatientCaseDetails", "Please provide patient id and PHCID.");
+                    _logger.LogError($"Please provide patient id and PHCID {PatientId} and {PHCId}");
                     return StatusCode(404, ModelState);
                 }
                 patientcase = await _patientCaeRepository.GetPatientCaseDetails(PHCId, PatientId);
                 if (patientcase != null)
                 {
+                    _logger.LogInformation($"GetPatientCaseDetails : Sucess response returned ");
                     return StatusCode(200, patientcase);
                 }
                 else
                 {
-                    ModelState.AddModelError("GetPatientCaseDetails", $"Something went wrong when get patient case {PatientId}");
+                    ModelState.AddModelError("GetPatientCaseDetails", $"did not get patient case {PatientId}");
+                    _logger.LogError("did not get patient case " );
                     return StatusCode(404, ModelState);
                 }
             }
@@ -129,6 +135,7 @@ namespace TechMed.API.Controllers
             {
 
                 ModelState.AddModelError("GetPatientCaseDetails", $"Something went wrong when get patient case {ex.Message}");
+                _logger.LogError("Exception in GetPatientCaseDetails API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -147,6 +154,7 @@ namespace TechMed.API.Controllers
                 if (!ModelState.IsValid)
                 {
                     ModelState.AddModelError("AddPatientCaseDetails", "Patient case model state is not valid");
+                    _logger.LogError("AddPatientCaseDetails : ModelState is invalid ");
                     return BadRequest(ModelState);
                 }
                 if (patientCasevm != null)
@@ -154,11 +162,13 @@ namespace TechMed.API.Controllers
                     updatedPatientCasevm = await _patientCaeRepository.PostPatientCaseDetails(patientCasevm);
                     if (updatedPatientCasevm != null)
                     {
+                        _logger.LogInformation($"AddPatientCaseDetails : Sucess response returned ");
                         return CreatedAtRoute(201, updatedPatientCasevm);
                     }
                     else
                     {
-                        ModelState.AddModelError("AddPatientCaseDetails", $"Something went wrong when saving data in database");
+                        ModelState.AddModelError("AddPatientCaseDetails", $"did not add patient case details");
+                        _logger.LogError("AddPatientCaseDetails :did not add patient case details ");
                         return StatusCode(404, ModelState);
                     }
 
@@ -166,6 +176,7 @@ namespace TechMed.API.Controllers
                 else
                 {
                     ModelState.AddModelError("AddPatientCaseDetails", "Patient case model state is not valid");
+                    _logger.LogError("AddPatientCaseDetails :ModelState is null ");
                     return StatusCode(404, ModelState);
                 }
             }
@@ -173,6 +184,7 @@ namespace TechMed.API.Controllers
             {
 
                 ModelState.AddModelError("AddPatientCaseDetails", $"Something went wrong when add case details {ex.Message}");
+                _logger.LogError("Exception in AddPatientCaseDetails API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -198,11 +210,13 @@ namespace TechMed.API.Controllers
                     updatedPatientCasevm = await _patientCaeRepository.PostPatientReferToDoctor(referDoctor);
                     if (updatedPatientCasevm != null)
                     {
+                        _logger.LogInformation($"AddReferDoctorInPatientCase : Sucess response returned ");
                         return CreatedAtRoute(201, updatedPatientCasevm);
                     }
                     else
                     {
-                        ModelState.AddModelError("AddReferDoctorInPatientCase", $"Something went wrong when saving data in database");
+                        ModelState.AddModelError("AddReferDoctorInPatientCase", $"did not refer patient case to doctor");
+                        _logger.LogError("AddReferDoctorInPatientCase :did not refer patient case to doctor");
                         return StatusCode(404, ModelState);
                     }
 
@@ -210,6 +224,7 @@ namespace TechMed.API.Controllers
                 else
                 {
                     ModelState.AddModelError("AddReferDoctorInPatientCase", "Refer doctor model state is not valid");
+                    _logger.LogError("AddReferDoctorInPatientCase :refer doctor has null value");
                     return StatusCode(404, ModelState);
                 }
             }
@@ -217,6 +232,7 @@ namespace TechMed.API.Controllers
             {
 
                 ModelState.AddModelError("AddReferDoctorInPatientCase", $"Something went wrong when add refer doctor {ex.Message}");
+                _logger.LogError("Exception in AddReferDoctorInPatientCase API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -239,11 +255,13 @@ namespace TechMed.API.Controllers
                 patientcasequeue = await _patientCaeRepository.GetPatientQueueDetails(PHCId, PatientId);
                 if (patientcasequeue != null)
                 {
+                    _logger.LogInformation($"GetPatientCaseQueue : Sucess response returned ");
                     return StatusCode(200, patientcasequeue);
                 }
                 else
                 {
-                    ModelState.AddModelError("GetPatientCaseQueue", $"Something went wrong when get patient queue {PatientId}");
+                    ModelState.AddModelError("GetPatientCaseQueue", $"did not get patient queue {PatientId}");
+                    _logger.LogError("GetPatientCaseQueue : did not get patient queue ");
                     return StatusCode(404, ModelState);
                 }
             }
@@ -251,6 +269,7 @@ namespace TechMed.API.Controllers
             {
 
                 ModelState.AddModelError("GetPatientCaseQueue", $"Something went wrong when get patient queue {ex.Message}");
+                _logger.LogError("Exception in GetPatientCaseQueue API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -269,6 +288,7 @@ namespace TechMed.API.Controllers
                 if (!ModelState.IsValid)
                 {
                     ModelState.AddModelError("PostFeedback", "Patient feedback model state is not valid");
+                    _logger.LogError("PostFeedback : ModelState is invalid ");
                     return BadRequest(ModelState);
                 }
                 if (feedbackDTO != null)
@@ -276,11 +296,13 @@ namespace TechMed.API.Controllers
                     updatedFeedback = await _patientCaeRepository.PostPatientFeedBack(feedbackDTO);
                     if (updatedFeedback != null)
                     {
+                        _logger.LogInformation($"PostFeedback : Sucess response returned ");
                         return CreatedAtRoute(201, updatedFeedback);
                     }
                     else
                     {
-                        ModelState.AddModelError("PostFeedback", $"Something went wrong when saving data in database");
+                        ModelState.AddModelError("PostFeedback", $"did not save feedback data in database");
+                        _logger.LogError("PostFeedback : did not save feedback data in database");
                         return StatusCode(404, ModelState);
                     }
 
@@ -295,6 +317,7 @@ namespace TechMed.API.Controllers
             {
 
                 ModelState.AddModelError("PostFeedback", $"Something went wrong when add patient feedback {ex.Message}");
+                _logger.LogError("Exception in PostFeedback API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -312,6 +335,7 @@ namespace TechMed.API.Controllers
                 if (!ModelState.IsValid)
                 {
                     ModelState.AddModelError("UploadCaseDoc", "Please check did not get data");
+                    _logger.LogError("UploadCaseDoc : ModelState is invalid ");
                     return BadRequest(ModelState);
                 }
                 else
@@ -322,11 +346,13 @@ namespace TechMed.API.Controllers
                         status = _patientCaeRepository.UploadCaseDoc(caseDocumentVM, contentRootPath);
                         if (status)
                         {
+                            _logger.LogInformation($"UploadCaseDoc : Sucess response returned ");
                             return Ok(new { status = "success" });
                         }
                         else
                         {
                             ModelState.AddModelError("UploadCaseDoc", "File did not save.");
+                            _logger.LogError("UploadCaseDoc : File did not save ");
                             return BadRequest(ModelState);
                         }
                         // return Ok();
@@ -334,6 +360,7 @@ namespace TechMed.API.Controllers
                     else
                     {
                         ModelState.AddModelError("UploadCaseDoc", "Model has null value.");
+                        _logger.LogError("UploadCaseDoc : model count is zero ");
                         return BadRequest(ModelState);
                     }
 
@@ -347,6 +374,7 @@ namespace TechMed.API.Controllers
                 {
                     ModelState.AddModelError("UploadCaseDoc", $"Something went wrong when uplod file {ex.Message + ex.InnerException.StackTrace }");
                 }
+                _logger.LogError("Exception in UploadCaseDoc API " + ex);
                 return StatusCode(500, ModelState);
             }
 
@@ -366,17 +394,20 @@ namespace TechMed.API.Controllers
                 if (PatientCaseID == 0)
                 {
                     ModelState.AddModelError("GetPatientCaseDocList", "Please provide patient case Id");
+                    _logger.LogError("GetPatientCaseDocList : PatientcaseId is null ");
                     return StatusCode(404, ModelState);
                 }
                 rootUrl = this._myConfiguration.Url;
                 caseDocList = await _patientCaeRepository.GetPatientCaseDocList(PatientCaseID, rootUrl);
                 if (caseDocList != null)
                 {
+                    _logger.LogInformation($"GetPatientCaseDocList : Sucess response returned " + PatientCaseID);
                     return StatusCode(200, caseDocList);
                 }
                 else
                 {
-                    ModelState.AddModelError("GetPatientCaseDocList", $"Something went wrong when get patient case doc {PatientCaseID}");
+                    ModelState.AddModelError("GetPatientCaseDocList", $"did not get document list for {PatientCaseID}");
+                    _logger.LogError("GetPatientCaseDocList : did not get document list for "+ PatientCaseID);
                     return StatusCode(404, ModelState);
                 }
             }
@@ -384,6 +415,7 @@ namespace TechMed.API.Controllers
             {
 
                 ModelState.AddModelError("GetPatientCaseDocList", $"Something went wrong when get patient case doc {ex.Message}");
+                _logger.LogError("Exception in GetPatientCaseDocList API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -401,16 +433,19 @@ namespace TechMed.API.Controllers
                 if (PatientCaseID == 0)
                 {
                     ModelState.AddModelError("GetPatientCaseDetailsByCaseID", "Please provide patient case Id");
+                    _logger.LogError("GetPatientCaseDetailsByCaseID : PatientcaseId is null ");
                     return StatusCode(404, ModelState);
                 }
                 patientcase = await _patientCaeRepository.GetPatientCaseDetailsByCaseID(PatientCaseID);
                 if (patientcase != null)
                 {
+                    _logger.LogInformation($"GetPatientCaseDetailsByCaseID : Sucess response returned " + PatientCaseID);
                     return StatusCode(200, patientcase);
                 }
                 else
                 {
-                    ModelState.AddModelError("GetPatientCaseDetailsByCaseID", $"Something went wrong when get patient case {PatientCaseID}");
+                    ModelState.AddModelError("GetPatientCaseDetailsByCaseID", $"did not get patient case for PatientcaseID : {PatientCaseID}");
+                    _logger.LogError("GetPatientCaseDetailsByCaseID : did not get patient case for PatientcaseID : "+ PatientCaseID);
                     return StatusCode(404, ModelState);
                 }
             }
@@ -418,6 +453,7 @@ namespace TechMed.API.Controllers
             {
 
                 ModelState.AddModelError("GetPatientCaseDetails", $"Something went wrong when get patient case {ex.Message}");
+                _logger.LogError("Exception in GetPatientCaseDetails API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -435,16 +471,19 @@ namespace TechMed.API.Controllers
                 if (PatientID == 0)
                 {
                     ModelState.AddModelError("GetPatientCaseLevels", "Please provide patient case Id");
+                    _logger.LogError("GetPatientCaseLevels : PatientcaseId is null ");
                     return StatusCode(404, ModelState);
                 }
                 patientcase = await _patientCaeRepository.GetPatientCaseLevels(PatientID);
                 if (patientcase != null)
                 {
+                    _logger.LogInformation($"GetPatientCaseLevels : Sucess response returned " + PatientID);
                     return StatusCode(200, patientcase);
                 }
                 else
                 {
-                    ModelState.AddModelError("GetPatientCaseLevels", $"Something went wrong when get patient case {PatientID}");
+                    ModelState.AddModelError("GetPatientCaseLevels", $"did not get patient case level for PatientcaseID: {PatientID}");
+                    _logger.LogError("GetPatientCaseLevels : did not get patient case level for PatientcaseID " + PatientID);
                     return StatusCode(404, ModelState);
                 }
             }
@@ -452,6 +491,7 @@ namespace TechMed.API.Controllers
             {
 
                 ModelState.AddModelError("GetPatientCaseLevels", $"Something went wrong when get patient case {ex.Message}");
+                _logger.LogError("Exception in GetPatientCaseLevels API " + ex);
                 return StatusCode(500, ModelState);
             }
         }

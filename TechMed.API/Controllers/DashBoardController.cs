@@ -52,7 +52,7 @@ namespace TechMed.API.Controllers
             {
 
                 ModelState.AddModelError("", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in Doctors Logged In Today API " + ex.Message);
+                _logger.LogError("Exception in Doctors Logged In Today API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -82,7 +82,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("LoggedUserInToday", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in LoggedUserInToday API " + ex.Message);
+                _logger.LogError("Exception in LoggedUserInToday API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -118,7 +118,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetLoggedUserCount", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetLoggedUserCount API " + ex.Message);
+                _logger.LogError("Exception in GetLoggedUserCount API " + ex);
                 return StatusCode(500, ModelState);
             }
 
@@ -148,7 +148,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetLoggedUserCount", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetTodaysTotalPatientCase API " + ex.Message);
+                _logger.LogError("Exception in GetTodaysTotalPatientCase API " + ex);
                 return StatusCode(500, ModelState);
             }
 
@@ -178,7 +178,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetLoggedUserCount", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetTodaysPatientQueue API " + ex.Message);
+                _logger.LogError("Exception in GetTodaysPatientQueue API " + ex);
                 return StatusCode(500, ModelState);
             }
 
@@ -212,7 +212,7 @@ namespace TechMed.API.Controllers
             {
 
                 ModelState.AddModelError("", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetDashboardConsultation API " + ex.Message);
+                _logger.LogError("Exception in GetDashboardConsultation API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -247,7 +247,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetPHCLoginHistoryReport", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetPHCLoginHistoryReport API " + ex.Message);
+                _logger.LogError("Exception in GetPHCLoginHistoryReport API " + ex);
                 return StatusCode(500, ModelState);
             }
 
@@ -283,7 +283,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetPHCConsultationReport", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetPHCConsultationReport API " + ex.Message);
+                _logger.LogError("Exception in GetPHCConsultationReport API " + ex);
                 return StatusCode(500, ModelState);
             }
 
@@ -317,7 +317,7 @@ namespace TechMed.API.Controllers
             {
 
                 ModelState.AddModelError("", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetDashboardReportSummary API " + ex.Message);
+                _logger.LogError("Exception in GetDashboardReportSummary API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -350,7 +350,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetDashboardReportSummaryMonthly API " + ex.Message);
+                _logger.LogError("Exception in GetDashboardReportSummaryMonthly API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -383,7 +383,7 @@ namespace TechMed.API.Controllers
             {
 
                 ModelState.AddModelError("", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetDashboardReportConsultation API " + ex.Message);
+                _logger.LogError("Exception in GetDashboardReportConsultation API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -422,7 +422,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetPHCManpowerReport", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetPHCManpowerReport API " + ex.Message);
+                _logger.LogError("Exception in GetPHCManpowerReport API " + ex);
                 return StatusCode(500, ModelState);
             }
 
@@ -458,7 +458,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetPatientRegisterReport", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetPatientRegisterReport API " + ex.Message);
+                _logger.LogError("Exception in GetPatientRegisterReport API " + ex);
                 return StatusCode(500, ModelState);
             }
 
@@ -516,7 +516,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("AddEquipmentUptimeReport", $"Something went wrong when Add equipment Uptime {ex.Message}");
-                _logger.LogError("Exception in AddEquipmentUptimeReport API " + ex.Message);
+                _logger.LogError("Exception in AddEquipmentUptimeReport API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -552,7 +552,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetReferredPatientReport", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetReferredPatientReport API " + ex.Message);
+                _logger.LogError("Exception in GetReferredPatientReport API " + ex);
                 return StatusCode(500, ModelState);
             }
 
@@ -588,7 +588,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetReviewPatientReport", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetReviewPatientReport API " + ex.Message);
+                _logger.LogError("Exception in GetReviewPatientReport API " + ex);
                 return StatusCode(500, ModelState);
             }
 
@@ -626,7 +626,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetDashboardSpokeMaintenance", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetDashboardSpokeMaintenance API " + ex.Message);
+                _logger.LogError("Exception in GetDashboardSpokeMaintenance API " + ex);
                 return StatusCode(500, ModelState);
             }
 
@@ -662,7 +662,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetDashboardEmployeeFeedback", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetDashboardEmployeeFeedback API " + ex.Message);
+                _logger.LogError("Exception in GetDashboardEmployeeFeedback API " + ex);
                 return StatusCode(500, ModelState);
             }
 
@@ -692,7 +692,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetDashboardEquipmentUptimeReport", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetDashboardEquipmentUptimeReport API " + ex.Message);
+                _logger.LogError("Exception in GetDashboardEquipmentUptimeReport API " + ex);
                 return StatusCode(500, ModelState);
             }
 
@@ -728,7 +728,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetDashboardAppointmentVM", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetDashboardAppointment API " + ex.Message);
+                _logger.LogError("Exception in GetDashboardAppointment API " + ex);
                 return StatusCode(500, ModelState);
             }
 
@@ -767,7 +767,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetDashboardDoctorAvgTime", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetDashboardDoctorAvgTime API " + ex.Message);
+                _logger.LogError("Exception in GetDashboardDoctorAvgTime API " + ex);
                 return StatusCode(500, ModelState);
             }
 
@@ -803,7 +803,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetDashboardDoctorAvailability", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetDashboardDoctorAvailability API " + ex.Message);
+                _logger.LogError("Exception in GetDashboardDoctorAvailability API " + ex);
                 return StatusCode(500, ModelState);
             }
 
@@ -834,7 +834,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetDashboardEquipmentHeaderReport", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetDashboardEquipmentHeaderReport API " + ex.Message);
+                _logger.LogError("Exception in GetDashboardEquipmentHeaderReport API " + ex);
                 return StatusCode(500, ModelState);
             }
 
@@ -870,7 +870,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetPrescribedMedicine", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetPrescribedMedicine API " + ex.Message);
+                _logger.LogError("Exception in GetPrescribedMedicine API " + ex);
                 return StatusCode(500, ModelState);
             }
 
@@ -907,7 +907,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetDashboardDiagnosticPrescribedTestWise", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetDashboardDiagnosticPrescribedTestWise API " + ex.Message);
+                _logger.LogError("Exception in GetDashboardDiagnosticPrescribedTestWise API " + ex);
                 return StatusCode(500, ModelState);
             }
 
@@ -943,7 +943,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetDashboardDiagnosticPrescribedPHCWise", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetDashboardDiagnosticPrescribedPHCWise API " + ex.Message);
+                _logger.LogError("Exception in GetDashboardDiagnosticPrescribedPHCWise API " + ex);
                 return StatusCode(500, ModelState);
             }
 
@@ -980,7 +980,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetPrescribedMedicine", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetPrescribedMedicinePHCWise API " + ex.Message);
+                _logger.LogError("Exception in GetPrescribedMedicinePHCWise API " + ex);
                 return StatusCode(500, ModelState);
             }
 
@@ -1011,7 +1011,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetDashboardGraph", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetDashboardGraph API " + ex.Message);
+                _logger.LogError("Exception in GetDashboardGraph API " + ex);
                 return StatusCode(500, ModelState);
             }
 
@@ -1043,7 +1043,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetDashboardFeedbackSummaryReport", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetDashboardFeedbackSummaryReport API " + ex.Message);
+                _logger.LogError("Exception in GetDashboardFeedbackSummaryReport API " + ex);
                 return StatusCode(500, ModelState);
             }
 
@@ -1079,7 +1079,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetDashboardFeedbackReport", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetDashboardFeedbackReport API " + ex.Message);
+                _logger.LogError("Exception in GetDashboardFeedbackReport API " + ex);
                 return StatusCode(500, ModelState);
             }
 
@@ -1115,7 +1115,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetDashboardDignosisSpecialityWise", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetDashboardDignosisSpecialityWise API " + ex.Message);
+                _logger.LogError("Exception in GetDashboardDignosisSpecialityWise API " + ex);
                 return StatusCode(500, ModelState);
             }
 
@@ -1151,7 +1151,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetDashboardDiseasephcWise", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetDashboardDiseasephcWise API " + ex.Message);
+                _logger.LogError("Exception in GetDashboardDiseasephcWise API " + ex);
                 return StatusCode(500, ModelState);
             }
 
@@ -1187,7 +1187,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetDashboardDiseaseAgeWise", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetDashboardDiseaseAgeWise API " + ex.Message);
+                _logger.LogError("Exception in GetDashboardDiseaseAgeWise API " + ex);
                 return StatusCode(500, ModelState);
             }
 

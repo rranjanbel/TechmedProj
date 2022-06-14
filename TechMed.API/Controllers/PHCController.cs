@@ -52,6 +52,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("GetPHCDetailsByID", $"Something went wrong when GetPHCDetails {ex.Message}");
+                _logger.LogError("Exception in GetPHCDetailsByID API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -82,6 +83,7 @@ namespace TechMed.API.Controllers
             {
 
                 ModelState.AddModelError("GetPHCDetailsByEmailID", $"Something went wrong when GetPHCDetailsByUserID {ex.Message}");
+                _logger.LogError("Exception in GetPHCDetailsByEmailID API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -111,6 +113,7 @@ namespace TechMed.API.Controllers
             {
 
                 ModelState.AddModelError("GetPHCDetailsByUserID", $"Something went wrong when GetPHCDetailsByUserID {ex.Message}");
+                _logger.LogError("Exception in GetPHCDetailsByUserID API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -139,6 +142,7 @@ namespace TechMed.API.Controllers
             {
 
                 ModelState.AddModelError("GetPHCDetails", $"Something went wrong when GetPHCDetails:  {ex.Message}");
+                _logger.LogError("Exception in GetPHCDetails API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -207,6 +211,7 @@ namespace TechMed.API.Controllers
             {
 
                 ModelState.AddModelError("AddPHC", $"Something went wrong when create PHC {ex.Message}");
+                _logger.LogError("Exception in AddPHC API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -237,6 +242,7 @@ namespace TechMed.API.Controllers
             {
 
                 ModelState.AddModelError("GetAllPHC", $"Something went wrong when Get All PHC:  {ex.Message}");
+                _logger.LogError("Exception in GetAllPHC API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -293,6 +299,7 @@ namespace TechMed.API.Controllers
             {
 
                 ModelState.AddModelError("AddPHC", $"Something went wrong when create PHC {ex.Message}");
+                _logger.LogError("Exception in GetAllPHC API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -315,7 +322,7 @@ namespace TechMed.API.Controllers
                     return BadRequest(ModelState);
                 }
                 else
-                {
+                {                   
                     if (spokeMaintenances != null)
                     {
                         status = _phcRepository.PostSpokeMaintenance(spokeMaintenances, contentRootPath);
@@ -343,9 +350,9 @@ namespace TechMed.API.Controllers
             }
             catch (Exception ex)
             {
-                //_logger.LogInformation("Exception in PHC module " + ex.Message);
+                //_logger.LogInformation("Exception in PHC module " + ex);
                 ModelState.AddModelError("UploadPHCDoc", $"Something went wrong when uplod file {ex.Message}");
-                _logger.LogError("Exception in UploadPHCDoc module " + ex.Message);
+                _logger.LogError("Exception in UploadPHCDoc module " + ex);
                 return StatusCode(500, ModelState);
             }
 

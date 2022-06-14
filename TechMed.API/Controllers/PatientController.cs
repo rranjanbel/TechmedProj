@@ -53,49 +53,50 @@ namespace TechMed.API.Controllers
                     return StatusCode(404, ModelState);
                 }
                 _logger.LogInformation($"Add Patient : relative Path : " + webRootPath);
-                _logger.LogInformation($"Add Patient : call web api add patient");
+                _logger.LogInformation($"Add Patient : call web api add patient {patientdto.FirstName}");
                 
                 if (!ModelState.IsValid)
                 {
-                    _logger.LogInformation($"Add Patient : model state is invalid");
+                    _logger.LogInformation($"Add Patient : model state is invalid {patientdto}");
                     return BadRequest(ModelState);
                 }
                 var patientDetails = _mapper.Map<PatientMaster>(patientdto);
-                _logger.LogInformation($"Add Patient : going to check Is Patient Exist.");
+                _logger.LogInformation($"Add Patient : going to check Is Patient Exist.{patientdto.FirstName}");
                 if (_patientRepository.IsPatientExist(patientDetails))
                 {
-                    _logger.LogInformation($"Add Patient : Patient is already in system.");
+                    _logger.LogInformation($"Add Patient : Patient is already in system.{patientdto.FirstName}");
                     ModelState.AddModelError("AddPatient", "Patient name or mobile number is already in system");
                     return StatusCode(404, ModelState);
                 }
                 //newCreatedPatient = await this._patientRepository.Create(patientDetails);
-                _logger.LogInformation($"Add Patient : call get patient id.");
+                _logger.LogInformation($"Add Patient : call get patient unique id. {patientdto.FirstName}");
                 patientDetails.PatientId = this._patientRepository.GetPatientId();
-                _logger.LogInformation($"Add Patient : get patient id." + patientDetails.PatientId);
-                _logger.LogInformation($"Add Patient : call add patient method ");
+                _logger.LogInformation($"Add Patient : Patient unique id is : " + patientDetails.PatientId);
+                _logger.LogInformation($"Add Patient : call method save image : " + patientDetails.PatientId);
                 string fileName = _patientRepository.SaveImage(patientdto.Photo, contentRootPath);
                 webRootPath = @"/MyFiles/Images/Patients/";
                 patientDetails.Photo = webRootPath + fileName;
+                _logger.LogInformation($"Add Patient : saved patinet image : " + patientDetails.Photo);
                 newCreatedPatient = await this._patientRepository.AddPatient(patientDetails);
                 if (newCreatedPatient == null)
                 {
-                    _logger.LogInformation($"Add Patient : Patient did not added in the database ");
+                    _logger.LogInformation($"Add Patient : Patient did not added in the database {patientdto.FirstName}");
                     ModelState.AddModelError("AddPatient", $"Something went wrong when create Patient {patientdto.FirstName}");
                     return StatusCode(404, ModelState);
                 }
                 else
-                {
-                    _logger.LogInformation($"Add Patient : Patient successfully added in the database ");
+                {                   
                     var createdPatient = _mapper.Map<PatientMasterDTO>(newCreatedPatient);
                     createdPatient.Age = this._patientRepository.GetAge(createdPatient.Dob);
+                    _logger.LogInformation($"Add Patient : Sucess response returned  {patientdto.FirstName}");
                     return CreatedAtRoute(201, createdPatient);
                 }
             }
             catch (Exception ex)
             {
 
-                ModelState.AddModelError("AddPatient", $"Something went wrong when create Patient {ex.Message}");
-                _logger.LogError("Exception in Add Patient module " + ex.Message);
+                ModelState.AddModelError("AddPatient", $"Exception :Something went wrong when create Patient {ex.Message}");
+                _logger.LogError("Exception in Add Patient module " + ex);
                 return StatusCode(500, ModelState);
             }  
         }
@@ -113,11 +114,12 @@ namespace TechMed.API.Controllers
                 todaysPatientList = await this._patientRepository.GetTodaysPatientList(phcID);
                 if (todaysPatientList == null)
                 {
-                    ModelState.AddModelError("GetTodaysPatient", $"Something went wrong when get today's patient list");
+                    ModelState.AddModelError("GetTodaysPatient", $"did not get today's patient list");
                     return StatusCode(404, ModelState);
                 }
                 else
-                {                    
+                {
+                    _logger.LogInformation($"GetTodaysPatient : Sucess response returned ");
                     return StatusCode(200, todaysPatientList);
                 }
             }
@@ -125,7 +127,7 @@ namespace TechMed.API.Controllers
             {
 
                 ModelState.AddModelError("GetTodaysPatient", $"Something went wrong when get today's patient list {ex.Message}");
-                _logger.LogError("Exception in GetTodaysPatient API " + ex.Message);
+                _logger.LogError("Exception in GetTodaysPatient API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -143,11 +145,13 @@ namespace TechMed.API.Controllers
                 todaysPatientList = await this._patientRepository.GetCheckedPatientList(phcID);
                 if (todaysPatientList == null)
                 {
-                    ModelState.AddModelError("GetConsultedPatient", $"Something went wrong when get today's patient list");
+                    ModelState.AddModelError("GetConsultedPatient", $"did not get today's consulted patient list");
+                    _logger.LogError("GetConsultedPatient : did not get today's consulted patient list ");
                     return StatusCode(404, ModelState);
                 }
                 else
                 {
+                    _logger.LogInformation($"GetConsultedPatient : Sucess response returned ");
                     return StatusCode(200, todaysPatientList);
                 }
             }
@@ -155,7 +159,7 @@ namespace TechMed.API.Controllers
             {
 
                 ModelState.AddModelError("GetConsultedPatient", $"Something went wrong when get today's patient list {ex.Message}");
-                _logger.LogError("Exception in GetConsultedPatient API " + ex.Message);
+                _logger.LogError("Exception in GetConsultedPatient API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -173,19 +177,20 @@ namespace TechMed.API.Controllers
                 patientCount = await this._patientRepository.GetPatientCount(phcID);
                 if (patientCount == null)
                 {
-                    ModelState.AddModelError("GetPatientCount", $"Something went wrong when get today's patient count");
+                    ModelState.AddModelError("GetTodaysPatientCount", $"did not get today's patient count");
                     return StatusCode(404, ModelState);
                 }
                 else
                 {
+                    _logger.LogInformation($"GetTodaysPatientCount : Sucess response returned ");
                     return StatusCode(200, patientCount);
                 }
             }
             catch (Exception ex)
             {
 
-                ModelState.AddModelError("GetPatientCount", $"Something went wrong when get today's patient count {ex.Message}");
-                _logger.LogError("Exception in GetTodaysPatientCount API " + ex.Message);
+                ModelState.AddModelError("GetTodaysPatientCount", $"Something went wrong when get today's patient count {ex.Message}");
+                _logger.LogError("Exception in GetTodaysPatientCount API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -203,19 +208,20 @@ namespace TechMed.API.Controllers
                 todaysPatientList = await this._patientRepository.GetSearchedTodaysPatientList(patientName);
                 if (todaysPatientList == null)
                 {
-                    ModelState.AddModelError("GetTodaysPatient", $"Something went wrong when get today's patient list");
+                    ModelState.AddModelError("GetTodaysSearchedPatients", $"Something went wrong when get today's patient list");
                     return StatusCode(404, ModelState);
                 }
                 else
                 {
+                    _logger.LogInformation($"GetTodaysSearchedPatients : Sucess response returned ");
                     return StatusCode(200, todaysPatientList);
                 }
             }
             catch (Exception ex)
             {
 
-                ModelState.AddModelError("GetTodaysPatient", $"Something went wrong when get today's patient list {ex.Message}");
-                _logger.LogError("Exception in GetTodaysSearchedPatients API " + ex.Message);
+                ModelState.AddModelError("GetTodaysSearchedPatients", $"Something went wrong when get today's patient list {ex.Message}");
+                _logger.LogError("Exception in GetTodaysSearchedPatients API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -233,11 +239,12 @@ namespace TechMed.API.Controllers
                 patientList = await this._patientRepository.GetYesterdaysPatientList(phcID);
                 if (patientList == null)
                 {
-                    ModelState.AddModelError("GetYesterdaysPatient", $"Something went wrong when get yesterday's patient list");
+                    ModelState.AddModelError("GetYesterdaysPatient", $"did not get yesterday's patient list");
                     return StatusCode(404, ModelState);
                 }
                 else
                 {
+                    _logger.LogInformation($"GetYesterdaysPatient : Sucess response returned ");
                     return StatusCode(200, patientList);
                 }
             }
@@ -245,7 +252,7 @@ namespace TechMed.API.Controllers
             {
 
                 ModelState.AddModelError("GetYesterdaysPatient", $"Something went wrong when get yesterday's patient list {ex.Message}");
-                _logger.LogError("Exception in GetYesterdaysPatient API " + ex.Message);
+                _logger.LogError("Exception in GetYesterdaysPatient API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -270,13 +277,14 @@ namespace TechMed.API.Controllers
                 }
                 else
                 {
+                    _logger.LogInformation($"AdvanceSearchResult : Sucess response returned ");
                     return StatusCode(200, patientSearchResults);
                 }               
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("AdvanceSearchResult", $"Something went wrong when get yesterday's patient list {ex.Message}");
-                _logger.LogError("Exception in AdvanceSearchResult API " + ex.Message);
+                _logger.LogError("Exception in AdvanceSearchResult API " + ex);
                 return StatusCode(500, ModelState);
             }
           

@@ -21,11 +21,13 @@ namespace TechMed.API.Controllers
         private readonly IMapper _mapper;
         //UserBusinessMaster userBusinessMaster;
         private readonly IUserRepository _userRepository;
-        public UserMasterController(IMapper mapper, TeleMedecineContext teleMedecineContext, IUserRepository userRepository)
+        private readonly ILogger<UserMasterController> _logger;
+        public UserMasterController(IMapper mapper, TeleMedecineContext teleMedecineContext, IUserRepository userRepository, ILogger<UserMasterController> logger)
         {
             this._mapper = mapper;
             //userBusinessMaster = new UserBusinessMaster(teleMedecineContext, mapper);
             this._userRepository = userRepository;
+            _logger = logger;
         }
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(List<UserLoginDTO>))]
@@ -56,6 +58,7 @@ namespace TechMed.API.Controllers
             {
 
                 ModelState.AddModelError("GetUsers", $"Something went wrong when create park {ex.Message}");
+                _logger.LogError("Exception in GetUsers API " + ex);
                 return StatusCode(500, ModelState);
             }
            
@@ -88,6 +91,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("IsValidUser", $"Something went wrong when create park {ex.Message}");
+                _logger.LogError("Exception in IsValidUser API " + ex);
                 return StatusCode(500, ModelState);
             }
 
@@ -124,6 +128,7 @@ namespace TechMed.API.Controllers
             {
 
                 ModelState.AddModelError("LogedUserDetails", $"Something went wrong when get Loged User Details {ex.Message}");
+                _logger.LogError("Exception in LogedUserDetails API " + ex);
                 return StatusCode(500, ModelState);
             }
            
@@ -159,6 +164,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("ChangeUserPassword", $"Something went wrong when change password {ex.Message}");
+                _logger.LogError("Exception in ChangeUserPassword API " + ex);
                 return StatusCode(500, ModelState);
             }
 
@@ -193,6 +199,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("LogedUserDetails", $"Something went wrong when get user role {ex.Message}");
+                _logger.LogError("Exception in LogedUserDetails API " + ex);
                 return StatusCode(500, ModelState);
             }
         }

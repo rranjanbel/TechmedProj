@@ -143,10 +143,12 @@ namespace TechMed.API.Controllers
 
                 if (user == null)
                 {
+                    _logger.LogInformation("Invalid Credentials for User {0} " ,request.UserName);
                     apiResponse.isSuccess = false;
                     apiResponse.errorMessage = "Invalid Credentials";
                     return BadRequest(apiResponse);
                 }
+                _logger.LogInformation("Successfully login for User {0} ", request.UserName);
                 apiResponse.isSuccess = true;
                 apiResponse.data = user;
                 return Ok(apiResponse);
@@ -154,7 +156,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 string message = ex.Message;               
-                _logger.LogError("Exception in login module " + ex.Message);
+                _logger.LogError( ex, "Exception in login module ");
                 return BadRequest(apiResponse);
             }
            
@@ -168,12 +170,12 @@ namespace TechMed.API.Controllers
             {
                 var _bearer_token = Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
                 var users = await _userService.LogoutUsers(_bearer_token);
-
+                _logger.LogInformation("User logout successfully ");
                 return Ok(new { status = "Sucess" });
             }
             catch (Exception ex)
             {
-                _logger.LogError("Exception in Logout module " + ex.Message);
+                _logger.LogError(ex, "Exception in Logout module ");
                 return BadRequest(new {status ="Fail" });
             }
           
@@ -190,6 +192,7 @@ namespace TechMed.API.Controllers
                 {
                     apiResponse.isSuccess = false;
                     apiResponse.errorMessage = "Unable to Logout";
+                    _logger.LogError("Unable to Logout");
                     return BadRequest(apiResponse);
                 }
                 var _bearer_token = Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
@@ -199,7 +202,7 @@ namespace TechMed.API.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError("Exception in Logout From Other Device module " + ex.Message);
+                _logger.LogError(ex, "Exception in Logout From Other Device module ");
                 return BadRequest(apiResponse);
             }
            

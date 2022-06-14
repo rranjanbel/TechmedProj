@@ -280,39 +280,9 @@ namespace TechMed.BL.Repository.BaseClasses
 
 
                             }
-                            //else
-                            //{
-                            //    patientCase = new PatientCase();
-                            //    patientCase.Id = 0;
-                            //    patientCase.PatientId = patientCaseVM.patientCase.PatientId;
-                            //    patientCase.Allergies = patientCaseVM.patientCase.Allergies;
-                            //    patientCase.CaseFileNumber = patientCaseVM.patientCase.CaseFileNumber;
-                            //    patientCase.Test = patientCaseVM.patientCase.Test;
-                            //    patientCase.Instruction = patientCaseVM.patientCase.Instruction;
-                            //    patientCase.CaseHeading = patientCaseVM.patientCase.CaseHeading;
-                            //    patientCase.Symptom = patientCaseVM.patientCase.Symptom;
-                            //    patientCase.Prescription = "";
-                            //    patientCase.Observation = patientCaseVM.patientCase.Observation;
-                            //    patientCase.FamilyHistory = patientCaseVM.patientCase.FamilyHistory;
-                            //    patientCase.SuggestedDiagnosis = patientCaseVM.patientCase.SuggestedDiagnosis;                               
-                            //    patientCase.ProvisionalDiagnosis = patientCaseVM.patientCase.ProvisionalDiagnosis;
-                            //    patientCase.ReferredTo = patientCaseVM.patientCase.ReferredTo;
-                            //    patientCase.Opdno = patientCaseVM.patientCase.Opdno;
-                            //    patientCase.UpdatedBy = patientCaseVM.patientCase.UpdatedBy;
-                            //    patientCase.UpdatedOn = DateTime.Now;
-                            //    patientCase.CreatedBy = patientCaseVM.patientCase.CreatedBy;
-                            //    patientCase.CreatedOn = DateTime.Now;
+                           
 
-                            //    this._teleMedecineContext.Entry(patientCase).State = EntityState.Added;
-                            //    j = await this.Context.SaveChangesAsync();
-                            //    patientcasecreateVM.patientCase = _mapper.Map<PatientCaseDTO>(patientCase);
-                            //    if (j > 0)
-                            //    {
-                            //        _logger.LogInformation($"Patient case added : sucessfully {patientCase.Id}");
-                            //    }
-                            //}
-
-                            if (i > 0 || j > 0)
+                            if (i > 0 )
                             {
 
                                 foreach (var vital in patientCaseVM.vitals)
@@ -325,29 +295,16 @@ namespace TechMed.BL.Repository.BaseClasses
                                     patientCaseVital.Value = vital.Value;
                                     this._teleMedecineContext.Entry(patientCaseVital).State = EntityState.Added;
                                     k = await this.Context.SaveChangesAsync();
-                                    //if (k > 0)
-                                    //{
-                                    //    _logger.LogInformation($"Patient vital added : sucessfully {patientCase.Id}");
-                                    //}
+                                    if (k > 0)
+                                    {
+                                        _logger.LogInformation($"Patient vital added : sucessfully");
+                                    }
+
                                 }
+                                
 
                                 patientcasecreateVM.vitals = patientCaseVM.vitals;
-                                //foreach (var doc in patientCaseVM.caseDocuments)
-                                //{
-                                //    l = 0;
-                                //    patientCaseDocument = new PatientCaseDocument();
-                                //    patientCaseDocument = _mapper.Map<PatientCaseDocument>(doc);
-                                //    this._teleMedecineContext.Entry(patientCaseDocument).State = EntityState.Added;
-                                //    l = await this.Context.SaveChangesAsync();
-
-                                //    PatientCaseDocDTO docDTO = _mapper.Map<PatientCaseDocDTO>(patientCaseDocument);
-                                //    caseDocumentsList.Add(docDTO);
-                                //}
-                                //if (l > 0)
-                                //{
-                                //    _logger.LogInformation($"Patient case document added : sucessfully {patientCase.Id}");
-                                //}
-                                //patientcasecreateVM.caseDocuments = caseDocumentsList;
+                               
 
                                 patientcasecreateVM.PatientID = patientCaseVM.PatientID;
                                 patientcasecreateVM.PHCUserId = patientCaseVM.PHCUserId;
@@ -360,7 +317,8 @@ namespace TechMed.BL.Repository.BaseClasses
                         catch (Exception ex)
                         {
                             string expMesg = ex.Message;
-                            _logger.LogInformation($"Exception when update and add patient case, vital and report doc {ex.Message}");
+                            _logger.LogError($"Exception when update and add patient case, vital and report doc" + ex);
+                            throw;
 
                         }
 

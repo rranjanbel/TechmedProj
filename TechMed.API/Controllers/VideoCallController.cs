@@ -19,16 +19,19 @@ namespace TechMed.API.Controllers
         readonly ITwilioVideoSDKService _twilioVideoSDK;
         private readonly IHubContext<SignalRBroadcastHub, IHubClient> _hubContext;
         private readonly ITwilioMeetingRepository _twilioRoomDb;
+        private readonly ILogger<VideoCallController> _logger;
 
         public VideoCallController(IMapper mapper,
             ITwilioVideoSDKService twilioVideoSDK,
             ITwilioMeetingRepository twilioRoomDb,
             IHubContext<SignalRBroadcastHub,
-                IHubClient> hubContext)
+                IHubClient> hubContext,
+            ILogger<VideoCallController> logger)
         {
             _twilioVideoSDK = twilioVideoSDK;
             _hubContext = hubContext;
             _twilioRoomDb = twilioRoomDb;
+            _logger = logger;
         }
 
         [HttpGet("token")]
@@ -96,6 +99,7 @@ namespace TechMed.API.Controllers
             {
                 apiResponseModel.isSuccess = false;
                 apiResponseModel.errorMessage = ex.Message;
+                _logger.LogError("Exception in IsValidRoomDoctor API " + ex);
                 return BadRequest(apiResponseModel);
             }
 
@@ -152,6 +156,7 @@ namespace TechMed.API.Controllers
             {
                 apiResponseModel.isSuccess = false;
                 apiResponseModel.errorMessage = ex.Message;
+                _logger.LogError("Exception in IsValidRoomPhc API " + ex);
                 return BadRequest(apiResponseModel);
             }
 
@@ -274,6 +279,7 @@ namespace TechMed.API.Controllers
             {
                 apiResponseModel.isSuccess = false;
                 apiResponseModel.errorMessage = ex.Message;
+                _logger.LogError("Exception in DismissCall API " + ex);
                 return BadRequest(apiResponseModel);
             }
         }
