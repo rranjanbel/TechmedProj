@@ -15,10 +15,12 @@ namespace TechMed.API.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IMISRepository _mISRepository;
-        public MISController(IMapper mapper, TeleMedecineContext teleMedecineContext, IMISRepository mISRepository)
+        private readonly ILogger<MISController> _logger;
+        public MISController(IMapper mapper, TeleMedecineContext teleMedecineContext, IMISRepository mISRepository, ILogger<MISController> logger)
         {
             _mISRepository = mISRepository;
             _mapper = mapper;
+            _logger = logger;
         }
         [HttpPost]
         [Route("CompletedConsultation")]
@@ -44,6 +46,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("CompletedConsultation", $"Something went wrong when CompletedConsultation {ex.Message}");
+                _logger.LogError("Exception in CompletedConsultation API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -72,6 +75,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("CompletedConsultationByDoctors", $"Something went wrong when CompletedConsultation {ex.Message}");
+                _logger.LogError("Exception in CompletedConsultationByDoctors API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -100,6 +104,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("CompletedConsultationByDoctors", $"Something went wrong when CompletedConsultation {ex.Message}");
+                _logger.LogError("Exception in CompletedConsultationByDoctors API " + ex);
                 return StatusCode(500, ModelState);
             }
         }

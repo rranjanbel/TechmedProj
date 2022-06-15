@@ -280,39 +280,9 @@ namespace TechMed.BL.Repository.BaseClasses
 
 
                             }
-                            //else
-                            //{
-                            //    patientCase = new PatientCase();
-                            //    patientCase.Id = 0;
-                            //    patientCase.PatientId = patientCaseVM.patientCase.PatientId;
-                            //    patientCase.Allergies = patientCaseVM.patientCase.Allergies;
-                            //    patientCase.CaseFileNumber = patientCaseVM.patientCase.CaseFileNumber;
-                            //    patientCase.Test = patientCaseVM.patientCase.Test;
-                            //    patientCase.Instruction = patientCaseVM.patientCase.Instruction;
-                            //    patientCase.CaseHeading = patientCaseVM.patientCase.CaseHeading;
-                            //    patientCase.Symptom = patientCaseVM.patientCase.Symptom;
-                            //    patientCase.Prescription = "";
-                            //    patientCase.Observation = patientCaseVM.patientCase.Observation;
-                            //    patientCase.FamilyHistory = patientCaseVM.patientCase.FamilyHistory;
-                            //    patientCase.SuggestedDiagnosis = patientCaseVM.patientCase.SuggestedDiagnosis;                               
-                            //    patientCase.ProvisionalDiagnosis = patientCaseVM.patientCase.ProvisionalDiagnosis;
-                            //    patientCase.ReferredTo = patientCaseVM.patientCase.ReferredTo;
-                            //    patientCase.Opdno = patientCaseVM.patientCase.Opdno;
-                            //    patientCase.UpdatedBy = patientCaseVM.patientCase.UpdatedBy;
-                            //    patientCase.UpdatedOn = DateTime.Now;
-                            //    patientCase.CreatedBy = patientCaseVM.patientCase.CreatedBy;
-                            //    patientCase.CreatedOn = DateTime.Now;
+                           
 
-                            //    this._teleMedecineContext.Entry(patientCase).State = EntityState.Added;
-                            //    j = await this.Context.SaveChangesAsync();
-                            //    patientcasecreateVM.patientCase = _mapper.Map<PatientCaseDTO>(patientCase);
-                            //    if (j > 0)
-                            //    {
-                            //        _logger.LogInformation($"Patient case added : sucessfully {patientCase.Id}");
-                            //    }
-                            //}
-
-                            if (i > 0 || j > 0)
+                            if (i > 0 )
                             {
 
                                 foreach (var vital in patientCaseVM.vitals)
@@ -325,29 +295,16 @@ namespace TechMed.BL.Repository.BaseClasses
                                     patientCaseVital.Value = vital.Value;
                                     this._teleMedecineContext.Entry(patientCaseVital).State = EntityState.Added;
                                     k = await this.Context.SaveChangesAsync();
-                                    //if (k > 0)
-                                    //{
-                                    //    _logger.LogInformation($"Patient vital added : sucessfully {patientCase.Id}");
-                                    //}
+                                    if (k > 0)
+                                    {
+                                        _logger.LogInformation($"Patient vital added : sucessfully");
+                                    }
+
                                 }
+                                
 
                                 patientcasecreateVM.vitals = patientCaseVM.vitals;
-                                //foreach (var doc in patientCaseVM.caseDocuments)
-                                //{
-                                //    l = 0;
-                                //    patientCaseDocument = new PatientCaseDocument();
-                                //    patientCaseDocument = _mapper.Map<PatientCaseDocument>(doc);
-                                //    this._teleMedecineContext.Entry(patientCaseDocument).State = EntityState.Added;
-                                //    l = await this.Context.SaveChangesAsync();
-
-                                //    PatientCaseDocDTO docDTO = _mapper.Map<PatientCaseDocDTO>(patientCaseDocument);
-                                //    caseDocumentsList.Add(docDTO);
-                                //}
-                                //if (l > 0)
-                                //{
-                                //    _logger.LogInformation($"Patient case document added : sucessfully {patientCase.Id}");
-                                //}
-                                //patientcasecreateVM.caseDocuments = caseDocumentsList;
+                               
 
                                 patientcasecreateVM.PatientID = patientCaseVM.PatientID;
                                 patientcasecreateVM.PHCUserId = patientCaseVM.PHCUserId;
@@ -360,7 +317,8 @@ namespace TechMed.BL.Repository.BaseClasses
                         catch (Exception ex)
                         {
                             string expMesg = ex.Message;
-                            _logger.LogInformation($"Exception when update and add patient case, vital and report doc {ex.Message}");
+                            _logger.LogError($"Exception when update and add patient case, vital and report doc" + ex);
+                            throw;
 
                         }
 
@@ -369,18 +327,21 @@ namespace TechMed.BL.Repository.BaseClasses
                     else
                     {
                         // Patient case is null
+                        _logger.LogError($"Patient case is null");
                         return patientcasecreateVM;
                     }
                 }
                 else
                 {
                     //Patient Id is null
+                    _logger.LogError($"Patient Id is null");
                     return patientcasecreateVM;
                 }
             }
             else
             {
                 // patient case model is null
+                _logger.LogError($"patient case model is null");
                 return patientcasecreateVM;
             }
         }
@@ -530,106 +491,106 @@ namespace TechMed.BL.Repository.BaseClasses
             return patientCaseQue;
         }
 
-        public string SaveDocument(IFormFile file, string rootPath, string uniqeFileName)
-        {
-            try
-            {
-                string contentRootPath = rootPath;
-                string path = @"\\MyStaticFiles\\CaseDocuments\\";
-                path = contentRootPath + path;
+        //public string SaveDocument(IFormFile file, string rootPath, string uniqeFileName)
+        //{
+        //    try
+        //    {
+        //        string contentRootPath = rootPath;
+        //        string path = @"\\MyStaticFiles\\CaseDocuments\\";
+        //        path = contentRootPath + path;
 
-                //Generate unique filename  
+        //        //Generate unique filename  
 
-                var filePath = Path.Combine(path, uniqeFileName);
+        //        var filePath = Path.Combine(path, uniqeFileName);
 
 
-                var fileType = Path.GetExtension(file.FileName);
+        //        var fileType = Path.GetExtension(file.FileName);
 
-                //if (fileType.ToLower() == ".pdf" || fileType.ToLower() == ".jpg" || fileType.ToLower() == ".png" || fileType.ToLower() == ".jpeg")
-                //{
-                //    //var filePath = Path.Combine(path, file.FileName);
+        //        //if (fileType.ToLower() == ".pdf" || fileType.ToLower() == ".jpg" || fileType.ToLower() == ".png" || fileType.ToLower() == ".jpeg")
+        //        //{
+        //        //    //var filePath = Path.Combine(path, file.FileName);
 
-                //}
+        //        //}
 
-                using (Stream stream = new FileStream(filePath, FileMode.Create))
-                {
-                    file.CopyToAsync(stream);
-                }
-                return file.FileName;
-            }
-            catch (Exception ex)
-            {
-                string message = ex.Message;
-                return "";
-            }
+        //        using (Stream stream = new FileStream(filePath, FileMode.Create))
+        //        {
+        //            file.CopyToAsync(stream);
+        //        }
+        //        return file.FileName;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        string message = ex.Message;
+        //        return "";
+        //    }
             
 
 
             
 
-        }
+        //}
 
-        public bool SaveCaseDocument(List<CaseDocumentVM> caseDocuments, string contentRootPath)
-        {
-            PatientCaseDocument patientCaseDocument  ;       
-            int l = 0;           
-            string path = @"/MyFiles/CaseDocuments/";
+        //public bool SaveCaseDocument(List<CaseDocumentVM> caseDocuments, string contentRootPath)
+        //{
+        //    PatientCaseDocument patientCaseDocument  ;       
+        //    int l = 0;           
+        //    string path = @"/MyFiles/CaseDocuments/";
             
 
            
-            if (caseDocuments != null)
-            {              
-                foreach (var doc in caseDocuments)
-                {
-                    if(doc.file.Length >0)
-                    {
-                        l = 0;
-                        var myfilename = string.Format(@"{0}", Guid.NewGuid());
-                        myfilename = myfilename +"_"+ doc.file.FileName;
-                        string fileName = SaveDocument(doc.file, contentRootPath, myfilename);
-                        if(fileName != null)
-                        {
-                            string fullPath = Path.Combine(path, myfilename);
-                            patientCaseDocument = new PatientCaseDocument();
-                            patientCaseDocument.PatientCaseId = doc.patientCaseId;
-                            patientCaseDocument.DocumentPath = fullPath;
-                            patientCaseDocument.DocumentName = doc.name;
-                            patientCaseDocument.Description = doc.file.FileName + " , " + doc.file.Length;
-                            patientCaseDocument.DocumentTypeId = doc.DocumentTypeId;
+        //    if (caseDocuments != null)
+        //    {              
+        //        foreach (var doc in caseDocuments)
+        //        {
+        //            if(doc.file.Length >0)
+        //            {
+        //                l = 0;
+        //                var myfilename = string.Format(@"{0}", Guid.NewGuid());
+        //                myfilename = myfilename +"_"+ doc.file.FileName;
+        //                string fileName = SaveDocument(doc.file, contentRootPath, myfilename);
+        //                if(fileName != null)
+        //                {
+        //                    string fullPath = Path.Combine(path, myfilename);
+        //                    patientCaseDocument = new PatientCaseDocument();
+        //                    patientCaseDocument.PatientCaseId = doc.patientCaseId;
+        //                    patientCaseDocument.DocumentPath = fullPath;
+        //                    patientCaseDocument.DocumentName = doc.name;
+        //                    patientCaseDocument.Description = doc.file.FileName + " , " + doc.file.Length;
+        //                    patientCaseDocument.DocumentTypeId = doc.DocumentTypeId;
 
 
-                            this._teleMedecineContext.Entry(patientCaseDocument).State = EntityState.Added;
+        //                    this._teleMedecineContext.Entry(patientCaseDocument).State = EntityState.Added;
 
-                            if(doc.DocumentTypeId == 2)
-                            {
-                                PatientCase patientCase = this._teleMedecineContext.PatientCases.FirstOrDefault(a => a.Id == doc.patientCaseId);
-                                patientCase.Prescription = fullPath;
-                                this._teleMedecineContext.Entry(patientCase).State = EntityState.Modified;
+        //                    if(doc.DocumentTypeId == 2)
+        //                    {
+        //                        PatientCase patientCase = this._teleMedecineContext.PatientCases.FirstOrDefault(a => a.Id == doc.patientCaseId);
+        //                        patientCase.Prescription = fullPath;
+        //                        this._teleMedecineContext.Entry(patientCase).State = EntityState.Modified;
 
-                            }
-                            l = this.Context.SaveChanges();
-                        }
+        //                    }
+        //                    l = this.Context.SaveChanges();
+        //                }
                                           
-                    }
+        //            }
                    
-                }
-                if (l > 0)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+        //        }
+        //        if (l > 0)
+        //        {
+        //            return true;
+        //        }
+        //        else
+        //        {
+        //            return false;
+        //        }
 
 
-            }
-            else
-            {
-                return false;
-            }
+        //    }
+        //    else
+        //    {
+        //        return false;
+        //    }
 
-        }
+        //}
 
         public async Task<PatientCaseVM> GetPatientCaseDetailsByCaseID(int PatientCaseID)
         {
@@ -915,6 +876,47 @@ namespace TechMed.BL.Repository.BaseClasses
                 doctorId = assinToDoctor.Select(s => s.DoctorId).FirstOrDefault();
             }  
             return doctorId;
+        }
+
+        public bool UpdatePatientCase(PatientCase patientCase, PatientCaseVital patientCaseVital)
+        {
+            int i = 0;
+            int j = 0;
+           
+
+            using (TeleMedecineContext context = new TeleMedecineContext())
+            {
+                using (var transaction = context.Database.BeginTransaction())
+                {
+                    try
+                    {                        
+                        context.Entry(patientCase).State = EntityState.Modified;
+                        i = context.SaveChanges();
+                        if (i > 0 )
+                        {
+                            context.Entry(patientCaseVital).State = EntityState.Added;
+                            j = context.SaveChanges(); ;
+                        }
+                        if (i > 0 && j > 0)
+                        {
+                            transaction.Commit();
+                            return true;
+                        }
+                        else
+                        {
+                            transaction.Rollback();
+                            return false;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        string excp = ex.Message;
+                        transaction.Rollback();
+                        return false;
+                    }
+                }
+            }
+           
         }
     }
 

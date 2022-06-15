@@ -25,7 +25,7 @@ namespace TechMed.BL.CommanClassesAndFunctions
             }
             catch (Exception ex)
             {
-                throw new Exception("Error in base64Encode" + ex.Message);
+                throw new Exception("Error in base64Encode" + ex);
             }
         }
 
@@ -44,7 +44,7 @@ namespace TechMed.BL.CommanClassesAndFunctions
             }
             catch (Exception ex)
             {
-                throw new Exception("Error in DecodeFrom64" + ex.Message);
+                throw new Exception("Error in DecodeFrom64" + ex);
             }
 
         }

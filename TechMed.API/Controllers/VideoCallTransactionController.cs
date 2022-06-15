@@ -50,6 +50,7 @@ namespace TechMed.API.Controllers
             {
 
                 ModelState.AddModelError("", $"Something went wrong {ex.Message}");
+                _logger.LogError("Exception in GetVideoCallTransactionByUserID API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -82,6 +83,7 @@ namespace TechMed.API.Controllers
             {
 
                 ModelState.AddModelError("", $"Something went wrong {ex.Message}");
+                _logger.LogError("Exception in PostVideoCallTransaction API " + ex);
                 return StatusCode(500, ModelState);
             }
         }

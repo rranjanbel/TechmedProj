@@ -499,7 +499,7 @@ namespace TechMed.BL.Repository.BaseClasses
             catch (Exception ex)
             {
                 string expMesg = ex.Message;
-                return false;
+                throw;
             }
 
 

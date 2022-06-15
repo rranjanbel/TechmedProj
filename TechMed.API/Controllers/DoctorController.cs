@@ -41,16 +41,19 @@ namespace TechMed.API.Controllers
             {
                 if (getListOfNotificationVM == null)
                 {
+                    _logger.LogError("GetListOfNotification : ModelState is null");
                     return BadRequest(ModelState);
                 }
                 var DTO = await _doctorRepository.GetListOfNotification(getListOfNotificationVM);
                 if (DTO.Count > 0)
                 {
+                    _logger.LogInformation($"GetListOfNotification : Sucess response returned " );
                     return Ok(DTO);
                 }
                 else
                 {
                     ModelState.AddModelError("", $"Data not found!");
+                    _logger.LogError("GetListOfNotification :  Data not found ");
                     return StatusCode(404, ModelState);
                 }
             }
@@ -58,7 +61,7 @@ namespace TechMed.API.Controllers
             {
 
                 ModelState.AddModelError("", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetListOfNotification API " + ex.Message);
+                _logger.LogError("Exception in GetListOfNotification API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -74,11 +77,13 @@ namespace TechMed.API.Controllers
                 var DTO = await _doctorRepository.GetCDSSGuideLines();
                 if (DTO != null)
                 {
+                    _logger.LogInformation($"GetCDSSGuideLines : Sucess response returned ");
                     return Ok(DTO);
                 }
                 else
                 {
                     ModelState.AddModelError("", $"Data not found!");
+                    _logger.LogError("GetCDSSGuideLines :  Data not found ");
                     return StatusCode(404, ModelState);
                 }
             }
@@ -86,7 +91,7 @@ namespace TechMed.API.Controllers
             {
 
                 ModelState.AddModelError("", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetCDSSGuideLines API " + ex.Message);
+                _logger.LogError("Exception in GetCDSSGuideLines API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -101,24 +106,27 @@ namespace TechMed.API.Controllers
             {
                 if (getDoctorDetailVM == null)
                 {
+                    _logger.LogError("GetDoctorDetails :  ModelState is null ");
                     return BadRequest(ModelState);
                 }
                 var DTO = await _doctorRepository.GetDoctorDetails(getDoctorDetailVM);
                 if (DTO.Id > 0)
                 {
+                    _logger.LogInformation($"GetDoctorDetails : Sucess response returned ");
                     return Ok(DTO);
                 }
                 else
                 {
                     ModelState.AddModelError("", $"Data not found!");
+                    _logger.LogError("GetDoctorDetails :  Data not found ");
                     return StatusCode(404, ModelState);
                 }
             }
             catch (Exception ex)
             {
 
-                ModelState.AddModelError("", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetDoctorDetails API " + ex.Message);
+                ModelState.AddModelError("GetDoctorDetails", $"Something went wrong {ex.Message}");
+                _logger.LogError("Exception in GetDoctorDetails API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -138,19 +146,21 @@ namespace TechMed.API.Controllers
                 var DTO = await _doctorRepository.GetListOfMedicine();
                 if (DTO.Count > 0)
                 {
+                    _logger.LogInformation($"GetListOfMedicine : Sucess response returned ");
                     return Ok(DTO);
                 }
                 else
                 {
                     ModelState.AddModelError("", $"Data not found!");
+                    _logger.LogError("GetListOfMedicine : Data not found ");
                     return StatusCode(404, ModelState);
                 }
             }
             catch (Exception ex)
             {
 
-                ModelState.AddModelError("", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetListOfMedicine API " + ex.Message);
+                ModelState.AddModelError("GetListOfMedicine", $"Something went wrong {ex.Message}");
+                _logger.LogError("Exception in GetListOfMedicine API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -170,18 +180,20 @@ namespace TechMed.API.Controllers
                 var DTO = await _doctorRepository.GetListOfVital();
                 if (DTO.Count > 0)
                 {
+                    _logger.LogInformation($"GetListOfVital : Sucess response returned ");
                     return Ok(DTO);
                 }
                 else
                 {
                     ModelState.AddModelError("", $"Data not found!");
+                    _logger.LogError("GetListOfVital : Data not found ");
                     return StatusCode(404, ModelState);
                 }
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetListOfVital API " + ex.Message);
+                _logger.LogError("Exception in GetListOfVital API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -201,18 +213,20 @@ namespace TechMed.API.Controllers
                 var DTO = await _doctorRepository.GetListOfPHCHospital();
                 if (DTO.Count > 0)
                 {
+                    _logger.LogInformation($"GetListOfPHCHospital : Sucess response returned ");
                     return Ok(DTO);
                 }
                 else
                 {
                     ModelState.AddModelError("", $"Data not found!");
+                    _logger.LogError("GetListOfPHCHospital : Data not found ");
                     return StatusCode(404, ModelState);
                 }
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetListOfPHCHospital API " + ex.Message);
+                _logger.LogError("Exception in GetListOfPHCHospital API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -233,18 +247,20 @@ namespace TechMed.API.Controllers
                 var DTO = await _doctorRepository.GetListOfSpecializationMaster();
                 if (DTO.Count > 0)
                 {
+                    _logger.LogInformation($"GetListOfSpecializationMaster : Sucess response returned ");
                     return Ok(DTO);
                 }
                 else
                 {
                     ModelState.AddModelError("", $"Data not found!");
+                    _logger.LogError("GetListOfSpecializationMaster : Data not found ");
                     return StatusCode(404, ModelState);
                 }
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetListOfSpecializationMaster API " + ex.Message);
+                _logger.LogError("Exception in GetListOfSpecializationMaster API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -260,16 +276,19 @@ namespace TechMed.API.Controllers
             {
                 if (SpecializationId == 0)
                 {
+                    _logger.LogError("GetListOfSubSpecializationMaster :SpecializationId is zero ");
                     return BadRequest(ModelState);
                 }
                 var DTO = await _doctorRepository.GetListOfSubSpecializationMaster(SpecializationId);
                 if (DTO.Count > 0)
                 {
+                    _logger.LogInformation($"GetListOfSubSpecializationMaster : Sucess response returned ");
                     return Ok(DTO);
                 }
                 else
                 {
                     ModelState.AddModelError("", $"Data not found!");
+                    _logger.LogError("GetListOfSubSpecializationMaster : Data not found ");
                     return StatusCode(404, ModelState);
                 }
             }
@@ -277,7 +296,7 @@ namespace TechMed.API.Controllers
             {
 
                 ModelState.AddModelError("", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetListOfSubSpecializationMaster API " + ex.Message);
+                _logger.LogError("Exception in GetListOfSubSpecializationMaster API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -304,22 +323,26 @@ namespace TechMed.API.Controllers
                 if (webRootPath == String.Empty || webRootPath == null)
                 {
                     ModelState.AddModelError("UpdateDoctorDetails", "Path did not get proper " + webRootPath);
+                    _logger.LogError("UpdateDoctorDetails : Path did not get proper");
                     return StatusCode(404, ModelState);
                 }
                 _logger.LogInformation($"Update Doctor Details : relative Path : " + webRootPath);
                 _logger.LogInformation($"Update Doctor Details : call web api add UpdateDoctorDetails");
                 if (doctorDTO == null || doctorDTO.Id < 1 || !ModelState.IsValid)
                 {
+                    _logger.LogError("UpdateDoctorDetails : ModelState is invalid");
                     return BadRequest(ModelState);
                 }
                 var DTO = await _doctorRepository.UpdateDoctorDetails(doctorDTO, contentRootPath ,webRootPath);
                 if (DTO)
                 {
+                    _logger.LogInformation($"UpdateDoctorDetails : Sucess response returned ");
                     return Ok(DTO);
                 }
                 else
                 {
                     ModelState.AddModelError("", $"Data not updated!");
+                    _logger.LogError("UpdateDoctorDetails : Data not updated");
                     return StatusCode(404, ModelState);
                 }
             }
@@ -327,7 +350,7 @@ namespace TechMed.API.Controllers
             {
 
                 ModelState.AddModelError("", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in UpdateDoctorDetails API " + ex.Message);
+                _logger.LogError("Exception in UpdateDoctorDetails API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -344,16 +367,19 @@ namespace TechMed.API.Controllers
             {
                 if (doctorVM.DoctorID < 1 || !ModelState.IsValid)
                 {
+                    _logger.LogError("GetTodayesPatients : ModelState is invalid");
                     return BadRequest(doctorVM.DoctorID);
                 }
                 var DTO = await _doctorRepository.GetTodayesPatients(doctorVM);
                 if (DTO.Count > 0)
                 {
+                    _logger.LogInformation($"GetTodayesPatients : Sucess response returned ");
                     return Ok(DTO);
                 }
                 else
                 {
                     ModelState.AddModelError("", $"Data not found!");
+                    _logger.LogError("GetTodayesPatients : Data not found");
                     return StatusCode(404, ModelState);
                 }
             }
@@ -361,7 +387,7 @@ namespace TechMed.API.Controllers
             {
 
                 ModelState.AddModelError("", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetTodayesPatients API " + ex.Message);
+                _logger.LogError("Exception in GetTodayesPatients API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -377,23 +403,26 @@ namespace TechMed.API.Controllers
             {
                 if (doctorVM.DoctorID == null || doctorVM.DoctorID < 1 || !ModelState.IsValid)
                 {
+                    _logger.LogError("GetCompletedConsultationPatientsHistory : ModelState is invalid");
                     return BadRequest(doctorVM.DoctorID);
                 }
                 var DTO = await _doctorRepository.GetCompletedConsultationPatientsHistory(doctorVM);
                 if (DTO.Count > 0)
                 {
+                    _logger.LogInformation($"GetCompletedConsultationPatientsHistory : Sucess response returned ");
                     return Ok(DTO);
                 }
                 else
                 {
                     ModelState.AddModelError("", $"Data not found!");
+                    _logger.LogError("GetCompletedConsultationPatientsHistory : Data not found" );
                     return StatusCode(404, ModelState);
                 }
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetCompletedConsultationPatientsHistory API " + ex.Message);
+                _logger.LogError("Exception in GetCompletedConsultationPatientsHistory API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -409,16 +438,19 @@ namespace TechMed.API.Controllers
             {
                 if (doctorVM.DoctorID == null || doctorVM.DoctorID < 1 || !ModelState.IsValid)
                 {
+                    _logger.LogError("GetYesterdayPatientsHistory :ModelState is invalid");
                     return BadRequest(doctorVM.DoctorID);
                 }
                 var DTO = await _doctorRepository.GetYesterdayPatientsHistory(doctorVM);
                 if (DTO.Count > 0)
                 {
+                    _logger.LogInformation($"GetYesterdayPatientsHistory : Sucess response returned ");
                     return Ok(DTO);
                 }
                 else
                 {
                     ModelState.AddModelError("", $"Data not found!");
+                    _logger.LogError("GetYesterdayPatientsHistory : Data not found");
                     return StatusCode(404, ModelState);
                 }
             }
@@ -426,7 +458,7 @@ namespace TechMed.API.Controllers
             {
 
                 ModelState.AddModelError("", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetYesterdayPatientsHistory API " + ex.Message);
+                _logger.LogError("Exception in GetYesterdayPatientsHistory API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -442,16 +474,19 @@ namespace TechMed.API.Controllers
             {
                 if (doctorVM.DoctorID < 1 || !ModelState.IsValid)
                 {
+                    _logger.LogError("GetPastPatientsHistory : ModelState is invalid");
                     return BadRequest(doctorVM.DoctorID);
                 }
                 var DTO = await _doctorRepository.GetPastPatientsHistory(doctorVM);
                 if (DTO.Count > 0)
                 {
+                    _logger.LogInformation($"GetPastPatientsHistory : Sucess response returned ");
                     return Ok(DTO);
                 }
                 else
                 {
                     ModelState.AddModelError("", $"Data not found!");
+                    _logger.LogError("GetPastPatientsHistory : Data not found");
                     return StatusCode(404, ModelState);
                 }
             }
@@ -459,7 +494,7 @@ namespace TechMed.API.Controllers
             {
 
                 ModelState.AddModelError("", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetPastPatientsHistory API " + ex.Message);
+                _logger.LogError("Exception in GetPastPatientsHistory API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -475,23 +510,26 @@ namespace TechMed.API.Controllers
             {
                 if (caseDetailsVM.PatientCaseID == null || caseDetailsVM.PatientCaseID < 1 || !ModelState.IsValid)
                 {
+                    _logger.LogError("GetPatientCaseDetailsAsync : ModelState is invalid");
                     return BadRequest(caseDetailsVM.PatientCaseID);
                 }
                 var DTO = await _doctorRepository.GetPatientCaseDetailsAsync(caseDetailsVM);
                 if (DTO.PatientId > 0)
                 {
+                    _logger.LogInformation($"GetPatientCaseDetailsAsync : Sucess response returned ");
                     return Ok(DTO);
                 }
                 else
                 {
                     ModelState.AddModelError("", $"Data not found!");
+                    _logger.LogError("GetPatientCaseDetailsAsync : Data not found");
                     return StatusCode(404, ModelState);
                 }
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetPatientCaseDetailsAsync API " + ex.Message);
+                _logger.LogError("Exception in GetPatientCaseDetailsAsync API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -507,23 +545,26 @@ namespace TechMed.API.Controllers
             {
                 if (treatmentVM.PatientCaseID == null || treatmentVM.PatientCaseID < 1 || !ModelState.IsValid)
                 {
+                    _logger.LogError("PostTreatmentPlan : ModelState is invalid");
                     return BadRequest(treatmentVM.PatientCaseID);
                 }
                 var DTO = await _doctorRepository.PostTreatmentPlan(treatmentVM);
                 if (DTO)
                 {
+                    _logger.LogInformation($"PostTreatmentPlan : Sucess response returned ");
                     return Ok(DTO);
                 }
                 else
                 {
                     ModelState.AddModelError("", $"Data not updated!");
+                    _logger.LogError("PostTreatmentPlan : Data not updated");
                     return StatusCode(404, ModelState);
                 }
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in PostTreatmentPlan API " + ex.Message);
+                _logger.LogError("Exception in PostTreatmentPlan API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -539,23 +580,26 @@ namespace TechMed.API.Controllers
             {
                 if (NotificationID == null || NotificationID < 1 || !ModelState.IsValid)
                 {
+                    _logger.LogError("DeleteNotification : ModelState is invalid");
                     return BadRequest(NotificationID);
                 }
                 var DTO = await _doctorRepository.DeleteNotification(NotificationID);
                 if (DTO)
                 {
+                    _logger.LogInformation($"DeleteNotification : Sucess response returned ");
                     return Ok(DTO);
                 }
                 else
                 {
-                    ModelState.AddModelError("", $"Data not deleted!");
+                    ModelState.AddModelError("DeleteNotification", $"Data not deleted!");
+                    _logger.LogError("DeleteNotification : Data not deleted!");
                     return StatusCode(404, ModelState);
                 }
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in DeleteNotification API " + ex.Message);
+                _logger.LogError("Exception in DeleteNotification API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -571,23 +615,26 @@ namespace TechMed.API.Controllers
             {
                 if (getEHRVM.PatientCaseID < 1 || !ModelState.IsValid)
                 {
+                    _logger.LogError("EHRdata : ModelState is invalid");
                     return BadRequest(getEHRVM);
                 }
                 GetEHRDTO DTO = await _doctorRepository.GetEHR(getEHRVM);
                 if (DTO != null)
                 {
+                    _logger.LogInformation($"EHRdata : Sucess response returned ");
                     return Ok(DTO);
                 }
                 else
                 {
                     ModelState.AddModelError("", $"Data not found!");
+                    _logger.LogError("EHRdata : Data not found");
                     return StatusCode(404, ModelState);
                 }
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in EHRdata API " + ex.Message);
+                _logger.LogError("Exception in EHRdata API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -603,23 +650,26 @@ namespace TechMed.API.Controllers
             {
                 if (patientAbsentVM.CaseID < 1 || !ModelState.IsValid)
                 {
+                    _logger.LogError("PatientAbsent : ModelState is not valid");
                     return BadRequest(patientAbsentVM);
                 }
                 bool DTO = await _doctorRepository.PatientAbsent(patientAbsentVM);
                 if (DTO)
                 {
+                    _logger.LogInformation($"PatientAbsent : Sucess response returned ");
                     return Ok(DTO);
                 }
                 else
                 {
                     ModelState.AddModelError("", $"Data not found!");
+                    _logger.LogError("PatientAbsent : Data not found");
                     return StatusCode(404, ModelState);
                 }
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("CaseID", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in PatientAbsent API " + ex.Message);
+                _logger.LogError("Exception in PatientAbsent API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -635,23 +685,26 @@ namespace TechMed.API.Controllers
             {
                 if (patientAbsentVM.CaseID < 1 || !ModelState.IsValid)
                 {
+                    _logger.LogError("ReferHigherFacility : ModelState is not valid");
                     return BadRequest(patientAbsentVM);
                 }
                 bool DTO = await _doctorRepository.ReferHigherFacility(patientAbsentVM);
                 if (DTO)
                 {
+                    _logger.LogInformation($"ReferHigherFacility : Sucess response returned ");
                     return Ok(DTO);
                 }
                 else
                 {
                     ModelState.AddModelError("", $"Data not found!");
+                    _logger.LogError("ReferHigherFacility : Data not found");
                     return StatusCode(404, ModelState);
                 }
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("CaseID", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in ReferHigherFacility API " + ex.Message);
+                _logger.LogError("Exception in ReferHigherFacility API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -667,6 +720,7 @@ namespace TechMed.API.Controllers
             {
                 if (getCaseLabelVM.PatientID < 1 || !ModelState.IsValid)
                 {
+                    _logger.LogError("GetCaseLabel : ModelState is not valid");
                     return BadRequest(getCaseLabelVM);
                 }
                 List<GetCaseLabelDTO> DTO = await _doctorRepository.GetCaseLabel(getCaseLabelVM);
@@ -674,17 +728,20 @@ namespace TechMed.API.Controllers
                 {
                     if (DTO.Count > 0)
                     {
+                        _logger.LogInformation($"GetCaseLabel : Sucess response returned ");
                         return Ok(DTO);
                     }
                     else
                     {
                         ModelState.AddModelError("", $"Data not found!");
+                        _logger.LogError("GetCaseLabel : Data not found");
                         return StatusCode(404, ModelState);
                     }
                 }
                 else
                 {
                     ModelState.AddModelError("", $"Data not found!");
+                    _logger.LogError("GetCaseLabel : Data not found");
                     return StatusCode(404, ModelState);
                 }
 
@@ -692,7 +749,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("CaseID", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in ReferHigherFacility API " + ex.Message);
+                _logger.LogError("Exception in ReferHigherFacility API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -708,6 +765,7 @@ namespace TechMed.API.Controllers
             {
                 if (searchPatientVM.DoctorID < 1 || !ModelState.IsValid)
                 {
+                    _logger.LogError("SearchPatientDrDashBoard : ModelState is invalid");
                     return BadRequest(searchPatientVM);
                 }
                 List<SearchPatientsDTO> DTO = await _doctorRepository.SearchPatientDrDashBoard(searchPatientVM);
@@ -715,17 +773,20 @@ namespace TechMed.API.Controllers
                 {
                     if (DTO.Count > 0)
                     {
+                        _logger.LogInformation($"SearchPatientDrDashBoard : Sucess response returned ");
                         return Ok(DTO);
                     }
                     else
                     {
                         ModelState.AddModelError("", $"Data not found!");
+                        _logger.LogError("SearchPatientDrDashBoard : Data not found");
                         return StatusCode(404, ModelState);
                     }
                 }
                 else
                 {
                     ModelState.AddModelError("", $"Data not found!");
+                    _logger.LogError("SearchPatientDrDashBoard : Data not found");
                     return StatusCode(404, ModelState);
                 }
 
@@ -733,7 +794,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("CaseID", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in SearchPatientDrDashBoard API " + ex.Message);
+                _logger.LogError("Exception in SearchPatientDrDashBoard API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -749,6 +810,7 @@ namespace TechMed.API.Controllers
             {
                 if (searchPatientVM.DoctorID < 1 || !ModelState.IsValid)
                 {
+                    _logger.LogError("SearchPatientDrHistory : ModelState is invalid");
                     return BadRequest(searchPatientVM);
                 }
                 List<SearchPatientsDTO> DTO = await _doctorRepository.SearchPatientDrHistory(searchPatientVM);
@@ -756,17 +818,20 @@ namespace TechMed.API.Controllers
                 {
                     if (DTO.Count > 0)
                     {
+                        _logger.LogInformation($"SearchPatientDrHistory : Sucess response returned ");
                         return Ok(DTO);
                     }
                     else
                     {
                         ModelState.AddModelError("", $"Data not found!");
+                        _logger.LogError("SearchPatientDrHistory : Data not found");
                         return StatusCode(404, ModelState);
                     }
                 }
                 else
                 {
                     ModelState.AddModelError("", $"Data not found!");
+                    _logger.LogError("SearchPatientDrHistory : Data not found");
                     return StatusCode(404, ModelState);
                 }
 
@@ -774,7 +839,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("CaseID", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in SearchPatientDrHistory API " + ex.Message);
+                _logger.LogError("Exception in SearchPatientDrHistory API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -790,23 +855,26 @@ namespace TechMed.API.Controllers
             {
                 if (getListOfPHCHospitalVM == null)
                 {
+                    _logger.LogError("GetListOfPHCHospitalBlockWise : ModelState is invalid");
                     return BadRequest(ModelState);
                 }
                 var DTO = await _doctorRepository.GetListOfPHCHospitalBlockWise(getListOfPHCHospitalVM);
                 if (DTO.Count > 0)
                 {
+                    _logger.LogInformation($"GetListOfPHCHospitalBlockWise : Sucess response returned ");
                     return Ok(DTO);
                 }
                 else
                 {
                     ModelState.AddModelError("", $"Data not found!");
+                    _logger.LogError("GetListOfPHCHospitalBlockWise : Data not found");
                     return StatusCode(404, ModelState);
                 }
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetListOfPHCHospitalBlockWise API " + ex.Message);
+                _logger.LogError("Exception in GetListOfPHCHospitalBlockWise API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -822,23 +890,26 @@ namespace TechMed.API.Controllers
             {
                 if (doctorVM.DoctorID < 1 || !ModelState.IsValid)
                 {
+                    _logger.LogError("GetLatestReferred : ModelStateis invalid");
                     return BadRequest(doctorVM.DoctorID);
                 }
                 var DTO = await _doctorRepository.GetLatestReferred(doctorVM);
                 if (DTO.Count > 0)
                 {
+                    _logger.LogInformation($"GetLatestReferred : Sucess response returned ");
                     return Ok(DTO);
                 }
                 else
                 {
                     ModelState.AddModelError("", $"Data not found!");
+                    _logger.LogError("GetLatestReferred : Data not found");
                     return StatusCode(404, ModelState);
                 }
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetLatestReferred API " + ex.Message);
+                _logger.LogError("Exception in GetLatestReferred API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -853,23 +924,26 @@ namespace TechMed.API.Controllers
             {
                 if (doctorVM.DoctorID < 1 || !ModelState.IsValid)
                 {
-                    return BadRequest(doctorVM.DoctorID);
+                    _logger.LogError("GetLatestReferredCount : ModelState is invalid");
+                    return BadRequest(doctorVM.DoctorID);                   
                 }
                 var DTO = await _doctorRepository.GetLatestReferredCount(doctorVM);
                 if (DTO > 0)
                 {
+                    _logger.LogInformation($"GetLatestReferredCount : Sucess response returned ");
                     return Ok(DTO);
                 }
                 else
                 {
                     ModelState.AddModelError("", $"Data not found!");
+                    _logger.LogError("GetLatestReferredCount : Data not found");
                     return StatusCode(404, ModelState);
                 }
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetLatestReferredCount API " + ex.Message);
+                _logger.LogError("Exception in GetLatestReferredCount API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -886,9 +960,11 @@ namespace TechMed.API.Controllers
             {
                 if (doctorVM.DoctorID < 1 || !ModelState.IsValid)
                 {
+                    _logger.LogError("UpdateIsDrOnline : ModelState is invalid");
                     return BadRequest(doctorVM.DoctorID);
                 }
                 var DTO = await _doctorRepository.UpdateIsDrOnline(doctorVM);
+                _logger.LogInformation($"UpdateIsDrOnline : Sucess response returned ");
                 return Ok(DTO);
                 //if (DTO)
                 //{
@@ -903,7 +979,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in UpdateIsDrOnline API " + ex.Message);
+                _logger.LogError("Exception in UpdateIsDrOnline API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -919,6 +995,7 @@ namespace TechMed.API.Controllers
             {
                 if (doctorVM.DoctorID < 1 || !ModelState.IsValid)
                 {
+                    _logger.LogError("IsDrOnline : ModelState is invalid");
                     return BadRequest(doctorVM.DoctorID);
                 }
                 var DTO = await _doctorRepository.IsDrOnline(doctorVM);
@@ -936,7 +1013,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in IsDrOnline API " + ex.Message);
+                _logger.LogError("Exception in IsDrOnline API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -949,26 +1026,24 @@ namespace TechMed.API.Controllers
         public async Task<IActionResult> OnlineDrList()
         {
             try
-            {
-                //if (doctorVM.BlockID < 1 || !ModelState.IsValid)
-                //{
-                //    return BadRequest(doctorVM);
-                //}
+            {               
                 var DTO = await _doctorRepository.OnlineDrList();
                 if (DTO.Count > 0)
                 {
+                    _logger.LogInformation($"OnlineDrList : Sucess response returned ");
                     return Ok(DTO);
                 }
                 else
                 {
                     ModelState.AddModelError("", $"Data not found!");
+                    _logger.LogError("OnlineDrList : Data not found");
                     return StatusCode(404, ModelState);
                 }
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in OnlineDrList API " + ex.Message);
+                _logger.LogError("Exception in OnlineDrList API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -999,6 +1074,7 @@ namespace TechMed.API.Controllers
                 if (webRootPath == String.Empty || webRootPath == null)
                 {
                     ModelState.AddModelError("AddDoctor", "Path did not get proper " + webRootPath);
+                    _logger.LogError("AddDoctor : Path did not get proper");
                     return StatusCode(404, ModelState);
                 }
                 _logger.LogInformation($"Add Doctor : relative Path : " + webRootPath);
@@ -1024,11 +1100,13 @@ namespace TechMed.API.Controllers
                 if (!string.IsNullOrEmpty(mobilechk))
                 {
                     ModelState.AddModelError("doctorDTO", mobilechk);
+                    _logger.LogError("AddDoctor : Dr. mobile number is empty");
                     return StatusCode(404, ModelState);
                 }
                 if (!string.IsNullOrEmpty(emailchk))
                 {
                     ModelState.AddModelError("doctorDTO", emailchk);
+                    _logger.LogError("AddDoctor : Dr. email is empty");
                     return StatusCode(404, ModelState);
                 }
                 if (true)
@@ -1142,7 +1220,7 @@ namespace TechMed.API.Controllers
             {
 
                 ModelState.AddModelError("AddDoctor", $"Something went wrong when create Doctor {ex.Message}");
-                _logger.LogError("Exception in AddDoctor API " + ex.Message);
+                _logger.LogError("Exception in AddDoctor API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -1158,16 +1236,19 @@ namespace TechMed.API.Controllers
             {
                 if (getDoctorDetailVM == null)
                 {
+                    _logger.LogError("GetDoctorDetailsByUserID : ModelState is invalid");
                     return BadRequest(ModelState);
                 }
                 var DTO = await _doctorRepository.GetDoctorDetailsByUserID(getDoctorDetailVM);
                 if (DTO.Id > 0)
                 {
+                    _logger.LogInformation($"GetDoctorDetailsByUserID : Sucess response returned ");
                     return Ok(DTO);
                 }
                 else
                 {
                     ModelState.AddModelError("", $"Data not found!");
+                    _logger.LogError("GetDoctorDetailsByUserID : Data not found");
                     return StatusCode(404, ModelState);
                 }
             }
@@ -1175,7 +1256,7 @@ namespace TechMed.API.Controllers
             {
 
                 ModelState.AddModelError("", $"Something went wrong {ex.Message}");
-                _logger.LogError("Exception in GetDoctorDetailsByUserID API " + ex.Message);
+                _logger.LogError("Exception in GetDoctorDetailsByUserID API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -1190,23 +1271,36 @@ namespace TechMed.API.Controllers
             List<DoctorPatientSearchVM> patientSearchResults = new List<DoctorPatientSearchVM>();
             try
             {
-                patientSearchResults = this._doctorRepository.GetAdvanceSearchDoctorsPatient(searchParameter);
+               
 
 
                 if (searchParameter == null)
                 {
                     ModelState.AddModelError("AdvanceSearchResult", $"Search Parameter is null");
+                    _logger.LogError($"AdvanceSearchResult : Search Parameter is null ");
                     return StatusCode(404, ModelState);
                 }
                 else
                 {
-                    return StatusCode(200, patientSearchResults);
+                    patientSearchResults = this._doctorRepository.GetAdvanceSearchDoctorsPatient(searchParameter);
+                    if(patientSearchResults != null)
+                    {
+                        _logger.LogInformation($"AdvanceSearchResult : Sucess response returned ");
+                        return StatusCode(200, patientSearchResults);
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", $"Data not found!");
+                        _logger.LogError("AdvanceSearchResult : Data not found");
+                        return StatusCode(404, ModelState);
+                    }
+                   
                 }
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("AdvanceSearchResult", $"Something went wrong when get yesterday's patient list {ex.Message}");
-                _logger.LogError("Exception in AdvanceSearchResult API " + ex.Message);
+                _logger.LogError("Exception in AdvanceSearchResult API " + ex);
                 return StatusCode(500, ModelState);
             }
 

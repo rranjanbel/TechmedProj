@@ -240,7 +240,7 @@ namespace TechMed.BL.Repository.BaseClasses
                         spokeMaintenance = new SpokeMaintenance();
                         spokeMaintenance.Phcid = spokeDTO.Phcid;
                         spokeMaintenance.FilePath = fullRelativePath;
-                        spokeMaintenance.Date = DateTime.Now;
+                        spokeMaintenance.Date = spokeDTO.dateTime ;
 
                         this._teleMedecineContext.Entry(spokeMaintenance).State = EntityState.Added;
                         l = this.Context.SaveChanges();

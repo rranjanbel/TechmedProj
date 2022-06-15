@@ -11,5 +11,6 @@ namespace TechMed.BL.DTOMaster
     {
         public int Phcid { get; set; }      
         public IFormFile file { get; set; }
+        public DateTime dateTime { get; set; }
     }
 }

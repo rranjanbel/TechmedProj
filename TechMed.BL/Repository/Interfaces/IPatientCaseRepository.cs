@@ -23,7 +23,7 @@ namespace TechMed.BL.Repository.Interfaces
         Task<PatientCaseLevelDTO> GetPatientCaseLevels(int patientID);
         Task<List<PatientCaseDocDTO>> GetPatientCaseDocList(int PatientCaseID, string rootUrl);
         bool IsPatientCaseExist(PatientCaseCreateVM patientCase);
-        bool SaveCaseDocument(List<CaseDocumentVM> caseDocuments, string contentRootPath);
+        //bool SaveCaseDocument(List<CaseDocumentVM> caseDocuments, string contentRootPath);
         bool UploadCaseDoc(List<CaseDocumentVM> caseDocuments, string contentRootPath);
         long GetCaseFileNumber();
     }
