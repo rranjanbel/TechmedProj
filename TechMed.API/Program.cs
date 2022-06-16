@@ -17,6 +17,7 @@ using TechMed.BL.TwilioAPI.Model;
 using TechMed.BL.TwilioAPI.Service;
 using TechMed.API.NotificationHub;
 using TechMed.BL.ModelMaster;
+using TechMed.DL.ViewModel;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -76,6 +77,8 @@ builder.Services.AddAuthentication(x =>
 });
 builder.Services.AddSingleton<IJwtAuthManager, JwtAuthManager>();
 builder.Services.AddHostedService<JwtRefreshTokenCache>();
+var mailSettings = builder.Configuration.GetSection("MailSettings").Get<MailSettings>();
+builder.Services.AddSingleton(mailSettings);
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
@@ -92,6 +95,7 @@ builder.Services.AddScoped<IDigonisisRepository, DigonisisRepository>();
 builder.Services.AddScoped<IDrugsRepository, DrugsRepository>();
 builder.Services.AddScoped<ITwilioMeetingRepository, TwilioMeetingRepository>();
 builder.Services.AddScoped<IHolidayRepository, HolidayRepository>();
+builder.Services.AddScoped<IMailService, MailService>();
 builder.Services.Configure<TwilioSettings>(
     settings =>
     {
