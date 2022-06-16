@@ -39,7 +39,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 drugsMaster.Name = item.NameOfDrug + "," + item.DrugformAndStrength;
                 drugsMasterDTOs.Add(drugsMaster);
             }
-            return drugsMasterDTOs; 
+            return drugsMasterDTOs.OrderBy(a => a.Name).ToList(); 
         }
     }
 }
