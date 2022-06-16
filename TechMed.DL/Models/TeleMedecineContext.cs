@@ -72,6 +72,9 @@ namespace TechMed.DL.Models
         public virtual DbSet<VideoCallTransaction> VideoCallTransactions { get; set; } = null!;
         public virtual DbSet<VitalMaster> VitalMasters { get; set; } = null!;
         public virtual DbSet<PatientCaseDiagonosticTest> PatientCaseDiagonostics { get; set; } = null!;
+        public virtual DbSet<RemoteSiteDowntimeReport> RemoteSiteDowntimeReports { get; set; } = null!;
+        public virtual DbSet<ServerUpTimeReport> ServerUpTimeReports { get; set; } = null!;
+
 
         public virtual DbSet<SPResultGetPatientDetails> SPResultGetPatientDetails { get; set; } = null!;
         public virtual DbSet<SpecializationReportVM> SpecializationReport { get; set; } = null!;
@@ -108,13 +111,23 @@ namespace TechMed.DL.Models
         public virtual DbSet<GetDashboardDiagnosticPrescribedTestWiseVM> GetDashboardDiagnosticPrescribedTestWise { get; set; } = null!;
         public virtual DbSet<PrescribedMedicinePHCWiseVM> PrescribedMedicinePHCWiseReport { get; set; } = null!;
         public virtual DbSet<GetDashboardGraphVM> GetDashboardGraph { get; set; } = null!;
-       
-        
+
+
+
         public virtual DbSet<GetDashboardFeedbackSummaryReportVM> GetDashboardFeedbackSummaryReport { get; set; } = null!;
         public virtual DbSet<GetDashboardFeedbackReportVM> GetDashboardFeedbackReport { get; set; } = null!;
         public virtual DbSet<GetDashboardDignosisSpecialityWiseVM> GetDashboardDignosisSpecialityWise { get; set; } = null!;
         public virtual DbSet<GetDashboardDiseasephcWiseVM> GetDashboardDiseasephcWise { get; set; } = null!;
         public virtual DbSet<GetDashboardDiseaseAgeWiseVM> GetDashboardDiseaseAgeWise { get; set; } = null!;
+
+
+        public virtual DbSet<GetDashboardSystemHealthReportVM> GetDashboardSystemHealthReport { get; set; } = null!;
+        public virtual DbSet<RemoteSiteDowntimeSummaryDailyVM> RemoteSiteDowntimeSummaryDaily { get; set; } = null!;
+        public virtual DbSet<RemoteSiteDowntimeSummaryMonthlyVM> RemoteSiteDowntimeSummaryMonthly { get; set; } = null!;
+
+
+
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -641,7 +654,7 @@ namespace TechMed.DL.Models
 
                 entity.Property(e => e.UserId).HasColumnName("UserID");
                 entity.Property(e => e.UserToken).HasColumnName("UserToken");
-               // entity.Property(e => e.RefreshToken).HasColumnName("RefreshToken");
+                // entity.Property(e => e.RefreshToken).HasColumnName("RefreshToken");
 
                 entity.Property(e => e.UserTypeId).HasColumnName("UserTypeID");
 
@@ -1313,6 +1326,36 @@ namespace TechMed.DL.Models
                     .HasForeignKey(d => d.Phcid)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_SpokeMaintenance_PHCMaster");
+            });
+
+            modelBuilder.Entity<RemoteSiteDowntimeReport>(entity =>
+            {
+                entity.ToTable("RemoteSiteDowntimeReport");
+
+                entity.Property(e => e.ID).HasColumnName("ID");
+
+                entity.Property(e => e.Date).HasColumnType("datetime");
+
+                entity.Property(e => e.PHCDownTime);
+
+                entity.Property(e => e.PHCId).HasColumnName("PHCId");
+
+            });
+            modelBuilder.Entity<ServerUpTimeReport>(entity =>
+            {
+                entity.ToTable("ServerUpTimeReport");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.Date).HasColumnType("datetime");
+
+                entity.Property(e => e.WorkingHours);
+                entity.Property(e => e.WorkingTime);
+                entity.Property(e => e.ServerUpTime);
+                entity.Property(e => e.ServerDownTime);
+                entity.Property(e => e.DownTimings);
+                entity.Property(e => e.Availability);
+
             });
 
             modelBuilder.Entity<StateMaster>(entity =>

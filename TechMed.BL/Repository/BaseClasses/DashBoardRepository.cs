@@ -1060,5 +1060,97 @@ namespace TechMed.BL.Repository.BaseClasses
 
             return prescribedMedicinesList;
         }
+
+
+        public async Task<List<GetDashboardSystemHealthReportVM>> GetDashboardSystemHealthReport(DateTime? fromDate, DateTime? toDate)
+        {
+            List<GetDashboardSystemHealthReportVM> prescribedMedicinesList = new List<GetDashboardSystemHealthReportVM>();
+            GetDashboardSystemHealthReportVM data;
+            try
+            {
+                var Results = _teleMedecineContext.GetDashboardSystemHealthReport.FromSqlInterpolated($"EXEC [dbo].[GetDashboardSystemHealthReport] @FromDate ={fromDate}, @ToDate ={toDate}");
+                foreach (var item in Results)
+                {
+                    data = new GetDashboardSystemHealthReportVM();
+                    data.SrNo = item.SrNo;
+                    data.date = item.date;
+                    data.WorkingHours = item.WorkingHours;
+                    data.WorkingTime = item.WorkingTime;
+                    data.ServerUpTime = item.ServerUpTime;
+                    data.ServerUpTime = item.ServerUpTime;
+                    data.ServerDownTime = item.ServerDownTime;
+                    data.DownTimings = item.DownTimings;
+                    data.Availability = item.Availability;
+                    prescribedMedicinesList.Add(data);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
+            }
+
+
+            return prescribedMedicinesList;
+        }
+        public async Task<List<RemoteSiteDowntimeSummaryDailyVM>> RemoteSiteDowntimeSummaryDaily(DateTime? fromDate, DateTime? toDate)
+        {
+            List<RemoteSiteDowntimeSummaryDailyVM> prescribedMedicinesList = new List<RemoteSiteDowntimeSummaryDailyVM>();
+            RemoteSiteDowntimeSummaryDailyVM data;
+            try
+            {
+                var Results = _teleMedecineContext.RemoteSiteDowntimeSummaryDaily.FromSqlInterpolated($"EXEC [dbo].[RemoteSiteDowntimeSummaryDaily] @FromDate ={fromDate}, @ToDate ={toDate}");
+                foreach (var item in Results)
+                {
+                    data = new RemoteSiteDowntimeSummaryDailyVM();
+                    data.SrNo = item.SrNo;
+                    data.DistrictName = item.DistrictName;
+                    data.BlockName = item.BlockName;
+                    data.PHCName = item.PHCName;
+                    data.TotalWorkingTime = item.TotalWorkingTime;
+                    data.PHCDownTime = item.PHCDownTime;
+                    data.DownTime = item.DownTime;
+                    prescribedMedicinesList.Add(data);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
+            }
+
+
+            return prescribedMedicinesList;
+        }
+        public async Task<List<RemoteSiteDowntimeSummaryMonthlyVM>> RemoteSiteDowntimeSummaryMonthly(int month, int year)
+        {
+            List<RemoteSiteDowntimeSummaryMonthlyVM> registerPatientReports = new List<RemoteSiteDowntimeSummaryMonthlyVM>();
+            RemoteSiteDowntimeSummaryMonthlyVM data;
+            try
+            {
+                var Results = _teleMedecineContext.RemoteSiteDowntimeSummaryMonthly.FromSqlInterpolated($"EXEC [dbo].[RemoteSiteDowntimeSummaryMonthly] @month ={month}, @year ={year}");
+                foreach (var item in Results)
+                {
+                    data = new RemoteSiteDowntimeSummaryMonthlyVM();
+                    data.SrNo = item.SrNo;
+                    data.SrNo = item.SrNo;
+                    data.DistrictName = item.DistrictName;
+                    data.BlockName = item.BlockName;
+                    data.PHCName = item.PHCName;
+                    data.TotalWorkingTime = item.TotalWorkingTime;
+                    data.PHCDownTime = item.PHCDownTime;
+                    data.DownTime = item.DownTime;
+                    registerPatientReports.Add(data);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
+            }
+
+
+            return registerPatientReports;
+        }
     }
 }

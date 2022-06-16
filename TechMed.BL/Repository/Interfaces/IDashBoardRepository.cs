@@ -48,5 +48,10 @@ namespace TechMed.BL.Repository.Interfaces
         Task<List<GetDashboardDignosisSpecialityWiseVM>> GetDashboardDignosisSpecialityWise(DateTime? fromDate, DateTime? toDate, int Specialityid);
         Task<List<GetDashboardDiseasephcWiseVM>> GetDashboardDiseasephcWise(DateTime? fromDate, DateTime? toDate);
         Task<List<GetDashboardDiseaseAgeWiseVM>> GetDashboardDiseaseAgeWise(DateTime? fromDate, DateTime? toDate);
+
+
+        Task<List<GetDashboardSystemHealthReportVM>> GetDashboardSystemHealthReport(DateTime? fromDate, DateTime? toDate);
+        Task<List<RemoteSiteDowntimeSummaryDailyVM>> RemoteSiteDowntimeSummaryDaily(DateTime? fromDate, DateTime? toDate);
+        Task<List<RemoteSiteDowntimeSummaryMonthlyVM>> RemoteSiteDowntimeSummaryMonthly(int month, int year);
     }
 }
