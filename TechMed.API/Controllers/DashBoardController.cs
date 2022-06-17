@@ -1173,6 +1173,7 @@ namespace TechMed.API.Controllers
                 toDateUtc = toDate.Value;
             try
             {
+                
                 prescribedMedicines = await _dashBoardRepository.GetDashboardDiseaseAgeWise(fromDateUtc, toDateUtc);
                 if (prescribedMedicines != null)
                 {
@@ -1192,5 +1193,115 @@ namespace TechMed.API.Controllers
             }
 
         }
+
+
+        [HttpGet]
+        [Route("GetDashboardSystemHealthReport")]
+        [ProducesResponseType(200, Type = typeof(List<GetDashboardSystemHealthReportVM>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetDashboardSystemHealthReport(DateTime? fromDate = null, DateTime? toDate = null)
+        {
+            List<GetDashboardSystemHealthReportVM> prescribedMedicines = new List<GetDashboardSystemHealthReportVM>();
+           
+            try
+            {
+
+                prescribedMedicines = await _dashBoardRepository.GetDashboardSystemHealthReport(fromDate, toDate);
+                if (prescribedMedicines != null)
+                {
+                    return Ok(prescribedMedicines);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetDashboardSystemHealthReport", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("GetDashboardSystemHealthReport", $"Something went wrong {ex.Message}");
+                _logger.LogError("Exception in GetDashboardSystemHealthReport API " + ex);
+                return StatusCode(500, ModelState);
+            }
+
+        }
+
+        [HttpGet]
+        [Route("RemoteSiteDowntimeSummaryDaily")]
+        [ProducesResponseType(200, Type = typeof(List<RemoteSiteDowntimeSummaryDailyVM>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> RemoteSiteDowntimeSummaryDaily(DateTime? fromDate = null, DateTime? toDate = null)
+        {
+            List<RemoteSiteDowntimeSummaryDailyVM> prescribedMedicines = new List<RemoteSiteDowntimeSummaryDailyVM>();
+            //DateTime? fromDateUtc = null;
+            //if (fromDate != null)
+            //    fromDateUtc = fromDate.Value;
+            //DateTime? toDateUtc = null;
+            //if (toDate != null)
+            //    toDateUtc = toDate.Value;
+            try
+            {
+
+                prescribedMedicines = await _dashBoardRepository.RemoteSiteDowntimeSummaryDaily(fromDate, toDate);
+                if (prescribedMedicines != null)
+                {
+                    return Ok(prescribedMedicines);
+                }
+                else
+                {
+                    ModelState.AddModelError("RemoteSiteDowntimeSummaryDaily", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("RemoteSiteDowntimeSummaryDaily", $"Something went wrong {ex.Message}");
+                _logger.LogError("Exception in RemoteSiteDowntimeSummaryDaily API " + ex);
+                return StatusCode(500, ModelState);
+            }
+
+        }
+
+
+        [HttpGet]
+        [Route("RemoteSiteDowntimeSummaryMonthly")]
+        [ProducesResponseType(200, Type = typeof(List<RemoteSiteDowntimeSummaryMonthlyVM>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> RemoteSiteDowntimeSummaryMonthly(int year, int Month)
+        {
+            List<RemoteSiteDowntimeSummaryMonthlyVM> prescribedMedicines = new List<RemoteSiteDowntimeSummaryMonthlyVM>();
+            //DateTime? fromDateUtc = null;
+            //if (fromDate != null)
+            //    fromDateUtc = fromDate.Value;
+            //DateTime? toDateUtc = null;
+            //if (toDate != null)
+            //    toDateUtc = toDate.Value;
+            try
+            {
+
+                prescribedMedicines = await _dashBoardRepository.RemoteSiteDowntimeSummaryMonthly(Month,year);
+                if (prescribedMedicines != null)
+                {
+                    return Ok(prescribedMedicines);
+                }
+                else
+                {
+                    ModelState.AddModelError("RemoteSiteDowntimeSummaryMonthly", $"Data not found!");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("RemoteSiteDowntimeSummaryMonthly", $"Something went wrong {ex.Message}");
+                _logger.LogError("Exception in RemoteSiteDowntimeSummaryMonthly API " + ex);
+                return StatusCode(500, ModelState);
+            }
+
+        }
+
+       
     }
 }

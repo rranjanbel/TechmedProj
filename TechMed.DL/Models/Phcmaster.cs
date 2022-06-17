@@ -14,6 +14,7 @@ namespace TechMed.DL.Models
             PatientMasterUpdatedByNavigations = new HashSet<PatientMaster>();
             PatientQueues = new HashSet<PatientQueue>();
             SpokeMaintenances = new HashSet<SpokeMaintenance>();
+            RemoteSiteDowntimeReports=new HashSet<RemoteSiteDowntimeReport>();
         }
 
         public int Id { get; set; }
@@ -47,5 +48,6 @@ namespace TechMed.DL.Models
         public virtual ICollection<PatientMaster> PatientMasterUpdatedByNavigations { get; set; }
         public virtual ICollection<PatientQueue> PatientQueues { get; set; }
         public virtual ICollection<SpokeMaintenance> SpokeMaintenances { get; set; }
+        public virtual ICollection<RemoteSiteDowntimeReport> RemoteSiteDowntimeReports { get; set; }
     }
 }
