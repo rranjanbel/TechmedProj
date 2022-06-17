@@ -35,12 +35,10 @@ namespace TechMed.BL.Repository.BaseClasses
                 //Setting setting = new Setting(); 
                 if (patientMaster != null)
                 {
-                    //if (patientMaster.CreatedBy == 0)
-                    //    patientMaster.CreatedBy = 2;
-                    //if (patientMaster.UpdatedBy == 0)
-                    //    patientMaster.UpdatedBy = 2;
-                    patientMaster.CreatedOn = DateTime.Now;
-                    patientMaster.UpdatedOn = DateTime.Now;
+                    //patientMaster.CreatedOn = DateTime.Now;
+                    //patientMaster.UpdatedOn = DateTime.Now;
+                    patientMaster.CreatedOn = UtilityMaster.GetLocalDateTime();
+                    patientMaster.UpdatedOn = UtilityMaster.GetLocalDateTime();
                     // patientMaster.PatientId = UtilityMaster.GetPatientNumber();
                     //patientMaster.PatientId = GetPatientId();
 
@@ -393,11 +391,7 @@ namespace TechMed.BL.Repository.BaseClasses
             {
                 return 0;
             }
-            //else if (totalDays < 365)
-            //{
-            //    int month = (int)(totalDays / 12);
-            //    return month;
-            //}
+           
         }
 
         public long GetPatientId()
@@ -602,7 +596,7 @@ namespace TechMed.BL.Repository.BaseClasses
             }
            
             var Results = _teleMedecineContext.PatientSearchResults
-                .FromSqlInterpolated($"EXEC [dbo].[AdvanceSearchOfPatients] @PHCID ={PHCID},@PatientName={PatientName},@PatientUID={PatientId},@ContactNo={contractNo},@GenderId={genderId}");
+                .FromSqlInterpolated($"EXEC [dbo].[AdvanceSearchOfPatients] @PHCID ={PHCID},@PatientName={PatientName},@PatientUID={PatientId},@ContactNo={contractNo},@GenderId={genderId},@DateOfRegistration={DateOfRegistration},@DateOfBirth={DateOfBirth}");
             foreach (var item in Results)
             {
                 searchResult = new PatientSearchResultVM();              

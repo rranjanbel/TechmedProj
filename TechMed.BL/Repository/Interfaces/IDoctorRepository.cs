@@ -24,7 +24,7 @@ namespace TechMed.BL.Repository.Interfaces
         public Task<List<GetTodayesPatientsDTO>> GetTodayesPatients(DoctorVM doctorVM);
         public Task<List<GetTodayesPatientsDTO>> GetCompletedConsultationPatientsHistory(DoctorVM doctorVM);
         public Task<List<VitalMasterDTO>> GetListOfVital();
-        public Task<List<MedicineMasterDTO>> GetListOfMedicine();
+        public Task<List<DrugsMasterDTO>> GetListOfMedicine();
         public Task<List<SpecializationDTO>> GetListOfSpecializationMaster();
         public Task<List<SubSpecializationDTO>> GetListOfSubSpecializationMaster(int SpecializationID);
         public Task<bool> DeleteNotification(long NotificationID);

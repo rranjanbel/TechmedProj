@@ -23,7 +23,7 @@ namespace TechMed.BL.CommanClassesAndFunctions
 
             if (totalDays > 365)
             {
-                int year = (int)(totalDays / 365);
+                int year = (int)(totalDays / 365.2425);
                 return year;
             }
             else

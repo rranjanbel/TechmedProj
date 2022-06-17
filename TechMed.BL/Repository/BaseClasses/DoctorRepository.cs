@@ -51,13 +51,16 @@ namespace TechMed.BL.Repository.BaseClasses
             }
             return DTO;
         }
-        public async Task<List<MedicineMasterDTO>> GetListOfMedicine()
+        public async Task<List<DrugsMasterDTO>> GetListOfMedicine()
         {
-            List<MedicineMaster> masters = await _teleMedecineContext.MedicineMasters.OrderByDescending(a => a.Id).ToListAsync();
-            var DTOList = new List<MedicineMasterDTO>();
+            List<DrugsMaster> masters = await _teleMedecineContext.DrugsMasters.OrderBy(a => a.NameOfDrug).ToListAsync();
+            List<DrugsMasterDTO> DTOList = new List<DrugsMasterDTO>();
+            DrugsMasterDTO mapdata;
             foreach (var item in masters)
             {
-                MedicineMasterDTO mapdata = _mapper.Map<MedicineMasterDTO>(item);
+                mapdata = new DrugsMasterDTO();
+                mapdata.ID = item.Id;
+                mapdata.Name = item.NameOfDrug + " " + item.DrugformAndStrength;
                 DTOList.Add(mapdata);
             }
             return DTOList;
@@ -216,7 +219,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 && a.AssignedOn.Day == DateTime.Now.Day
                 ).ToListAsync();
 
-            var DTOList = new List<GetTodayesPatientsDTO>();
+            List<GetTodayesPatientsDTO> DTOList = new List<GetTodayesPatientsDTO>();
             foreach (var item in masters)
             {
                 //GetTodayesPatientsDTO mapdata = _mapper.Map<GetTodayesPatientsDTO>(item);

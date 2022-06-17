@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using TechMed.BL.CommanClassesAndFunctions;
 using TechMed.BL.DTOMaster;
 using TechMed.BL.ModelMaster;
 using TechMed.BL.Repository.Interfaces;
@@ -60,8 +61,8 @@ namespace TechMed.API.Controllers
                     patientcase.Opdno = patientCasevm.OPDNumber;
                     patientcase.CreatedBy = patientCasevm.CreatedBy;
                     patientcase.UpdatedBy = patientCasevm.CreatedBy;
-                    patientcase.CreatedOn = DateTime.Now;
-                    patientcase.UpdatedOn = DateTime.Now;
+                    patientcase.CreatedOn = UtilityMaster.GetLocalDateTime();
+                    patientcase.UpdatedOn = UtilityMaster.GetLocalDateTime();
 
                     if (patientcase.CreatedBy == 0)
                         patientcase.CreatedBy = 2;

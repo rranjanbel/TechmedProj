@@ -132,7 +132,7 @@ namespace TechMed.API.Controllers
         }
         [Route("GetListOfMedicine")]
         [HttpGet]
-        [ProducesResponseType(200, Type = typeof(List<MedicineMasterDTO>))]
+        [ProducesResponseType(200, Type = typeof(List<DrugsMasterDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetListOfMedicine()

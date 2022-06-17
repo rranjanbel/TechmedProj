@@ -17,14 +17,23 @@ namespace TechMed.BL.CommanClassesAndFunctions
             }
             else
             {
-                DateTime dobNew = Convert.ToDateTime(dob);
-                if (dobNew.Year == DateTime.Now.Year)
+                DateTime dtToday = DateTime.Now.Date;
+                DateTime dtOfBirth = dob.Value.Date;
+                TimeSpan diffResult = dtToday - dtOfBirth;
+                double totalDays = diffResult.TotalDays;
+
+                if (totalDays > 365)
                 {
-                    return age;
+                    int year = (int)(totalDays / 365.2425);
+                    return year;
                 }
-                age = DateTime.Now.AddYears(-dobNew.Year).Year;
-                return age;
+                else
+                {
+                    return 0;
+                }
             }
+
+            
 
         }
     }

@@ -254,7 +254,7 @@ namespace TechMed.BL.Repository.BaseClasses
                             {
                                 patientCase = _teleMedecineContext.PatientCases.FirstOrDefault(a => a.Id == patientCaseVM.patientCase.ID);
                                 patientCase.UpdatedBy = patientCaseVM.patientCase.UpdatedBy;
-                                patientCase.UpdatedOn = DateTime.Now;
+                                patientCase.UpdatedOn = UtilityMaster.GetLocalDateTime();
                                 patientCase.PatientId = patientCaseVM.patientCase.PatientId;
                                 patientCase.Allergies = patientCaseVM.patientCase.Allergies;
                                 patientCase.CaseFileNumber = patientCaseVM.patientCase.CaseFileNumber;
@@ -289,7 +289,7 @@ namespace TechMed.BL.Repository.BaseClasses
                                 {
                                     k = 0;
                                     patientCaseVital = new PatientCaseVital();
-                                    patientCaseVital.Date = DateTime.Now;
+                                    patientCaseVital.Date = UtilityMaster.GetLocalDateTime();
                                     patientCaseVital.PatientCaseId = vital.PatientCaseId;
                                     patientCaseVital.VitalId = vital.VitalId;
                                     patientCaseVital.Value = vital.Value;
@@ -410,9 +410,9 @@ namespace TechMed.BL.Repository.BaseClasses
                     patientQueue.CaseFileStatusId = await GetCaseFileStatus();
                     patientQueue.AssignedDoctorId = patientReferToDoctorVM.AssignedDocterID;
                     patientQueue.Comment = "Manually assign doctor";
-                    patientQueue.StatusOn = DateTime.Now;
+                    patientQueue.StatusOn = UtilityMaster.GetLocalDateTime();
                     patientQueue.Comment = "Assigned by PHC";
-                    patientQueue.AssignedOn = DateTime.Now;
+                    patientQueue.AssignedOn = UtilityMaster.GetLocalDateTime();
 
                     _teleMedecineContext.PatientQueues.Add(patientQueue);
                     int i = _teleMedecineContext.SaveChanges();
