@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using System.Security.Claims;
+using TechMed.BL.CommanClassesAndFunctions;
 using TechMed.BL.ModelMaster;
 using TechMed.BL.Repository.Interfaces;
 using TechMed.BL.ViewModels;
@@ -86,7 +87,7 @@ namespace TechMed.API.Services
                 new Claim(ClaimTypes.Name,login.Email)
             };
 
-            var jwtResult = _jwtAuthManager.GenerateTokens(login.Email, claims, DateTime.Now);
+            var jwtResult = _jwtAuthManager.GenerateTokens(login.Email, claims, UtilityMaster.GetLocalDateTime());
             var result = new LoginResult()
             {
                 AccessToken = jwtResult.AccessToken,
@@ -100,7 +101,8 @@ namespace TechMed.API.Services
             {
                 await _userRepository.InsertLoginHistory(login.Email, new LoginHistory()
                 {
-                    LogedInTime = DateTime.UtcNow,
+                    //LogedInTime = DateTime.UtcNow,
+                    LogedInTime = UtilityMaster.GetLocalDateTime(),
                     UserToken = jwtResult.AccessToken,
                     
                 });

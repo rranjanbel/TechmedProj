@@ -169,8 +169,8 @@ namespace TechMed.API.Controllers
                 }
                 if(phcMaster != null)
                 {                     
-                    phcMaster.CreatedOn = DateTime.Now;
-                    phcMaster.UpdatedOn = DateTime.Now;
+                    phcMaster.CreatedOn = UtilityMaster.GetLocalDateTime();
+                    phcMaster.UpdatedOn = UtilityMaster.GetLocalDateTime();
                     phcMaster.ClusterId = phcdto.ClusterId;
                     phcMaster.BlockId = phcdto.BlockId;
                     phcMaster.CreatedBy = phcdto.CreatedBy;
@@ -182,13 +182,13 @@ namespace TechMed.API.Controllers
                     userMaster.Mobile = phcMaster.PhoneNo;
                     userMaster.HashPassword = EncodeAndDecordPassword.EncodePassword("phc@12345"); 
                     userMaster.LoginAttempts = 0;
-                    userMaster.LastLoginAt = DateTime.Now;
+                    userMaster.LastLoginAt = UtilityMaster.GetLocalDateTime();
                     userMaster.IsActive = true;
                     userMaster.IsPasswordChanged = false;
                     userMaster.CreatedBy = phcdto.CreatedBy;
                     userMaster.UpdatedBy = phcdto.CreatedBy;
-                    userMaster.CreatedOn = DateTime.Now;
-                    userMaster.UpdatedOn = DateTime.Now;
+                    userMaster.CreatedOn = UtilityMaster.GetLocalDateTime();
+                    userMaster.UpdatedOn = UtilityMaster.GetLocalDateTime();
 
                     newCreatedPHC = await this._phcRepository.AddPHCUser(phcMaster, userMaster);
 

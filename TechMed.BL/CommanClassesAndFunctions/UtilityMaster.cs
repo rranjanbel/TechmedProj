@@ -16,7 +16,7 @@ namespace TechMed.BL.CommanClassesAndFunctions
         private static TimeZoneInfo India_Standard_Time = TimeZoneInfo.FindSystemTimeZoneById("India Standard Time");
         public static int GetAgeOfPatient(DateTime dateOfBirth)
         {
-            DateTime dtToday = DateTime.Now.Date;
+            DateTime dtToday = GetLocalDateTime().Date;
             DateTime dtOfBirth = dateOfBirth.Date;
             TimeSpan diffResult = dtToday - dtOfBirth;
             double totalDays = diffResult.TotalDays;

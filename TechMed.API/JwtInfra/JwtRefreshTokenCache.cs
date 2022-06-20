@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
+using TechMed.BL.CommanClassesAndFunctions;
 
 namespace TechMedAPI.JwtInfra
 {
@@ -28,7 +29,7 @@ namespace TechMedAPI.JwtInfra
 
         private void DoWork(object state)
         {
-            _jwtAuthManager.RemoveExpiredRefreshTokens(DateTime.Now);
+            _jwtAuthManager.RemoveExpiredRefreshTokens(UtilityMaster.GetLocalDateTime());
         }
 
         public Task StopAsync(CancellationToken stoppingToken)

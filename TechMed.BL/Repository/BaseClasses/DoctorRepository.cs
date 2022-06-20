@@ -157,7 +157,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 //masters.CreatedBy { get; set; }
                 //masters.CreatedOn { get; set; }
                 masters.UpdatedBy = doctorDTO.UpdatedBy;
-                masters.UpdatedOn = DateTime.Now;
+                masters.UpdatedOn = UtilityMaster.GetLocalDateTime();
                 await _teleMedecineContext.SaveChangesAsync();
 
                 if (doctorDTO.detailsDTO != null)
@@ -184,7 +184,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     //userDetail.IdproofTypeId { get; set; }
                     //userDetail.IdproofNumber { get; set; }
                     userDetail.UpdatedBy = doctorDTO.UpdatedBy;
-                    userDetail.UpdatedOn = DateTime.Now;
+                    userDetail.UpdatedOn = UtilityMaster.GetLocalDateTime();
                     if (!string.IsNullOrEmpty(doctorDTO.detailsDTO.PhotoNewUpdate))
                     {
                         userDetail.Photo = webRootPath + SaveImage(doctorDTO.detailsDTO.PhotoNewUpdate, rootPath);
@@ -214,9 +214,9 @@ namespace TechMed.BL.Repository.BaseClasses
                 .Include(b => b.PatientCase.Patient)
                 .Include(b => b.PatientCase.TwilioMeetingRoomInfos)
                 .Where(a => a.CaseFileStatusId == 4 && a.AssignedDoctorId == doctorVM.DoctorID
-                && a.AssignedOn.Year == DateTime.Now.Year
-                && a.AssignedOn.Month == DateTime.Now.Month
-                && a.AssignedOn.Day == DateTime.Now.Day
+                && a.AssignedOn.Year == UtilityMaster.GetLocalDateTime().Year
+                && a.AssignedOn.Month == UtilityMaster.GetLocalDateTime().Month
+                && a.AssignedOn.Day == UtilityMaster.GetLocalDateTime().Day
                 ).ToListAsync();
 
             List<GetTodayesPatientsDTO> DTOList = new List<GetTodayesPatientsDTO>();
@@ -447,7 +447,7 @@ namespace TechMed.BL.Repository.BaseClasses
 
                     //update case table
                     patientQueue.CaseFileStatusId = caseFileStatus.Id;
-                    patientQueue.StatusOn = DateTime.Now;
+                    patientQueue.StatusOn = UtilityMaster.GetLocalDateTime();
 
                     var patientCase = patientQueue.PatientCase;
                     patientCase.Instruction = treatmentVM.Instruction;
@@ -491,7 +491,7 @@ namespace TechMed.BL.Repository.BaseClasses
                         patientCaseDiagonosticTest = new PatientCaseDiagonosticTest();
                         patientCaseDiagonosticTest.PatientCaseId = diagonist.PatientCaseID;
                         patientCaseDiagonosticTest.DiagonosticTestId = diagonist.DiagonosticTestID;
-                        patientCaseDiagonosticTest.CreatedOn = DateTime.Now;
+                        patientCaseDiagonosticTest.CreatedOn = UtilityMaster.GetLocalDateTime();
                         _teleMedecineContext.Add(patientCaseDiagonosticTest);
                     }
                     int i = _teleMedecineContext.SaveChanges();
@@ -567,7 +567,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 CaseFileStatusMaster CaseFileStatus = await _teleMedecineContext.CaseFileStatusMasters.Where(a => a.FileStatus.ToLower() == "Pending Patient Absent".ToLower()).FirstOrDefaultAsync();
                 if (CaseFileStatus != null && patientQueue.AssignedDoctorId == patientAbsentVM.DoctorID)
                 {
-                    patientQueue.StatusOn = DateTime.Now;
+                    patientQueue.StatusOn = UtilityMaster.GetLocalDateTime();
                     patientQueue.CaseFileStatusId = CaseFileStatus.Id;
                     patientQueue.Comment = patientAbsentVM.Comment;
                     _teleMedecineContext.SaveChanges();
@@ -587,7 +587,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 CaseFileStatusMaster CaseFileStatus = await _teleMedecineContext.CaseFileStatusMasters.Where(a => a.FileStatus.ToLower() == "Closed".ToLower()).FirstOrDefaultAsync();
                 if (CaseFileStatus != null && patientQueue.AssignedDoctorId == patientAbsentVM.DoctorID)
                 {
-                    patientQueue.StatusOn = DateTime.Now;
+                    patientQueue.StatusOn = UtilityMaster.GetLocalDateTime();
                     patientQueue.CaseFileStatusId = CaseFileStatus.Id;
                     patientQueue.Comment = patientQueue.Comment + " | " + patientAbsentVM.Comment;
                     patientCase.Prescription = "Referred to higher authority.";
@@ -635,7 +635,7 @@ namespace TechMed.BL.Repository.BaseClasses
         }
         public async Task<List<SearchPatientsDTO>> SearchPatientDrHistory(SearchPatientVM searchPatientVM)
         {
-            DateTime yesterday = DateTime.Now.AddDays(-1);
+            DateTime yesterday = UtilityMaster.GetLocalDateTime().AddDays(-1);
             var matches = from m in _teleMedecineContext.PatientQueues
                            .Include(d => d.PatientCase.Patient.Gender)
               .Include(c => c.AssignedByNavigation)
@@ -699,7 +699,7 @@ namespace TechMed.BL.Repository.BaseClasses
         }
         public async Task<List<GetTodayesPatientsDTO>> GetLatestReferred(DoctorVM doctorVM)
         {
-            DateTime fromDatetime = DateTime.Now.AddHours(-1);
+            DateTime fromDatetime = UtilityMaster.GetLocalDateTime().AddHours(-1);
 
             List<PatientQueue> masters = await _teleMedecineContext.PatientQueues
                 .Include(d => d.PatientCase.Patient.Gender)
@@ -733,7 +733,7 @@ namespace TechMed.BL.Repository.BaseClasses
         }
         public async Task<int> GetLatestReferredCount(DoctorVM doctorVM)
         {
-            DateTime fromDatetime = DateTime.Now.AddHours(-1);
+            DateTime fromDatetime = UtilityMaster.GetLocalDateTime().AddHours(-1);
 
             List<PatientQueue> masters = await _teleMedecineContext.PatientQueues
                 .Include(d => d.PatientCase.Patient.Gender)
@@ -777,7 +777,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 doctorMaster.IsOnline = updateIsOnlineDrVM.IsOnline;
                 if (updateIsOnlineDrVM.IsOnline)
                 {
-                    doctorMaster.LastOnlineAt = DateTime.Now;
+                    doctorMaster.LastOnlineAt = UtilityMaster.GetLocalDateTime();
                 }
                 _teleMedecineContext.SaveChanges();
                 return true;

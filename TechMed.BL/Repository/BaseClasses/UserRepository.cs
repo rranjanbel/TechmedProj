@@ -228,7 +228,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     bool resrult = EncodeAndDecordPassword.MatchPassword(login.Password, userMaster.HashPassword);
                     if (resrult)
                     {
-                        userMaster.LastLoginAt = DateTime.Now;
+                        userMaster.LastLoginAt = UtilityMaster.GetLocalDateTime();
 
                         loginHistory.UserId = userUsertype.UserId;
                         loginHistory.UserTypeId = userUsertype.UserTypeId;
@@ -313,7 +313,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     bool resrult = EncodeAndDecordPassword.MatchPassword(login.Password, userMaster.HashPassword);
                     if (resrult)
                     {
-                        userMaster.LastLoginAt = DateTime.Now;
+                        userMaster.LastLoginAt = UtilityMaster.GetLocalDateTime();
 
                         loginHistory.UserId = userUsertype.UserId;
                         loginHistory.UserTypeId = userUsertype.UserTypeId;
@@ -445,7 +445,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 var isOnOtherDevice = _teleMedecineContext.LoginHistories.Any(x => x.UserId == userMaster.Id && x.LogedInTime > DateTime.UtcNow.AddHours(-1) && !x.LogedoutTime.HasValue);
                 if (!isOnOtherDevice)
                 {
-                    userMaster.LastLoginAt = DateTime.Now;
+                    userMaster.LastLoginAt = UtilityMaster.GetLocalDateTime();
 
                     await Update(userMaster);
                     if (userUsertype.UserTypeId == 4)
@@ -482,18 +482,20 @@ namespace TechMed.BL.Repository.BaseClasses
                     var history = _teleMedecineContext.LoginHistories.Where(x => x.UserId == userMaster.Id).OrderByDescending(x => x.LogedInTime).FirstOrDefault();
                     if (history != null)
                     {
-                        history.LogedoutTime = DateTime.UtcNow;
+                        //history.LogedoutTime = DateTime.UtcNow;
+                        history.LogedoutTime = UtilityMaster.GetLocalDateTime();
                         _teleMedecineContext.Entry(history).State = EntityState.Modified;
                     }
                 }
 
                 var userUsertype = _teleMedecineContext.UserUsertypes.Include(a => a.UserType).FirstOrDefault(a => a.UserId == userMaster.Id);
-                userMaster.LastLoginAt = DateTime.Now;
+                userMaster.LastLoginAt = UtilityMaster.GetLocalDateTime();
                 await Update(userMaster);
                 LoginHistory loginHistory = new LoginHistory();
                 loginHistory.UserId = userUsertype.UserId;
                 loginHistory.UserTypeId = userUsertype.UserTypeId;
-                loginHistory.LogedInTime = DateTime.UtcNow;
+                //loginHistory.LogedInTime = DateTime.UtcNow;
+                loginHistory.LogedInTime = UtilityMaster.GetLocalDateTime();
 
                 if (userUsertype.UserTypeId == 4)
                 {

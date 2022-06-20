@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TechMed.BL.CommanClassesAndFunctions;
 using TechMed.BL.DTOMaster;
 using TechMed.BL.Repository.Interfaces;
 using TechMed.BL.ViewModels;
@@ -35,9 +36,9 @@ namespace TechMed.BL.Repository.BaseClasses
                     where
                     d.BlockId == (doctorsLoggedInTodayVM.ZoneID == null ? d.BlockId : doctorsLoggedInTodayVM.ZoneID)
                     && d.ClusterId == (doctorsLoggedInTodayVM.ClusterID == null ? d.ClusterId : doctorsLoggedInTodayVM.ClusterID)
-                    && u.LastLoginAt.Value.Day == DateTime.Now.Day
-                    && u.LastLoginAt.Value.Month == DateTime.Now.Month
-                    && u.LastLoginAt.Value.Year == DateTime.Now.Year
+                    && u.LastLoginAt.Value.Day == UtilityMaster.GetLocalDateTime().Day
+                    && u.LastLoginAt.Value.Month == UtilityMaster.GetLocalDateTime().Month
+                    && u.LastLoginAt.Value.Year == UtilityMaster.GetLocalDateTime().Year
                     select new DoctorDTO
                     {
                         AccountNumber = d.AccountNumber,

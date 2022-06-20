@@ -72,7 +72,7 @@ namespace TechMed.BL.Repository.BaseClasses
             if (meetInfo != null)
             {
                 meetInfo.IsClosed = true;
-                meetInfo.CloseDate = DateTime.Now;
+                meetInfo.CloseDate = UtilityMaster.GetLocalDateTime();
                 //meetInfo.TwilioRoomStatus = "Closed";
                 _teleMedecineContext.TwilioMeetingRoomInfos.Add(meetInfo);
                 _teleMedecineContext.Entry(meetInfo).State = EntityState.Modified;
@@ -114,7 +114,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     {
                         meetInfo.TwilioRoomStatus = roomStatusRequest.RoomStatus;
                         meetInfo.IsClosed = true;
-                        meetInfo.CloseDate = DateTime.Now;
+                        meetInfo.CloseDate = UtilityMaster.GetLocalDateTime();
                         _teleMedecineContext.TwilioMeetingRoomInfos.Add(meetInfo);
                         _teleMedecineContext.Entry(meetInfo).State = EntityState.Modified;
                         return (await _teleMedecineContext.SaveChangesAsync()) > 0;

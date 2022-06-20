@@ -11,6 +11,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using Newtonsoft.Json;
+using TechMed.BL.CommanClassesAndFunctions;
 
 namespace TechMed.BL.TwilioAPI.Service
 {
@@ -190,7 +191,7 @@ namespace TechMed.BL.TwilioAPI.Service
     }
     static class StringArrayExtensions
     {
-        static readonly Random Random = new((int)DateTime.Now.Ticks);
+        static readonly Random Random = new((int)UtilityMaster.GetLocalDateTime().Ticks);
 
         internal static string RandomElement(this IReadOnlyList<string> array)
             => array[Random.Next(array.Count)];

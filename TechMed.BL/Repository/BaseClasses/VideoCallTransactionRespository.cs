@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TechMed.BL.CommanClassesAndFunctions;
 using TechMed.BL.DTOMaster;
 using TechMed.BL.Repository.Interfaces;
 using TechMed.DL.Models;
@@ -54,7 +55,8 @@ namespace TechMed.BL.Repository.BaseClasses
         {
             VideoCallTransaction videoCallTransaction = new VideoCallTransaction()
             {
-                CreatedOn = DateTime.Now,
+                //CreatedOn = DateTime.Now,
+                CreatedOn = UtilityMaster.GetLocalDateTime(),
                 FromUserId = videoCallTransactionDTO.FromUserId,
                 ToUserId = videoCallTransactionDTO.ToUserId,
                 PatientId = videoCallTransactionDTO.PatientId,

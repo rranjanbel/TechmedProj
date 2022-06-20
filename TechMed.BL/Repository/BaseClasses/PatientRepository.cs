@@ -98,13 +98,13 @@ namespace TechMed.BL.Repository.BaseClasses
 
         public async Task<List<TodaysPatientVM>> GetCheckedPatientList(int phcID)
         {
-            int currentYear = DateTime.Now.Year;
-            int currentMonth = DateTime.Now.Month;
-            int currentDay = DateTime.Now.Day;
+            int currentYear = UtilityMaster.GetLocalDateTime().Year;
+            int currentMonth = UtilityMaster.GetLocalDateTime().Month;
+            int currentDay = UtilityMaster.GetLocalDateTime().Day;
             List<TodaysPatientVM> todaysPatientList = new List<TodaysPatientVM>();
             List<TodaysPatientVM> todaysConsultantedPatientList = new List<TodaysPatientVM>();
             TodaysPatientVM todaysPatient;
-            var Results = _teleMedecineContext.VisitedPatientsList.FromSqlInterpolated($"EXEC [dbo].[GetPatientList] @PHCID={phcID},@InputDate={DateTime.Now},@IsConsultedPatient={1},@DocterID={0}");
+            var Results = _teleMedecineContext.VisitedPatientsList.FromSqlInterpolated($"EXEC [dbo].[GetPatientList] @PHCID={phcID},@InputDate={UtilityMaster.GetLocalDateTime()},@IsConsultedPatient={1},@DocterID={0}");
             if (Results != null)
             {
                 foreach (var item in Results)
@@ -188,14 +188,14 @@ namespace TechMed.BL.Repository.BaseClasses
         public async Task<List<TodaysPatientVM>> GetTodaysPatientList(int phcID)
         {
             //List<SPResultGetPatientDetails> sPResultGetPatientDetails = GetSPResult(phcID);
-            int currentYear = DateTime.Now.Year;
-            int currentMonth = DateTime.Now.Month;
-            int currentDay = DateTime.Now.Day;
+            int currentYear = UtilityMaster.GetLocalDateTime().Year;
+            int currentMonth = UtilityMaster.GetLocalDateTime().Month;
+            int currentDay = UtilityMaster.GetLocalDateTime().Day;
             int[] ids = { 1, 2, 4 };// 1- Pending Patient Absent, 2- Pending Doctor Absent, 4- Queued
             List<TodaysPatientVM> todaysPatientList = new List<TodaysPatientVM>();
             List<TodaysPatientVM> todaysNocConPatientList = new List<TodaysPatientVM>();
             TodaysPatientVM todaysPatient;
-            var Results = _teleMedecineContext.VisitedPatientsList.FromSqlInterpolated($"EXEC [dbo].[GetPatientList] @PHCID={phcID},@InputDate={DateTime.Now},@IsConsultedPatient={0},@DocterID={0}");
+            var Results = _teleMedecineContext.VisitedPatientsList.FromSqlInterpolated($"EXEC [dbo].[GetPatientList] @PHCID={phcID},@InputDate={UtilityMaster.GetLocalDateTime()},@IsConsultedPatient={0},@DocterID={0}");
             if(Results != null)
             {
                 foreach (var item in Results)
@@ -279,9 +279,9 @@ namespace TechMed.BL.Repository.BaseClasses
 
         public async Task<PHCPatientCount> GetPatientCount(int phcID)
         {
-            int currentYear = DateTime.Now.Year;
-            int currentMonth = DateTime.Now.Month;
-            int currentDay = DateTime.Now.Day;
+            int currentYear = UtilityMaster.GetLocalDateTime().Year;
+            int currentMonth = UtilityMaster.GetLocalDateTime().Month;
+            int currentDay = UtilityMaster.GetLocalDateTime().Day;
             List<TodaysPatientVM> todaysPatientList = new List<TodaysPatientVM>();
             List<TodaysPatientVM> todaysConsultantedPatientList = new List<TodaysPatientVM>();
             PHCPatientCount pHCPatientCount = new PHCPatientCount();    
@@ -338,9 +338,9 @@ namespace TechMed.BL.Repository.BaseClasses
 
         public async Task<List<TodaysPatientVM>> GetSearchedTodaysPatientList(string patientName)
         {
-            int currentYear = DateTime.Now.Year;
-            int currentMonth = DateTime.Now.Month;
-            int currentDay = DateTime.Now.Day;
+            int currentYear = UtilityMaster.GetLocalDateTime().Year;
+            int currentMonth = UtilityMaster.GetLocalDateTime().Month;
+            int currentDay = UtilityMaster.GetLocalDateTime().Day;
             List<TodaysPatientVM> todaysPatientList = new List<TodaysPatientVM>();           
             var patientList = (from pm in _teleMedecineContext.PatientMasters
                                where pm.CreatedOn.Value.Year == currentYear && pm.CreatedOn.Value.Month == currentMonth && pm.CreatedOn.Value.Day == currentDay && pm.FirstName.Contains(patientName) || pm.LastName.Contains(patientName)
@@ -377,7 +377,7 @@ namespace TechMed.BL.Repository.BaseClasses
 
         public int GetAge(DateTime dateofbirth)
         {
-            DateTime dtToday = DateTime.Now.Date;
+            DateTime dtToday = UtilityMaster.GetLocalDateTime().Date;
             DateTime dtOfBirth = dateofbirth.Date;
             TimeSpan diffResult = dtToday - dtOfBirth;
             double totalDays = diffResult.TotalDays;
@@ -450,9 +450,9 @@ namespace TechMed.BL.Repository.BaseClasses
 
         public async Task<List<PatientViewModel>> GetYesterdaysPatientList(int phcID)
         {
-            int currentYear = DateTime.Now.Year;
-            int currentMonth = DateTime.Now.Month;
-            int currentDay = DateTime.Now.Day;
+            int currentYear = UtilityMaster.GetLocalDateTime().Year;
+            int currentMonth = UtilityMaster.GetLocalDateTime().Month;
+            int currentDay = UtilityMaster.GetLocalDateTime().Day;
             DateTime yesterday = DateTime.Today.AddDays(-1);
             List<PatientViewModel> patientList = new List<PatientViewModel>();
             PatientViewModel todaysPatient;

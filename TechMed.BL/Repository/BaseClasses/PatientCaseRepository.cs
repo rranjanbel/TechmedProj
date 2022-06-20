@@ -358,7 +358,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 {
                     feedback = _mapper.Map<PatientCaseFeedback>(patientFeedback);
                     feedback.Question = "NA";
-                    feedback.Datetime = DateTime.Now;
+                    feedback.Datetime = UtilityMaster.GetLocalDateTime();
                     _teleMedecineContext.PatientCaseFeedbacks.Add(feedback);
                     int i = _teleMedecineContext.SaveChanges();
                     if (i > 0)

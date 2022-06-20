@@ -1131,21 +1131,21 @@ namespace TechMed.API.Controllers
                     doctor.IsOnline = false;
                     doctor.CreatedBy = doctorDTO.CreatedBy;
                     doctor.UpdatedBy = doctorDTO.CreatedBy;
-                    doctor.CreatedOn = DateTime.Now;
-                    doctor.UpdatedOn = DateTime.Now;
+                    doctor.CreatedOn = UtilityMaster.GetLocalDateTime();
+                    doctor.UpdatedOn = UtilityMaster.GetLocalDateTime();
 
                     userMaster.Email = doctorDTO.detailsDTO.EmailId;
                     userMaster.Name = doctorDTO.detailsDTO.FirstName;
                     userMaster.Mobile = doctorDTO.PhoneNumber;
                     userMaster.HashPassword = EncodeAndDecordPassword.EncodePassword("doctot@123"); 
                     userMaster.LoginAttempts = 0;
-                    userMaster.LastLoginAt = DateTime.Now;
+                    userMaster.LastLoginAt = UtilityMaster.GetLocalDateTime();
                     userMaster.IsActive = true;
                     userMaster.IsPasswordChanged = false;
                     userMaster.CreatedBy = doctorDTO.CreatedBy;
                     userMaster.UpdatedBy = doctorDTO.CreatedBy;
-                    userMaster.CreatedOn = DateTime.Now;
-                    userMaster.UpdatedOn = DateTime.Now;
+                    userMaster.CreatedOn = UtilityMaster.GetLocalDateTime();
+                    userMaster.UpdatedOn = UtilityMaster.GetLocalDateTime();
 
                     userDetail.TitleId = doctorDTO.detailsDTO.TitleId;
                     userDetail.FirstName = doctorDTO.detailsDTO.FirstName;
@@ -1164,9 +1164,9 @@ namespace TechMed.API.Controllers
                     userDetail.IdproofTypeId = doctorDTO.detailsDTO.IdproofTypeId;
                     userDetail.IdproofNumber = doctorDTO.detailsDTO.IdproofNumber;
                     userDetail.CreatedBy = doctorDTO.CreatedBy;
-                    userDetail.CreatedOn = DateTime.Now;
+                    userDetail.CreatedOn = UtilityMaster.GetLocalDateTime();
                     userDetail.UpdatedBy = doctorDTO.CreatedBy;
-                    userDetail.UpdatedOn = DateTime.Now;
+                    userDetail.UpdatedOn = UtilityMaster.GetLocalDateTime();
 
                     doctorCreated = await this._doctorRepository.AddDoctor(doctor, userMaster, userDetail, doctorDTO, contentRootPath,webRootPath);
                 }

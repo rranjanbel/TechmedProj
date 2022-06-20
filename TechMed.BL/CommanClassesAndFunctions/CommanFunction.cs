@@ -17,7 +17,7 @@ namespace TechMed.BL.CommanClassesAndFunctions
             }
             else
             {
-                DateTime dtToday = DateTime.Now.Date;
+                DateTime dtToday = UtilityMaster.GetLocalDateTime().Date;
                 DateTime dtOfBirth = dob.Value.Date;
                 TimeSpan diffResult = dtToday - dtOfBirth;
                 double totalDays = diffResult.TotalDays;
