@@ -74,6 +74,7 @@ namespace TechMed.DL.Models
         public virtual DbSet<PatientCaseDiagonosticTest> PatientCaseDiagonostics { get; set; } = null!;
         public virtual DbSet<RemoteSiteDowntimeReport> RemoteSiteDowntimeReports { get; set; } = null!;
         public virtual DbSet<ServerUpTimeReport> ServerUpTimeReports { get; set; } = null!;
+        public virtual DbSet<AgeGroupMaster> AgeGroupMasters { get; set; } = null!;
 
 
         public virtual DbSet<SPResultGetPatientDetails> SPResultGetPatientDetails { get; set; } = null!;
@@ -166,6 +167,21 @@ namespace TechMed.DL.Models
                     .HasForeignKey(d => d.DistrictId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_BlockMaster_DistrictMaster");
+            });
+
+            modelBuilder.Entity<AgeGroupMaster>(entity =>
+            {
+                entity.ToTable("AgeGroupMaster");
+                entity.Property(e => e.ID).HasColumnName("ID");
+                entity.Property(e => e.AgeMaxLimit).HasColumnName("AgeMaxLimit");
+                entity.Property(e => e.AgeMinLimit).HasColumnName("AgeMinLimit");
+                entity.Property(e => e.GenderID).HasColumnName("GenderID");
+                entity.Property(e => e.SpecializationID).HasColumnName("SpecializationID");
+
+                entity.Property(e => e.AgeRange)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+                
             });
 
             modelBuilder.Entity<CalenderMaster>(entity =>

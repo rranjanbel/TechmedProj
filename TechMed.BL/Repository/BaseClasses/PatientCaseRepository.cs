@@ -950,6 +950,8 @@ namespace TechMed.BL.Repository.BaseClasses
             }
            
         }
+
+      
     }
     public class DoctorQueues
     {

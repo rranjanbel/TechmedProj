@@ -291,6 +291,43 @@ namespace TechMed.API.Controllers
 
         }
 
+        [HttpGet]
+        [Route("GetSuggestedSpecializations")]
+        [ProducesResponseType(200, Type = typeof(List<SpecializationDTO>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetSuggestedSpecializations( int Id)
+        {
+            SpecializationDTO specialization = new SpecializationDTO();
+            List<SpecializationDTO> specializations = new List<SpecializationDTO>();
+            try
+            {
+                var spemasters = await _patientRepository.GetSuggestedSpcialiazationByPatientCaseID(Id);
+
+               
+                foreach (var item in spemasters)
+                {
+                    specialization = _mapper.Map<SpecializationDTO>(item);
+                    specializations.Add(specialization);
+                }
+                if (specializations != null)
+                {
+                    return Ok(specializations);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetSuggestedSpecializations", "Specialization detail did not find");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("GetSuggestedSpecializations", $"Something went wrong when Get all Specialization {ex.Message}");
+                _logger.LogError("Exception in GetSuggestedSpecializations API " + ex);
+                return StatusCode(500, ModelState);
+            }
+        }
+
 
 
 
