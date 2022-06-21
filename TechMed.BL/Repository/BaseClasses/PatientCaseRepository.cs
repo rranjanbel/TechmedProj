@@ -394,25 +394,33 @@ namespace TechMed.BL.Repository.BaseClasses
             {
                 if (patientReferToDoctorVM != null)
                 {
-                    //autoAssignDoctorID = AutoAssignDoctor(patientReferToDoctorVM.PatientCaseID);
-                    //if(autoAssignDoctorID > 0)
-                    //{
-                    //    patientQueue.AssignedDoctorId = autoAssignDoctorID;
-                    //    patientQueue.Comment = "Auto assign doctor";
-                    //}
-                    //else
-                    //{
-                    //    patientQueue.AssignedDoctorId = patientReferToDoctorVM.AssignedDocterID;
-                    //    patientQueue.Comment = "Manually assign doctor";
-                    //}
+                    if(patientReferToDoctorVM.AssignedDocterID > 0)
+                    {
+                        patientQueue.AssignedDoctorId = patientReferToDoctorVM.AssignedDocterID;
+                        patientQueue.Comment = "Manually assign doctor";
+                    }                   
+                    else
+                    {
+                        autoAssignDoctorID = AutoAssignDoctor(patientReferToDoctorVM.PatientCaseID);
+                        if (autoAssignDoctorID > 0)
+                        {
+                            patientQueue.AssignedDoctorId = autoAssignDoctorID;
+                            patientQueue.Comment = "Auto assign doctor";
+                        }
+                        else
+                        {
+                            return outPatientReferToDoctorVM;
+                        }
+
+                    }
                     patientQueue.PatientCaseId = patientReferToDoctorVM.PatientCaseID;                   
                     patientQueue.AssignedBy = patientReferToDoctorVM.PHCID;
-                    patientQueue.CaseFileStatusId = await GetCaseFileStatus();
-                    patientQueue.AssignedDoctorId = patientReferToDoctorVM.AssignedDocterID;
-                    patientQueue.Comment = "Manually assign doctor";
+                    patientQueue.CaseFileStatusId = await GetCaseFileStatus();                                      
                     patientQueue.StatusOn = UtilityMaster.GetLocalDateTime();
-                    patientQueue.Comment = "Assigned by PHC";
                     patientQueue.AssignedOn = UtilityMaster.GetLocalDateTime();
+                    //patientQueue.AssignedDoctorId = patientReferToDoctorVM.AssignedDocterID;
+                    //patientQueue.Comment = "Assigned by PHC";
+
 
                     _teleMedecineContext.PatientQueues.Add(patientQueue);
                     int i = _teleMedecineContext.SaveChanges();
@@ -857,23 +865,47 @@ namespace TechMed.BL.Repository.BaseClasses
         public int AutoAssignDoctor(long PatientCaseID)
         {
             int doctorId =0;
+            int[] drIDs ;
+            List<DoctorQueues> doctorQueues = new List<DoctorQueues> ();
+            DoctorQueues doctorque = new DoctorQueues();
 
             //1. Get online doctorlist
             int specializationID = _teleMedecineContext.PatientCases.Where(p => p.Id == PatientCaseID).Select(s => s.SpecializationId).FirstOrDefault();
-            var onlineDoctors =  _teleMedecineContext.DoctorMasters.Where(a => a.IsOnline == true && a.SpecializationId == specializationID).Select(d => d.Id).ToList();
+            drIDs =  _teleMedecineContext.DoctorMasters.Where(a => a.IsOnline == true && a.SpecializationId == specializationID).Select(d => d.Id).ToArray();
 
             //2. Get Doctor id who has minimum patient in Queue
-            if(onlineDoctors != null)
+            if(drIDs.Length > 0)
             {
-                var doctorIDsAndNoOfPatients = _teleMedecineContext.PatientQueues
-               .Where(a => onlineDoctors.Contains(a.AssignedDoctorId))
-               .GroupBy(a => a.AssignedDoctorId)
-               .Select(g => new { DoctorId = g.Key, Count = g.Count() });
-
-                //3. Assign patient to the doctor who has minimum queue
-                var minimumCount = doctorIDsAndNoOfPatients.Min(m => m.Count);
-                var assinToDoctor = doctorIDsAndNoOfPatients.Where(a => a.Count == minimumCount).OrderBy(o => o.DoctorId);
-                doctorId = assinToDoctor.Select(s => s.DoctorId).FirstOrDefault();
+                if(drIDs.Length > 1)
+                {
+                    var queuePattients = _teleMedecineContext.PatientQueues.Where(a => drIDs.Contains(a.AssignedDoctorId) && a.CaseFileStatusId == 4).ToList();
+                   // var queuePatients = _teleMedecineContext.DoctorMasters.Include(p => p.PatientQueues).Where(a => drIDs.Contains(a.Id) && a.PatientQueues.Any( s => s.CaseFileStatusId == 4)).ToList();
+                    var queuePatients = _teleMedecineContext.DoctorMasters.Include(p => p.PatientQueues).Where(a => drIDs.Contains(a.Id)).ToList();
+                    foreach(var queuePatient in queuePatients)
+                    {
+                        doctorque = new DoctorQueues();
+                        doctorque.DoctorId = queuePatient.Id;
+                        if(queuePatient.PatientQueues.Count >0)
+                        {
+                            doctorque.PatientCount = queuePatient.PatientQueues.Where(q => q.CaseFileStatusId == 4).Count();
+                        }
+                        else
+                        {
+                            doctorque.PatientCount = 0;
+                        }
+                        doctorQueues.Add(doctorque);
+                    }
+                  
+                    //3. Assign patient to the doctor who has minimum queue
+                    var minimumCount = doctorQueues.Min(m => m.PatientCount);
+                    doctorId = doctorQueues.Where(a => a.PatientCount == minimumCount).Select(s => s.DoctorId).FirstOrDefault();
+                    
+                }
+                else
+                {
+                    doctorId = drIDs.FirstOrDefault();
+                }
+                
             }  
             return doctorId;
         }
@@ -918,6 +950,11 @@ namespace TechMed.BL.Repository.BaseClasses
             }
            
         }
+    }
+    public class DoctorQueues
+    {
+        public int DoctorId { get; set; } 
+        public int PatientCount { get; set; }
     }
 
 }
