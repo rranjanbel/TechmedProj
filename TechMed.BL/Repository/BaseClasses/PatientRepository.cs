@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TechMed.BL.CommanClassesAndFunctions;
+using TechMed.BL.DTOMaster;
 using TechMed.BL.Repository.Interfaces;
 using TechMed.BL.ViewModels;
 using TechMed.DL.Models;
@@ -610,6 +611,38 @@ namespace TechMed.BL.Repository.BaseClasses
                 patientSearchResults.Add(searchResult);
             };
             return patientSearchResults;
+        }
+
+        public async Task<List<SpecializationDTO>> GetSuggestedSpcialiazationByPatientCaseID(int Id)
+        {
+            int ageOfPatient = 0;
+            int[] specIds;
+            List<SpecializationDTO> specializations = new List<SpecializationDTO>();
+            List<SpecializationMaster> specializationMasters = new List<SpecializationMaster>();
+            var patient = _teleMedecineContext.PatientMasters.FirstOrDefault(a => a.Id == Id);
+            if (patient != null)
+            {
+                ageOfPatient = UtilityMaster.GetAgeOfPatient(patient.Dob);
+                if (ageOfPatient <= 14)
+                {
+                    specIds = _teleMedecineContext.AgeGroupMasters.Where(a => a.AgeMaxLimit < 15 && a.GenderID == patient.GenderId).Select(s => s.SpecializationID).ToArray();
+                    specializationMasters = await _teleMedecineContext.SpecializationMasters.Where(a => specIds.Contains(a.Id)).ToListAsync();
+                }
+                else
+                {
+                    specIds = _teleMedecineContext.AgeGroupMasters.Where(a => a.AgeMaxLimit > 14 && a.GenderID == patient.GenderId).Select(s => s.SpecializationID).ToArray();
+                    specializationMasters = await _teleMedecineContext.SpecializationMasters.Where(a => specIds.Contains(a.Id)).ToListAsync();
+                }
+                foreach (var item in specializationMasters)
+                {
+                    SpecializationDTO specializationDTO = new SpecializationDTO();
+                    specializationDTO = _mapper.Map<SpecializationDTO>(item);
+                    specializations.Add(specializationDTO);
+                }
+            }
+
+            return specializations;
+
         }
     }
 }

@@ -1153,5 +1153,37 @@ namespace TechMed.BL.Repository.BaseClasses
 
             return registerPatientReports;
         }
+
+        public async Task<List<GetDashboardFeedbackSummaryReportDataVM>> GetDashboardFeedbackSummaryReportData()
+        {
+            List<GetDashboardFeedbackSummaryReportDataVM> listdata = new List<GetDashboardFeedbackSummaryReportDataVM>();
+            GetDashboardFeedbackSummaryReportDataVM dataVM;
+            try
+            {
+                var Results = _teleMedecineContext.GetDashboardFeedbackSummaryReportData.FromSqlInterpolated($"EXEC [dbo].[GetDashboardFeedbackSummaryReportData] ");
+                foreach (var item in Results)
+                {
+                    dataVM = new GetDashboardFeedbackSummaryReportDataVM();
+                    dataVM.SrNo = item.SrNo;
+                    dataVM.DistrictName = item.DistrictName;
+                    dataVM.BlockName = item.BlockName;
+                    dataVM.PHCName = item.PHCName;
+                    dataVM.PatientName = item.PatientName;
+                    dataVM.MobileNo = item.MobileNo;
+                    dataVM.DoctorName = item.DoctorName;
+                    dataVM.Feedback = item.Feedback;
+                    dataVM.Comments = item.Comments;
+                    listdata.Add(dataVM);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
+            }
+
+
+            return listdata;
+        }
     }
 }

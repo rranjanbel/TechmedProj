@@ -9,6 +9,7 @@ namespace TechMed.DL.Models
         {
             DoctorMasters = new HashSet<DoctorMaster>();
             SubSpecializationMasters = new HashSet<SubSpecializationMaster>();
+            AgeGroupMaster = new HashSet<AgeGroupMaster>();
         }
 
         public int Id { get; set; }
@@ -16,5 +17,6 @@ namespace TechMed.DL.Models
 
         public virtual ICollection<DoctorMaster> DoctorMasters { get; set; }
         public virtual ICollection<SubSpecializationMaster> SubSpecializationMasters { get; set; }
+        public virtual ICollection<AgeGroupMaster> AgeGroupMaster { get; set; }
     }
 }
