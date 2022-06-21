@@ -53,5 +53,6 @@ namespace TechMed.BL.Repository.Interfaces
         Task<List<GetDashboardSystemHealthReportVM>> GetDashboardSystemHealthReport(DateTime? fromDate, DateTime? toDate);
         Task<List<RemoteSiteDowntimeSummaryDailyVM>> RemoteSiteDowntimeSummaryDaily(DateTime? fromDate, DateTime? toDate);
         Task<List<RemoteSiteDowntimeSummaryMonthlyVM>> RemoteSiteDowntimeSummaryMonthly(int month, int year);
+        Task<List<GetDashboardFeedbackSummaryReportDataVM>> GetDashboardFeedbackSummaryReportData();
     }
 }

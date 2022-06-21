@@ -95,6 +95,8 @@ builder.Services.AddScoped<IDigonisisRepository, DigonisisRepository>();
 builder.Services.AddScoped<IDrugsRepository, DrugsRepository>();
 builder.Services.AddScoped<ITwilioMeetingRepository, TwilioMeetingRepository>();
 builder.Services.AddScoped<IHolidayRepository, HolidayRepository>();
+builder.Services.AddScoped<ICDSSGuidelineRepository, CDSSGuidelineRepository>();
+
 builder.Services.AddScoped<IMailService, MailService>();
 builder.Services.Configure<TwilioSettings>(
     settings =>

@@ -74,6 +74,7 @@ namespace TechMed.DL.Models
         public virtual DbSet<PatientCaseDiagonosticTest> PatientCaseDiagonostics { get; set; } = null!;
         public virtual DbSet<RemoteSiteDowntimeReport> RemoteSiteDowntimeReports { get; set; } = null!;
         public virtual DbSet<ServerUpTimeReport> ServerUpTimeReports { get; set; } = null!;
+        public virtual DbSet<CDSSGuideline> CDSSGuidelines { get; set; } = null!;
 
 
         public virtual DbSet<SPResultGetPatientDetails> SPResultGetPatientDetails { get; set; } = null!;
@@ -119,12 +120,11 @@ namespace TechMed.DL.Models
         public virtual DbSet<GetDashboardDignosisSpecialityWiseVM> GetDashboardDignosisSpecialityWise { get; set; } = null!;
         public virtual DbSet<GetDashboardDiseasephcWiseVM> GetDashboardDiseasephcWise { get; set; } = null!;
         public virtual DbSet<GetDashboardDiseaseAgeWiseVM> GetDashboardDiseaseAgeWise { get; set; } = null!;
-
-
         public virtual DbSet<GetDashboardSystemHealthReportVM> GetDashboardSystemHealthReport { get; set; } = null!;
         public virtual DbSet<RemoteSiteDowntimeSummaryDailyVM> RemoteSiteDowntimeSummaryDaily { get; set; } = null!;
         public virtual DbSet<RemoteSiteDowntimeSummaryMonthlyVM> RemoteSiteDowntimeSummaryMonthly { get; set; } = null!;
-
+        public virtual DbSet<GetDashboardFeedbackSummaryReportDataVM> GetDashboardFeedbackSummaryReportData { get; set; } = null!;
+        
 
 
 
@@ -211,6 +211,24 @@ namespace TechMed.DL.Models
                     .WithMany(p => p.CdssguidelineMasterUpdatedByNavigations)
                     .HasForeignKey(d => d.UpdatedBy)
                     .HasConstraintName("FK_CDSSGuidelineMaster_UserMasterUpdatedBy");
+            });
+
+            modelBuilder.Entity<CDSSGuideline>(entity =>
+            {
+                entity.ToTable("CDSSGuideline");
+
+                entity.Property(e => e.ID).HasColumnName("ID");
+
+                entity.Property(e => e.Age)
+                    .IsUnicode(true)
+                    .HasColumnName("Age");
+                entity.Property(e => e.Diseases)
+                    .IsUnicode(true)
+                    .HasColumnName("Diseases");
+
+                entity.Property(e => e.Treatment)
+                    .IsUnicode(true)
+                    .HasColumnName("Treatment");
             });
 
             modelBuilder.Entity<ClusterMaster>(entity =>
