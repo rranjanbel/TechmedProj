@@ -36,5 +36,27 @@ namespace TechMed.BL.CommanClassesAndFunctions
             
 
         }
+        public static string GetAgeGroup(int Age)
+        {
+            string ageGroup = string.Empty;
+            if (Age >= 0 && Age < 15)
+            {
+                ageGroup = "0-14";
+            }
+            else if (Age >= 15 && Age < 60)
+            {
+                ageGroup = "15-60";
+            }
+            else if (Age >= 60)
+            {
+                ageGroup = "60 & above";
+            }
+            else
+            {
+                ageGroup = Age.ToString();
+            }
+            return ageGroup;
+        }
+
     }
 }
