@@ -27,8 +27,7 @@ namespace TechMed.API.Controllers
             , ICaseFileStatusMasterRpository caseFileStatusMasterRpository,
             IDigonisisRepository digonisisRepository,
             IDrugsRepository drugsRepository,
-            ISnomedRepository snomedRepository
-            IDrugsRepository drugsRepository,
+            ISnomedRepository snomedRepository,           
             IMasterRepository masterRepository
 
             )
