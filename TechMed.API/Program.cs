@@ -40,13 +40,14 @@ builder.Services.AddDbContext<TeleMedecineContext>(
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAutoMapper(typeof(MappingMaster));
 builder.Services.AddSwaggerGen();
-//builder.Services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
+//builder.Services.AddCors(o => o.AddPolicy("AllowAll", builder =>
 //{
 //    builder
+//    .WithOrigins("http://localhost:4200")
 //    .AllowAnyMethod()
 //    .AllowAnyHeader()
-//    .AllowCredentials()
-//    .AllowAnyOrigin();
+//    .AllowCredentials();
+
 //}));
 builder.Services.AddCors(options =>
 {
@@ -101,6 +102,7 @@ builder.Services.AddScoped<ICDSSGuidelineRepository, CDSSGuidelineRepository>();
 builder.Services.AddScoped<IMasterRepository, MasterRepository>();
 
 builder.Services.AddScoped<IMailService, MailService>();
+builder.Services.AddScoped<ISnomedRepository, SnomedRepository>();
 builder.Services.Configure<TwilioSettings>(
     settings =>
     {

@@ -19,19 +19,22 @@ namespace TechMed.API.Controllers
         private readonly ICaseFileStatusMasterRpository _CaseFileStatusMasterRpository;
         private readonly IDigonisisRepository _digonisisRepository;
         private readonly IDrugsRepository _drugsRepository;
+        private readonly ISnomedRepository _snomedRepository;
         private readonly IMasterRepository _masterRepository;
-
 
         public MasterController(IMapper mapper, ISpecializationRepository specializationRepository, ILogger<MasterController> logger
             , TeleMedecineContext teleMedecineContext
             , ICaseFileStatusMasterRpository caseFileStatusMasterRpository,
             IDigonisisRepository digonisisRepository,
             IDrugsRepository drugsRepository,
+            ISnomedRepository snomedRepository
+            IDrugsRepository drugsRepository,
             IMasterRepository masterRepository
 
             )
         {
             this._mapper = mapper;
+            _snomedRepository = snomedRepository;
             //this._phcRepository = phcRepository;
             this._logger = logger;
             this._specializationRepository = specializationRepository;
@@ -44,7 +47,7 @@ namespace TechMed.API.Controllers
 
         [HttpGet]
         [Route("GetAllSpecialization")]
-        [ProducesResponseType(200, Type = typeof(List<SpecializationDTO>))]      
+        [ProducesResponseType(200, Type = typeof(List<SpecializationDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllSpecialization()
@@ -52,16 +55,16 @@ namespace TechMed.API.Controllers
             SpecializationDTO mapdata = new SpecializationDTO();
             try
             {
-               var spemasters = await _specializationRepository.Get();
-              
+                var spemasters = await _specializationRepository.Get();
+
                 var DTOList = new List<SpecializationDTO>();
                 foreach (var item in spemasters)
                 {
                     mapdata = _mapper.Map<SpecializationDTO>(item);
                     DTOList.Add(mapdata);
-                }               
+                }
                 if (DTOList != null)
-                {                   
+                {
                     return Ok(DTOList);
                 }
                 else
@@ -268,7 +271,7 @@ namespace TechMed.API.Controllers
             IDProofTypeMasterDTO mapdata = new IDProofTypeMasterDTO();
             try
             {
-                var spemasters = await _teleMedecineContext.IdproofTypeMasters.Where(a => a.IsActive ==true).ToListAsync();
+                var spemasters = await _teleMedecineContext.IdproofTypeMasters.Where(a => a.IsActive == true).ToListAsync();
 
                 var DTOList = new List<IDProofTypeMasterDTO>();
                 foreach (var item in spemasters)
@@ -521,7 +524,7 @@ namespace TechMed.API.Controllers
             PHCMasterDTO phc;
             try
             {
-                var phclist = await _teleMedecineContext.Phcmasters.ToListAsync();               
+                var phclist = await _teleMedecineContext.Phcmasters.ToListAsync();
 
                 foreach (var item in phclist)
                 {
@@ -559,7 +562,7 @@ namespace TechMed.API.Controllers
             try
             {
                 diagnosticTestList = await this._digonisisRepository.GetAllDignosis();
-                
+
                 if (diagnosticTestList != null)
                 {
                     return Ok(diagnosticTestList);
@@ -678,5 +681,33 @@ namespace TechMed.API.Controllers
         ////ClusterMaster
         ////ZoneMaster
         ////StateMaster
+        ///
+
+
+        [HttpGet]
+        [Route("SearchSnomedCTCodes")]
+        [ProducesResponseType(200, Type = typeof(List<DrugsMasterDTO>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetSnomedCTCodes(string searchText)
+        {
+            List<SnomedCTCode> snomedCTCodes = new List<SnomedCTCode>();
+            try
+            {
+                if (!string.IsNullOrEmpty(searchText))
+                {
+                    snomedCTCodes = await this._snomedRepository.SearchSnomedCodeByName(searchText);
+                }
+
+                return Ok(snomedCTCodes);
+
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("GetSnomedCTCodes", $"Something went wrong when get GetSnomedCTCodes {ex.Message}");
+                _logger.LogError("Exception in GetSnomedCTCodes API " + ex);
+                return StatusCode(500, ModelState);
+            }
+        }
     }
 }

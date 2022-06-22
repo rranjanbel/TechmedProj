@@ -124,8 +124,13 @@ namespace TechMed.DL.Models
         public virtual DbSet<GetDashboardSystemHealthReportVM> GetDashboardSystemHealthReport { get; set; } = null!;
         public virtual DbSet<RemoteSiteDowntimeSummaryDailyVM> RemoteSiteDowntimeSummaryDaily { get; set; } = null!;
         public virtual DbSet<RemoteSiteDowntimeSummaryMonthlyVM> RemoteSiteDowntimeSummaryMonthly { get; set; } = null!;
+ 
+        public virtual DbSet<SnomedCTCode> SnomedCTCodes { get; set; } = null!;
+
+
         public virtual DbSet<GetDashboardFeedbackSummaryReportDataVM> GetDashboardFeedbackSummaryReportData { get; set; } = null!;
         
+
 
 
 
@@ -1752,6 +1757,14 @@ namespace TechMed.DL.Models
                     .IsUnicode(false);
             });
 
+            modelBuilder.Entity<SnomedCTCode>(entity =>
+            {
+                entity.ToTable("SnomedCTCode");
+                entity.Property(e => e.Id).HasColumnName("ID");
+                entity.Property(e => e.CodeName)
+                   .HasMaxLength(500)
+                   .IsUnicode(true);
+            });
             OnModelCreatingPartial(modelBuilder);
         }
 
