@@ -2,12 +2,14 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using TechMed.BL.CommanClassesAndFunctions;
 using TechMed.BL.DTOMaster;
 using TechMed.BL.ModelMaster;
 using TechMed.BL.Repository.Interfaces;
 using TechMed.BL.ViewModels;
 using TechMed.DL.Models;
+
 
 namespace TechMed.API.Controllers
 {
@@ -21,6 +23,7 @@ namespace TechMed.API.Controllers
         private readonly ILogger<PatientCaseController> _logger;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly ApplicationRootUri _myConfiguration;
+     
         public PatientCaseController(IMapper mapper, TeleMedecineContext teleMedecineContext, IPatientCaseRepository patientCaeRepository, ILogger<PatientCaseController> logger, IWebHostEnvironment webHostEnvironment, ApplicationRootUri myConfiguration)
         {
             this._mapper = mapper;
@@ -28,6 +31,7 @@ namespace TechMed.API.Controllers
             this._logger = logger;
             this._webHostEnvironment = webHostEnvironment;
             this._myConfiguration = myConfiguration;
+           
         }
         [HttpPost]
         [Route("CreatePatientCase")]

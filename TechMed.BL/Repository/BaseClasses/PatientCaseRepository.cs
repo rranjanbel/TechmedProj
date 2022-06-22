@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,13 +22,15 @@ namespace TechMed.BL.Repository.BaseClasses
         private readonly TeleMedecineContext _teleMedecineContext;
         private readonly IMapper _mapper;
         private readonly ILogger<PatientCaseRepository> _logger;
-        private readonly IDoctorRepository _doctorRepository; 
-        public PatientCaseRepository(ILogger<PatientCaseRepository> logger, TeleMedecineContext teleMedecineContext, IMapper mapper, IDoctorRepository doctorRepository) : base(teleMedecineContext)
+        private readonly IDoctorRepository _doctorRepository;
+        private readonly SMSSetting _smsSettings;
+        public PatientCaseRepository(ILogger<PatientCaseRepository> logger, TeleMedecineContext teleMedecineContext, IMapper mapper, IDoctorRepository doctorRepository, IOptions<SMSSetting> smsSettings) : base(teleMedecineContext)
         {
             this._teleMedecineContext = teleMedecineContext;
             this._mapper = mapper;
             this._logger = logger;
             this._doctorRepository = doctorRepository;
+            this._smsSettings = smsSettings.Value;
         }
 
         public async Task<PatientCase> CreateAsync(PatientCase patientCase)
@@ -350,6 +353,8 @@ namespace TechMed.BL.Repository.BaseClasses
         {
             PatientFeedbackDTO updatedFeedback = new PatientFeedbackDTO();
             PatientCaseFeedback feedback = new PatientCaseFeedback();
+            string message = string.Empty;
+            string mobileNumber = string.Empty;
             if (patientFeedback != null)
             {
                 bool isPatientCaseInSystem = await IsPatientCaseExist(patientFeedback.PatientCaseId);
@@ -363,7 +368,25 @@ namespace TechMed.BL.Repository.BaseClasses
                     int i = _teleMedecineContext.SaveChanges();
                     if (i > 0)
                     {
+                        _logger.LogInformation("Feedback received from pateint case id :" + patientFeedback.PatientCaseId);
                         updatedFeedback = _mapper.Map<PatientFeedbackDTO>(feedback);
+                        var patientinfo = _teleMedecineContext.PatientCases.Include(s => s.Patient).FirstOrDefault(a => a.Id == patientFeedback.PatientCaseId);
+                        if(patientinfo != null)
+                        {
+                            message =  "Hi "+patientinfo.Patient.FirstName +" "+ _smsSettings.message;
+                            mobileNumber = patientinfo.Patient.MobileNo;
+                            bool response = UtilityMaster.SendSMS(mobileNumber, message, _smsSettings.apikey, _smsSettings.sender, _smsSettings.url);
+                            if(response)
+                            {
+                                _logger.LogInformation("SMS sent to patient Id :" + patientinfo.Patient.Id);
+                            }
+                            else
+                            {
+                                _logger.LogError("SMS did not send to patient Id :" + patientinfo.Patient.Id); 
+                            }
+                           
+                        }
+                       
                         return updatedFeedback;
                     }
                     else

@@ -71,9 +71,9 @@ namespace TechMed.API.Services
 
         }
 
-        public async Task<bool> LogoutUsers(string userEmail)
+        public async Task<bool> LogoutUsers(string userTokan)
         {
-            bool result = await _userRepository.LogoutUsers(userEmail);
+            bool result = await _userRepository.LogoutUsers(userTokan);
             return result;
         }
 

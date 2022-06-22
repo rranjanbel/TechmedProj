@@ -79,6 +79,8 @@ builder.Services.AddSingleton<IJwtAuthManager, JwtAuthManager>();
 builder.Services.AddHostedService<JwtRefreshTokenCache>();
 var mailSettings = builder.Configuration.GetSection("MailSettings").Get<MailSettings>();
 builder.Services.AddSingleton(mailSettings);
+var smsSettings = builder.Configuration.GetSection("SMSSettings").Get<SMSSetting>();
+builder.Services.AddSingleton(smsSettings);
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
@@ -96,6 +98,7 @@ builder.Services.AddScoped<IDrugsRepository, DrugsRepository>();
 builder.Services.AddScoped<ITwilioMeetingRepository, TwilioMeetingRepository>();
 builder.Services.AddScoped<IHolidayRepository, HolidayRepository>();
 builder.Services.AddScoped<ICDSSGuidelineRepository, CDSSGuidelineRepository>();
+builder.Services.AddScoped<IMasterRepository, MasterRepository>();
 
 builder.Services.AddScoped<IMailService, MailService>();
 builder.Services.Configure<TwilioSettings>(

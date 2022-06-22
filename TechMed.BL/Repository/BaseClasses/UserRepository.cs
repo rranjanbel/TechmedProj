@@ -402,7 +402,7 @@ namespace TechMed.BL.Repository.BaseClasses
 
             if (loginHistory != null)
             {
-                loginHistory.LogedoutTime = DateTime.UtcNow;
+                loginHistory.LogedoutTime = UtilityMaster.GetLocalDateTime();
                 DoctorMaster doctor = _teleMedecineContext.DoctorMasters.FirstOrDefault(a => a.UserId == loginHistory.UserId);
                 if (doctor != null)
                 {

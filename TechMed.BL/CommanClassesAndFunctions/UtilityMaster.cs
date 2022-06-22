@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using TechMed.DL.Models;
@@ -177,6 +178,35 @@ namespace TechMed.BL.CommanClassesAndFunctions
             }
 
             return dateTime;
+        }
+
+        public static bool SendSMS(string mobileNo, string message, string apiKey, string sender, string url)
+        {
+            if(url == null)
+            {
+                url = "https://api.textlocal.in/send/?apikey=";
+            }
+            string absoluteUrl = url + apiKey + "&number=" + mobileNo + "&message=" + message + "&sender=" + sender; ;
+            StreamWriter streamWriter = null;
+            HttpWebRequest httpRequest = (HttpWebRequest)WebRequest.Create(url);
+            httpRequest.Method = "POST";
+            httpRequest.ContentLength = Encoding.UTF8.GetByteCount(absoluteUrl);
+            httpRequest.ContentType = "application/x-www-form-urlencoded";
+            try
+            {
+                streamWriter = new StreamWriter(httpRequest.GetRequestStream());
+                streamWriter.Write(absoluteUrl);
+            }
+            catch (Exception ex)
+            {
+                string exceptionMessage = ex.Message;
+                return false;
+            }
+            finally
+            {
+                streamWriter.Close();
+            }
+            return true;
         }
     }
 }

@@ -19,13 +19,15 @@ namespace TechMed.API.Controllers
         private readonly ICaseFileStatusMasterRpository _CaseFileStatusMasterRpository;
         private readonly IDigonisisRepository _digonisisRepository;
         private readonly IDrugsRepository _drugsRepository;
+        private readonly IMasterRepository _masterRepository;
 
 
         public MasterController(IMapper mapper, ISpecializationRepository specializationRepository, ILogger<MasterController> logger
             , TeleMedecineContext teleMedecineContext
             , ICaseFileStatusMasterRpository caseFileStatusMasterRpository,
             IDigonisisRepository digonisisRepository,
-            IDrugsRepository drugsRepository
+            IDrugsRepository drugsRepository,
+            IMasterRepository masterRepository
 
             )
         {
@@ -37,6 +39,7 @@ namespace TechMed.API.Controllers
             this._CaseFileStatusMasterRpository = caseFileStatusMasterRpository;
             this._digonisisRepository = digonisisRepository;
             this._drugsRepository = drugsRepository;
+            this._masterRepository = masterRepository;
         }
 
         [HttpGet]
@@ -601,6 +604,66 @@ namespace TechMed.API.Controllers
             {
                 ModelState.AddModelError("GetAllDrugsName", $"Something went wrong when get all Diagnostic {ex.Message}");
                 _logger.LogError("Exception in GetAllDrugsName API " + ex);
+                return StatusCode(500, ModelState);
+            }
+        }
+
+        [HttpGet]
+        [Route("GetAllDivision")]
+        [ProducesResponseType(200, Type = typeof(List<DivisionDTO>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetAllDivision()
+        {
+            List<DivisionDTO> divisionList = new List<DivisionDTO>();
+            try
+            {
+                divisionList = await this._masterRepository.GetAllDivision();
+
+                if (divisionList != null)
+                {
+                    return Ok(divisionList);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetAllDivision", "Diagnostic test detail did not find");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("GetAllDivision", $"Something went wrong when get all Diagnostic {ex.Message}");
+                _logger.LogError("Exception in GetAllDivision API " + ex);
+                return StatusCode(500, ModelState);
+            }
+        }
+
+        [HttpGet]
+        [Route("GetDivisionsByClusterID")]
+        [ProducesResponseType(200, Type = typeof(List<DivisionDTO>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetDivisionsByClusterID(int clusterId)
+        {
+            List<DivisionDTO> divisionList = new List<DivisionDTO>();
+            try
+            {
+                divisionList = await this._masterRepository.GetDivisionByClusterID(clusterId);
+
+                if (divisionList != null)
+                {
+                    return Ok(divisionList);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetAllDivision", "Diagnostic test detail did not find");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("GetAllDivision", $"Something went wrong when get all Diagnostic {ex.Message}");
+                _logger.LogError("Exception in GetAllDivision API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
