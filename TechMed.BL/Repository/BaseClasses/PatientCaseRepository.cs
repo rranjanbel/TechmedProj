@@ -370,22 +370,24 @@ namespace TechMed.BL.Repository.BaseClasses
                     {
                         _logger.LogInformation("Feedback received from pateint case id :" + patientFeedback.PatientCaseId);
                         updatedFeedback = _mapper.Map<PatientFeedbackDTO>(feedback);
-                        var patientinfo = _teleMedecineContext.PatientCases.Include(s => s.Patient).FirstOrDefault(a => a.Id == patientFeedback.PatientCaseId);
-                        if(patientinfo != null)
-                        {
-                            message =  "Hi "+patientinfo.Patient.FirstName +" "+ _smsSettings.message;
-                            mobileNumber = patientinfo.Patient.MobileNo;
-                            bool response = UtilityMaster.SendSMS(mobileNumber, message, _smsSettings.apikey, _smsSettings.sender, _smsSettings.url);
-                            if(response)
-                            {
-                                _logger.LogInformation("SMS sent to patient Id :" + patientinfo.Patient.Id);
-                            }
-                            else
-                            {
-                                _logger.LogError("SMS did not send to patient Id :" + patientinfo.Patient.Id); 
-                            }
+                        //Send SMS Line Item 168
+
+                        //var patientinfo = _teleMedecineContext.PatientCases.Include(s => s.Patient).FirstOrDefault(a => a.Id == patientFeedback.PatientCaseId);
+                        //if(patientinfo != null)
+                        //{
+                        //    message =  "Hi "+patientinfo.Patient.FirstName +" "+ _smsSettings.message;
+                        //    mobileNumber = patientinfo.Patient.MobileNo;
+                        //    bool response = UtilityMaster.SendSMS(mobileNumber, message, _smsSettings.apikey, _smsSettings.sender, _smsSettings.url);
+                        //    if(response)
+                        //    {
+                        //        _logger.LogInformation("SMS sent to patient Id :" + patientinfo.Patient.Id);
+                        //    }
+                        //    else
+                        //    {
+                        //        _logger.LogError("SMS did not send to patient Id :" + patientinfo.Patient.Id); 
+                        //    }
                            
-                        }
+                        //}
                        
                         return updatedFeedback;
                     }
