@@ -14,6 +14,7 @@ namespace TechMed.BL.Repository.Interfaces
         Task<List<CDSSGuidelineVM>> GetAllCDSSGuideline();
         Task<List<CDSSGuidelineVM>> GetAllCDSSGuidelineByDiseases(string Diseases);
         Task<List<CDSSGuidelineVM>> GetCDSSGuideLinesByDiseasesAndAge(string Diseases,int Age);
+        Task<List<CDSSGuidelineDiseasesVM>> GetCDSSGuideLinesDiseasesByDiseasesAndAge(string Diseases, int Age);
         Task<List<CDSSGuidelineVM>> GetDiseases(string Diseases);
         Task<CDSSGuidelineVM> GetAllCDSSGuidelineByID(Int64 ID);
     }

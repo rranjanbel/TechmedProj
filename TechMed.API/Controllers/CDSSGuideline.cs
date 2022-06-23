@@ -113,6 +113,36 @@ namespace TechMed.API.Controllers
                 return StatusCode(500, ModelState);
             }
         }
+        [Route("GetCDSSGuidelineDiseasesByDiseasesAndAge")]
+        [HttpGet]
+        [ProducesResponseType(200, Type = typeof(CDSSGuidelineDiseasesVM))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetCDSSGuidelineDiseasesByDiseasesAndAge(string Diseases, int Age)
+        {
+            try
+            {
+                var DTO = await _cDSSGuidelineRepository.GetCDSSGuideLinesDiseasesByDiseasesAndAge(Diseases, Age);
+                if (DTO != null)
+                {
+                    _logger.LogInformation($"GetCDSSGuidelineDiseasesByDiseasesAndAge : Sucess response returned ");
+                    return Ok(DTO);
+                }
+                else
+                {
+                    ModelState.AddModelError("", $"Data not found!");
+                    _logger.LogError("GetCDSSGuidelineDiseasesByDiseasesAndAge :  Data not found ");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError("", $"Something went wrong {ex.Message}");
+                _logger.LogError("Exception in GetCDSSGuideLines API " + ex);
+                return StatusCode(500, ModelState);
+            }
+        }
 
         [Route("GetAllCDSSGuidelineByID")]
         [HttpGet]

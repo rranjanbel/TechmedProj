@@ -72,7 +72,7 @@ namespace TechMed.BL.Repository.BaseClasses
            string strage= CommanFunction.GetAgeGroup(Age);
 
             var matches = from m in _teleMedecineContext.CDSSGuidelines
-                          where m.Diseases.Contains(Diseases)
+                          where m.Diseases.ToLower() == Diseases.ToLower()
                           &&  m.Age == strage
                           select m;
             foreach (var item in matches)
@@ -82,6 +82,28 @@ namespace TechMed.BL.Repository.BaseClasses
                 drugsMaster.Age = item.Age;
                 drugsMaster.Diseases = item.Diseases;
                 drugsMaster.Treatment = item.Treatment;
+                guidelineVMs.Add(drugsMaster);
+            }
+            return guidelineVMs.OrderBy(a => a.ID).ToList();
+        }
+
+        public async Task<List<CDSSGuidelineDiseasesVM>> GetCDSSGuideLinesDiseasesByDiseasesAndAge(string Diseases, int Age)
+        {
+            List<CDSSGuidelineDiseasesVM> guidelineVMs = new List<CDSSGuidelineDiseasesVM>();
+            CDSSGuidelineDiseasesVM drugsMaster;
+
+            string strage = CommanFunction.GetAgeGroup(Age);
+
+            var matches = from m in _teleMedecineContext.CDSSGuidelines
+                          where m.Diseases.Contains(Diseases)
+                          && m.Age == strage
+                          select m;
+            foreach (var item in matches)
+            {
+                drugsMaster = new CDSSGuidelineDiseasesVM();
+                drugsMaster.ID = item.ID;
+                drugsMaster.Age = item.Age;
+                drugsMaster.Diseases = item.Diseases;
                 guidelineVMs.Add(drugsMaster);
             }
             return guidelineVMs.OrderBy(a => a.ID).ToList();
