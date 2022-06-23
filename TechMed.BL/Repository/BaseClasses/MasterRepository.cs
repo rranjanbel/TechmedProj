@@ -40,8 +40,10 @@ namespace TechMed.BL.Repository.BaseClasses
                 }
             }
             
-            return divisionDTOs;
+            return divisionDTOs.OrderBy(o => o.Name).ToList();
         }
+
+       
 
         public async Task<List<DivisionDTO>> GetDivisionByClusterID(int clusterId)
         {
@@ -58,7 +60,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 }
             }
 
-            return divisionDTOs;
+            return divisionDTOs.OrderBy(o => o.Name).ToList();
         }
 
         public async Task<DivisionDTO> GetDivisionById(int Id)
@@ -72,6 +74,42 @@ namespace TechMed.BL.Repository.BaseClasses
             }
 
             return divisionDTO;
+        }
+
+        public async Task<List<BlockMasterDTO>> GetBlocksByDistrictID(int districtId)
+        {
+            BlockMasterDTO blockDTO = new BlockMasterDTO();
+            List<BlockMasterDTO> blockDTOs = new List<BlockMasterDTO>();
+            var districtList = await this._teleMedecineContext.BlockMasters.Where(s => s.DistrictId == districtId).ToListAsync();
+            if (districtList != null)
+            {
+                foreach (var item in districtList)
+                {
+                    blockDTO = _mapper.Map<BlockMasterDTO>(item);
+                    blockDTOs.Add(blockDTO);
+
+                }
+            }
+
+            return blockDTOs.OrderBy(o=> o.BlockName).ToList();
+        }
+
+        public async Task<List<DistrictMasterDTO>> GetDistrictsByDivisionID(int divisionId)
+        {
+            DistrictMasterDTO districtMasterDTO = new DistrictMasterDTO();
+            List<DistrictMasterDTO> districtMasterDTOs = new List<DistrictMasterDTO>();
+            var districts = await this._teleMedecineContext.DistrictMasters.Where(s => s.DivisionId== divisionId).ToListAsync();
+            if (districts != null)
+            {
+                foreach (var item in districts)
+                {
+                    districtMasterDTO = _mapper.Map<DistrictMasterDTO>(item);
+                    districtMasterDTOs.Add(districtMasterDTO);
+
+                }
+            }
+
+            return districtMasterDTOs.OrderBy(o => o.DistrictName).ToList();
         }
     }
 }

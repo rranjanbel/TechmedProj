@@ -628,13 +628,13 @@ namespace TechMed.API.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("GetAllDivision", "Diagnostic test detail did not find");
+                    ModelState.AddModelError("GetAllDivision", "Division did not get.");
                     return StatusCode(404, ModelState);
                 }
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("GetAllDivision", $"Something went wrong when get all Diagnostic {ex.Message}");
+                ModelState.AddModelError("GetAllDivision", $"Something went wrong when get all division {ex.Message}");
                 _logger.LogError("Exception in GetAllDivision API " + ex);
                 return StatusCode(500, ModelState);
             }
@@ -658,14 +658,14 @@ namespace TechMed.API.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("GetAllDivision", "Diagnostic test detail did not find");
+                    ModelState.AddModelError("GetDivisionsByClusterID", "Division did not find");
                     return StatusCode(404, ModelState);
                 }
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("GetAllDivision", $"Something went wrong when get all Diagnostic {ex.Message}");
-                _logger.LogError("Exception in GetAllDivision API " + ex);
+                ModelState.AddModelError("GetDivisionsByClusterID", $"Something went wrong when get all division {ex.Message}");
+                _logger.LogError("Exception in GetDivisionsByClusterID API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -705,6 +705,66 @@ namespace TechMed.API.Controllers
             {
                 ModelState.AddModelError("GetSnomedCTCodes", $"Something went wrong when get GetSnomedCTCodes {ex.Message}");
                 _logger.LogError("Exception in GetSnomedCTCodes API " + ex);
+                return StatusCode(500, ModelState);
+            }
+        }
+
+        [HttpGet]
+        [Route("GetDistrictsByDivisionID")]
+        [ProducesResponseType(200, Type = typeof(List<DistrictMasterDTO>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetDistrictsByDivisionID(int divisionId)
+        {
+            List<DistrictMasterDTO> districtList = new List<DistrictMasterDTO>();
+            try
+            {
+                districtList = await this._masterRepository.GetDistrictsByDivisionID(divisionId);
+
+                if (districtList != null)
+                {
+                    return Ok(districtList);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetDistrictsByDivisionID", "District test detail did not find");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("GetDistrictsByDivisionID", $"Something went wrong when get all district {ex.Message}");
+                _logger.LogError("Exception in GetDistrictsByDivisionID API " + ex);
+                return StatusCode(500, ModelState);
+            }
+        }
+
+        [HttpGet]
+        [Route("GetBlocksByDistrictID")]
+        [ProducesResponseType(200, Type = typeof(List<BlockMasterDTO>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetBlocksByDistrictID(int districtId)
+        {
+            List<BlockMasterDTO> blocks = new List<BlockMasterDTO>();
+            try
+            {
+                blocks = await this._masterRepository.GetBlocksByDistrictID(districtId);
+
+                if (blocks != null)
+                {
+                    return Ok(blocks);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetBlocksByDistrictID", "Block did not find");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("GetBlocksByDistrictID", $"Something went wrong when get all block {ex.Message}");
+                _logger.LogError("Exception in GetBlocksByDistrictID API " + ex);
                 return StatusCode(500, ModelState);
             }
         }

@@ -13,5 +13,7 @@ namespace TechMed.BL.Repository.Interfaces
         Task<List<DivisionDTO>> GetAllDivision();
         Task<List<DivisionDTO>> GetDivisionByClusterID(int clusterId);
         Task<DivisionDTO> GetDivisionById(int Id);
+        Task<List<DistrictMasterDTO>> GetDistrictsByDivisionID(int divisionId);
+        Task<List<BlockMasterDTO>> GetBlocksByDistrictID(int districtId);
     }
 }
