@@ -1065,7 +1065,7 @@ namespace TechMed.BL.Repository.BaseClasses
             }
 
             var Results = _teleMedecineContext.DoctorPatientSearchResults
-                .FromSqlInterpolated($"EXEC [dbo].[AdvanceSearchOfPatientsByDoctor] @PHCID ={PHCID},@PatientName={PatientName},@PatientUID={PatientId},@ContactNo={contractNo},@GenderId={genderId},@DoctorId={doctorId}");
+                .FromSqlInterpolated($"EXEC [dbo].[AdvanceSearchOfPatientsByDoctor] @PHCID ={PHCID},@PatientName={PatientName},@PatientUID={PatientId},@ContactNo={contractNo},@GenderId={genderId},@DoctorId={doctorId},@DateOfBirth={DateOfBirth},@DateOfRegistration={DateOfRegistration}");
             foreach (var item in Results)
             {
                 searchResult = new DoctorPatientSearchVM();
