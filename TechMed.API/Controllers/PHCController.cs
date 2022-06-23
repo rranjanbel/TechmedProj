@@ -168,13 +168,23 @@ namespace TechMed.API.Controllers
                     return StatusCode(404, ModelState);
                 }
                 if(phcMaster != null)
-                {                     
+                { 
+                    string user = string.Empty;
+                    if (User.Identity.IsAuthenticated)
+                    {
+                        user = User.Identity.Name;
+                    }
                     phcMaster.CreatedOn = UtilityMaster.GetLocalDateTime();
                     phcMaster.UpdatedOn = UtilityMaster.GetLocalDateTime();
                     phcMaster.ClusterId = phcdto.ClusterId;
+                    phcMaster.DivisionId = phcdto.DivisionId;
+                    phcMaster.DistrictId = phcdto.DistrictId;
                     phcMaster.BlockId = phcdto.BlockId;
-                    phcMaster.CreatedBy = phcdto.CreatedBy;
-                    phcMaster.UpdatedBy = phcdto.CreatedBy;
+                    phcMaster.EmployeeName = phcdto.EmployeeName;
+
+
+                    //phcMaster.CreatedBy = User.Identity.Name;
+                    //phcMaster.UpdatedBy = phcdto.CreatedBy;
 
                     UserMaster userMaster = new UserMaster();
                     userMaster.Email = phcMaster.MailId;
@@ -185,8 +195,8 @@ namespace TechMed.API.Controllers
                     userMaster.LastLoginAt = UtilityMaster.GetLocalDateTime();
                     userMaster.IsActive = true;
                     userMaster.IsPasswordChanged = false;
-                    userMaster.CreatedBy = phcdto.CreatedBy;
-                    userMaster.UpdatedBy = phcdto.CreatedBy;
+                    //userMaster.CreatedBy = phcdto.CreatedBy;
+                    //userMaster.UpdatedBy = phcdto.CreatedBy;
                     userMaster.CreatedOn = UtilityMaster.GetLocalDateTime();
                     userMaster.UpdatedOn = UtilityMaster.GetLocalDateTime();
 

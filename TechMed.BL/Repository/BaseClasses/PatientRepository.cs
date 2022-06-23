@@ -42,6 +42,10 @@ namespace TechMed.BL.Repository.BaseClasses
                     patientMaster.UpdatedOn = UtilityMaster.GetLocalDateTime();
                     // patientMaster.PatientId = UtilityMaster.GetPatientNumber();
                     //patientMaster.PatientId = GetPatientId();
+                    if(patientMaster.MobileNo == null || patientMaster.MobileNo =="")
+                    {
+                        patientMaster.MobileNo = " ";
+                    }
 
                     if (patientMaster.Id == 0)
                     {
@@ -401,7 +405,7 @@ namespace TechMed.BL.Repository.BaseClasses
             Int64 currentNo = 0;
             Int64 patientSerNo = 0;
             patientSerNo = _teleMedecineContext.Settings.Select(a => a.PatientNumber).FirstOrDefault();
-            if (patientSerNo > 0)
+            if (patientSerNo >= 0)
             {
                 currentNo = patientSerNo;
                 setting = _teleMedecineContext.Settings.FirstOrDefault();
@@ -419,7 +423,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     Console.WriteLine(ex.ToString());
                     throw;
                 }
-                return currentNo + 1;
+                return (currentNo + 1);
             }
             return 0;
         }      
