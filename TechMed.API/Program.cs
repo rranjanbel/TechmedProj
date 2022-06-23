@@ -18,6 +18,7 @@ using TechMed.BL.TwilioAPI.Service;
 using TechMed.API.NotificationHub;
 using TechMed.BL.ModelMaster;
 using TechMed.DL.ViewModel;
+using TechMed.BL.CommanClassesAndFunctions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -100,6 +101,7 @@ builder.Services.AddScoped<ITwilioMeetingRepository, TwilioMeetingRepository>();
 builder.Services.AddScoped<IHolidayRepository, HolidayRepository>();
 builder.Services.AddScoped<ICDSSGuidelineRepository, CDSSGuidelineRepository>();
 builder.Services.AddScoped<IMasterRepository, MasterRepository>();
+builder.Services.AddScoped<ISettingMaster, SettingMaster>();
 
 builder.Services.AddScoped<IMailService, MailService>();
 builder.Services.AddScoped<ISnomedRepository, SnomedRepository>();

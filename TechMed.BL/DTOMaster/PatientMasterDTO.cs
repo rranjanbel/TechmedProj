@@ -31,8 +31,7 @@ namespace TechMed.BL.DTOMaster
         public string PinCode { get; set; }
         public string? Photo { get; set; }
         public DateTime Dob { get; set; }
-        public string EmailId { get; set; }
-        [Required]
+        public string EmailId { get; set; }        
         public string MobileNo { get; set; }
         public int Phcid { get; set; }
         public int PatientStatusId { get; set; }
