@@ -14,4 +14,10 @@ namespace TechMed.DL.ViewModel
         public string? Diseases { get; set; }
         public string? Treatment { get; set; }
     }
+    public class CDSSGuidelineDiseasesVM
+    {
+        public Int64 ID { get; set; }
+        public string? Age { get; set; }
+        public string? Diseases { get; set; }
+    }
 }
