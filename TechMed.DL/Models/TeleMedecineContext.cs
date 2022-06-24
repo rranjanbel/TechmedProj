@@ -889,6 +889,7 @@ namespace TechMed.DL.Models
                     .IsUnicode(false);
 
                 entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
+                entity.Property(e => e.ReviewDate).HasColumnType("datetime");
 
                 entity.HasOne(d => d.Patient)
                     .WithMany(p => p.PatientCases)

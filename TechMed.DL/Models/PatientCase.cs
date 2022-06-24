@@ -33,6 +33,7 @@ namespace TechMed.DL.Models
         public string? Test { get; set; }
         public string? Finding { get; set; }
         public string? Opdno { get; set; }
+        public DateTime? ReviewDate { get; set; }
         public string? Prescription { get; set; }
         public int CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }

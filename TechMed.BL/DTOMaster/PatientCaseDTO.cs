@@ -27,5 +27,6 @@ namespace TechMed.BL.DTOMaster
         public DateTime CreatedOn { get; set; }
         public DateTime? UpdatedOn { get; set; }       
         public string? Opdno { get; set; }
+        public DateTime? ReviewDate { get; set; }
     }
 }
