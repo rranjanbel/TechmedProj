@@ -55,9 +55,7 @@ namespace TechMed.API.Controllers
                     return StatusCode(404, ModelState);
                 }
                 if (patientCasevm != null)
-                {
-                    //Need to get here data from database runtime when not supplied by GUI
-
+                {                    
                     patientcase.CaseFileNumber = _patientCaeRepository.GetCaseFileNumber().ToString();
                     patientcase.PatientId = patientCasevm.PatientID;
                     patientcase.SpecializationId = patientCasevm.SpecializationID;
@@ -68,10 +66,7 @@ namespace TechMed.API.Controllers
                     patientcase.CreatedOn = UtilityMaster.GetLocalDateTime();
                     patientcase.UpdatedOn = UtilityMaster.GetLocalDateTime();
 
-                    if (patientcase.CreatedBy == 0)
-                        patientcase.CreatedBy = 2;
-                    if (patientcase.UpdatedBy == 0)
-                        patientcase.UpdatedBy = 2;
+                   
 
                     patientCaseNew = await this._patientCaeRepository.CreateAsync(patientcase);
                     if (patientCaseNew != null)

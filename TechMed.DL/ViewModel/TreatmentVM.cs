@@ -26,6 +26,7 @@ namespace TechMed.DL.ViewModel
         public string? ProvisionalDiagnosis { get; set; }
         public string? ReferredTo { get; set; }
         public DateTime? ReviewDate { get; set; }
+        public string? Comment { get; set; }
         public List<MedicineVM> medicineVMs { get; set; }
         public List<PatientCaseDiagonisticTestVM> PatientCaseDiagonostics { get; set; }
        

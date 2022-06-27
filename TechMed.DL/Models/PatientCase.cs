@@ -30,7 +30,7 @@ namespace TechMed.DL.Models
         public string? ProvisionalDiagnosis { get; set; }
         public string? ReferredTo { get; set; }
         public string? Instruction { get; set; }
-        public string? Test { get; set; }
+        public string? Comment { get; set; }
         public string? Finding { get; set; }
         public string? Opdno { get; set; }
         public DateTime? ReviewDate { get; set; }

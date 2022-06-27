@@ -28,5 +28,6 @@ namespace TechMed.BL.DTOMaster
         public DateTime? UpdatedOn { get; set; }       
         public string? Opdno { get; set; }
         public DateTime? ReviewDate { get; set; }
+        public string Comment { get; set; } = null!;
     }
 }

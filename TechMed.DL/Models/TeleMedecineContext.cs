@@ -99,11 +99,9 @@ namespace TechMed.DL.Models
         public virtual DbSet<GetReviewPatientVM> ReviewPatientReport { get; set; } = null!;
         public virtual DbSet<GetDashboardSpokeMaintenanceVM> GetDashboardSpokeMaintenance { get; set; } = null!;
         public virtual DbSet<GetDashboardEmployeeFeedbackVM> GetDashboardEmployeeFeedback { get; set; } = null!;
-
         public virtual DbSet<TwilioMeetingRoomInfo> TwilioMeetingRoomInfos { get; set; } = null!;
         public virtual DbSet<GetDashboardEquipmentUptimeReportVM> GetDashboardEquipmentUptimeReport { get; set; } = null!;
         public virtual DbSet<GetDashboardAppointmentVM> GetDashboardAppointment { get; set; } = null!;
-
         public virtual DbSet<GetDashboardDoctorAvgTimeVM> GetDashboardDoctorAvgTime { get; set; } = null!;
         public virtual DbSet<GetDashboardDoctorAvailabilityVM> GetDashboardDoctorAvailability { get; set; } = null!;
         public virtual DbSet<GetDashboardEquipmentHeaderReportVM> GetDashboardEquipmentHeaderReport { get; set; } = null!;
@@ -113,9 +111,6 @@ namespace TechMed.DL.Models
         public virtual DbSet<GetDashboardDiagnosticPrescribedTestWiseVM> GetDashboardDiagnosticPrescribedTestWise { get; set; } = null!;
         public virtual DbSet<PrescribedMedicinePHCWiseVM> PrescribedMedicinePHCWiseReport { get; set; } = null!;
         public virtual DbSet<GetDashboardGraphVM> GetDashboardGraph { get; set; } = null!;
-
-
-
         public virtual DbSet<GetDashboardFeedbackSummaryReportVM> GetDashboardFeedbackSummaryReport { get; set; } = null!;
         public virtual DbSet<GetDashboardFeedbackReportVM> GetDashboardFeedbackReport { get; set; } = null!;
         public virtual DbSet<GetDashboardDignosisSpecialityWiseVM> GetDashboardDignosisSpecialityWise { get; set; } = null!;
@@ -124,13 +119,9 @@ namespace TechMed.DL.Models
         public virtual DbSet<GetDashboardSystemHealthReportVM> GetDashboardSystemHealthReport { get; set; } = null!;
         public virtual DbSet<RemoteSiteDowntimeSummaryDailyVM> RemoteSiteDowntimeSummaryDaily { get; set; } = null!;
         public virtual DbSet<RemoteSiteDowntimeSummaryMonthlyVM> RemoteSiteDowntimeSummaryMonthly { get; set; } = null!;
- 
         public virtual DbSet<SnomedCTCode> SnomedCTCodes { get; set; } = null!;
-
-
         public virtual DbSet<GetDashboardFeedbackSummaryReportDataVM> GetDashboardFeedbackSummaryReportData { get; set; } = null!;
-        
-
+        public virtual DbSet<TodaysPatientCountVM> TodaysPatientCount { get; set; } = null!;
 
 
 
@@ -884,7 +875,7 @@ namespace TechMed.DL.Models
                     .HasMaxLength(2000)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Test)
+                entity.Property(e => e.Comment)
                     .HasMaxLength(2000)
                     .IsUnicode(false);
 

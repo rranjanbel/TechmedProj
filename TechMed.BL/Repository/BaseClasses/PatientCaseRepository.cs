@@ -261,7 +261,7 @@ namespace TechMed.BL.Repository.BaseClasses
                                 patientCase.PatientId = patientCaseVM.patientCase.PatientId;
                                 patientCase.Allergies = patientCaseVM.patientCase.Allergies;
                                 patientCase.CaseFileNumber = patientCaseVM.patientCase.CaseFileNumber;
-                                patientCase.Test = "";
+                                patientCase.Comment = patientCaseVM.patientCase.Comment;
                                 patientCase.Instruction = patientCaseVM.patientCase.Instruction;
                                 patientCase.CaseHeading = patientCaseVM.patientCase.CaseHeading;
                                 patientCase.Symptom = patientCaseVM.patientCase.Symptom;
@@ -727,6 +727,7 @@ namespace TechMed.BL.Repository.BaseClasses
                         patientCase.DoctorSpecialization = patientQuue.AssignedDoctor.Specialization.Specialization;
                         patientCase.DoctorMCINo = patientQuue.AssignedDoctor.Mciid;
                         patientCase.DoctorQalification = patientQuue.AssignedDoctor.Qualification;
+                        patientCase.DoctorSignature = patientQuue.AssignedDoctor.DigitalSignature;
                     }
                     else
                     {
