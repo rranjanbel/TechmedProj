@@ -435,7 +435,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     registerPatientReport.Gender = item.Gender;
                     registerPatientReport.Age = item.Age;
                     registerPatientReport.RegistrationDate = item.RegistrationDate;
-                    registerPatientReport.PatientCaseID = item.PatientCaseID;
+                    //registerPatientReport.PatientCaseID = item.PatientCaseID;
                     registerPatientReports.Add(registerPatientReport);
                 }
 
