@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using TechMed.API.Services;
 
 namespace TechMed.API.NotificationHub
 {
@@ -30,8 +31,11 @@ namespace TechMed.API.NotificationHub
 
     public class SignalRBroadcastHub : Hub<IHubClient>
     {
-        public SignalRBroadcastHub()
+        private IUserService _userService;
+
+        public SignalRBroadcastHub(IUserService userService)
         {
+            _userService = userService;
         }
         public async Task onCallRejectedByPHC(string toUser, string fromUser)
         {
@@ -87,6 +91,11 @@ namespace TechMed.API.NotificationHub
                 receiverEmail = toUser,
                 senderEmail = toUser,
             });
+        }
+        public async Task onLogoutFromBrowser(string toUser)
+        {
+
+            var users = await _userService.LogoutUsers(toUser);
         }
     }
 }
