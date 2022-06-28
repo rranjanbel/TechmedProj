@@ -455,9 +455,12 @@ namespace TechMed.BL.Repository.BaseClasses
                     patientCase.Prescription = treatmentVM.Prescription;
                     patientCase.SuggestedDiagnosis = treatmentVM.SuggestedDiagnosis;
                     patientCase.ProvisionalDiagnosis = treatmentVM.ProvisionalDiagnosis;
-                    patientCase.ReferredTo = treatmentVM.ReferredTo;
-                    patientCase.ReviewDate = treatmentVM.ReviewDate;
+                    patientCase.ReferredTo = treatmentVM.ReferredTo;                   
                     patientCase.Comment = treatmentVM.Comment;
+                    if(treatmentVM.ReviewDate.HasValue) 
+                    {                        
+                        patientCase.ReviewDate = treatmentVM.ReviewDate;
+                    }
                     //add in medicine 
                     //delete medicine
 
