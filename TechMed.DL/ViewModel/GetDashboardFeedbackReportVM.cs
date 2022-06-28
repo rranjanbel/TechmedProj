@@ -17,7 +17,7 @@ namespace TechMed.DL.ViewModel
         public string? PatientName { get; set; }
         public string? MobileNo { get; set; }
         public string? DoctorName { get; set; }
-        public int Feedback { get; set; }
+        public int? Feedback { get; set; }
         public string? Comments { get; set; }  
     }
 }
