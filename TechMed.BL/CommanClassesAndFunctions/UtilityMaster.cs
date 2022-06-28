@@ -46,7 +46,7 @@ namespace TechMed.BL.CommanClassesAndFunctions
                 currentNo = patientSerNo;
                 setting = _teleMedecineContext.Settings.FirstOrDefault();
                 if (setting != null)
-                {                   
+                {
                     setting.PatientNumber = currentNo + 1;
                 }
                 try
@@ -92,7 +92,7 @@ namespace TechMed.BL.CommanClassesAndFunctions
             return 0;
         }
 
-        public static string SaveFileFromBase64(string imgBase64Str, string rootPath, string relativePath, string extention)
+        public static string SaveFileFromBase64(string imgBase64Str, string rootPath, string relativePath, string extention, int docTypeId = 1)
         {
             try
             {
@@ -108,9 +108,9 @@ namespace TechMed.BL.CommanClassesAndFunctions
 
                 //Generate unique filename
                 //string filepath = path + myfilename + ".jpeg";// png
-                string[] extentionName =new string[7] {".pdf",".png",".jpeg", ".jpg", ".docx",".doc",".txt" };
+                //string[] extentionName =new string[7] {".pdf",".png",".jpeg", ".jpg", ".docx",".doc",".txt" };
                 string filepath = string.Empty;
-                if (extentionName.Contains(extention))
+                if (docTypeId == 1)
                 {
                     filepath = path + myfilename + extention;
                     saveFileName = myfilename + extention;
@@ -120,14 +120,14 @@ namespace TechMed.BL.CommanClassesAndFunctions
                     filepath = path + myfilename + ".pdf";
                     saveFileName = myfilename + ".pdf";
                 }
-                
+
                 var bytess = Convert.FromBase64String(imgBase64Str);
                 using (var imageFile = new FileStream(filepath, FileMode.Create))
                 {
                     imageFile.Write(bytess, 0, bytess.Length);
                     imageFile.Flush();
                 }
-                
+
                 return saveFileName;
             }
             catch (Exception ex)
@@ -135,7 +135,7 @@ namespace TechMed.BL.CommanClassesAndFunctions
                 string exception = ex.Message;
                 return "";
             }
-            
+
         }
 
         public static string ConvertToBase64(IFormFile file)
@@ -143,7 +143,7 @@ namespace TechMed.BL.CommanClassesAndFunctions
             string strBase64 = string.Empty;
             try
             {
-                
+
                 if (file.Length > 0)
                 {
                     using (var ms = new MemoryStream())
@@ -167,10 +167,10 @@ namespace TechMed.BL.CommanClassesAndFunctions
         public static DateTime GetLocalDateTime()
         {
             DateTime dateTime = DateTime.Now;
-            
+
             try
-            {                
-                 dateTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, India_Standard_Time);
+            {
+                dateTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, India_Standard_Time);
             }
             catch (Exception)
             {
@@ -182,7 +182,7 @@ namespace TechMed.BL.CommanClassesAndFunctions
 
         public static bool SendSMS(string mobileNo, string message, string apiKey, string sender, string url)
         {
-            if(url == null)
+            if (url == null)
             {
                 url = "https://api.textlocal.in/send/?apikey=";
             }
