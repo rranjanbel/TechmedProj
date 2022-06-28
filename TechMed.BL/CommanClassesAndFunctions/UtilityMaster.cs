@@ -108,18 +108,18 @@ namespace TechMed.BL.CommanClassesAndFunctions
 
                 //Generate unique filename
                 //string filepath = path + myfilename + ".jpeg";// png
-                string[] extentionName =new string[7] {".pdf",".png",".jpeg", ".jpg", ".docx",".doc",".txt" };
+                //string[] extentionName =new string[7] {".pdf",".png",".jpeg", ".jpg", ".docx",".doc",".txt" };
                 string filepath = string.Empty;
-                if (extentionName.Contains(extention))
-                {
+                //if (extentionName.Contains(extention))
+                //{
                     filepath = path + myfilename + extention;
                     saveFileName = myfilename + extention;
-                }
-                else
-                {
-                    filepath = path + myfilename + ".pdf";
-                    saveFileName = myfilename + ".pdf";
-                }
+                //}
+                //else
+                //{
+                //    filepath = path + myfilename + ".pdf";
+                //    saveFileName = myfilename + ".pdf";
+                //}
                 
                 var bytess = Convert.FromBase64String(imgBase64Str);
                 using (var imageFile = new FileStream(filepath, FileMode.Create))
