@@ -231,12 +231,12 @@ namespace TechMed.BL.Repository.BaseClasses
                 if (spokeDTO.file.Length > 0)
                 {
                     l = 0;
-                    myfilename = myfilename+"_"+ spokeDTO.file.FileName;
+                    myfilename = myfilename+"."+Path.GetExtension( spokeDTO.file.FileName);
                     string fileName = SaveDocument(spokeDTO.file, contentRootPath, myfilename);
                     if(fileName != null)
                     {
                         //string fullPath = Path.Combine(path, fileName);
-                        string fullRelativePath = Path.Combine(relativePath, myfilename);
+                        string fullRelativePath = Path.Combine(relativePath, fileName);
                         spokeMaintenance = new SpokeMaintenance();
                         spokeMaintenance.Phcid = spokeDTO.Phcid;
                         spokeMaintenance.FilePath = fullRelativePath;
@@ -269,9 +269,7 @@ namespace TechMed.BL.Repository.BaseClasses
         {
             try
             {
-               // string contentRootPath = rootPath;
-                //string path = @"\\MyStaticFiles\\PHCDocuments\\";
-                //path = contentRootPath + path;
+             
                 string saveFilename = "";
 
                string relativePath = @"\\MyStaticFiles\\PHCDocuments\\";
@@ -284,15 +282,15 @@ namespace TechMed.BL.Repository.BaseClasses
                 //Save File in disk
                 saveFilename = UtilityMaster.SaveFileFromBase64(base64Value, rootPath, relativePath, fileType.ToLower());
 
-                //if (fileType.ToLower() == ".pdf" || fileType.ToLower() == ".jpg" || fileType.ToLower() == ".png" || fileType.ToLower() == ".jpeg")
-                //{
-                //    var filePath = Path.Combine(path, file.FileName);
+                if (fileType.ToLower() == ".pdf" || fileType.ToLower() == ".jpg" || fileType.ToLower() == ".png" || fileType.ToLower() == ".jpeg")
+                {
+                    var filePath = Path.Combine(rootPath, updatedFileName);
 
-                //    using (Stream stream = new FileStream(filePath, FileMode.Create))
-                //    {
-                //        file.CopyToAsync(stream);
-                //    }
-                //}
+                    using (Stream stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        file.CopyToAsync(stream);
+                    }
+                }
                 return saveFilename;
             }
             catch
