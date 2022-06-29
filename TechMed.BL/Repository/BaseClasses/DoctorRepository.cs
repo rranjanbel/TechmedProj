@@ -1009,8 +1009,9 @@ namespace TechMed.BL.Repository.BaseClasses
             List<DoctorPatientSearchVM> patientSearchResults = new List<DoctorPatientSearchVM>();
             DoctorPatientSearchVM searchResult;
             int? PHCID = 0;
-            string? PatientFirstName = string.Empty;
-            string? PatientLastName = string.Empty;
+            //string? PatientFirstName = string.Empty;
+            //string? PatientLastName = string.Empty;
+            string? PatientName = string.Empty;
             long? PatientId = 0;
             string? contractNo = string.Empty;
             int? genderId = 0;
@@ -1026,35 +1027,37 @@ namespace TechMed.BL.Repository.BaseClasses
 
                 if (searchParameter.PatientName == "")
                 {
-                    PatientFirstName = null;
-                    PatientLastName = null;
+                    PatientName = null;
+                    //PatientFirstName = null;
+                    //PatientLastName = null;
                 }                    
                 else
                 {
-                    string[] patient = searchParameter.PatientName.Split(" ");
-                    if(patient.Length > 0)
-                    {
-                        if (patient.Length ==2)
-                        {
-                            PatientFirstName = patient[0].ToString();                          
-                            PatientLastName = patient[1].ToString();
+                    PatientName = searchParameter.PatientName;
+                    //string[] patient = searchParameter.PatientName.Split(" ");
+                    //if(patient.Length > 0)
+                    //{
+                    //    if (patient.Length ==2)
+                    //    {
+                    //        PatientFirstName = patient[0].ToString();                          
+                    //        PatientLastName = patient[1].ToString();
 
-                            if (PatientFirstName == "")
-                            {
-                                PatientFirstName = null;
-                            }
-                            if (PatientLastName == "")
-                            {
-                                PatientLastName = null;
-                            }
-                        }
-                        else
-                        {
-                            PatientFirstName = patient[0].ToString();
-                            PatientLastName = null;
-                        }
-                           
-                    }
+                    //        if (PatientFirstName == "")
+                    //        {
+                    //            PatientFirstName = null;
+                    //        }
+                    //        if (PatientLastName == "")
+                    //        {
+                    //            PatientLastName = null;
+                    //        }
+                    //    }
+                    //    else
+                    //    {
+                    //        PatientFirstName = patient[0].ToString();
+                    //        PatientLastName = null;
+                    //    }
+
+                //}
                     
 
                 }
@@ -1102,7 +1105,7 @@ namespace TechMed.BL.Repository.BaseClasses
             }
 
             var Results = _teleMedecineContext.DoctorPatientSearchResults
-                .FromSqlInterpolated($"EXEC [dbo].[AdvanceSearchOfPatientsByDoctor] @PHCID ={PHCID},@FirstName={PatientFirstName},@PatientUID={PatientId},@ContactNo={contractNo},@GenderId={genderId},@DoctorId={doctorId},@DateOfBirth={DateOfBirth},@DateOfRegistration={DateOfRegistration},@LastName={PatientLastName}");
+                .FromSqlInterpolated($"EXEC [dbo].[AdvanceSearchOfPatientsByDoctor] @PHCID ={PHCID},@PatientName={PatientName},@PatientUID={PatientId},@ContactNo={contractNo},@GenderId={genderId},@DoctorId={doctorId},@DateOfBirth={DateOfBirth},@DateOfRegistration={DateOfRegistration}");
             foreach (var item in Results)
             {
                 searchResult = new DoctorPatientSearchVM();
