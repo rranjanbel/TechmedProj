@@ -587,7 +587,8 @@ namespace TechMed.BL.Repository.BaseClasses
             List<PatientSearchResultVM> patientSearchResults = new List<PatientSearchResultVM>();
             PatientSearchResultVM searchResult;
             int? PHCID = 0;
-            string? PatientName = string.Empty;
+            string? PatientFirstName = string.Empty;
+            string? PatientLastName = string.Empty;
             long ? PatientId = 0;
             string? contractNo = string.Empty;
             int? genderId = 0;
@@ -601,14 +602,39 @@ namespace TechMed.BL.Repository.BaseClasses
                     PHCID = null;
 
                 if (searchParameter.PatientName == "")
-                    PatientName = null;
+                {
+                    PatientFirstName = null;
+                    PatientLastName = null;
+                }
                 else
-                    PatientName = searchParameter.PatientName;
+                {
+                    string[] patient = searchParameter.PatientName.Split(" ");
+                    if (patient.Length > 0)
+                    {
+                        if (patient.Length == 2)
+                        {
+                            PatientFirstName = patient[0].ToString();
+                            PatientLastName = patient[1].ToString();
 
-                //if(searchParameter.PatientName.ToLower().Trim() == "string")
-                //    PatientName = null;
-                //else
-                //    PatientName = searchParameter.PatientName;
+                            if (PatientFirstName == "")
+                            {
+                                PatientFirstName = null;
+                            }
+                            if (PatientLastName == "")
+                            {
+                                PatientLastName = null;
+                            }
+                        }
+                        else
+                        {
+                            PatientFirstName = patient[0].ToString();
+                            PatientLastName = null;
+                        }
+
+                    }
+
+
+                }
 
                 if (searchParameter.PatientUID > 0)
                     PatientId = searchParameter.PatientUID;
@@ -642,7 +668,7 @@ namespace TechMed.BL.Repository.BaseClasses
             }
            
             var Results = _teleMedecineContext.PatientSearchResults
-                .FromSqlInterpolated($"EXEC [dbo].[AdvanceSearchOfPatients] @PHCID ={PHCID},@PatientName={PatientName},@PatientUID={PatientId},@ContactNo={contractNo},@GenderId={genderId},@DateOfRegistration={DateOfRegistration},@DateOfBirth={DateOfBirth}");
+                .FromSqlInterpolated($"EXEC [dbo].[AdvanceSearchOfPatients] @PHCID ={PHCID},@FirstName={PatientFirstName},@PatientUID={PatientId},@ContactNo={contractNo},@GenderId={genderId},@DateOfRegistration={DateOfRegistration},@DateOfBirth={DateOfBirth},@LastName={PatientLastName}");
             foreach (var item in Results)
             {
                 searchResult = new PatientSearchResultVM();              
