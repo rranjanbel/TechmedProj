@@ -11,7 +11,7 @@ namespace TechMed.DL.ViewModel
     public class PrescribedMedicineVM
     {
         public long SrNo { get; set; }
-        public string PrescribedMedicine { get; set; }
-        public int NumberOfTimePrescribed { get; set; }
+        public string? PrescribedMedicine { get; set; }
+        public int? NumberOfTimePrescribed { get; set; }
     }
 }

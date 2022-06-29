@@ -11,13 +11,13 @@ namespace TechMed.DL.ViewModel
     public class PrescribedMedicinePHCWiseVM
     {
         public long SrNo { get; set; }
-        public string DistrictName { get; set; }
-        public string BlockName { get; set; }
-        public string PHCName { get; set; }
-        public string PrescribedMedicine { get; set; }
-        public int NumberOfTimePrescribed { get; set; }
-        public int EAushadhiStock { get; set; }
-        public int QuantityPrescribed { get; set; }
+        public string? DistrictName { get; set; }
+        public string? BlockName { get; set; }
+        public string? PHCName { get; set; }
+        public string? PrescribedMedicine { get; set; }
+        public int? NumberOfTimePrescribed { get; set; }
+        public int? EAushadhiStock { get; set; }
+        public int? QuantityPrescribed { get; set; }
         
     }
 }
