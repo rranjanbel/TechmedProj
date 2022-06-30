@@ -14,7 +14,7 @@ using TechMed.BL.DTOMaster;
 namespace TechMed.BL.Repository.BaseClasses
 {
     public class HolidayRepository : Repository<HolidayMaster>, IHolidayRepository
-    {        
+    {
         //private readonly IHolidayRepository _holidayRepository;
         private readonly TeleMedecineContext _teleMedecineContext;
         private readonly IMapper _mapper;
@@ -27,11 +27,11 @@ namespace TechMed.BL.Repository.BaseClasses
             this._logger = logger;
 
 
-        }   
+        }
         public async Task<bool> CreateHoliday(HolidayDTO holidayDTO)
         {
             HolidayMaster holiday = new HolidayMaster();
-            if (holidayDTO !=null)
+            if (holidayDTO != null)
             {
                 int currentYear = holidayDTO.HolidayDate.Year;
                 string currentMonth = holidayDTO.HolidayDate.ToString("MMMM");
@@ -41,9 +41,10 @@ namespace TechMed.BL.Repository.BaseClasses
                 holidayMaster.Description = holidayDTO.HolidayName;
 
                 holidayMaster.CalenderId = _teleMedecineContext.CalenderMasters.Where(a => a.Year == currentYear && currentMonth.Contains(a.Month)).Select(s => s.Id).FirstOrDefault();
-               if (holidayMaster.CalenderId > 0)
+                var holidayMasterDB = _teleMedecineContext.HolidayMasters.Where(a => a.Date == holidayDTO.HolidayDate).FirstOrDefault();
+                if (holidayMaster.CalenderId > 0)
                 {
-                    _teleMedecineContext.HolidayMasters.Add(holidayMaster);
+                   // _teleMedecineContext.HolidayMasters.Add(holidayMaster);
                 }
                 else
                 {
@@ -53,9 +54,17 @@ namespace TechMed.BL.Repository.BaseClasses
                     _teleMedecineContext.CalenderMasters.Add(calenderMaster);
 
                     holidayMaster.CalenderId = calenderMaster.Id;
-                    _teleMedecineContext.HolidayMasters.Add(holidayMaster);
+                   // _teleMedecineContext.HolidayMasters.Add(holidayMaster);
                 }
-                
+
+                if (holidayMasterDB!=null)
+                {
+                    holidayMasterDB.Description = holidayDTO.HolidayName;
+                }
+                else
+                {
+                     _teleMedecineContext.HolidayMasters.Add(holidayMaster);
+                }
                 int i = await _teleMedecineContext.SaveChangesAsync();
                 if (i > 0)
                 {
@@ -64,26 +73,26 @@ namespace TechMed.BL.Repository.BaseClasses
                 else
                     return false;
             }
-            
+
             else
                 return false;
         }
-      
+
         public async Task<List<HolidayDTO>> GetHolidayList(int year)
         {
-           List<HolidayDTO> holidayMasters = new List<HolidayDTO>();
+            List<HolidayDTO> holidayMasters = new List<HolidayDTO>();
             HolidayDTO holidayDTO;
-            var holidays = await _teleMedecineContext.HolidayMasters.Include(h => h.Calender).Where(x => x.Calender.Year == year).ToListAsync();    
+            var holidays = await _teleMedecineContext.HolidayMasters.Include(h => h.Calender).Where(x => x.Calender.Year == year).ToListAsync();
             foreach (var holiday in holidays)
             {
                 holidayDTO = new HolidayDTO();
                 holidayDTO.HolidayDate = holiday.Date;
                 holidayDTO.HolidayName = holiday.Description;
-                
+
                 holidayMasters.Add(holidayDTO);
             }
             return holidayMasters.OrderBy(a => a.HolidayDate).ToList();
         }
-        
+
     }
 }
