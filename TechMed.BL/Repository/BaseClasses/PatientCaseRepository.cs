@@ -625,7 +625,7 @@ namespace TechMed.BL.Repository.BaseClasses
 
         //}
 
-        public async Task<PatientCaseVM> GetPatientCaseDetailsByCaseID(int PatientCaseID)
+        public async Task<PatientCaseVM> GetPatientCaseDetailsByCaseID(int PatientCaseID,string contentRootPath)
         {
             PatientCaseVM patientCase = new PatientCaseVM();
             try
@@ -727,7 +727,10 @@ namespace TechMed.BL.Repository.BaseClasses
                         patientCase.DoctorSpecialization = patientQuue.AssignedDoctor.Specialization.Specialization;
                         patientCase.DoctorMCINo = patientQuue.AssignedDoctor.Mciid;
                         patientCase.DoctorQalification = patientQuue.AssignedDoctor.Qualification;
-                        patientCase.DoctorSignature = patientQuue.AssignedDoctor.DigitalSignature;
+                        string relativePath = patientQuue.AssignedDoctor.DigitalSignature;
+
+                        
+                        patientCase.DoctorSignature = UtilityMaster.DownloadFile(relativePath, contentRootPath);
                     }
                     else
                     {

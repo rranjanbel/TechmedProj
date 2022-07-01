@@ -396,7 +396,7 @@ namespace TechMed.BL.Repository.BaseClasses
         }
 
         public async Task<bool> LogoutUsers(string Token)
-        {
+        {            
             LoginHistory loginHistory = new LoginHistory();
             loginHistory = await _teleMedecineContext.LoginHistories.FirstOrDefaultAsync(a => a.UserToken== Token);
 

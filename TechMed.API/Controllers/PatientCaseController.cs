@@ -428,6 +428,7 @@ namespace TechMed.API.Controllers
         public async Task<IActionResult> GetPatientCaseDetailsByCaseID(int PatientCaseID = 0)
         {
             PatientCaseVM patientcase = new PatientCaseVM();
+            string contentRootPath = _webHostEnvironment.ContentRootPath;
             try
             {
                 if (PatientCaseID == 0)
@@ -436,7 +437,7 @@ namespace TechMed.API.Controllers
                     _logger.LogError("GetPatientCaseDetailsByCaseID : PatientcaseId is null ");
                     return StatusCode(404, ModelState);
                 }
-                patientcase = await _patientCaeRepository.GetPatientCaseDetailsByCaseID(PatientCaseID);
+                patientcase = await _patientCaeRepository.GetPatientCaseDetailsByCaseID(PatientCaseID, contentRootPath);
                 if (patientcase != null)
                 {
                     _logger.LogInformation($"GetPatientCaseDetailsByCaseID : Sucess response returned " + PatientCaseID);
