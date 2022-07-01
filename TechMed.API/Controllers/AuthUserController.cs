@@ -168,6 +168,8 @@ namespace TechMed.API.Controllers
         {
             try
             {
+                var user = User.Identity.Name;
+                
                 var _bearer_token = Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
                 var users = await _userService.LogoutUsers(_bearer_token);
                 _logger.LogInformation("User logout successfully ");

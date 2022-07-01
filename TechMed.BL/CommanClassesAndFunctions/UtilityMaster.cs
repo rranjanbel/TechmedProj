@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -207,6 +208,44 @@ namespace TechMed.BL.CommanClassesAndFunctions
                 streamWriter.Close();
             }
             return true;
+        }
+
+        public static string DownloadFile(string relativePath, string? contentRootPath)
+        {
+            try
+            {
+                string strBase64 = string.Empty;
+                string filePath = string.Empty;
+                 
+                if (relativePath != null)
+                {
+                    //filePath = "https://telemed-ang-dev.azurewebsites.net"+ relativePath;
+                    var provider = new FileExtensionContentTypeProvider();
+                    if (!provider.TryGetContentType(filePath, out var contentType))
+                    {
+                        contentType = "application/octet-stream";
+                    }
+
+                    string path = @"\\MyStaticFiles\\Images\\Doctor\\Test_Signature.jpg";
+                    filePath = contentRootPath + path;
+
+                    var bytes = System.IO.File.ReadAllBytesAsync(filePath);
+
+                    strBase64 = Convert.ToBase64String(bytes.Result);
+                    return strBase64;
+                   
+                }
+                else
+                {
+                    return "";
+                }
+            }
+            catch(Exception ex)
+            {
+                string message = ex.Message;
+                throw;
+            }
+           
         }
     }
 }
