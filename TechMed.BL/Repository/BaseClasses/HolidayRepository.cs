@@ -93,6 +93,28 @@ namespace TechMed.BL.Repository.BaseClasses
             }
             return holidayMasters.OrderBy(a => a.HolidayDate).ToList();
         }
+        public async Task<bool> DeleteHoliday(HolidayDTO holidayDTO)
+        {
+            HolidayMaster holiday = new HolidayMaster();
+            if (holidayDTO != null)
+            {
+                var holidayMasterDB = _teleMedecineContext.HolidayMasters.Where(a => a.Date == holidayDTO.HolidayDate).FirstOrDefault();
+                if (holidayMasterDB != null)
+                {
+                    _teleMedecineContext.HolidayMasters.Remove(holidayMasterDB);
+                }
+                int i = await _teleMedecineContext.SaveChangesAsync();
+                if (i > 0)
+                {
+                    return true;
+                }
+                else
+                    return false;
+            }
+
+            else
+                return false;
+        }
 
     }
 }

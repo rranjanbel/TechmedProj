@@ -12,5 +12,7 @@ namespace TechMed.BL.Repository.Interfaces
     {
         Task<bool> CreateHoliday(HolidayDTO holidayDTO);
         Task<List<HolidayDTO>> GetHolidayList(int year);
+        Task<bool> DeleteHoliday(HolidayDTO holidayDTO);
+        
     }
 }

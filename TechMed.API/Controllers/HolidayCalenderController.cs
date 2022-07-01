@@ -82,5 +82,37 @@ namespace TechMed.API.Controllers
                 return StatusCode(500, ModelState);
             }
         }
+
+        [HttpPost]
+        [Route("DeleteHoliday")]
+        [ProducesResponseType(200, Type = typeof(bool))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> DeleteHoliday(HolidayDTO holidayDTO)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                bool IsholidayAdded = await _holidayRepository.DeleteHoliday(holidayDTO);
+                if (IsholidayAdded)
+                {
+                    return Ok(new { Status = "Holiday successfully deleted" });
+                }
+                else
+                {
+                    ModelState.AddModelError("AddHoliday", $"Holiday did not deleted {holidayDTO.HolidayName}");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("AddHoliday", $"Something went wrong when GetHolidayList {ex.Message}");
+                _logger.LogError("Exception in AddHoliday API " + ex);
+                return StatusCode(500, ModelState);
+            }
+        }
     }
 }
