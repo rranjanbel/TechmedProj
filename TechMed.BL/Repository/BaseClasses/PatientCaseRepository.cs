@@ -287,28 +287,29 @@ namespace TechMed.BL.Repository.BaseClasses
 
                             if (i > 0 )
                             {
-
-                                foreach (var vital in patientCaseVM.vitals)
+                                if(patientCaseVM.vitals.Count > 0)
                                 {
-                                    k = 0;
-                                    patientCaseVital = new PatientCaseVital();
-                                    patientCaseVital.Date = UtilityMaster.GetLocalDateTime();
-                                    patientCaseVital.PatientCaseId = vital.PatientCaseId;
-                                    patientCaseVital.VitalId = vital.VitalId;
-                                    patientCaseVital.Value = vital.Value;
-                                    this._teleMedecineContext.Entry(patientCaseVital).State = EntityState.Added;
-                                    k = await this.Context.SaveChangesAsync();
-                                    if (k > 0)
+                                    foreach (var vital in patientCaseVM.vitals)
                                     {
-                                        _logger.LogInformation($"Patient vital added : sucessfully");
+                                        k = 0;
+                                        patientCaseVital = new PatientCaseVital();
+                                        patientCaseVital.Date = UtilityMaster.GetLocalDateTime();
+                                        patientCaseVital.PatientCaseId = vital.PatientCaseId;
+                                        patientCaseVital.VitalId = vital.VitalId;
+                                        patientCaseVital.Value = vital.Value;
+                                        this._teleMedecineContext.Entry(patientCaseVital).State = EntityState.Added;
+                                        k = await this.Context.SaveChangesAsync();
+                                        if (k > 0)
+                                        {
+                                            _logger.LogInformation($"Patient vital added : sucessfully");
+                                        }
+
                                     }
 
+
+                                    patientcasecreateVM.vitals = patientCaseVM.vitals;
+
                                 }
-                                
-
-                                patientcasecreateVM.vitals = patientCaseVM.vitals;
-                               
-
                                 patientcasecreateVM.PatientID = patientCaseVM.PatientID;
                                 patientcasecreateVM.PHCUserId = patientCaseVM.PHCUserId;
                                 patientcasecreateVM.PHCId = patientCaseVM.PHCId;
@@ -727,9 +728,8 @@ namespace TechMed.BL.Repository.BaseClasses
                         patientCase.DoctorSpecialization = patientQuue.AssignedDoctor.Specialization.Specialization;
                         patientCase.DoctorMCINo = patientQuue.AssignedDoctor.Mciid;
                         patientCase.DoctorQalification = patientQuue.AssignedDoctor.Qualification;
-                        string relativePath = patientQuue.AssignedDoctor.DigitalSignature;
-
-                        
+                        patientCase.ReviewDate = patientCase.patientCase.ReviewDate;
+                        string relativePath = patientQuue.AssignedDoctor.DigitalSignature;                        
                         patientCase.DoctorSignature = UtilityMaster.DownloadFile(relativePath, contentRootPath);
                     }
                     else
