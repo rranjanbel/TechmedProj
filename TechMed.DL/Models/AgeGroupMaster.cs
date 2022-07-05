@@ -25,6 +25,7 @@ namespace TechMed.DL.Models
         public string AgeRange { get; set; }
         public int GenderID { get; set; }
         public int SpecializationID { get; set; }
+        public int DaysOrYear { get; set; } 
 
         public virtual GenderMaster Gender { get; set; } = null!;
         public virtual SpecializationMaster Specialization { get; set; } = null!;

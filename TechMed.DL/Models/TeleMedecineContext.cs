@@ -173,6 +173,7 @@ namespace TechMed.DL.Models
                 entity.Property(e => e.AgeMinLimit).HasColumnName("AgeMinLimit");
                 entity.Property(e => e.GenderID).HasColumnName("GenderID");
                 entity.Property(e => e.SpecializationID).HasColumnName("SpecializationID");
+                entity.Property(e => e.DaysOrYear).HasColumnName("DaysOrYear");
 
                 entity.Property(e => e.AgeRange)
                     .HasMaxLength(50)

@@ -32,6 +32,34 @@ namespace TechMed.BL.CommanClassesAndFunctions
             {
                 return 0;
             }
+        }
+
+        public static string GetDetailsAgeOfPatient(DateTime dateOfBirth)
+        {
+            DateTime dtToday = GetLocalDateTime().Date;
+            DateTime dtOfBirth = dateOfBirth.Date;
+            TimeSpan diffResult = dtToday - dtOfBirth;
+            double totalDays = diffResult.TotalDays;
+
+            if (totalDays > 365)
+            {
+                int year = (int)(totalDays / 365.2425);
+                return (year +":Years").ToString();
+            }
+            else if (totalDays < 365 && totalDays >= 30)
+            {
+                int month = (int)(totalDays / 30);
+                return (month + ":Months").ToString();
+            }
+            else if (totalDays < 30)
+            {
+                int day = (int)(totalDays);
+                return (day + ":Days").ToString();
+            }
+            else
+            {
+                return ("0").ToString();
+            }
 
 
         }

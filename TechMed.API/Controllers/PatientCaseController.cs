@@ -471,7 +471,7 @@ namespace TechMed.API.Controllers
             {
                 if (PatientID == 0)
                 {
-                    ModelState.AddModelError("GetPatientCaseLevels", "Please provide patient case Id");
+                    ModelState.AddModelError("GetPatientCaseLevels", "Please provide patient Id");
                     _logger.LogError("GetPatientCaseLevels : PatientcaseId is null ");
                     return StatusCode(404, ModelState);
                 }
@@ -483,15 +483,15 @@ namespace TechMed.API.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("GetPatientCaseLevels", $"did not get patient case level for PatientcaseID: {PatientID}");
-                    _logger.LogError("GetPatientCaseLevels : did not get patient case level for PatientcaseID " + PatientID);
+                    ModelState.AddModelError("GetPatientCaseLevels", $"did not get patient case level for PatientID: {PatientID}");
+                    _logger.LogError("GetPatientCaseLevels : did not get patient case level for PatientID " + PatientID);
                     return StatusCode(404, ModelState);
                 }
             }
             catch (Exception ex)
             {
 
-                ModelState.AddModelError("GetPatientCaseLevels", $"Something went wrong when get patient case {ex.Message}");
+                ModelState.AddModelError("GetPatientCaseLevels", $"Something went wrong when get patient case level {ex.Message}");
                 _logger.LogError("Exception in GetPatientCaseLevels API " + ex);
                 return StatusCode(500, ModelState);
             }
