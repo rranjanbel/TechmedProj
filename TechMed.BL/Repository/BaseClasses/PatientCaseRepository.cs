@@ -737,6 +737,7 @@ namespace TechMed.BL.Repository.BaseClasses
                         patientCase.DoctorName = String.Empty;
                         patientCase.DoctorMobileNo = String.Empty;
                         patientCase.DoctorSpecialization = String.Empty;
+                        patientCase.CaseFileStatusID = 0;
                     }
                     
 

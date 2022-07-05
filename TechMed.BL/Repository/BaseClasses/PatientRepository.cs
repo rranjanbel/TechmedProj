@@ -40,6 +40,10 @@ namespace TechMed.BL.Repository.BaseClasses
                     //patientMaster.UpdatedOn = DateTime.Now;
                     patientMaster.CreatedOn = UtilityMaster.GetLocalDateTime();
                     patientMaster.UpdatedOn = UtilityMaster.GetLocalDateTime();
+                    if(patientMaster.Dob != null)
+                    {
+                        patientMaster.Dob = UtilityMaster.ConvertToLocalDateTime(patientMaster.Dob);
+                    }
                     // patientMaster.PatientId = UtilityMaster.GetPatientNumber();
                     //patientMaster.PatientId = GetPatientId();
                     if(patientMaster.MobileNo == null || patientMaster.MobileNo =="")
@@ -662,12 +666,15 @@ namespace TechMed.BL.Repository.BaseClasses
                 if (searchParameter.DateOfRegistration == null)
                     DateOfRegistration = null; 
                 else
-                    DateOfRegistration = searchParameter.DateOfRegistration;
+                {
+                    DateOfRegistration =UtilityMaster.ConvertToLocalDateTime(searchParameter.DateOfRegistration.Value);
+                }
+                    
 
                 if (searchParameter.DateOfBirth == null)
                     DateOfBirth = null;
                 else
-                    DateOfBirth = searchParameter.DateOfBirth;
+                    DateOfBirth = UtilityMaster.ConvertToLocalDateTime(searchParameter.DateOfBirth.Value); 
             }
            
             var Results = _teleMedecineContext.PatientSearchResults

@@ -1091,12 +1091,18 @@ namespace TechMed.BL.Repository.BaseClasses
                 if (searchParameter.DateOfRegistration == null)
                     DateOfRegistration = null;
                 else
-                    DateOfRegistration = searchParameter.DateOfRegistration;
+                {
+                    DateOfRegistration = UtilityMaster.ConvertToLocalDateTime(searchParameter.DateOfRegistration.Value);
+                }
+                   
 
                 if (searchParameter.DateOfBirth == null)
                     DateOfBirth = null;
                 else
-                    DateOfBirth = searchParameter.DateOfBirth;
+                {
+                    DateOfBirth = UtilityMaster.ConvertToLocalDateTime(searchParameter.DateOfBirth.Value); 
+                }
+                   
 
                 if (searchParameter.DoctorId > 0)
                     doctorId = searchParameter.DoctorId;

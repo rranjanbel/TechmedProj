@@ -208,6 +208,22 @@ namespace TechMed.BL.CommanClassesAndFunctions
 
             return dateTime;
         }
+        public static DateTime ConvertToLocalDateTime(DateTime incommingDate)
+        {
+            DateTime dateTime = DateTime.Now;
+
+            try
+            {
+                dateTime = TimeZoneInfo.ConvertTimeFromUtc(incommingDate, India_Standard_Time);
+                dateTime = dateTime.Date;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return dateTime;
+        }
 
         public static bool SendSMS(string mobileNo, string message, string apiKey, string sender, string url)
         {
