@@ -11,7 +11,7 @@ namespace TechMed.DL.ViewModel
     public class VisitedPatientsVM
     {        
         public string PatientName { get; set; }
-        public int Age { get; set; }
+        public string Age { get; set; }
         public int ID { get; set; }
         public long PatientID { get; set; }
         public int Phcid { get; set; }
