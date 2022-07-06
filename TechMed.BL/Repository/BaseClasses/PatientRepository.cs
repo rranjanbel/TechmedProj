@@ -706,7 +706,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 if (patient != null)
                 {
                     string fullAge = UtilityMaster.GetDetailsAgeOfPatient(patient.Dob);
-                    ageOfPatient = UtilityMaster.GetAgeOfPatient(patient.Dob);
+                    ageOfPatient = UtilityMaster.GetAgeInYearOnly(patient.Dob);
                     if (fullAge.Contains("Years") && ageOfPatient <= 14)
                     {
                         specIds = _teleMedecineContext.AgeGroupMasters.Where(a => a.AgeMaxLimit < 15 && a.GenderID == patient.GenderId && a.DaysOrYear == 2).Select(s => s.SpecializationID).ToArray();

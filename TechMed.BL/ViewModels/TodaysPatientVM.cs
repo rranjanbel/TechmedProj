@@ -12,7 +12,7 @@ namespace TechMed.BL.ViewModels
         public string PatientName { get; set; }
         public long PatientID { get; set; }
         public string Gender { get; set; }
-        public int Age { get; set; }
+        public string Age { get; set; }
         public string PhoneNumber { get; set; }
         public string ReferredByPHCName { get; set; }
         public int ReferredByPHCID { get; set; }        

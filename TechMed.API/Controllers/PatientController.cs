@@ -10,6 +10,7 @@ using TechMed.BL.ViewModels;
 using TechMed.DL.Models;
 using System.IO;
 using TechMed.DL.ViewModel;
+using TechMed.BL.CommanClassesAndFunctions;
 
 namespace TechMed.API.Controllers
 {
@@ -87,7 +88,7 @@ namespace TechMed.API.Controllers
                 else
                 {                   
                     var createdPatient = _mapper.Map<PatientMasterDTO>(newCreatedPatient);
-                    createdPatient.Age = this._patientRepository.GetAge(createdPatient.Dob);
+                    createdPatient.Age = UtilityMaster.GetAgeOfPatient(createdPatient.Dob);
                     _logger.LogInformation($"Add Patient : Sucess response returned  {patientdto.FirstName}");
                     return CreatedAtRoute(201, createdPatient);
                 }

@@ -34,6 +34,24 @@ namespace TechMed.BL.CommanClassesAndFunctions
             }
         }
 
+        public static int GetAgeInYearOnly(DateTime dateOfBirth)
+        {
+            DateTime dtToday = GetLocalDateTime().Date;
+            DateTime dtOfBirth = dateOfBirth.Date;
+            TimeSpan diffResult = dtToday - dtOfBirth;
+            double totalDays = diffResult.TotalDays;
+
+            if (totalDays > 365)
+            {
+                int year = (int)(totalDays / 365.2425);
+                return year ;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
         public static string GetDetailsAgeOfPatient(DateTime dateOfBirth)
         {
             DateTime dtToday = GetLocalDateTime().Date;
