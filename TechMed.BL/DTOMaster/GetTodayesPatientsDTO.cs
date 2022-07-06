@@ -21,7 +21,7 @@ namespace TechMed.BL.DTOMaster
         public string PatientName { get; set; }
         public Int64 PatientID { get; set; }
         public string Gender { get; set; }
-        public int Age { get; set; }
+        public string Age { get; set; }
         public string PhoneNumber { get; set; }
         public string ReferredbyPHCName { get; set; }
         public string CaseHeading { get; set; }

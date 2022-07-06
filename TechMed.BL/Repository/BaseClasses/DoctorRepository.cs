@@ -227,7 +227,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 mapdata.PatientName = item.PatientCase.Patient.FirstName + " " + item.PatientCase.Patient.LastName;
                 mapdata.PhoneNumber = item.PatientCase.Patient.PhoneNumber;
                 mapdata.ReferredbyPHCName = item.AssignedByNavigation.Phcname;
-                mapdata.Age = CommanFunction.GetAge(item.PatientCase.Patient.Dob);
+                mapdata.Age = UtilityMaster.GetAgeOfPatient(item.PatientCase.Patient.Dob);
                 mapdata.Gender = item.PatientCase.Patient.Gender.Gender;
                 mapdata.PatientID = item.PatientCase.Patient.PatientId;
                 mapdata.id = item.PatientCase.Patient.Id;
@@ -261,7 +261,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 mapdata.PatientName = item.PatientCase.Patient.FirstName + " " + item.PatientCase.Patient.LastName;
                 mapdata.PhoneNumber = item.PatientCase.Patient.PhoneNumber;
                 mapdata.ReferredbyPHCName = item.AssignedByNavigation.Phcname;
-                mapdata.Age = CommanFunction.GetAge(item.PatientCase.Patient.Dob);
+                mapdata.Age = UtilityMaster.GetAgeOfPatient(item.PatientCase.Patient.Dob);
                 mapdata.Gender = item.PatientCase.Patient.Gender.Gender;
                 mapdata.PatientID = item.PatientCase.Patient.PatientId;
                 mapdata.id = item.PatientCase.Patient.Id;
@@ -294,7 +294,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 mapdata.PatientName = item.PatientCase.Patient.FirstName + " " + item.PatientCase.Patient.LastName;
                 mapdata.PhoneNumber = item.PatientCase.Patient.PhoneNumber;
                 mapdata.ReferredbyPHCName = item.AssignedByNavigation.Phcname;
-                mapdata.Age = CommanFunction.GetAge(item.PatientCase.Patient.Dob);
+                mapdata.Age = UtilityMaster.GetAgeOfPatient(item.PatientCase.Patient.Dob);
                 mapdata.Gender = item.PatientCase.Patient.Gender.Gender;
                 mapdata.PatientID = item.PatientCase.Patient.PatientId;
                 mapdata.id = item.PatientCase.Patient.Id;
@@ -328,7 +328,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 mapdata.PatientName = item.PatientCase.Patient.FirstName + " " + item.PatientCase.Patient.LastName;
                 mapdata.PhoneNumber = item.PatientCase.Patient.PhoneNumber;
                 mapdata.ReferredbyPHCName = item.AssignedByNavigation.Phcname;
-                mapdata.Age = CommanFunction.GetAge(item.PatientCase.Patient.Dob);
+                mapdata.Age = UtilityMaster.GetAgeOfPatient(item.PatientCase.Patient.Dob);
                 mapdata.Gender = item.PatientCase.Patient.Gender.Gender;
                 mapdata.PatientID = item.PatientCase.Patient.PatientId;
                 mapdata.id = item.PatientCase.Patient.Id;
@@ -726,7 +726,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 mapdata.PatientName = item.PatientCase.Patient.FirstName + " " + item.PatientCase.Patient.LastName;
                 mapdata.PhoneNumber = item.PatientCase.Patient.PhoneNumber;
                 mapdata.ReferredbyPHCName = item.AssignedByNavigation.Phcname;
-                mapdata.Age = CommanFunction.GetAge(item.PatientCase.Patient.Dob);
+                mapdata.Age = UtilityMaster.GetAgeOfPatient(item.PatientCase.Patient.Dob);
                 mapdata.Gender = item.PatientCase.Patient.Gender.Gender;
                 mapdata.PatientID = item.PatientCase.Patient.PatientId;
                 mapdata.id = item.PatientCase.Patient.Id;
@@ -760,7 +760,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 mapdata.PatientName = item.PatientCase.Patient.FirstName + " " + item.PatientCase.Patient.LastName;
                 mapdata.PhoneNumber = item.PatientCase.Patient.PhoneNumber;
                 mapdata.ReferredbyPHCName = item.AssignedByNavigation.Phcname;
-                mapdata.Age = CommanFunction.GetAge(item.PatientCase.Patient.Dob);
+                mapdata.Age = UtilityMaster.GetAgeOfPatient(item.PatientCase.Patient.Dob);
                 mapdata.Gender = item.PatientCase.Patient.Gender.Gender;
                 mapdata.PatientID = item.PatientCase.Patient.PatientId;
                 mapdata.id = item.PatientCase.Patient.Id;
