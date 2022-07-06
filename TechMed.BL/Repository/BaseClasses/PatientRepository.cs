@@ -712,6 +712,11 @@ namespace TechMed.BL.Repository.BaseClasses
                         specIds = _teleMedecineContext.AgeGroupMasters.Where(a => a.AgeMaxLimit < 15 && a.GenderID == patient.GenderId && a.DaysOrYear == 2).Select(s => s.SpecializationID).ToArray();
                         specializationMasters = await _teleMedecineContext.SpecializationMasters.Where(a => specIds.Contains(a.Id)).ToListAsync();
                     }
+                    else if (fullAge.Contains("Months") && ageOfPatient <= 14)
+                    {
+                        specIds = _teleMedecineContext.AgeGroupMasters.Where(a => a.AgeMaxLimit < 15 && a.GenderID == patient.GenderId && a.DaysOrYear == 2).Select(s => s.SpecializationID).ToArray();
+                        specializationMasters = await _teleMedecineContext.SpecializationMasters.Where(a => specIds.Contains(a.Id)).ToListAsync();
+                    }
                     else if (fullAge.Contains("Days") && ageOfPatient <= 28)
                     {
                         specIds = _teleMedecineContext.AgeGroupMasters.Where(a => a.AgeMaxLimit < 29 && a.GenderID == patient.GenderId && a.DaysOrYear == 1).Select(s => s.SpecializationID).ToArray();
