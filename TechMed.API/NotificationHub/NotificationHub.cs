@@ -6,11 +6,11 @@ namespace TechMed.API.NotificationHub
 
     public enum enumSignRNotificationType
     {
-        CallingToPHC,
-        CallRejectedByPHC,
-        CallRoomStartingForDoctor,
+        CallingToDoctor,
+        CallRejectedByDoctor,
+        CallRoomStartingForDOC,
         CallRoomStartingForPHC,
-        MeetingRoomCloseByDoctor,
+        MeetingRoomCloseByPHC,
         LogoutFromOtherDevices
     }
     public class SignalRNotificationModel
@@ -37,33 +37,33 @@ namespace TechMed.API.NotificationHub
         {
             _userService = userService;
         }
-        public async Task onCallRejectedByPHC(string toUser, string fromUser)
+        public async Task onCallRejectedByDoctor(string toUser, string fromUser)
         {
             await Clients.All.BroadcastMessage(new SignalRNotificationModel()
             {
-                message = "Call Rejected by PHC",
-                messageType = enumSignRNotificationType.CallRejectedByPHC.ToString(),
-                receiverEmail = toUser,
-                senderEmail = fromUser
+                message = "Call Declined",
+                messageType = enumSignRNotificationType.CallRejectedByDoctor.ToString(),
+                receiverEmail = toUser ,
+                senderEmail = fromUser  
             });
         }
-        public async Task onCallAcceptedByPHC(int patientCaseId, string toUser, string fromUser)
+        public async Task onCallAcceptedByDoctor(int patientCaseId, string toUser, string fromUser)
         {
             await Clients.All.BroadcastMessage(new SignalRNotificationModel()
             {
-                message = "Call Accepted by PHC",
-                messageType = enumSignRNotificationType.CallRoomStartingForDoctor.ToString(),
+                message = "Call Accepted, Starting Meeting soon...",
+                messageType = enumSignRNotificationType.CallRoomStartingForPHC.ToString(),
                 receiverEmail = toUser,
                 senderEmail = fromUser,
                 patientCaseId = patientCaseId,
             });
         }
-        public async Task onMeetingRoomInitiatedByDoctor(int patientCaseId, string toUser, string fromUser, string roomName)
+        public async Task onMeetingRoomInitiatedByPHC(int patientCaseId, string toUser, string fromUser, string roomName)
         {
             await Clients.All.BroadcastMessage(new SignalRNotificationModel()
             {
                 message = "Call Started",
-                messageType = enumSignRNotificationType.CallRoomStartingForPHC.ToString(),
+                messageType = enumSignRNotificationType.CallRoomStartingForDOC.ToString(),
                 receiverEmail = toUser,
                 senderEmail = fromUser,
                 patientCaseId = patientCaseId,
@@ -75,7 +75,7 @@ namespace TechMed.API.NotificationHub
             await Clients.All.BroadcastMessage(new SignalRNotificationModel()
             {
                 message = "Call Ended By Doctor",
-                messageType = enumSignRNotificationType.MeetingRoomCloseByDoctor.ToString(),
+                messageType = enumSignRNotificationType.MeetingRoomCloseByPHC.ToString(),
                 receiverEmail = toUser,
                 senderEmail = fromUser,
                 patientCaseId = patientCaseId,

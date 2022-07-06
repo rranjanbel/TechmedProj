@@ -45,8 +45,11 @@ namespace TechMed.BL.Repository.BaseClasses
         {
             return await _teleMedecineContext.PatientQueues
                 .Include(x => x.PatientCase)
-                .Include(x => x.AssignedByNavigation)
-                .ThenInclude(x => x.User).FirstOrDefaultAsync(x => x.PatientCaseId == patientCaseID);
+                .Include(x => x.AssignedByNavigation)                
+                .ThenInclude(x => x.User)
+                .Include(x=>x.AssignedDoctor)
+                .ThenInclude(x => x.User)
+                .FirstOrDefaultAsync(x => x.PatientCaseId == patientCaseID);
         }
 
         public async Task<bool> MeetingRoomCloseFlagUpdate(long ID, bool isClosed)

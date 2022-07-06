@@ -23,5 +23,7 @@ namespace TechMed.BL.ViewModels
         public string CaseHeading { get; set; } 
         public DateTime DateOfRegistration { get; set; }
 
+        public long PatientCaseID { get; set; }
+
     }
 }
