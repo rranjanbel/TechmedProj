@@ -43,6 +43,8 @@ namespace TechMed.API.Controllers
             PatientCase patientcase = new PatientCase();
             PatientCase patientCaseNew = new PatientCase();
             PatientCaseCreateVM createdPatientCase = new PatientCaseCreateVM();
+            string userId = string.Empty;
+            int phcID = 0;
             try
             {
                 if (!ModelState.IsValid)
@@ -55,20 +57,40 @@ namespace TechMed.API.Controllers
                     return StatusCode(404, ModelState);
                 }
                 if (patientCasevm != null)
-                {                    
+                { 
+                   
                     patientcase.CaseFileNumber = _patientCaeRepository.GetCaseFileNumber().ToString();
                     patientcase.PatientId = patientCasevm.PatientID;
                     patientcase.SpecializationId = patientCasevm.SpecializationID;
                     patientcase.CaseHeading = patientCasevm.CaseTitle;
-                    patientcase.Opdno = patientCasevm.OPDNumber;
-                    patientcase.CreatedBy = patientCasevm.CreatedBy;
-                    patientcase.UpdatedBy = patientCasevm.CreatedBy;
+                    patientcase.Opdno = patientCasevm.OPDNumber;                   
                     patientcase.CreatedOn = UtilityMaster.GetLocalDateTime();
                     patientcase.UpdatedOn = UtilityMaster.GetLocalDateTime();
+                    patientcase.CaseStatusID = 1;
+                    if (patientCasevm.CreatedBy > 0)
+                    {
+                        patientcase.CreatedBy = patientCasevm.CreatedBy;
+                        patientcase.UpdatedBy = patientCasevm.CreatedBy;
+                    }
+                    else
+                    {
+                        userId = User.Identity.Name;
+                        if(userId != null)
+                        {
+                            phcID = _patientCaeRepository.GetLoggedPHCID(userId);
+                            if(phcID > 0)
+                            {
+                                patientcase.CreatedBy = phcID;
+                                patientcase.UpdatedBy = phcID;
+                            }
+                           
+                        }
+                       
+                        
+                    }
 
-                   
 
-                    patientCaseNew = await this._patientCaeRepository.CreateAsync(patientcase);
+                        patientCaseNew = await this._patientCaeRepository.CreateAsync(patientcase);
                     if (patientCaseNew != null)
                     {
                         createdPatientCase.PatientID = patientCaseNew.PatientId;
@@ -78,6 +100,7 @@ namespace TechMed.API.Controllers
                         createdPatientCase.CreatedBy = patientCaseNew.CreatedBy;
                         createdPatientCase.CaseTitle = patientCaseNew.CaseHeading;
                         createdPatientCase.OPDNumber = patientCaseNew.Opdno;
+                        createdPatientCase.CaseStatusID = patientCaseNew.CaseStatusID;
                     }
 
                 }

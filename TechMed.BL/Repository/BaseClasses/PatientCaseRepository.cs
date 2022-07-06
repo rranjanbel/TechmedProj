@@ -271,7 +271,8 @@ namespace TechMed.BL.Repository.BaseClasses
                                 patientCase.SuggestedDiagnosis = patientCaseVM.patientCase.SuggestedDiagnosis;
                                 patientCase.ProvisionalDiagnosis = patientCaseVM.patientCase.ProvisionalDiagnosis;
                                 patientCase.ReferredTo = patientCaseVM.patientCase.ReferredTo;
-                               
+                                patientCase.CaseStatusID = 2;
+
 
                                 this._teleMedecineContext.Entry(patientCase).State = EntityState.Modified;
                                 i = await this.Context.SaveChangesAsync();
@@ -449,6 +450,12 @@ namespace TechMed.BL.Repository.BaseClasses
 
 
                     _teleMedecineContext.PatientQueues.Add(patientQueue);
+                    PatientCase patientCase = _teleMedecineContext.PatientCases.FirstOrDefault(a => a.Id == patientReferToDoctorVM.PatientCaseID);
+                    if(patientCase != null)
+                    {
+                        patientCase.CaseStatusID = 3;                       
+                        _teleMedecineContext.Entry(patientCase).State = EntityState.Modified;
+                    }
                     int i = _teleMedecineContext.SaveChanges();
 
                     if (i > 0 && patientQueue.Id > 0)
@@ -982,7 +989,16 @@ namespace TechMed.BL.Repository.BaseClasses
            
         }
 
-      
+        public int GetLoggedPHCID(string userId)
+        {
+            int PHCId = 0;
+            var userDetail = _teleMedecineContext.Phcmasters.Include(u => u.User).Where(a => a.User.Email == userId).FirstOrDefault();
+            if(userDetail !=null)
+            {
+                PHCId = userDetail.Id;
+            }
+            return PHCId;
+        }
     }
     public class DoctorQueues
     {

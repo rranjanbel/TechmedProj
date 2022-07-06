@@ -16,7 +16,7 @@ namespace TechMed.BL.CommanClassesAndFunctions
         public static int Age = 0;
         private static TeleMedecineContext _teleMedecineContext = new TeleMedecineContext();
         private static TimeZoneInfo India_Standard_Time = TimeZoneInfo.FindSystemTimeZoneById("India Standard Time");
-        public static int GetAgeOfPatient(DateTime dateOfBirth)
+        public static string GetAgeOfPatient(DateTime dateOfBirth)
         {
             DateTime dtToday = GetLocalDateTime().Date;
             DateTime dtOfBirth = dateOfBirth.Date;
@@ -26,11 +26,11 @@ namespace TechMed.BL.CommanClassesAndFunctions
             if (totalDays > 365)
             {
                 int year = (int)(totalDays / 365.2425);
-                return year;
+                return (year + " Years").ToString(); 
             }
             else
             {
-                return 0;
+                return (totalDays + " Years").ToString();
             }
         }
 

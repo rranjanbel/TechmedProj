@@ -26,6 +26,8 @@ namespace TechMed.BL.Repository.Interfaces
         //bool SaveCaseDocument(List<CaseDocumentVM> caseDocuments, string contentRootPath);
         bool UploadCaseDoc(List<CaseDocumentVM> caseDocuments, string contentRootPath);
         long GetCaseFileNumber();
+        int GetLoggedPHCID(string userId);
+
        
     }
 }

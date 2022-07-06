@@ -29,6 +29,7 @@ namespace TechMed.BL.DTOMaster
         public string? Opdno { get; set; }
         public DateTime? ReviewDate { get; set; }
         public int SpecializationID { get; set; }
+        public int? CaseStatusID { get; set; }
         public string? Comment { get; set; } = null!;
     }
 }

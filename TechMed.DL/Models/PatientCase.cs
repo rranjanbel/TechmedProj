@@ -39,6 +39,8 @@ namespace TechMed.DL.Models
         public DateTime CreatedOn { get; set; }
         public int? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
+        public int? CaseStatusID { get; set; }
+
 
         public virtual PatientMaster Patient { get; set; } = null!;
         public virtual ICollection<PatientCaseDiagonosticTest> PatientCaseDiagonosticTests { get; set; }
