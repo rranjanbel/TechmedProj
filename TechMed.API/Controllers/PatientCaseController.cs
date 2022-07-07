@@ -519,5 +519,43 @@ namespace TechMed.API.Controllers
                 return StatusCode(500, ModelState);
             }
         }
+
+        [HttpGet]
+        [Route("GetSelectedOnlineDoctors")]
+        [ProducesResponseType(200, Type = typeof(List<OnlineDrListDTO>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetSelectedOnlineDoctors(long PatientCaseID = 0)
+        {
+            List<OnlineDrListDTO> onlineDrLists = new List<OnlineDrListDTO>();
+            try
+            {
+                if (PatientCaseID == 0)
+                {
+                    ModelState.AddModelError("GetSelectedOnlineDoctors", "Please provide patient case Id");
+                    _logger.LogError("GetSelectedOnlineDoctors : Patient case Id is null ");
+                    return StatusCode(404, ModelState);
+                }
+                onlineDrLists = await _patientCaeRepository.GetSelectedOnlineDoctors(PatientCaseID);
+                if (onlineDrLists != null && onlineDrLists.Count > 0)
+                {
+                    _logger.LogInformation($"GetSelectedOnlineDoctors : Sucess response returned " + PatientCaseID);
+                    return StatusCode(200, onlineDrLists);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetSelectedOnlineDoctors", $"did not get doctor list for PatientcaseID : {PatientCaseID}");
+                    _logger.LogError("GetSelectedOnlineDoctors : did not get doctor list for PatientcaseID : " + PatientCaseID);
+                    return StatusCode(404, new {ErrorMessage = "Doctor not avilable for selected Specialization." });
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError("GetSelectedOnlineDoctors", $"Something went wrong when get online doctor list {ex.Message}");
+                _logger.LogError("Exception in GetSelectedOnlineDoctors API " + ex);
+                return StatusCode(500, ModelState);
+            }
+        }
     }
 }

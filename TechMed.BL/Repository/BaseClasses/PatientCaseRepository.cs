@@ -999,6 +999,38 @@ namespace TechMed.BL.Repository.BaseClasses
             }
             return PHCId;
         }
+
+        public async Task<List<OnlineDrListDTO>> GetSelectedOnlineDoctors(long patientCaseID)
+        {
+            List<OnlineDrListDTO> onlineDrLists = new List<OnlineDrListDTO>();
+            OnlineDrListDTO drListDTO = new OnlineDrListDTO();
+            int specilizationID = await _teleMedecineContext.PatientCases.Where(a => a.Id == patientCaseID).Select(s => s.SpecializationId).FirstOrDefaultAsync();
+            var doctors = await _teleMedecineContext.DoctorMasters.Include(d => d.Specialization).Where(a => a.IsOnline == true && a.SpecializationId == specilizationID).ToListAsync();
+            if(doctors != null)
+            {
+                foreach (var item in doctors)
+                {
+                    UserDetail userDetail = _teleMedecineContext.UserDetails.Where(a => a.UserId == item.UserId).FirstOrDefault();
+                    onlineDrLists.Add(new OnlineDrListDTO
+                    {
+                        DoctorID = item.Id,
+                        DoctorFName = userDetail.FirstName,
+                        DoctorMName = userDetail.MiddleName ==null?"": userDetail.MiddleName,
+                        DoctorLName = userDetail.LastName,
+                        Photo = userDetail.Photo,
+                        Specialty = item.Specialization.Specialization
+                    });
+
+                }                
+            }
+            else
+            {
+                onlineDrLists = new List<OnlineDrListDTO>();               
+            }
+
+            return onlineDrLists;
+
+        }
     }
     public class DoctorQueues
     {
