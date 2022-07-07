@@ -155,9 +155,11 @@ namespace TechMed.API.Controllers
         public async Task<IActionResult> AddPHC([FromBody] PHCHospitalDTO phcdto)
         {
             Phcmaster newCreatedPHC = new Phcmaster();
+
             try
             {
                 var phcMaster = _mapper.Map<Phcmaster>(phcdto);
+
                 if (!ModelState.IsValid)
                 {
                     return BadRequest(ModelState);
