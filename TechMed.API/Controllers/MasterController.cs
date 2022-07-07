@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using TechMed.BL.DTOMaster;
 using TechMed.BL.Repository.Interfaces;
 using TechMed.DL.Models;
@@ -617,6 +618,8 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllDivision()
         {
+            //var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);// will give the user's userId
+            var userName = User.FindFirstValue(ClaimTypes.Name);// will give the user's userName
             List<DivisionDTO> divisionList = new List<DivisionDTO>();
             try
             {
