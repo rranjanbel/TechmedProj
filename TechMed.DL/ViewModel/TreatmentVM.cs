@@ -29,7 +29,7 @@ namespace TechMed.DL.ViewModel
         public string? Comment { get; set; }
         public List<MedicineVM> medicineVMs { get; set; }
         public List<PatientCaseDiagonisticTestVM> PatientCaseDiagonostics { get; set; }
-       
+       public string Observation { get; set; }
       
     }
     public class MedicineVM
