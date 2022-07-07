@@ -16,7 +16,7 @@ namespace TechMed.DL.ViewModel
         public string PHCName { get; set; }
         public string PatientName { get; set; }
         public string Gender { get; set; }
-        public int Age { get; set; }
+        public string Age { get; set; }
         public DateTime RegistrationDate { get; set; }
         //public long PatientCaseID { get; set; }
     }

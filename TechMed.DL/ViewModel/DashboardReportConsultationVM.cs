@@ -25,7 +25,7 @@ namespace TechMed.DL.ViewModel
         public string? Complaint { get; set; }//
         public DateTime AssignedOn { get; set; }
         public string? PatientName { get; set; }
-        public int Age { get; set; }
+        public string Age { get; set; }
         public string? Gender { get; set; }
         public string? PHCName { get; set; }
         public string? PHCTechnician { get; set; }
