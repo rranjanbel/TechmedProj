@@ -30,7 +30,7 @@ namespace TechMed.BL.CommanClassesAndFunctions
             }
             else
             {
-                return (totalDays + " Years").ToString();
+                return (totalDays + " Days").ToString();
             }
         }
 
