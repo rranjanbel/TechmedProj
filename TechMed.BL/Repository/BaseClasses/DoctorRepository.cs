@@ -457,6 +457,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     patientCase.ProvisionalDiagnosis = treatmentVM.ProvisionalDiagnosis;
                     patientCase.ReferredTo = treatmentVM.ReferredTo;                   
                     patientCase.Comment = treatmentVM.Comment;
+                    patientCase.Observation = treatmentVM.Observation;
                     if(treatmentVM.ReviewDate.HasValue) 
                     {                        
                         patientCase.ReviewDate = treatmentVM.ReviewDate;
