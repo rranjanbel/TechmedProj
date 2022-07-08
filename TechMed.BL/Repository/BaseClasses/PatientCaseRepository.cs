@@ -736,8 +736,15 @@ namespace TechMed.BL.Repository.BaseClasses
                         patientCase.DoctorMCINo = patientQuue.AssignedDoctor.Mciid;
                         patientCase.DoctorQalification = patientQuue.AssignedDoctor.Qualification;
                         patientCase.ReviewDate = patientCase.patientCase.ReviewDate;
-                        string relativePath = patientQuue.AssignedDoctor.DigitalSignature;                        
-                        patientCase.DoctorSignature = UtilityMaster.DownloadFile(relativePath, contentRootPath);
+                        string relativePath = patientQuue.AssignedDoctor.DigitalSignature;
+                        try
+                        {
+                            patientCase.DoctorSignature = UtilityMaster.DownloadFile(relativePath, contentRootPath);
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogError("Exception in GetPatientCaseDetailsByCaseID=> UtilityMaster.DownloadFile function: " + ex);
+                        }
                     }
                     else
                     {

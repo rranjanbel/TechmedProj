@@ -311,7 +311,7 @@ namespace TechMed.BL.CommanClassesAndFunctions
             }
             catch(Exception ex)
             {
-                string message = ex.Message;
+                
                 throw;
             }
            
