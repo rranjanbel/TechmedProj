@@ -774,6 +774,8 @@ namespace TechMed.BL.Repository.BaseClasses
             catch (Exception ex)
             {
                 string exMessage = ex.Message;
+                _logger.LogError("Exception in GetPatientCaseDetailsByCaseID function: " + ex);
+                throw;
 
             }
 
