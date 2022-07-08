@@ -290,11 +290,18 @@ namespace TechMed.BL.CommanClassesAndFunctions
 
                     string path = @"\\MyStaticFiles\\Images\\Doctor\\Test_Signature.jpg";
                     filePath = contentRootPath + path;
+                    if (File.Exists(filePath))
+                    {
+                        var bytes = System.IO.File.ReadAllBytesAsync(filePath);
 
-                    var bytes = System.IO.File.ReadAllBytesAsync(filePath);
-
-                    strBase64 = Convert.ToBase64String(bytes.Result);
-                    return strBase64;
+                        strBase64 = Convert.ToBase64String(bytes.Result);
+                        return strBase64;
+                    }
+                    else
+                    {
+                        return "";
+                    }
+                    
                    
                 }
                 else
