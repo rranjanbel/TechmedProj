@@ -107,11 +107,12 @@ namespace TechMed.BL.Repository.BaseClasses
                     }
 
                     var phcresult = await (from pm in _teleMedecineContext.PatientMasters
-                                           where pm.Id == PatientID && pm.Phcid == PHCID
+                                          
                                            join pc in _teleMedecineContext.PatientCases on pm.Id equals pc.PatientId into pcase
                                            from pcdet in pcase.DefaultIfEmpty()
                                            join pd in _teleMedecineContext.PatientCaseDocuments on pcdet.Id equals pd.PatientCaseId into pdoc
                                            from pcdoc in pdoc.DefaultIfEmpty()
+                                           where pm.Id == PatientID && pcdet.CreatedBy == PHCID
                                            select new PatientCaseVM
                                            {
                                                PatientID = pm.Id,
@@ -150,7 +151,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 {
 
                     var patientCaseQueueresult = await (from pm in _teleMedecineContext.PatientMasters
-                                                        where pm.Id == PatientID && pm.Phcid == PHCID
+                                                       
                                                         join phc in _teleMedecineContext.Phcmasters on pm.Phcid equals phc.Id
                                                         //join um in _teleMedecineContext.UserMasters on pm.CreatedBy equals um.Id
                                                         join pc in _teleMedecineContext.PatientCases on pm.Id equals pc.PatientId into pcase
@@ -169,6 +170,7 @@ namespace TechMed.BL.Repository.BaseClasses
                                                         from sepm in spm.DefaultIfEmpty()
                                                         //join pcm in _teleMedecineContext.PatientCaseMedicines on pcdet.Id equals pcm.PatientCaseId into pcmed
                                                         //from pcmedicine in pcmed.DefaultIfEmpty()
+                                                         where pm.Id == PatientID && pcdet.CreatedBy == PHCID
                                                         select new PatientCaseWithDoctorVM
                                                         {
                                                             PatientID = pm.Id,
