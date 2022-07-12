@@ -270,6 +270,7 @@ namespace TechMed.BL.Repository.BaseClasses
             return todaysPatientList;
         }
 
+
         public Task<List<PatientMaster>> GetUnCheckedPatientList(int Id)
         {
             throw new NotImplementedException();
@@ -394,9 +395,12 @@ namespace TechMed.BL.Repository.BaseClasses
             List<TodaysPatientVM> todaysPatientList = new List<TodaysPatientVM>();           
             var patientList = (from pm in _teleMedecineContext.PatientMasters
                                where pm.CreatedOn.Value.Year == currentYear && pm.CreatedOn.Value.Month == currentMonth && pm.CreatedOn.Value.Day == currentDay && pm.FirstName.Contains(patientName) || pm.LastName.Contains(patientName)
-                               join phc in _teleMedecineContext.Phcmasters on pm.Phcid equals phc.Id
                                join pc in _teleMedecineContext.PatientCases on pm.Id equals pc.PatientId into patientcase
                                from pci in patientcase.DefaultIfEmpty()
+
+                               join phc in _teleMedecineContext.Phcmasters on pci.CreatedBy equals phc.Id  into phcmasters
+                               from phcc in phcmasters.DefaultIfEmpty()
+
                                join pcq in _teleMedecineContext.PatientQueues on pci.Id equals pcq.Id into pcqd
                                from pq in pcqd.DefaultIfEmpty()
                                join d in _teleMedecineContext.DoctorMasters on pq.AssignedDoctorId equals d.Id into dm
@@ -413,9 +417,9 @@ namespace TechMed.BL.Repository.BaseClasses
                                    PhoneNumber = pm.PhoneNumber,
                                    PatientID = pm.PatientId,
                                    PHCUserID = pm.Phcid,
-                                   PHCUserName = phc.Phcname,
+                                   PHCUserName = phcc.Phcname,
                                    ReferredByPHCID = pm.Phcid,
-                                   ReferredByPHCName = phc.Phcname,
+                                   ReferredByPHCName = phcc.Phcname,
                                    DocterID = pq.AssignedDoctorId > 0 ? pq.AssignedDoctorId : 0,
                                    DoctorName = ud.Name,
                                    Gender = (pm.GenderId == 1 ? "Male" : "Female")

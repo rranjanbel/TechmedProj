@@ -147,6 +147,11 @@ namespace TechMed.API.Controllers
             bool response = false;
             try
             {
+                if (login.OldPassword==login.NewPassword)
+                {
+                    ModelState.AddModelError("ChangeUserPassword", $"New password should not be same as old password : {login.UserNameOrEmail}");
+                    return StatusCode(400, ModelState);
+                }
                 ChangePassword userMaster = new ChangePassword();
                 userMaster = await this._userRepository.ChangeUserPassword(login);
                 if (userMaster != null)
