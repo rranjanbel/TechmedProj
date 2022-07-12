@@ -546,7 +546,7 @@ namespace TechMed.API.Controllers
                 {
                     ModelState.AddModelError("GetSelectedOnlineDoctors", $"did not get doctor list for PatientcaseID : {PatientCaseID}");
                     _logger.LogError("GetSelectedOnlineDoctors : did not get doctor list for PatientcaseID : " + PatientCaseID);
-                    return StatusCode(404, new {ErrorMessage = "Doctor not avilable for selected Specialization." });
+                    return StatusCode(200, new {Message = "Doctor not avilable for selected Specialization." });
                 }
             }
             catch (Exception ex)
