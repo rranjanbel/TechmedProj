@@ -30,6 +30,7 @@ namespace TechMed.BL.Repository.Interfaces
         int GetLoggedPHCID(string userId);
         Task<List<OnlineDrListDTO>> GetSelectedOnlineDoctors(long patientCaseID);
         Task<List<PatientQueueByDoctor>> GetPatientQueueByDoctor();
+        Task<List<PatientQueueVM>> GetPatientQueue();
 
 
 

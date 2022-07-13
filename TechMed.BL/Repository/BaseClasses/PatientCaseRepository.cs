@@ -1060,6 +1060,26 @@ namespace TechMed.BL.Repository.BaseClasses
             };
             return queueByDoctors;
         }
+        public async Task<List<PatientQueueVM>> GetPatientQueue()
+        {
+            List<PatientQueueVM> queueByDoctors = new List<PatientQueueVM>();
+            PatientQueueVM patientQueue;
+            var Results = await _teleMedecineContext.PatientQueuesList.FromSqlInterpolated($"EXEC [dbo].[GetPatientQueues]").ToListAsync();
+            foreach (var item in Results)
+            {
+                patientQueue = new PatientQueueVM();
+                patientQueue.SrNo = item.SrNo;
+                patientQueue.Patient = item.Patient;
+                patientQueue.CaseHeading = item.CaseHeading;
+                patientQueue.PatientID = item.PatientID;
+                patientQueue.Doctor = item.Doctor;
+                patientQueue.Specialization = item.Specialization;
+                patientQueue.WaitList = item.WaitList;                
+
+                queueByDoctors.Add(patientQueue);
+            };
+            return queueByDoctors;
+        }
     }
     public class DoctorQueues
     {

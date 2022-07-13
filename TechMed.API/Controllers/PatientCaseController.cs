@@ -546,7 +546,7 @@ namespace TechMed.API.Controllers
                 {
                     ModelState.AddModelError("GetSelectedOnlineDoctors", $"did not get doctor list for PatientcaseID : {PatientCaseID}");
                     _logger.LogError("GetSelectedOnlineDoctors : did not get doctor list for PatientcaseID : " + PatientCaseID);
-                    return StatusCode(200, new {Message = "Doctor not avilable for selected Specialization." });
+                    return StatusCode(404, new {Message = "Doctor not avilable for selected Specialization." });
                 }
             }
             catch (Exception ex)
@@ -572,6 +572,38 @@ namespace TechMed.API.Controllers
                 if (patientQueues != null && patientQueues.Count > 0)
                 {
                     _logger.LogInformation($"GetSelectedOnlineDoctors : Sucess response returned " );
+                    return StatusCode(200, patientQueues);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetSelectedOnlineDoctors", $"did not get doctor list for PatientcaseID ");
+                    _logger.LogError("GetSelectedOnlineDoctors : did not get patient Queue : ");
+                    return StatusCode(404, new { Message = "Did not get patient Queue" });
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError("GetSelectedOnlineDoctors", $"Something went wrong when get patient queue by doctor {ex.Message}");
+                _logger.LogError("Exception in GetSelectedOnlineDoctors API " + ex);
+                return StatusCode(500, ModelState);
+            }
+        }
+
+        [HttpGet]
+        [Route("GetPatientQueue")]
+        [ProducesResponseType(200, Type = typeof(List<PatientQueueVM>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetPatientQueue()
+        {
+            List<PatientQueueVM> patientQueues = new List<PatientQueueVM>();
+            try
+            {
+                patientQueues = await _patientCaeRepository.GetPatientQueue();
+                if (patientQueues != null && patientQueues.Count > 0)
+                {
+                    _logger.LogInformation($"GetSelectedOnlineDoctors : Sucess response returned ");
                     return StatusCode(200, patientQueues);
                 }
                 else
