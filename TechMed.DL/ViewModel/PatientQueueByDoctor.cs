@@ -13,6 +13,7 @@ namespace TechMed.DL.ViewModel
         public long SrNo { get; set; }
         public int NoOfPatientInQueue { get; set; }
         public string Doctor { get; set; }
+        public int DoctorID { get; set; }
         public bool AddToQueue { get; set; }
     }
 }
