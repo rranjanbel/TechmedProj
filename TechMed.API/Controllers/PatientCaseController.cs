@@ -9,7 +9,7 @@ using TechMed.BL.ModelMaster;
 using TechMed.BL.Repository.Interfaces;
 using TechMed.BL.ViewModels;
 using TechMed.DL.Models;
-
+using TechMed.DL.ViewModel;
 
 namespace TechMed.API.Controllers
 {
@@ -553,6 +553,38 @@ namespace TechMed.API.Controllers
             {
 
                 ModelState.AddModelError("GetSelectedOnlineDoctors", $"Something went wrong when get online doctor list {ex.Message}");
+                _logger.LogError("Exception in GetSelectedOnlineDoctors API " + ex);
+                return StatusCode(500, ModelState);
+            }
+        }
+
+        [HttpGet]
+        [Route("GetPatientQueueByDoctors")]
+        [ProducesResponseType(200, Type = typeof(List<PatientQueueByDoctor>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetPatientQueueByDoctors()
+        {
+            List<PatientQueueByDoctor> patientQueues = new List<PatientQueueByDoctor>();
+            try
+            {
+                patientQueues = await _patientCaeRepository.GetPatientQueueByDoctor();
+                if (patientQueues != null && patientQueues.Count > 0)
+                {
+                    _logger.LogInformation($"GetSelectedOnlineDoctors : Sucess response returned " );
+                    return StatusCode(200, patientQueues);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetSelectedOnlineDoctors", $"did not get doctor list for PatientcaseID ");
+                    _logger.LogError("GetSelectedOnlineDoctors : did not get patient Queue : ");
+                    return StatusCode(404, new { Message = "Did not get patient Queue" });
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError("GetSelectedOnlineDoctors", $"Something went wrong when get patient queue by doctor {ex.Message}");
                 _logger.LogError("Exception in GetSelectedOnlineDoctors API " + ex);
                 return StatusCode(500, ModelState);
             }

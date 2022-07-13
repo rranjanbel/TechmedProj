@@ -1042,6 +1042,24 @@ namespace TechMed.BL.Repository.BaseClasses
             return onlineDrLists;
 
         }
+
+        public async Task<List<PatientQueueByDoctor>> GetPatientQueueByDoctor()
+        {
+            List<PatientQueueByDoctor> queueByDoctors = new List<PatientQueueByDoctor>();
+            PatientQueueByDoctor patientQueue ;
+            var Results = await _teleMedecineContext.PatientQueueByDoctorList.FromSqlInterpolated($"EXEC [dbo].[GetPatientQueueByDoctor]").ToListAsync();
+            foreach (var item in Results)
+            {
+                patientQueue = new PatientQueueByDoctor();               
+                patientQueue.SrNo = item.SrNo;
+                patientQueue.NoOfPatientInQueue = item.NoOfPatientInQueue;
+                patientQueue.Doctor = item.Doctor;
+                patientQueue.AddToQueue = item.AddToQueue;               
+              
+                queueByDoctors.Add(patientQueue);
+            };
+            return queueByDoctors;
+        }
     }
     public class DoctorQueues
     {

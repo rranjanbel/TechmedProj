@@ -122,6 +122,8 @@ namespace TechMed.DL.Models
         public virtual DbSet<SnomedCTCode> SnomedCTCodes { get; set; } = null!;
         public virtual DbSet<GetDashboardFeedbackSummaryReportDataVM> GetDashboardFeedbackSummaryReportData { get; set; } = null!;
         public virtual DbSet<TodaysPatientCountVM> TodaysPatientCount { get; set; } = null!;
+        public virtual DbSet<PatientQueueByDoctor> PatientQueueByDoctorList { get; set; } = null!;
+       
 
 
 
