@@ -19,7 +19,7 @@ namespace TechMed.DL.ViewModel
         public DateTime? starttime { get; set; }
         public DateTime? endtime { get; set; }
         public string? specialization { get; set; }
-        public int SrNo { get; set; }
+        public Int64 SrNo { get; set; }
         public string? DistrictName { get; set; }//
         public string? BlockName { get; set; }//
         public string? Complaint { get; set; }//

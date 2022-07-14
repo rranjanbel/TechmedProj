@@ -19,6 +19,8 @@ using TechMed.API.NotificationHub;
 using TechMed.BL.ModelMaster;
 using TechMed.DL.ViewModel;
 using TechMed.BL.CommanClassesAndFunctions;
+using DinkToPdf.Contracts;
+using DinkToPdf;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,6 +58,9 @@ builder.Services.AddCors(options =>
         builder => { builder.SetIsOriginAllowed(origin => true).AllowAnyMethod().AllowAnyHeader().AllowCredentials(); });
 });
 var jwtTokenConfig = builder.Configuration.GetSection("jwtTokenConfig").Get<JwtTokenConfig>();
+
+builder.Services.AddSingleton(typeof(IConverter),
+   new SynchronizedConverter(new PdfTools()));
 builder.Services.AddSingleton(jwtTokenConfig);
 builder.Services.AddAuthentication(x =>
 {
@@ -102,6 +107,7 @@ builder.Services.AddScoped<IHolidayRepository, HolidayRepository>();
 builder.Services.AddScoped<ICDSSGuidelineRepository, CDSSGuidelineRepository>();
 builder.Services.AddScoped<IMasterRepository, MasterRepository>();
 builder.Services.AddScoped<ISettingMaster, SettingMaster>();
+builder.Services.AddScoped<IReportService, ReportService>();
 
 builder.Services.AddScoped<IMailService, MailService>();
 builder.Services.AddScoped<ISnomedRepository, SnomedRepository>();
@@ -161,6 +167,8 @@ if (app.Environment.IsDevelopment())
 // need to remove on production deployment
 app.UseSwagger();
 app.UseSwaggerUI();
+
+app.UseDefaultFiles();
 
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseCors("AllowAll");

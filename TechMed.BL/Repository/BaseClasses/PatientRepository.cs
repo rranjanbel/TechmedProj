@@ -40,13 +40,13 @@ namespace TechMed.BL.Repository.BaseClasses
                     //patientMaster.UpdatedOn = DateTime.Now;
                     patientMaster.CreatedOn = UtilityMaster.GetLocalDateTime();
                     patientMaster.UpdatedOn = UtilityMaster.GetLocalDateTime();
-                    if(patientMaster.Dob != null)
+                    if (patientMaster.Dob != null)
                     {
                         patientMaster.Dob = UtilityMaster.ConvertToLocalDateTime(patientMaster.Dob);
                     }
                     // patientMaster.PatientId = UtilityMaster.GetPatientNumber();
                     //patientMaster.PatientId = GetPatientId();
-                    if(patientMaster.MobileNo == null || patientMaster.MobileNo =="")
+                    if (patientMaster.MobileNo == null || patientMaster.MobileNo == "")
                     {
                         patientMaster.MobileNo = " ";
                     }
@@ -69,7 +69,7 @@ namespace TechMed.BL.Repository.BaseClasses
                             _logger.LogInformation($"Add Patient : Patient did not add");
                         }
 
-                        
+
                         return updatedPatientMaster;
                     }
                     else
@@ -87,12 +87,12 @@ namespace TechMed.BL.Repository.BaseClasses
             {
                 //_logger.LogInformation($"Add Patient : get exception " +ex.Message);
                 //return updatedPatientMaster;
-                _logger.LogError("Add Patient got exception when adding patient "+ex.Message);
+                _logger.LogError("Add Patient got exception when adding patient " + ex.Message);
                 updatedPatientMaster = new PatientMaster();
                 return updatedPatientMaster;
 
             }
-          
+
         }
 
         public Task<bool> DeletePatient(int Id)
@@ -205,7 +205,7 @@ namespace TechMed.BL.Repository.BaseClasses
             List<TodaysPatientVM> todaysNocConPatientList = new List<TodaysPatientVM>();
             TodaysPatientVM todaysPatient;
             var Results = _teleMedecineContext.VisitedPatientsList.FromSqlInterpolated($"EXEC [dbo].[GetPatientList] @PHCID={phcID},@InputDate={UtilityMaster.GetLocalDateTime()},@IsConsultedPatient={0},@DocterID={0}");
-            if(Results != null)
+            if (Results != null)
             {
                 foreach (var item in Results)
                 {
@@ -227,7 +227,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     todaysPatientList.Add(todaysPatient);
                 }
             }
-           
+
             //var patientList = (from pm in _teleMedecineContext.PatientMasters
             //                   where pm.CreatedOn.Value.Year == currentYear && pm.CreatedOn.Value.Month == currentMonth && pm.CreatedOn.Value.Day == currentDay
             //                   join phc in _teleMedecineContext.Phcmasters on pm.Phcid equals phc.Id
@@ -271,6 +271,54 @@ namespace TechMed.BL.Repository.BaseClasses
         }
 
 
+        public async Task<List<GetPendingByDoctorPatientDTO>> GetPendingByDoctorPatientList(int phcID)
+        {
+            List<GetPendingByDoctorPatientDTO> onlineDrList = new List<GetPendingByDoctorPatientDTO>();
+            var doctorMaster = await _teleMedecineContext
+                .DoctorMasters
+                .Include(a => a.Specialization)
+                .Where(a => a.IsOnline == true).ToListAsync();
+
+            var patientMasters = await _teleMedecineContext
+              .PatientQueues
+              .Include(a => a.PatientCase)
+              .Include(a => a.PatientCase.Patient)
+              .Where(a => a.CaseFileStatusId == 2 && a.PatientCase.Patient.Phcid==phcID).ToListAsync();
+            foreach (var item in doctorMaster)
+            {
+                UserDetail userDetail = _teleMedecineContext.UserDetails.Where(a => a.UserId == item.UserId).FirstOrDefault();
+                GetPendingByDoctorPatientDTO getPendingByDoctorPatientDTO = new GetPendingByDoctorPatientDTO
+                {
+                    DoctorID = item.Id,
+                    DoctorFName = userDetail.FirstName,
+                    DoctorMName = userDetail.MiddleName,
+                    DoctorLName = userDetail.LastName,
+                    Photo = userDetail.Photo,
+                    Specialty = item.Specialization.Specialization
+                };
+
+                //add patient
+                var pForDoctor = patientMasters.Where(a => a.AssignedDoctorId == item.Id).ToList();
+                int i = 1;
+                foreach (var patient in pForDoctor)
+                {
+                    getPendingByDoctorPatientDTO.patientDTO.Add(new PatientDTO
+                    {
+                        Age = UtilityMaster.GetDetailsAgeOfPatient(patient.PatientCase.Patient.Dob),
+                        CaseLabel = patient.PatientCase.CaseHeading,
+                        LastReferredTime = null, //patient.PatientCase.Patient.CreatedOn,
+                        PatientName = patient.PatientCase.Patient.FirstName + " " + patient.PatientCase.Patient.LastName,
+                        PHCName = patient.PatientCase.Patient.Phc.Phcname,
+                        RegisteredTime = patient.PatientCase.Patient.CreatedOn,
+                        SerialNo = i++.ToString(),
+                        Sex = patient.PatientCase.Patient.Gender.Gender,
+                    });// ;// ; ;
+                }
+                onlineDrList.Add(getPendingByDoctorPatientDTO);
+            }
+            return onlineDrList;
+        }
+
         public Task<List<PatientMaster>> GetUnCheckedPatientList(int Id)
         {
             throw new NotImplementedException();
@@ -290,7 +338,7 @@ namespace TechMed.BL.Repository.BaseClasses
         public async Task<PHCPatientCount> GetPatientCount(int phcID)
         {
             PHCPatientCount pHCPatientCount = new PHCPatientCount();
-            TodaysPatientCountVM todaysPatientCountVM ;
+            TodaysPatientCountVM todaysPatientCountVM;
             List<TodaysPatientCountVM> todaysPatientCountVMList = new List<TodaysPatientCountVM>();
             //int currentYear = DateTime.Now.Year;
             //int currentMonth = DateTime.Now.Month;
@@ -392,13 +440,13 @@ namespace TechMed.BL.Repository.BaseClasses
             int currentYear = UtilityMaster.GetLocalDateTime().Year;
             int currentMonth = UtilityMaster.GetLocalDateTime().Month;
             int currentDay = UtilityMaster.GetLocalDateTime().Day;
-            List<TodaysPatientVM> todaysPatientList = new List<TodaysPatientVM>();           
+            List<TodaysPatientVM> todaysPatientList = new List<TodaysPatientVM>();
             var patientList = (from pm in _teleMedecineContext.PatientMasters
                                where pm.CreatedOn.Value.Year == currentYear && pm.CreatedOn.Value.Month == currentMonth && pm.CreatedOn.Value.Day == currentDay && pm.FirstName.Contains(patientName) || pm.LastName.Contains(patientName)
                                join pc in _teleMedecineContext.PatientCases on pm.Id equals pc.PatientId into patientcase
                                from pci in patientcase.DefaultIfEmpty()
 
-                               join phc in _teleMedecineContext.Phcmasters on pci.CreatedBy equals phc.Id  into phcmasters
+                               join phc in _teleMedecineContext.Phcmasters on pci.CreatedBy equals phc.Id into phcmasters
                                from phcc in phcmasters.DefaultIfEmpty()
 
                                join pcq in _teleMedecineContext.PatientQueues on pci.Id equals pcq.Id into pcqd
@@ -407,7 +455,7 @@ namespace TechMed.BL.Repository.BaseClasses
                                from doc in dm.DefaultIfEmpty()
                                join u in _teleMedecineContext.UserMasters on doc.UserId equals u.Id into um
                                from ud in um.DefaultIfEmpty()
-                               //where pm.FirstName.Contains(patientName) || pm.LastName.Contains(patientName)
+                                   //where pm.FirstName.Contains(patientName) || pm.LastName.Contains(patientName)
                                select new TodaysPatientVM
                                {
                                    //Age = GetAge(pm.Dob),
@@ -424,7 +472,7 @@ namespace TechMed.BL.Repository.BaseClasses
                                    DoctorName = ud.Name,
                                    Gender = (pm.GenderId == 1 ? "Male" : "Female")
                                }).ToListAsync();
-            todaysPatientList = await patientList;         
+            todaysPatientList = await patientList;
 
             return todaysPatientList;
         }
@@ -445,7 +493,7 @@ namespace TechMed.BL.Repository.BaseClasses
             {
                 return 0;
             }
-           
+
         }
 
         public long GetPatientId()
@@ -475,13 +523,13 @@ namespace TechMed.BL.Repository.BaseClasses
                 return (currentNo + 1);
             }
             return 0;
-        }      
+        }
 
         public List<SPResultGetPatientDetails> GetSPResult(int patientId)
         {
             int PatientID = patientId;
             List<SPResultGetPatientDetails> sPResultGetPatientDetails = new List<SPResultGetPatientDetails>();
-            SPResultGetPatientDetails sPResultGetPatientDetail ;
+            SPResultGetPatientDetails sPResultGetPatientDetail;
             var Results = _teleMedecineContext.SPResultGetPatientDetails.FromSqlInterpolated($"EXEC [dbo].[GetPatientDetails] @PatientID ={PatientID}");
             foreach (var item in Results)
             {
@@ -563,7 +611,7 @@ namespace TechMed.BL.Repository.BaseClasses
             //                       Gender = (pm.GenderId == 1 ? "Male" : "Female")
             //                   }).ToListAsync();
             //patientList = await patientResult;
-           
+
 
             return patientList;
         }
@@ -571,7 +619,7 @@ namespace TechMed.BL.Repository.BaseClasses
         public string SaveImage(string ImgBase64Str, string rootPath)
         {
             string contentRootPath = rootPath;
-            string path = @"\\MyStaticFiles\\Images\\Patients\\";           
+            string path = @"\\MyStaticFiles\\Images\\Patients\\";
             path = contentRootPath + path;
 
             //Create     
@@ -580,7 +628,7 @@ namespace TechMed.BL.Repository.BaseClasses
 
             //Generate unique filename
             string filepath = path + myfilename + ".jpeg";// png
-             var bytess = Convert.FromBase64String(ImgBase64Str);
+            var bytess = Convert.FromBase64String(ImgBase64Str);
             using (var imageFile = new FileStream(filepath, FileMode.Create))
             {
                 imageFile.Write(bytess, 0, bytess.Length);
@@ -598,7 +646,7 @@ namespace TechMed.BL.Repository.BaseClasses
             //string? PatientFirstName = string.Empty;
             //string? PatientLastName = string.Empty;
             string? PatientName = string.Empty;
-            long ? PatientId = 0;
+            long? PatientId = 0;
             string? contractNo = string.Empty;
             int? genderId = 0;
             DateTime? DateOfRegistration = DateTime.MinValue;
@@ -653,7 +701,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     PatientId = null;
 
                 if (searchParameter.ContactNo == "")
-                    contractNo = null; 
+                    contractNo = null;
                 else
                     contractNo = searchParameter.ContactNo;
 
@@ -668,24 +716,24 @@ namespace TechMed.BL.Repository.BaseClasses
                     genderId = null;
 
                 if (searchParameter.DateOfRegistration == null)
-                    DateOfRegistration = null; 
+                    DateOfRegistration = null;
                 else
                 {
-                    DateOfRegistration =UtilityMaster.ConvertToLocalDateTime(searchParameter.DateOfRegistration.Value);
+                    DateOfRegistration = UtilityMaster.ConvertToLocalDateTime(searchParameter.DateOfRegistration.Value);
                 }
-                    
+
 
                 if (searchParameter.DateOfBirth == null)
                     DateOfBirth = null;
                 else
-                    DateOfBirth = UtilityMaster.ConvertToLocalDateTime(searchParameter.DateOfBirth.Value); 
+                    DateOfBirth = UtilityMaster.ConvertToLocalDateTime(searchParameter.DateOfBirth.Value);
             }
-           
+
             var Results = _teleMedecineContext.PatientSearchResults
                 .FromSqlInterpolated($"EXEC [dbo].[AdvanceSearchOfPatients] @PHCID ={PHCID},@PatientName={PatientName},@PatientUID={PatientId},@ContactNo={contractNo},@GenderId={genderId},@DateOfRegistration={DateOfRegistration},@DateOfBirth={DateOfBirth}");
             foreach (var item in Results)
             {
-                searchResult = new PatientSearchResultVM();              
+                searchResult = new PatientSearchResultVM();
                 searchResult.PatientName = item.PatientName;
                 searchResult.PatientID = item.PatientID;
                 searchResult.Gender = item.Gender;
@@ -746,7 +794,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 string expMessage = ex.Message;
                 throw;
             }
-            
+
 
         }
     }
