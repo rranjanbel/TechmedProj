@@ -28,7 +28,7 @@ namespace TechMed.BL.Repository.BaseClasses
             this._teleMedecineContext = teleMedecineContext;
             this._mapper = mapper;
             this._logger = logger;
-            this._reportService=reportService;  
+            this._reportService = reportService;
 
         }
 
@@ -237,7 +237,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 mapdata.PatientID = item.PatientCase.Patient.PatientId;
                 mapdata.id = item.PatientCase.Patient.Id;
                 mapdata.PatientCaseID = item.PatientCase.Id;
-                mapdata.canCallInitiate = !item.PatientCase.TwilioMeetingRoomInfos.Any(y=>y.IsClosed.GetValueOrDefault(false)==true);
+                mapdata.canCallInitiate = !item.PatientCase.TwilioMeetingRoomInfos.Any(y => y.IsClosed.GetValueOrDefault(false) == true);
                 mapdata.CaseHeading = item.PatientCase.CaseHeading;
                 //mapdata.status = item.PatientCase.Patient.PatientStatus.PatientStatus;
                 DTOList.Add(mapdata);
@@ -434,7 +434,7 @@ namespace TechMed.BL.Repository.BaseClasses
 
             return getPatientCaseDetails;
         }
-        public async Task<bool> PostTreatmentPlan(TreatmentVM treatmentVM,string ContentRootPath)
+        public async Task<bool> PostTreatmentPlan(TreatmentVM treatmentVM, string ContentRootPath)
         {
             try
             {
@@ -460,11 +460,11 @@ namespace TechMed.BL.Repository.BaseClasses
                     patientCase.Prescription = treatmentVM.Prescription;
                     patientCase.SuggestedDiagnosis = treatmentVM.SuggestedDiagnosis;
                     patientCase.ProvisionalDiagnosis = treatmentVM.ProvisionalDiagnosis;
-                    patientCase.ReferredTo = treatmentVM.ReferredTo;                   
+                    patientCase.ReferredTo = treatmentVM.ReferredTo;
                     patientCase.Comment = treatmentVM.Comment;
                     patientCase.Observation = treatmentVM.Observation;
-                    if(treatmentVM.ReviewDate.HasValue) 
-                    {                        
+                    if (treatmentVM.ReviewDate.HasValue)
+                    {
                         patientCase.ReviewDate = treatmentVM.ReviewDate;
                     }
                     //add in medicine 
@@ -492,7 +492,7 @@ namespace TechMed.BL.Repository.BaseClasses
                                 DrugMasterId = item.DrugID,
                                 PatientCaseId = treatmentVM.PatientCaseID,
                                 Duration = item.Duration,
-                                
+
                             });
                     }
                     //Add diagonistic PatientCaseDiagonosticTest
@@ -506,8 +506,17 @@ namespace TechMed.BL.Repository.BaseClasses
                         _teleMedecineContext.Add(patientCaseDiagonosticTest);
                     }
                     int i = _teleMedecineContext.SaveChanges();
+                    //try
+                    //{
+                    //    await _reportService.GeneratePdfReport(treatmentVM.PatientCaseID, ContentRootPath);
 
-                  await   _reportService.GeneratePdfReport(treatmentVM.PatientCaseID, ContentRootPath);
+                    //}
+                    //catch (Exception ex)
+                    //{
+
+                    //}
+
+                  
                     return true;
                 }
 
@@ -1038,7 +1047,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     PatientName = null;
                     //PatientFirstName = null;
                     //PatientLastName = null;
-                }                    
+                }
                 else
                 {
                     PatientName = searchParameter.PatientName;
@@ -1065,11 +1074,11 @@ namespace TechMed.BL.Repository.BaseClasses
                     //        PatientLastName = null;
                     //    }
 
-                //}
-                    
+                    //}
+
 
                 }
-                    
+
 
                 //if (searchParameter.PatientName.ToLower().Trim() == "string")
                 //    PatientName = null;
@@ -1102,15 +1111,15 @@ namespace TechMed.BL.Repository.BaseClasses
                 {
                     DateOfRegistration = UtilityMaster.ConvertToLocalDateTime(searchParameter.DateOfRegistration.Value);
                 }
-                   
+
 
                 if (searchParameter.DateOfBirth == null)
                     DateOfBirth = null;
                 else
                 {
-                    DateOfBirth = UtilityMaster.ConvertToLocalDateTime(searchParameter.DateOfBirth.Value); 
+                    DateOfBirth = UtilityMaster.ConvertToLocalDateTime(searchParameter.DateOfBirth.Value);
                 }
-                   
+
 
                 if (searchParameter.DoctorId > 0)
                     doctorId = searchParameter.DoctorId;

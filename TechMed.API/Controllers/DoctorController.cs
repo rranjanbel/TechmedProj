@@ -1313,6 +1313,7 @@ namespace TechMed.API.Controllers
         [Route("GetPrescription")]
         public async Task<IActionResult> GetPrescription()
         {
+           
 
             var pdfFile =await _reportService.GeneratePdfReport(10703, _webHostEnvironment.ContentRootPath);
             return File(pdfFile,
