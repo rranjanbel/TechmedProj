@@ -14,14 +14,25 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="MyStaticFiles\MPArogyam.jpg" />
+    <Content Include="MyStaticFiles\MPGovLogo.png" />
+    <Content Include="MyStaticFiles\NHMLogo.png" />
+    <Content Include="MyStaticFiles\PrescriptionPreviewPdf.html" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Ardalis.ApiEndpoints" Version="4.0.1" />
     <PackageReference Include="AutoMapper" Version="11.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+    <PackageReference Include="DinkToPdf" Version="1.0.8" />
+    <PackageReference Include="DinkToPdfCopyDependencies" Version="1.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="5.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
+
+
 
   <ItemGroup>
     <ProjectReference Include="..\TechMed.BL\TechMed.BL.csproj" />
@@ -31,6 +42,7 @@
     <Folder Include="Logs\" />
     <Folder Include="MyStaticFiles\CaseDocuments\" />
     <Folder Include="Properties\PublishProfiles\" />
+    <Folder Include="wwwroot\" />
   </ItemGroup>
 
 </Project>

@@ -22,13 +22,15 @@ namespace TechMed.API.Controllers
         private readonly IDoctorRepository _doctorRepository;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly ILogger<DoctorController> _logger;
-        public DoctorController(IMapper mapper, ILogger<DoctorController> logger, TeleMedecineContext teleMedecineContext, IDoctorRepository doctorRepository, IWebHostEnvironment webHostEnvironment)
+        private readonly IReportService _reportService;
+        public DoctorController(IMapper mapper, ILogger<DoctorController> logger, TeleMedecineContext teleMedecineContext, IDoctorRepository doctorRepository, IWebHostEnvironment webHostEnvironment, IReportService reportService)
         {
             doctorBusinessMaster = new DoctorBusinessMaster(teleMedecineContext, mapper);
             _doctorRepository = doctorRepository;
             _mapper = mapper;
             _webHostEnvironment = webHostEnvironment;
             _logger = logger;
+            _reportService=reportService;
         }
         [Route("GetListOfNotification")]
         [HttpPost]
@@ -548,7 +550,7 @@ namespace TechMed.API.Controllers
                     _logger.LogError("PostTreatmentPlan : ModelState is invalid");
                     return BadRequest(treatmentVM.PatientCaseID);
                 }
-                var DTO = await _doctorRepository.PostTreatmentPlan(treatmentVM);
+                var DTO = await _doctorRepository.PostTreatmentPlan(treatmentVM, _webHostEnvironment.ContentRootPath);
                 if (DTO)
                 {
                     _logger.LogInformation($"PostTreatmentPlan : Sucess response returned ");
@@ -1305,6 +1307,16 @@ namespace TechMed.API.Controllers
             }
 
 
+        }
+
+        [HttpGet]
+        [Route("GetPrescription")]
+        public async Task<IActionResult> GetPrescription()
+        {
+
+            var pdfFile =await _reportService.GeneratePdfReport(10703, _webHostEnvironment.ContentRootPath);
+            return File(pdfFile,
+            "application/octet-stream", "SimplePdf.pdf");
         }
     }
 }
