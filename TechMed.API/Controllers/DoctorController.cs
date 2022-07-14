@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+
 using Microsoft.AspNetCore.Mvc;
 using TechMed.BL.DTOMaster;
 using TechMed.BL.ModelMaster;
@@ -1313,7 +1312,23 @@ namespace TechMed.API.Controllers
         [Route("GetPrescription")]
         public async Task<IActionResult> GetPrescription()
         {
-           
+            //using (var ms = new MemoryStream(testFileBytes))
+            //{
+            //    IFormFile fromFile = new FormFile(ms, 0, ms.Length,
+            //        Path.GetFileNameWithoutExtension(testFilePath),
+            //        Path.GetFileName(testFilePath)
+            //    );
+            //    //fromFile
+            //    List<CaseDocumentVM> caseDocuments = new List<CaseDocumentVM>();
+            //    caseDocuments.Add(new CaseDocumentVM
+            //    {
+            //        DocumentTypeId = 2,
+            //        file = fromFile,
+            //        name = "Test",
+            //        patientCaseId = PatientCaseID
+            //    });
+            //    var result = _patientCaeRepository.UploadCaseDoc(caseDocuments, contentRootPath);
+            //}
 
             var pdfFile =await _reportService.GeneratePdfReport(10703, _webHostEnvironment.ContentRootPath);
             return File(pdfFile,

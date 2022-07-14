@@ -198,22 +198,23 @@ namespace TechMed.API.Services
 
             var testFilePath = "path/to/test.pdf";
             var testFileBytes = _converter.Convert(htmlToPdfDocument);
+            
             using (var ms = new MemoryStream(testFileBytes))
             {
-                IFormFile fromFile = new FormFile(ms, 0, ms.Length,
-                    Path.GetFileNameWithoutExtension(testFilePath),
-                    Path.GetFileName(testFilePath)
-                );
+                //IFormFile fromFile = new FormFile(ms, 0, ms.Length,
+                //    Path.GetFileNameWithoutExtension(testFilePath),
+                //    Path.GetFileName(testFilePath)
+                //);
                 //fromFile
-                List<CaseDocumentVM> caseDocuments = new List<CaseDocumentVM>();
-                caseDocuments.Add(new CaseDocumentVM
+                List<CaseDocumentBase64VM> caseDocuments = new List<CaseDocumentBase64VM>();
+                caseDocuments.Add(new CaseDocumentBase64VM
                 {
                     DocumentTypeId = 2,
-                    file = fromFile,
+                    file = Convert.ToBase64String(testFileBytes),
                     name = "Test",
                     patientCaseId = PatientCaseID
                 });
-                var result = _patientCaeRepository.UploadCaseDoc(caseDocuments, contentRootPath);
+                var result = _patientCaeRepository.UploadCaseDocFromByte(caseDocuments, contentRootPath);
             }
             return _converter.Convert(htmlToPdfDocument);
         }

@@ -928,6 +928,82 @@ namespace TechMed.BL.Repository.BaseClasses
                 return false;
             }
         }
+        public bool UploadCaseDocFromByte(List<CaseDocumentBase64VM> caseDocuments, string contentRootPath)
+        {
+            PatientCaseDocument patientCaseDocument;
+            int l = 0;
+            string path = @"/MyFiles/CaseDocuments/";
+
+            string relativePathSaveFile = @"\\MyStaticFiles\\CaseDocuments\\";
+
+            if (caseDocuments != null)
+            {
+                foreach (var doc in caseDocuments)
+                {
+                    if (doc.file.Length > 0)
+                    {
+                        string saveFilename = String.Empty;
+                        try
+                        {
+
+                            var fileType =".pdf";
+                            //Convert to base64
+                            string base64Value = doc.file;
+                            //Save File in disk
+                            saveFilename = UtilityMaster.SaveFileFromBase64(base64Value, contentRootPath, relativePathSaveFile, fileType.ToLower(), doc.DocumentTypeId);
+
+                        }
+                        catch (Exception)
+                        {
+
+                            throw;
+                        }
+
+                        //Save file in database
+                        l = 0;
+
+                        if (saveFilename != null)
+                        {
+                            string fullPath = Path.Combine(path, saveFilename);
+                            patientCaseDocument = new PatientCaseDocument();
+                            patientCaseDocument.PatientCaseId = doc.patientCaseId;
+                            patientCaseDocument.DocumentPath = fullPath;
+                            patientCaseDocument.DocumentName = doc.name;
+                            patientCaseDocument.Description = saveFilename + " , " + doc.file.Length;
+                            patientCaseDocument.DocumentTypeId = doc.DocumentTypeId;
+
+                            this._teleMedecineContext.Entry(patientCaseDocument).State = EntityState.Added;
+
+                            // update case file for prescription document
+                            if (doc.DocumentTypeId == 2)
+                            {
+                                PatientCase patientCase = this._teleMedecineContext.PatientCases.FirstOrDefault(a => a.Id == doc.patientCaseId);
+                                patientCase.Prescription = fullPath;
+                                this._teleMedecineContext.Entry(patientCase).State = EntityState.Modified;
+
+                            }
+                            l = this.Context.SaveChanges();
+                        }
+
+                    }
+
+                }
+                if (l > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+
+
+            }
+            else
+            {
+                return false;
+            }
+        }
 
         public int AutoAssignDoctor(long PatientCaseID)
         {
@@ -1102,6 +1178,7 @@ namespace TechMed.BL.Repository.BaseClasses
             };
             return queueByDoctors;
         }
+
     }
     public class DoctorQueues
     {
