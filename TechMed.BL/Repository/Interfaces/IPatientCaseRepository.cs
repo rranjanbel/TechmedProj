@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using TechMed.BL.DTOMaster;
 using TechMed.BL.ViewModels;
 using TechMed.DL.Models;
+using TechMed.DL.ViewModel;
 
 namespace TechMed.BL.Repository.Interfaces
 {
@@ -28,8 +29,10 @@ namespace TechMed.BL.Repository.Interfaces
         long GetCaseFileNumber();
         int GetLoggedPHCID(string userId);
         Task<List<OnlineDrListDTO>> GetSelectedOnlineDoctors(long patientCaseID);
+        Task<List<PatientQueueByDoctor>> GetPatientQueueByDoctor(int specializationID);
+        Task<List<PatientQueueVM>> GetPatientQueue();
 
 
-       
+
     }
 }
