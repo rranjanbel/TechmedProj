@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-//using System.Threading.Tasks;
+using System.Threading.Tasks;
 using TechMed.BL.CommanClassesAndFunctions;
 using TechMed.BL.DTOMaster;
 using TechMed.BL.Repository.Interfaces;
@@ -653,7 +653,7 @@ namespace TechMed.BL.Repository.BaseClasses
 
         //}
 
-        public async Task<PatientCaseVM> GetPatientCaseDetailsByCaseID(int PatientCaseID,string contentRootPath)
+        public async Task<PatientCaseVM> GetPatientCaseDetailsByCaseID(long PatientCaseID,string contentRootPath)
         {
             PatientCaseVM patientCase = new PatientCaseVM();
             try
@@ -1074,6 +1074,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 patientQueue.NoOfPatientInQueue = item.NoOfPatientInQueue;
                 patientQueue.Doctor = item.Doctor;
                 patientQueue.DoctorID = item.DoctorID;
+                patientQueue.Gender = item.Gender;
                 patientQueue.AddToQueue = item.AddToQueue;               
               
                 queueByDoctors.Add(patientQueue);
@@ -1094,6 +1095,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 patientQueue.PatientID = item.PatientID;
                 patientQueue.Doctor = item.Doctor;
                 patientQueue.Specialization = item.Specialization;
+                patientQueue.Gender = item.Gender;
                 patientQueue.WaitList = item.WaitList;                
 
                 queueByDoctors.Add(patientQueue);

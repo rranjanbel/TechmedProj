@@ -448,7 +448,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(PatientCaseVM))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetPatientCaseDetailsByCaseID(int PatientCaseID = 0)
+        public async Task<IActionResult> GetPatientCaseDetailsByCaseID(long PatientCaseID = 0)
         {
             PatientCaseVM patientcase = new PatientCaseVM();
             string contentRootPath = _webHostEnvironment.ContentRootPath;

@@ -14,6 +14,7 @@ namespace TechMed.DL.ViewModel
         public int NoOfPatientInQueue { get; set; }
         public string Doctor { get; set; }
         public int DoctorID { get; set; }
+        public string Gender { get; set; }
         public bool AddToQueue { get; set; }
     }
 }
