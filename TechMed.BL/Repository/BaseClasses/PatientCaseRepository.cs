@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+//using System.Threading.Tasks;
 using TechMed.BL.CommanClassesAndFunctions;
 using TechMed.BL.DTOMaster;
 using TechMed.BL.Repository.Interfaces;
@@ -1061,11 +1061,12 @@ namespace TechMed.BL.Repository.BaseClasses
 
         }
 
-        public async Task<List<PatientQueueByDoctor>> GetPatientQueueByDoctor()
+        public async Task<List<PatientQueueByDoctor>> GetPatientQueueByDoctor(int specializationID)
         {
             List<PatientQueueByDoctor> queueByDoctors = new List<PatientQueueByDoctor>();
             PatientQueueByDoctor patientQueue ;
-            var Results = await _teleMedecineContext.PatientQueueByDoctorList.FromSqlInterpolated($"EXEC [dbo].[GetPatientQueueByDoctor]").ToListAsync();
+            var Results = _teleMedecineContext.PatientQueueByDoctorList.FromSqlInterpolated($"EXEC [dbo].[GetPatientQueueByDoctor] @SpecializationID={specializationID}");
+            
             foreach (var item in Results)
             {
                 patientQueue = new PatientQueueByDoctor();               

@@ -563,12 +563,12 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<PatientQueueByDoctor>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetPatientQueueByDoctors()
+        public async Task<IActionResult> GetPatientQueueByDoctors(int SpecializationID)
         {
             List<PatientQueueByDoctor> patientQueues = new List<PatientQueueByDoctor>();
             try
             {
-                patientQueues = await _patientCaeRepository.GetPatientQueueByDoctor();
+                patientQueues = await _patientCaeRepository.GetPatientQueueByDoctor(SpecializationID);
                 if (patientQueues != null && patientQueues.Count > 0)
                 {
                     _logger.LogInformation($"GetSelectedOnlineDoctors : Sucess response returned " );
