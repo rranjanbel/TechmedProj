@@ -14,10 +14,11 @@ namespace TechMed.BL.Repository.Interfaces
     public interface ITwilioMeetingRepository : IRepository<TwilioMeetingRoomInfo>
     {
         Task<TwilioMeetingRoomInfo> MeetingRoomInfoGet(string RoomName);
+        Task<TwilioMeetingRoomInfo> MeetingRoomInfoGet(int patientCaseId);
         Task<bool> MeetingRoomInfoAdd(TwilioMeetingRoomInfo doctorMeetingRoomInfo);
         Task<PatientQueue> PatientQueueGet(int patientCaseID);
         Task<bool> MeetingRoomCloseFlagUpdate(long ID, bool isClosed);
-        Task<bool> SetMeetingRoomClosed(string roomName);
+        Task<bool> SetMeetingRoomClosed(string roomName, bool isPartiallyClosed);
         Task<bool> MeetingRoomComposeVideoUpdate(CompositionResource compositionResource, string roomName);
         Task<bool> UpdateRoomStatusFromTwilioWebHook(RoomStatusRequest roomStatusRequest);
         Task<bool> UpdateComposeVideoStatusFromTwilioWebHook(VideoCompositionStatusRequest videoCompositionStatusRequest);

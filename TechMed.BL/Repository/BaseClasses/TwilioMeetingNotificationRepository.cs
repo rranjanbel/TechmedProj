@@ -32,7 +32,10 @@ namespace TechMed.BL.Repository.BaseClasses
         public async Task<TwilioMeetingRoomInfo> MeetingRoomInfoGet(string RoomName)
         {
             return await _teleMedecineContext.TwilioMeetingRoomInfos.FirstOrDefaultAsync(x => x.RoomName == RoomName);
-
+        }
+        public async Task<TwilioMeetingRoomInfo> MeetingRoomInfoGet(int patientCaseId)
+        {
+            return await _teleMedecineContext.TwilioMeetingRoomInfos.FirstOrDefaultAsync(x => x.PatientCaseId== patientCaseId);
         }
         public async Task<bool> MeetingRoomInfoAdd(TwilioMeetingRoomInfo doctorMeetingRoomInfo)
         {
@@ -46,7 +49,10 @@ namespace TechMed.BL.Repository.BaseClasses
             return await _teleMedecineContext.PatientQueues
                 .Include(x => x.PatientCase)
                 .Include(x => x.AssignedByNavigation)
-                .ThenInclude(x => x.User).FirstOrDefaultAsync(x => x.PatientCaseId == patientCaseID);
+                .ThenInclude(x => x.User)
+                .Include(x=>x.AssignedDoctor)
+                .ThenInclude(x=>x.User)
+                .FirstOrDefaultAsync(x => x.PatientCaseId == patientCaseID);
         }
 
         public async Task<bool> MeetingRoomCloseFlagUpdate(long ID, bool isClosed)
@@ -65,7 +71,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 return true;
             }
         }
-        public async Task<bool> SetMeetingRoomClosed(string roomName)
+        public async Task<bool> SetMeetingRoomClosed(string roomName,bool isPartiallyClosed)
         {
 
             var meetInfo = await _teleMedecineContext.TwilioMeetingRoomInfos.FirstOrDefaultAsync(x => x.RoomName == roomName);
@@ -73,7 +79,7 @@ namespace TechMed.BL.Repository.BaseClasses
             {
                 meetInfo.IsClosed = true;
                 meetInfo.CloseDate = UtilityMaster.GetLocalDateTime();
-                //meetInfo.TwilioRoomStatus = "Closed";
+                meetInfo.TwilioRoomStatus = isPartiallyClosed? "Disconnected":"Completed";
                 _teleMedecineContext.TwilioMeetingRoomInfos.Add(meetInfo);
                 _teleMedecineContext.Entry(meetInfo).State = EntityState.Modified;
                 return (await _teleMedecineContext.SaveChangesAsync()) > 0;
@@ -108,18 +114,15 @@ namespace TechMed.BL.Repository.BaseClasses
             var meetInfo = await _teleMedecineContext.TwilioMeetingRoomInfos.FirstOrDefaultAsync(x => x.RoomName == roomStatusRequest.RoomName);
             if (meetInfo != null)
             {
-                if (meetInfo.IsClosed.GetValueOrDefault(false) == false)
-                {
                     if (!string.IsNullOrEmpty(roomStatusRequest.RoomStatus) && roomStatusRequest.RoomStatus.ToLower() == "completed")
                     {
-                        meetInfo.TwilioRoomStatus = roomStatusRequest.RoomStatus;
+                        meetInfo.TwilioRoomStatus = "Completed";
                         meetInfo.IsClosed = true;
                         meetInfo.CloseDate = UtilityMaster.GetLocalDateTime();
                         _teleMedecineContext.TwilioMeetingRoomInfos.Add(meetInfo);
                         _teleMedecineContext.Entry(meetInfo).State = EntityState.Modified;
                         return (await _teleMedecineContext.SaveChangesAsync()) > 0;
                     }
-                }
             }
             return true;
         }
