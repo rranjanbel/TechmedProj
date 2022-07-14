@@ -488,7 +488,7 @@ namespace TechMed.BL.Repository.BaseClasses
                                 Noon = item.Noon,
                                 Od = item.OD,
                                 Td = item.TD,
-
+                                Qid=item.QID,
                                 DrugMasterId = item.DrugID,
                                 PatientCaseId = treatmentVM.PatientCaseID,
                                 Duration = item.Duration,

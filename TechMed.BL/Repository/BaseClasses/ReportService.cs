@@ -157,8 +157,8 @@ namespace TechMed.API.Services
             {
                 Medicine = Medicine + MedicineTemplate;
                 Medicine = Medicine.Replace("{{medicineName}}", item.DrugName);
-                Medicine = Medicine.Replace("{{Quantity}}", (item.Duration * (item.Od == true ? 1 : (item.Bd == true ? 2 : (item.Td == true ? 3 : 0)))).ToString());
-                Medicine = Medicine.Replace("{{dose}}", (item.Od == true ? "O.D" : " ") + (item.Bd == true ? "B.I.D" : " ") + (item.Td == true ? "T.D.S" : " "));
+                Medicine = Medicine.Replace("{{Quantity}}", (item.Duration * (item.Od == true ? 1 : (item.Bd == true ? 2 : (item.Td == true ? 3 : (item.Qid == true ? 4 : 0))))).ToString());
+                Medicine = Medicine.Replace("{{dose}}", (item.Od == true ? "O.D" : " ") + (item.Bd == true ? "B.I.D" : " ") + (item.Td == true ? "T.D.S" : " ") + (item.Qid == true ? "Q.I.D" : " "));
                 Medicine = Medicine.Replace("{{duration}}", item.Duration.ToString());
                 Medicine = Medicine.Replace("{{doseDuration}}", (item.EmptyStomach == true ? "EmptyStomach" : " ") + (item.AfterMeal == true ? "AfterMeal" : " "));
             }

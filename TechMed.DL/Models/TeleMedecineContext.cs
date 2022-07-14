@@ -987,6 +987,7 @@ namespace TechMed.DL.Models
                 entity.Property(e => e.PatientCaseId).HasColumnName("PatientCaseID");
 
                 entity.Property(e => e.Td).HasColumnName("TD");
+                entity.Property(e => e.Qid).HasColumnName("QID");
 
                 entity.HasOne(d => d.DrugMaster)
                     .WithMany(p => p.PatientCaseMedicines)

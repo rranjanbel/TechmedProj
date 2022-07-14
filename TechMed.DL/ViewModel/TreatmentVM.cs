@@ -52,6 +52,8 @@ namespace TechMed.DL.ViewModel
         public bool BD { get; set; }
         [Required]
         public bool TD { get; set; }
+        [Required]
+        public bool QID { get; set; }
         public int Duration { get; set; } = 0;
 
     }
