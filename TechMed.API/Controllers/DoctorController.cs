@@ -1310,7 +1310,7 @@ namespace TechMed.API.Controllers
 
         [HttpGet]
         [Route("GetPrescription")]
-        public async Task<IActionResult> GetPrescription()
+        public async Task<IActionResult> GetPrescription(int caseid=10703)
         {
             //using (var ms = new MemoryStream(testFileBytes))
             //{
@@ -1331,7 +1331,7 @@ namespace TechMed.API.Controllers
             //}
             try
             {
-                var pdfFile = await _reportService.GeneratePdfReport(10703, _webHostEnvironment.ContentRootPath);
+                var pdfFile = await _reportService.GeneratePdfReport(caseid, _webHostEnvironment.ContentRootPath);
                 return File(pdfFile,
                 "application/octet-stream", "SimplePdf.pdf");
             }

@@ -19,8 +19,7 @@ using TechMed.API.NotificationHub;
 using TechMed.BL.ModelMaster;
 using TechMed.DL.ViewModel;
 using TechMed.BL.CommanClassesAndFunctions;
-using DinkToPdf.Contracts;
-using DinkToPdf;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,8 +58,8 @@ builder.Services.AddCors(options =>
 });
 var jwtTokenConfig = builder.Configuration.GetSection("jwtTokenConfig").Get<JwtTokenConfig>();
 
-builder.Services.AddSingleton(typeof(IConverter),
-   new SynchronizedConverter(new PdfTools()));
+//builder.Services.AddSingleton(typeof(IConverter),
+//   new SynchronizedConverter(new PdfTools()));
 builder.Services.AddSingleton(jwtTokenConfig);
 builder.Services.AddAuthentication(x =>
 {

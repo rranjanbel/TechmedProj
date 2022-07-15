@@ -1,7 +1,7 @@
-﻿using DinkToPdf;
-using DinkToPdf.Contracts;
+﻿
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Internal;
+using SelectPdf;
 using TechMed.BL.CommanClassesAndFunctions;
 using TechMed.BL.Repository.Interfaces;
 using TechMed.BL.ViewModels;
@@ -10,12 +10,12 @@ namespace TechMed.API.Services
 {
     public class ReportService : IReportService
     {
-        private readonly IConverter _converter;
+        //private readonly IConverter _converter;
         private readonly IPatientCaseRepository _patientCaeRepository;
-        public ReportService(IConverter converter, IPatientCaseRepository patientCaeRepository)
+        public ReportService( IPatientCaseRepository patientCaeRepository)
         {
             _patientCaeRepository = patientCaeRepository;
-            _converter = converter;
+            //_converter = converter;
         }
         public async Task<byte[]> GeneratePdfReport(Int64 PatientCaseID, string contentRootPath)
         {
@@ -52,7 +52,7 @@ namespace TechMed.API.Services
             html = html.Replace("{{opdno}}", patientCaseVM.patientCase.Opdno);
             html = html.Replace("{{caseFileNumber}}", patientCaseVM.patientCase.CaseFileNumber);
 
-            string htmlVitalTemplate = File.ReadAllText(path+@"Vital.html");
+            string htmlVitalTemplate = File.ReadAllText(path + @"Vital.html");
             string htmlVital = "";
             patientCaseVM.vitals = patientCaseVM.vitals.Where(a => a.Value != null && a.Value != "").ToList();
             var t = Partition<PatientCaseVitalsVM>(patientCaseVM.vitals, 3);
@@ -165,47 +165,45 @@ namespace TechMed.API.Services
             html = html.Replace("{{medicine}}", Medicine);
             html = html.Replace("{{doctorSignature}}", patientCaseVM.DoctorSignature);
 
-            GlobalSettings globalSettings = new GlobalSettings();
-            globalSettings.ColorMode = ColorMode.Color;
-            globalSettings.Orientation = Orientation.Portrait;
-            globalSettings.PaperSize = PaperKind.A4;
-            globalSettings.Margins = new MarginSettings { Top = 10, Bottom = 10, Left = 0, Right = 0 };
-            globalSettings.PageOffset = 0;
+            //GlobalSettings globalSettings = new GlobalSettings();
+            //globalSettings.ColorMode = ColorMode.Color;
+            //globalSettings.Orientation = Orientation.Portrait;
+            //globalSettings.PaperSize = PaperKind.A4;
+            //globalSettings.Margins = new MarginSettings { Top = 10, Bottom = 10, Left = 0, Right = 0 };
+            //globalSettings.PageOffset = 0;
 
-            ObjectSettings objectSettings = new ObjectSettings();
-            objectSettings.PagesCount = true;
-            objectSettings.HtmlContent = html;
-            WebSettings webSettings = new WebSettings();
-            webSettings.DefaultEncoding = "utf-8";
-            HeaderSettings headerSettings = new HeaderSettings();
-            headerSettings.FontSize = 10;
-            headerSettings.FontName = "Ariel";
-            headerSettings.Right = "Page [page] of [toPage]";
-            headerSettings.Line = true;
-            FooterSettings footerSettings = new FooterSettings();
-            footerSettings.FontSize = 10;
-            footerSettings.FontName = "Ariel";
-            footerSettings.Center = "";
-            footerSettings.Line = true;
-            objectSettings.HeaderSettings = headerSettings;
-            objectSettings.FooterSettings = footerSettings;
-            objectSettings.WebSettings = webSettings;
-            HtmlToPdfDocument htmlToPdfDocument = new HtmlToPdfDocument()
-            {
-                GlobalSettings = globalSettings,
-                Objects = { objectSettings },
-            };
+            //ObjectSettings objectSettings = new ObjectSettings();
+            //objectSettings.PagesCount = true;
+            //objectSettings.HtmlContent = html;
+            //WebSettings webSettings = new WebSettings();
+            //webSettings.DefaultEncoding = "utf-8";
+            //HeaderSettings headerSettings = new HeaderSettings();
+            //headerSettings.FontSize = 10;
+            //headerSettings.FontName = "Ariel";
+            //headerSettings.Right = "Page [page] of [toPage]";
+            //headerSettings.Line = true;
+            //FooterSettings footerSettings = new FooterSettings();
+            //footerSettings.FontSize = 10;
+            //footerSettings.FontName = "Ariel";
+            //footerSettings.Center = "";
+            //footerSettings.Line = true;
+            //objectSettings.HeaderSettings = headerSettings;
+            //objectSettings.FooterSettings = footerSettings;
+            //objectSettings.WebSettings = webSettings;
+            //HtmlToPdfDocument htmlToPdfDocument = new HtmlToPdfDocument()
+            //{
+            //    GlobalSettings = globalSettings,
+            //    Objects = { objectSettings },
+            //};
 
             var testFilePath = "path/to/test.pdf";
-            var testFileBytes = _converter.Convert(htmlToPdfDocument);
-            
+            var testFileBytes = BtnCreatePdf_Click(html);
+            //PdfSharpConvert(html);
+            //var testFileBytes = _converter.Convert(htmlToPdfDocument);
+
             using (var ms = new MemoryStream(testFileBytes))
             {
-                //IFormFile fromFile = new FormFile(ms, 0, ms.Length,
-                //    Path.GetFileNameWithoutExtension(testFilePath),
-                //    Path.GetFileName(testFilePath)
-                //);
-                //fromFile
+
                 List<CaseDocumentBase64VM> caseDocuments = new List<CaseDocumentBase64VM>();
                 caseDocuments.Add(new CaseDocumentBase64VM
                 {
@@ -216,7 +214,8 @@ namespace TechMed.API.Services
                 });
                 var result = _patientCaeRepository.UploadCaseDocFromByte(caseDocuments, contentRootPath);
             }
-            return _converter.Convert(htmlToPdfDocument);
+            //return _converter.Convert(htmlToPdfDocument);
+            return testFileBytes;
         }
         public static IEnumerable<List<T>> SplitList<T>(List<T> locations, int nSize = 30)
         {
@@ -252,5 +251,71 @@ namespace TechMed.API.Services
 
             return partitions;
         }
+
+
+
+        protected byte[] BtnCreatePdf_Click(string htmlString)
+        {
+            // read parameters from the webpage
+
+
+            //string pdf_page_size = DdlPageSize.SelectedValue;
+            //PdfPageSize pageSize = (PdfPageSize)Enum.Parse(typeof(PdfPageSize),
+            //    pdf_page_size, true);
+
+            //string pdf_orientation = DdlPageOrientation.SelectedValue;
+            //PdfPageOrientation pdfOrientation =
+            //    (PdfPageOrientation)Enum.Parse(typeof(PdfPageOrientation),
+            //    pdf_orientation, true);
+
+            int webPageWidth = 1024;
+            try
+            {
+                webPageWidth = Convert.ToInt32(1000);
+            }
+            catch { }
+
+            int webPageHeight = 0;
+            try
+            {
+                webPageHeight = Convert.ToInt32(1000);
+            }
+            catch { }
+
+            // instantiate a html to pdf converter object
+            HtmlToPdf converter = new HtmlToPdf();
+
+            // set converter options
+            //converter.Options.PdfPageSize = pageSize;
+            //converter.Options.PdfPageOrientation = pdfOrientation;
+            //converter.Options.WebPageWidth = webPageWidth;
+            //converter.Options.WebPageHeight = webPageHeight;
+            converter.Options.DisplayHeader = true;
+            // create a new pdf document converting an url
+            PdfDocument doc = converter.ConvertHtmlString(htmlString);
+            doc.Pages.Remove(doc.Pages[0]);
+
+            // save pdf document
+            //doc.Save("Sample.pdf");
+            var bytefile = doc.Save();
+            // close pdf document
+            doc.Close();
+            return bytefile;
+
+        }
+
+        //public Byte[] PdfSharpConvert(String html)
+        //{
+        //    Byte[] res = null;
+        //    using (MemoryStream ms = new MemoryStream())
+        //    {
+        //        var pdf = TheArtOfDev.HtmlRenderer.PdfSharp.PdfGenerator.GeneratePdf(html, PdfSharp.PageSize.Royal);
+        //        //pdf.Save(ms);
+        //        pdf.Save("file.pdf");
+        //        res = ms.ToArray();
+
+        //    }
+        //    return res;
+        //}
     }
 }
