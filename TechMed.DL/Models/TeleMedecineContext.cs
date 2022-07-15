@@ -1480,6 +1480,20 @@ namespace TechMed.DL.Models
                     .WithMany(p => p.TwilioMeetingRoomInfos)
                     .HasForeignKey(d => d.PatientCaseId)
                     .HasConstraintName("FK__TwilioMee__Patie__28B808A7");
+                
+                entity.Property(e => e.AssignedDoctorId).IsRequired(false).HasColumnName("AssignedDoctorID");
+                entity.Property(e => e.AssignedBy).IsRequired(false).HasColumnName("AssignedBy");
+                
+                entity.HasOne(d => d.AssignedByNavigation)
+                  .WithMany(p => p.TwilioMeetingRoomInfos)
+                  .HasForeignKey(d => d.AssignedBy)
+                  .OnDelete(DeleteBehavior.ClientSetNull)
+                  .HasConstraintName("FK_TwilioMeeting_PHCMasterAssignedBy");
+                entity.HasOne(d => d.AssignedDoctor)
+                 .WithMany(p => p.TwilioMeetingRoomInfos)
+                 .HasForeignKey(d => d.AssignedDoctorId)
+                 .OnDelete(DeleteBehavior.ClientSetNull)
+                 .HasConstraintName("FK_TwilioMeeting_DoctorMaster");
             });
 
             modelBuilder.Entity<UserDetail>(entity =>

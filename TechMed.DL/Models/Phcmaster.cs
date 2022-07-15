@@ -15,6 +15,7 @@ namespace TechMed.DL.Models
             PatientQueues = new HashSet<PatientQueue>();
             SpokeMaintenances = new HashSet<SpokeMaintenance>();
             RemoteSiteDowntimeReports=new HashSet<RemoteSiteDowntimeReport>();
+            TwilioMeetingRoomInfos = new HashSet<TwilioMeetingRoomInfo>();
         }
 
         public int Id { get; set; }
@@ -49,5 +50,6 @@ namespace TechMed.DL.Models
         public virtual ICollection<PatientQueue> PatientQueues { get; set; }
         public virtual ICollection<SpokeMaintenance> SpokeMaintenances { get; set; }
         public virtual ICollection<RemoteSiteDowntimeReport> RemoteSiteDowntimeReports { get; set; }
+        public virtual ICollection<TwilioMeetingRoomInfo> TwilioMeetingRoomInfos { get; set; }
     }
 }

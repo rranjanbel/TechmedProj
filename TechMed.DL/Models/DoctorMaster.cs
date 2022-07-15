@@ -8,6 +8,8 @@ namespace TechMed.DL.Models
         public DoctorMaster()
         {
             PatientQueues = new HashSet<PatientQueue>();
+            TwilioMeetingRoomInfos = new HashSet<TwilioMeetingRoomInfo>();
+
         }
 
         public int Id { get; set; }
@@ -46,5 +48,6 @@ namespace TechMed.DL.Models
         public virtual UserMaster? UpdatedByNavigation { get; set; }
         public virtual UserMaster User { get; set; } = null!;
         public virtual ICollection<PatientQueue> PatientQueues { get; set; }
+        public virtual ICollection<TwilioMeetingRoomInfo> TwilioMeetingRoomInfos { get; set; }
     }
 }

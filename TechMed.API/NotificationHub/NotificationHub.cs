@@ -6,8 +6,11 @@ namespace TechMed.API.NotificationHub
 
     public enum enumSignRNotificationType
     {
-        CallingToPHC,
-        CallRejectedByPHC,
+        BeginDialingCall,
+        CallRejected,
+        NotifyParticipientToJoin,
+        NotifyParticipientToExit,
+
         CallRoomStartingForDoctor,
         CallRoomStartingForPHC,
         MeetingRoomCloseByDoctor,
@@ -37,12 +40,12 @@ namespace TechMed.API.NotificationHub
         {
             _userService = userService;
         }
-        public async Task onCallRejectedByPHC(string toUser, string fromUser)
+        public async Task onCallRejected(string toUser, string fromUser)
         {
             await Clients.All.BroadcastMessage(new SignalRNotificationModel()
             {
-                message = "Call Rejected by PHC",
-                messageType = enumSignRNotificationType.CallRejectedByPHC.ToString(),
+                message = "",
+                messageType = enumSignRNotificationType.CallRejected.ToString(),
                 receiverEmail = toUser,
                 senderEmail = fromUser
             });

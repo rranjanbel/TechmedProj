@@ -20,7 +20,7 @@ namespace TechMed.API.Controllers
         private readonly IHubContext<SignalRBroadcastHub, IHubClient> _hubContext;
         private readonly ITwilioMeetingRepository _twilioRoomDb;
         private readonly ILogger<VideoCallController> _logger;
-
+        private bool CanCallByPHC = true;
         public VideoCallController(IMapper mapper,
             ITwilioVideoSDKService twilioVideoSDK,
             ITwilioMeetingRepository twilioRoomDb,
@@ -40,8 +40,45 @@ namespace TechMed.API.Controllers
             return new JsonResult(new { token = _twilioVideoSDK.GetTwilioJwt(User.Identity.Name) });
         }
 
-        [HttpGet("isvalidroomdoctor")]
-        public async Task<IActionResult> IsValidRoomDoctor([Required][FromQuery] int patientCaseId, [Required][FromQuery] string meetingInstance)
+
+        [HttpPost("begindialingcalltouser")]
+        public async Task<IActionResult> BeginDialingCallToUser([Required][FromQuery] int patientCaseId)
+        {
+            ApiResponseModel<bool> apiResponseModel = new ApiResponseModel<bool>();
+            var patientInfo = await _twilioRoomDb.PatientQueueGet(patientCaseId);
+            
+            if (patientInfo == null)
+            {
+                apiResponseModel.isSuccess = false;
+                return BadRequest(apiResponseModel);
+            }
+
+
+            //need to check availability of doctor by checkin in queue and other
+            if (1 == 1) //is enduser available to have call
+            {
+                apiResponseModel.isSuccess = true;
+                await _hubContext.Clients.All.BroadcastMessage(new SignalRNotificationModel()
+                {
+                    receiverEmail = CanCallByPHC ? patientInfo.AssignedDoctor.User.Email : patientInfo.AssignedByNavigation.User.Email,
+                    senderEmail = CanCallByPHC ? patientInfo.AssignedByNavigation.User.Email : patientInfo.AssignedDoctor.User.Email,
+                    message = CanCallByPHC ? patientInfo.AssignedByNavigation.Phcname : patientInfo.AssignedDoctor.User.Name,
+                    messageType = enumSignRNotificationType.BeginDialingCall.ToString(),
+                    patientCaseId = patientCaseId
+                });
+            }
+            else
+            {
+                apiResponseModel.isSuccess = false;
+
+            }
+            return Ok(apiResponseModel);
+
+        }
+
+
+        [HttpGet("connecttomeetingroom")]
+        public async Task<IActionResult> ConnectToMeetingRoom([Required][FromQuery] int patientCaseId, [Required][FromQuery] string meetingInstance, [Required][FromQuery] bool isDoctor)
         {
             ApiResponseModel<bool> apiResponseModel = new ApiResponseModel<bool>();
             string callBackUrlForTwilio = string.Format("{0}://{1}{2}/api/webhookcallback/twilioroomstatuscallback", Request.Scheme, Request.Host.Value, Request.PathBase);
@@ -55,26 +92,45 @@ namespace TechMed.API.Controllers
                     return BadRequest(apiResponseModel);
                 }
                 var patientCaseInfo = await _twilioRoomDb.MeetingRoomInfoGet(meetingInstance);
-                if (patientCaseInfo == null)
+                var patientInfo = await _twilioRoomDb.PatientQueueGet(patientCaseId);
+
+                if ((patientCaseInfo == null && CanCallByPHC && isDoctor) || (patientCaseInfo == null && !CanCallByPHC && !isDoctor))
                 {
                     var roomFromTwilio = await _twilioVideoSDK.CreateRoomsAsync(meetingInstance, callBackUrlForTwilio);
-
                     var isSaved = await _twilioRoomDb.MeetingRoomInfoAdd(new TwilioMeetingRoomInfo()
                     {
                         MeetingSid = roomFromTwilio.Sid,
                         RoomName = roomFromTwilio.UniqueName,
                         PatientCaseId = patientCaseId,
                         RoomStatusCallback = roomFromTwilio.StatusCallback.ToString(),
-                        TwilioRoomStatus = roomFromTwilio.Status.ToString()
+                        TwilioRoomStatus = roomFromTwilio.Status.ToString(),
+                        AssignedBy = patientInfo.AssignedBy,
+                        AssignedDoctorId=patientInfo.AssignedDoctorId
                     });
                     apiResponseModel.isSuccess = true;
                     apiResponseModel.data = true;
+
+                    await _hubContext.Clients.All.BroadcastMessage(new SignalRNotificationModel()
+                    {
+                        receiverEmail = CanCallByPHC ? patientInfo.AssignedByNavigation.User.Email : patientInfo.AssignedDoctor.User.Email ,
+                        senderEmail = CanCallByPHC ? patientInfo.AssignedDoctor.User.Email : patientInfo.AssignedByNavigation.User.Email ,
+                        message = "",
+                        messageType = enumSignRNotificationType.NotifyParticipientToJoin.ToString(),
+                        patientCaseId = patientCaseId,
+                        roomName = meetingInstance
+                    });
+
+
                     return Ok(apiResponseModel);
+                }
+                else if (patientCaseInfo == null)
+                {
+                    apiResponseModel.isSuccess = false;
+                    apiResponseModel.errorMessage = "Invalid Patient Or Call Info";
+                    return BadRequest(apiResponseModel);
                 }
                 else
                 {
-
-
                     var roomFromTwilio = await _twilioVideoSDK.GetRoomDetailFromTwilio(patientCaseInfo.MeetingSid);
                     if (roomFromTwilio == null)
                     {
@@ -108,61 +164,130 @@ namespace TechMed.API.Controllers
         }
 
 
-        [HttpGet("isvalidroomphc")]
-        public async Task<IActionResult> IsValidRoomPhc([Required][FromQuery] int patientCaseId, [Required][FromQuery] string meetingInstance)
-        {
-            ApiResponseModel<bool> apiResponseModel = new ApiResponseModel<bool>();
-            string callBackUrlForTwilio = string.Format("{0}://{1}/api/callbackhandler/meetingstatus", Request.Scheme, Request.Host.Value);
-            try
-            {
 
-                if (patientCaseId == 0 || string.IsNullOrEmpty(meetingInstance))
-                {
-                    apiResponseModel.isSuccess = false;
-                    apiResponseModel.errorMessage = "Invalid Patient Or Call Info";
-                    return BadRequest(apiResponseModel);
-                }
-                var patientCaseInfo = await _twilioRoomDb.MeetingRoomInfoGet(meetingInstance);
+        //[HttpGet("isvalidroomdoctor")]
+        //public async Task<IActionResult> IsValidRoomDoctor([Required][FromQuery] int patientCaseId, [Required][FromQuery] string meetingInstance)
+        //{
+        //    ApiResponseModel<bool> apiResponseModel = new ApiResponseModel<bool>();
+        //    string callBackUrlForTwilio = string.Format("{0}://{1}{2}/api/webhookcallback/twilioroomstatuscallback", Request.Scheme, Request.Host.Value, Request.PathBase);
+        //    try
+        //    {
 
-                if (patientCaseInfo == null)
-                {
-                    apiResponseModel.isSuccess = false;
-                    apiResponseModel.errorMessage = "Invalid Patient Or Call Info";
-                    return BadRequest(apiResponseModel);
-                }
-                else
-                {
-                    var roomFromTwilio = await _twilioVideoSDK.GetRoomDetailFromTwilio(patientCaseInfo.MeetingSid);
-                    if (roomFromTwilio == null)
-                    {
-                        await _twilioRoomDb.MeetingRoomCloseFlagUpdate(patientCaseInfo.Id, true);
-                        apiResponseModel.isSuccess = false;
-                        apiResponseModel.errorMessage = "Room Closed";
-                        return BadRequest(apiResponseModel);
-                    }
-                    else if (roomFromTwilio.Status != RoomResource.RoomStatusEnum.InProgress)
-                    {
-                        await _twilioRoomDb.MeetingRoomCloseFlagUpdate(patientCaseInfo.Id, true);
-                        apiResponseModel.isSuccess = false;
-                        apiResponseModel.errorMessage = "Room Closed";
-                        return BadRequest(apiResponseModel);
-                    }
-                    apiResponseModel.isSuccess = true;
-                    apiResponseModel.data = true;
-                    return Ok(apiResponseModel);
-                }
-            }
-            catch (Exception ex)
-            {
-                apiResponseModel.isSuccess = false;
-                apiResponseModel.errorMessage = ex.Message;
-                _logger.LogError("Exception in IsValidRoomPhc API " + ex);
-                return BadRequest(apiResponseModel);
-            }
+        //        if (patientCaseId == 0 || string.IsNullOrEmpty(meetingInstance))
+        //        {
+        //            apiResponseModel.isSuccess = false;
+        //            apiResponseModel.errorMessage = "Invalid Patient Or Call Info";
+        //            return BadRequest(apiResponseModel);
+        //        }
+        //        var patientCaseInfo = await _twilioRoomDb.MeetingRoomInfoGet(meetingInstance);
+        //        if (patientCaseInfo == null)
+        //        {
+        //            var roomFromTwilio = await _twilioVideoSDK.CreateRoomsAsync(meetingInstance, callBackUrlForTwilio);
+
+        //            var isSaved = await _twilioRoomDb.MeetingRoomInfoAdd(new TwilioMeetingRoomInfo()
+        //            {
+        //                MeetingSid = roomFromTwilio.Sid,
+        //                RoomName = roomFromTwilio.UniqueName,
+        //                PatientCaseId = patientCaseId,
+        //                RoomStatusCallback = roomFromTwilio.StatusCallback.ToString(),
+        //                TwilioRoomStatus = roomFromTwilio.Status.ToString()
+        //            });
+        //            apiResponseModel.isSuccess = true;
+        //            apiResponseModel.data = true;
+        //            return Ok(apiResponseModel);
+        //        }
+        //        else
+        //        {
 
 
+        //            var roomFromTwilio = await _twilioVideoSDK.GetRoomDetailFromTwilio(patientCaseInfo.MeetingSid);
+        //            if (roomFromTwilio == null)
+        //            {
+        //                await _twilioRoomDb.MeetingRoomCloseFlagUpdate(patientCaseInfo.Id, true);
+        //                apiResponseModel.isSuccess = false;
+        //                apiResponseModel.errorMessage = "Room Closed";
+        //                return BadRequest(apiResponseModel);
+        //            }
+        //            else if (roomFromTwilio.Status != RoomResource.RoomStatusEnum.InProgress)
+        //            {
+        //                await _twilioRoomDb.MeetingRoomCloseFlagUpdate(patientCaseInfo.Id, true);
+        //                apiResponseModel.isSuccess = false;
+        //                apiResponseModel.errorMessage = "Room Closed";
+        //                return BadRequest(apiResponseModel);
+        //            }
+        //            apiResponseModel.isSuccess = true;
+        //            apiResponseModel.data = true;
+        //            return Ok(apiResponseModel);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        apiResponseModel.isSuccess = false;
+        //        apiResponseModel.errorMessage = ex.Message;
+        //        _logger.LogError("Exception in IsValidRoomDoctor API " + ex);
+        //        return BadRequest(apiResponseModel);
+        //    }
 
-        }
+
+
+        //}
+
+
+        //[HttpGet("isvalidroomphc")]
+        //public async Task<IActionResult> IsValidRoomPhc([Required][FromQuery] int patientCaseId, [Required][FromQuery] string meetingInstance)
+        //{
+        //    ApiResponseModel<bool> apiResponseModel = new ApiResponseModel<bool>();
+        //    string callBackUrlForTwilio = string.Format("{0}://{1}/api/callbackhandler/meetingstatus", Request.Scheme, Request.Host.Value);
+        //    try
+        //    {
+
+        //        if (patientCaseId == 0 || string.IsNullOrEmpty(meetingInstance))
+        //        {
+        //            apiResponseModel.isSuccess = false;
+        //            apiResponseModel.errorMessage = "Invalid Patient Or Call Info";
+        //            return BadRequest(apiResponseModel);
+        //        }
+        //        var patientCaseInfo = await _twilioRoomDb.MeetingRoomInfoGet(meetingInstance);
+
+        //        if (patientCaseInfo == null)
+        //        {
+        //            apiResponseModel.isSuccess = false;
+        //            apiResponseModel.errorMessage = "Invalid Patient Or Call Info";
+        //            return BadRequest(apiResponseModel);
+        //        }
+        //        else
+        //        {
+        //            var roomFromTwilio = await _twilioVideoSDK.GetRoomDetailFromTwilio(patientCaseInfo.MeetingSid);
+        //            if (roomFromTwilio == null)
+        //            {
+        //                await _twilioRoomDb.MeetingRoomCloseFlagUpdate(patientCaseInfo.Id, true);
+        //                apiResponseModel.isSuccess = false;
+        //                apiResponseModel.errorMessage = "Room Closed";
+        //                return BadRequest(apiResponseModel);
+        //            }
+        //            else if (roomFromTwilio.Status != RoomResource.RoomStatusEnum.InProgress)
+        //            {
+        //                await _twilioRoomDb.MeetingRoomCloseFlagUpdate(patientCaseInfo.Id, true);
+        //                apiResponseModel.isSuccess = false;
+        //                apiResponseModel.errorMessage = "Room Closed";
+        //                return BadRequest(apiResponseModel);
+        //            }
+        //            apiResponseModel.isSuccess = true;
+        //            apiResponseModel.data = true;
+        //            return Ok(apiResponseModel);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        apiResponseModel.isSuccess = false;
+        //        apiResponseModel.errorMessage = ex.Message;
+        //        _logger.LogError("Exception in IsValidRoomPhc API " + ex);
+        //        return BadRequest(apiResponseModel);
+        //    }
+
+
+
+        //}
 
 
         //[HttpGet("rooms")]
@@ -212,42 +337,17 @@ namespace TechMed.API.Controllers
         //}
 
 
-        [HttpPost("callingbypatientcaseid")]
-        public async Task<IActionResult> CallingByPatientCaseId([Required][FromForm] int patientCaseId)
-        {
-            ApiResponseModel<bool> apiResponseModel = new ApiResponseModel<bool>();
-
-
-            var patientInfo = await _twilioRoomDb.PatientQueueGet(patientCaseId);
-            if (patientInfo == null)
-            {
-                apiResponseModel.isSuccess = false;
-                apiResponseModel.errorMessage = "Invalid Patient Case";
-                return BadRequest(apiResponseModel);
-            }
-            await _hubContext.Clients.All.BroadcastMessage(new SignalRNotificationModel()
-            {
-                receiverEmail = patientInfo.AssignedByNavigation.User.Email,
-                senderEmail = User.Identity.Name,
-                message = "Call Initiate",
-                messageType = enumSignRNotificationType.CallingToPHC.ToString(),
-                patientCaseId = patientCaseId
-            });
-            apiResponseModel.isSuccess = true;
-            return Ok(apiResponseModel);
-        }
-
 
         [HttpPost("dismisscall")]
-        public async Task<IActionResult> DismissCall([Required][FromForm] string roomInstance, [Required][FromForm] int patientCaseId)
+        public async Task<IActionResult> DismissCall([Required][FromForm] string roomInstance, [Required][FromForm] int patientCaseId,[Required][FromForm] bool isPartiallyClosed)
         {
             ApiResponseModel<dynamic> apiResponseModel = new ApiResponseModel<dynamic>();
             string callBackUrlForTwilio = string.Format("{0}://{1}{2}/api/webhookcallback/twiliocomposevideostatuscallback", Request.Scheme, Request.Host.Value, Request.PathBase);
             try
             {
-                var queueInfo = await _twilioRoomDb.PatientQueueGet(patientCaseId);
+                var patientInfo = await _twilioRoomDb.PatientQueueGet(patientCaseId);
                 var roomInfo = await _twilioRoomDb.MeetingRoomInfoGet(roomInstance);
-                if (queueInfo == null || roomInfo == null)
+                if (patientInfo == null || roomInfo == null)
                 {
                     apiResponseModel.isSuccess = false;
                     apiResponseModel.errorMessage = "Invalid Information";
@@ -263,15 +363,29 @@ namespace TechMed.API.Controllers
                 {
 
                 }
-                await _twilioRoomDb.SetMeetingRoomClosed(roomInstance);
-               
+                await _twilioRoomDb.SetMeetingRoomClosed(roomInstance, isPartiallyClosed);
 
-                apiResponseModel.data = new
+
+                await _hubContext.Clients.All.BroadcastMessage(new SignalRNotificationModel()
                 {
-                    patientId = queueInfo.PatientCase.PatientId,
-                    patientCaseID = patientCaseId,
-                    toUser = queueInfo.AssignedByNavigation.User.Email
-                };
+                    receiverEmail = patientInfo.AssignedDoctor.User.Email,
+                    senderEmail = patientInfo.AssignedByNavigation.User.Email,
+                    message = "",
+                    messageType = enumSignRNotificationType.NotifyParticipientToExit.ToString(),
+                    patientCaseId = patientCaseId,
+                    roomName = roomInstance
+                });
+
+                await _hubContext.Clients.All.BroadcastMessage(new SignalRNotificationModel()
+                {
+                    receiverEmail = patientInfo.AssignedByNavigation.User.Email,
+                    senderEmail = patientInfo.AssignedDoctor.User.Email,
+                    message = "",
+                    messageType = enumSignRNotificationType.NotifyParticipientToExit.ToString(),
+                    patientCaseId = patientCaseId,
+                    roomName = roomInstance
+                });
+
                 apiResponseModel.isSuccess = true;
                 return Ok(apiResponseModel);
             }
