@@ -15,7 +15,7 @@ namespace TechMed.DL.ViewModel
         public string? Block { get; set; }
         public string? PHC { get; set; }
         public int Total { get; set; }
-        public int GeneralPractice { get; set; }
+        public int GeneralMedicine { get; set; }
         public int ObstetricsAndGyne { get; set; }
         public int Pediatrics { get; set; }
     }

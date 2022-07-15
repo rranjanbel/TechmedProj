@@ -202,7 +202,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     CompletedConsultantReport.Block = item.Block;
                     CompletedConsultantReport.PHC = item.PHC;
                     CompletedConsultantReport.Total = item.Total;
-                    CompletedConsultantReport.GeneralPractice = item.GeneralPractice;
+                    CompletedConsultantReport.GeneralMedicine = item.GeneralMedicine;
                     CompletedConsultantReport.ObstetricsAndGyne = item.ObstetricsAndGyne;
                     CompletedConsultantReport.Pediatrics = item.Pediatrics;
                     dashboardConsultations.Add(CompletedConsultantReport);
@@ -323,7 +323,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     CompletedConsultantReport.Block = item.Block;
                     CompletedConsultantReport.PHC = item.PHC;
                     CompletedConsultantReport.Total = item.Total;
-                    CompletedConsultantReport.GeneralPractice = item.GeneralPractice;
+                    CompletedConsultantReport.GeneralMedicine = item.GeneralMedicine;
                     CompletedConsultantReport.ObstetricsAndGyne = item.ObstetricsAndGyne;
                     CompletedConsultantReport.Pediatrics = item.Pediatrics;
                     dashboardConsultations.Add(CompletedConsultantReport);
