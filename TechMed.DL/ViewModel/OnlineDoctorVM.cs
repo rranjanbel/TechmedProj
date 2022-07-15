@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TechMed.BL.DTOMaster
+namespace TechMed.DL.ViewModel
 {
-    public class OnlineDrListDTO
+    public class OnlineDoctorVM
     {
         public int DoctorID { get; set; }
         public string DoctorFName { get; set; }
@@ -14,6 +14,5 @@ namespace TechMed.BL.DTOMaster
         public string DoctorLName { get; set; }
         public string Specialty { get; set; }
         public string Photo { get; set; }
-        
     }
 }

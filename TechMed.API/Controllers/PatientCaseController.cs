@@ -531,12 +531,12 @@ namespace TechMed.API.Controllers
 
         [HttpGet]
         [Route("GetSelectedOnlineDoctors")]
-        [ProducesResponseType(200, Type = typeof(List<OnlineDrListDTO>))]
+        [ProducesResponseType(200, Type = typeof(OnlineDoctorListVM))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetSelectedOnlineDoctors(long PatientCaseID = 0)
         {
-            List<OnlineDrListDTO> onlineDrLists = new List<OnlineDrListDTO>();
+            OnlineDoctorListVM onlineDrLists = new OnlineDoctorListVM();
             try
             {
                 if (PatientCaseID == 0)
@@ -546,16 +546,24 @@ namespace TechMed.API.Controllers
                     return StatusCode(404, ModelState);
                 }
                 onlineDrLists = await _patientCaeRepository.GetSelectedOnlineDoctors(PatientCaseID);
-                if (onlineDrLists != null && onlineDrLists.Count > 0)
-                {
-                    _logger.LogInformation($"GetSelectedOnlineDoctors : Sucess response returned " + PatientCaseID);
-                    return StatusCode(200, onlineDrLists);
+                if (onlineDrLists != null)
+                { 
+                    if(onlineDrLists.Status.ToLower()=="success")
+                    {
+                        _logger.LogInformation($"GetSelectedOnlineDoctors : Sucess response returned " + PatientCaseID);
+                        return StatusCode(200, onlineDrLists);
+                    }
+                    else
+                    {
+                        return StatusCode(404, onlineDrLists);
+                    }
+                    
                 }
                 else
                 {
                     ModelState.AddModelError("GetSelectedOnlineDoctors", $"did not get doctor list for PatientcaseID : {PatientCaseID}");
                     _logger.LogError("GetSelectedOnlineDoctors : did not get doctor list for PatientcaseID : " + PatientCaseID);
-                    return StatusCode(200, new {Message = "Doctor not avilable for selected Specialization." });
+                    return StatusCode(404, onlineDrLists);
                 }
             }
             catch (Exception ex)

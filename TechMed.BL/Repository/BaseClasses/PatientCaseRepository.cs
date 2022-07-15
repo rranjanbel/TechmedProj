@@ -437,7 +437,7 @@ namespace TechMed.BL.Repository.BaseClasses
                         outPatientReferToDoctorVM.PatientCaseID = patientReferToDoctorVM.PatientCaseID;
                         outPatientReferToDoctorVM.PHCID = patientReferToDoctorVM.PHCID;
                         outPatientReferToDoctorVM.Status = "Fail";
-                        outPatientReferToDoctorVM.Message = "Assigned doctor is busy !";
+                        outPatientReferToDoctorVM.Message = "Doctor is busy, please call other Doctor !";
                         return outPatientReferToDoctorVM;
                     }
 
@@ -1155,18 +1155,20 @@ namespace TechMed.BL.Repository.BaseClasses
             return PHCId;
         }
 
-        public async Task<List<OnlineDrListDTO>> GetSelectedOnlineDoctors(long patientCaseID)
+        public async Task<OnlineDoctorListVM> GetSelectedOnlineDoctors(long patientCaseID)
         {
-            List<OnlineDrListDTO> onlineDrLists = new List<OnlineDrListDTO>();
-            OnlineDrListDTO drListDTO = new OnlineDrListDTO();
+            OnlineDoctorListVM onlineDoctorList = new OnlineDoctorListVM();
+            List<OnlineDoctorVM> onlineDrLists = new List<OnlineDoctorVM>();
+            OnlineDoctorVM drListDTO = new OnlineDoctorVM();
             int specilizationID = await _teleMedecineContext.PatientCases.Where(a => a.Id == patientCaseID).Select(s => s.SpecializationId).FirstOrDefaultAsync();
             var doctors = await _teleMedecineContext.DoctorMasters.Include(d => d.Specialization).Where(a => a.IsOnline == true && a.SpecializationId == specilizationID).ToListAsync();
-            var Busydoctors = await _teleMedecineContext.TwilioMeetingRoomInfos
-                .Where(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" &&a.AssignedDoctorId!=null && a.AssignedDoctor.SpecializationId== specilizationID).ToListAsync();
+           
             //filter busy
            
             if(doctors != null)
             {
+                var Busydoctors = await _teleMedecineContext.TwilioMeetingRoomInfos.Include(d => d.AssignedDoctor)
+               .Where(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" && a.AssignedDoctorId != null && a.AssignedDoctor.SpecializationId == specilizationID && a.AssignedDoctor.IsOnline == true).ToListAsync();
                 foreach (var item in doctors)
                 {
                     UserDetail userDetail = _teleMedecineContext.UserDetails.Where(a => a.UserId == item.UserId).FirstOrDefault();
@@ -1174,24 +1176,40 @@ namespace TechMed.BL.Repository.BaseClasses
                     {
                         continue;
                     }
-                    onlineDrLists.Add(new OnlineDrListDTO
+                    onlineDrLists.Add(new OnlineDoctorVM
                     {
                         DoctorID = item.Id,
                         DoctorFName = userDetail.FirstName,
                         DoctorMName = userDetail.MiddleName ==null?"": userDetail.MiddleName,
                         DoctorLName = userDetail.LastName,
                         Photo = userDetail.Photo,
-                        Specialty = item.Specialization.Specialization
+                        Specialty = item.Specialization.Specialization                       
+                        
                     });
 
-                }                
+                } 
+                
+                if(onlineDrLists.Count ==0)
+                {
+                    onlineDoctorList.OnlineDoctors = onlineDrLists;
+                    onlineDoctorList.Status = "Fail";
+                    onlineDoctorList.Message = "All the doctors are busy, please add patient to waitlist.";
+                }
+                else
+                {
+                    onlineDoctorList.OnlineDoctors = onlineDrLists;
+                    onlineDoctorList.Status = "Success";
+                    onlineDoctorList.Message = "These docoters are avilable to see the patients.";
+                }
             }
             else
             {
-                onlineDrLists = new List<OnlineDrListDTO>();               
+                onlineDoctorList.OnlineDoctors = onlineDrLists;
+                onlineDoctorList.Status = "Fail";
+                onlineDoctorList.Message = "All the doctors are busy, please add patient to waitlist.";
             }
 
-            return onlineDrLists;
+            return onlineDoctorList;
 
         }
 
@@ -1230,6 +1248,8 @@ namespace TechMed.BL.Repository.BaseClasses
                 patientQueue.Doctor = item.Doctor;
                 patientQueue.Specialization = item.Specialization;
                 patientQueue.Gender = item.Gender;
+                patientQueue.PatientCaseID = item.PatientCaseID;
+                patientQueue.AssignedDoctorID = item.AssignedDoctorID;
                 patientQueue.WaitList = item.WaitList;                
 
                 queueByDoctors.Add(patientQueue);

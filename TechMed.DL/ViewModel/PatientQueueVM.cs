@@ -17,7 +17,9 @@ namespace TechMed.DL.ViewModel
         public string Doctor { get; set; }
         public string Specialization { get; set; }
         public string Gender { get; set; }
-        public long WaitList { get; set; }
-       
+        public long PatientCaseID { get; set; }
+        public int AssignedDoctorID { get; set; }
+        public long WaitList { get; set; }        
+
     }
 }
