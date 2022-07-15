@@ -233,8 +233,17 @@ namespace TechMed.API.Controllers
                     updatedPatientCasevm = await _patientCaeRepository.PostPatientReferToDoctor(referDoctor);
                     if (updatedPatientCasevm != null)
                     {
-                        _logger.LogInformation($"AddReferDoctorInPatientCase : Sucess response returned ");
-                        return CreatedAtRoute(201, updatedPatientCasevm);
+                        if(updatedPatientCasevm.Status.ToLower() =="sucess")
+                        {
+                            _logger.LogInformation($"AddReferDoctorInPatientCase : Sucess response returned ");
+                            return CreatedAtRoute(201, updatedPatientCasevm);
+                        }
+                        else
+                        {
+                            _logger.LogInformation($"AddReferDoctorInPatientCase : Fail response returned ");
+                            return StatusCode(404, updatedPatientCasevm);
+                        }
+                        
                     }
                     else
                     {

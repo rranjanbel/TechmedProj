@@ -420,7 +420,6 @@ namespace TechMed.BL.Repository.BaseClasses
             int autoAssignDoctorID = 0;
             int i = 0;
 
-
             try
             {
 
@@ -432,8 +431,13 @@ namespace TechMed.BL.Repository.BaseClasses
 
                     int Busydoctors =  _teleMedecineContext.TwilioMeetingRoomInfos
                                     .Where(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" && a.AssignedDoctorId == patientReferToDoctorVM.AssignedDocterID).Count();
-                    if (Busydoctors>0)
+                    if (Busydoctors > 0)
                     {
+                        outPatientReferToDoctorVM.AssignedDocterID = 0;
+                        outPatientReferToDoctorVM.PatientCaseID = patientReferToDoctorVM.PatientCaseID;
+                        outPatientReferToDoctorVM.PHCID = patientReferToDoctorVM.PHCID;
+                        outPatientReferToDoctorVM.Status = "Fail";
+                        outPatientReferToDoctorVM.Message = "Assigned doctor is busy !";
                         return outPatientReferToDoctorVM;
                     }
 
@@ -452,6 +456,11 @@ namespace TechMed.BL.Repository.BaseClasses
                         }
                         else
                         {
+                            outPatientReferToDoctorVM.AssignedDocterID = 0;
+                            outPatientReferToDoctorVM.PatientCaseID = patientQueue.PatientCaseId;
+                            outPatientReferToDoctorVM.PHCID = patientQueue.AssignedBy;
+                            outPatientReferToDoctorVM.Status = "Fail";
+                            outPatientReferToDoctorVM.Message = "Assigned doctor is not avialble !";
                             return outPatientReferToDoctorVM;
                         }
 
@@ -495,32 +504,60 @@ namespace TechMed.BL.Repository.BaseClasses
                     {
                         outPatientReferToDoctorVM.AssignedDocterID = patientQueue.AssignedDoctorId;
                         outPatientReferToDoctorVM.PatientCaseID = patientQueue.PatientCaseId;
-                        outPatientReferToDoctorVM.PHCID = patientQueue.AssignedBy;                       
-                        PatientCaseQueDetail patientCaseQue = GetPatientInfo(patientQueue.PatientCaseId);
-                        message = patientCaseQue.PHCName + "  PHC center has an updated information for Patient Name :" + patientCaseQue.PatientName + "(" + patientCaseQue.PatientID + ")";
-                       // message = "PHC center has an updated information for Patient case ID : (" + patientQueue.PatientCaseId + ")";
-                        Notification notification = new Notification();
-                        notification.ToUser = patientCaseQue.DoctorUserID;
-                        notification.FromUser = patientQueue.AssignedBy;
-                        notification.Message = message;
-                        notification.CreatedOn = patientQueue.AssignedOn;
-                        notification.SeenOn = patientQueue.AssignedOn;
-                        notification.IsSeen = false;
-                        _teleMedecineContext.Notifications.Add(notification);
-                        int j = _teleMedecineContext.SaveChanges();
+                        outPatientReferToDoctorVM.PHCID = patientQueue.AssignedBy;
+                        outPatientReferToDoctorVM.Status = "Sucess !";
+                        outPatientReferToDoctorVM.Message = "Assigned to doctor sucessfully !";
+                        try
+                        {
+                            PatientCaseQueDetail patientCaseQue = GetPatientInfo(patientQueue.PatientCaseId);
+                            message = patientCaseQue.PHCName + "  PHC center has an updated information for Patient Name :" + patientCaseQue.PatientName + "(" + patientCaseQue.PatientID + ")";
+                            // message = "PHC center has an updated information for Patient case ID : (" + patientQueue.PatientCaseId + ")";
+                            Notification notification = new Notification();
+                            notification.ToUser = patientCaseQue.DoctorUserID;
+                            notification.FromUser = patientQueue.AssignedBy;
+                            notification.Message = message;
+                            notification.CreatedOn = patientQueue.AssignedOn;
+                            notification.SeenOn = patientQueue.AssignedOn;
+                            notification.IsSeen = false;
+                            _teleMedecineContext.Notifications.Add(notification);
+                            int j = _teleMedecineContext.SaveChanges();
+                        }
+                        catch (Exception ex)
+                        {
+                            outPatientReferToDoctorVM.Status = "Sucess !";
+                            outPatientReferToDoctorVM.Message = "Assigned to doctor sucessfully ! but notification did not add";
+                            _logger.LogError("Exception generate when going to add notification for patient case Id :" + patientQueue.PatientCaseId, ex);
+                        }
+                        
 
                         return outPatientReferToDoctorVM;
                     }
                     else
+                    {
+                        outPatientReferToDoctorVM.AssignedDocterID = 0;
+                        outPatientReferToDoctorVM.PatientCaseID = patientQueue.PatientCaseId;
+                        outPatientReferToDoctorVM.PHCID = patientQueue.AssignedBy;
+                        outPatientReferToDoctorVM.Status = "Fail";
+                        outPatientReferToDoctorVM.Message = "Error: When assigned to doctor!";
                         return outPatientReferToDoctorVM;
+                    }
+                        
 
                 }
                 else
+                {
+                    outPatientReferToDoctorVM.AssignedDocterID = 0;
+                    outPatientReferToDoctorVM.PatientCaseID = patientQueue.PatientCaseId;
+                    outPatientReferToDoctorVM.PHCID = patientQueue.AssignedBy;
+                    outPatientReferToDoctorVM.Status = "Fail";
+                    outPatientReferToDoctorVM.Message = "Error: View model has no data!";
                     return outPatientReferToDoctorVM;
+                }
             }
             catch (Exception ex)
             {
                 string messageExp = ex.Message;
+                _logger.LogError("Exception generate when going to assign doctor for patient case Id :" + patientQueue.PatientCaseId, ex);
                 throw;
             }
            

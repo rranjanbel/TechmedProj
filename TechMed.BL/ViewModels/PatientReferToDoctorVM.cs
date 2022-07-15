@@ -11,5 +11,7 @@ namespace TechMed.BL.ViewModels
         public long PatientCaseID { get; set; }
         public int AssignedDocterID { get; set; }
         public int PHCID { get; set; }
+        public string? Status { get; set; }
+        public string? Message { get; set; }
     }
 }
