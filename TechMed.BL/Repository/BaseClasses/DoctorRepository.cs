@@ -13,6 +13,7 @@ using TechMed.BL.ViewModels;
 using TechMed.DL.Models;
 using TechMed.DL.ViewModel;
 
+
 namespace TechMed.BL.Repository.BaseClasses
 {
     public class DoctorRepository : Repository<DoctorMaster>, IDoctorRepository
@@ -20,11 +21,15 @@ namespace TechMed.BL.Repository.BaseClasses
         private readonly TeleMedecineContext _teleMedecineContext;
         private readonly IMapper _mapper;
         private readonly ILogger<UserRepository> _logger;
-        public DoctorRepository(ILogger<UserRepository> logger, TeleMedecineContext teleMedecineContext, IMapper mapper) : base(teleMedecineContext)
+        private readonly IReportService _reportService;
+        private readonly IPatientCaseRepository _patientCaeRepository;
+        public DoctorRepository(ILogger<UserRepository> logger, TeleMedecineContext teleMedecineContext, IMapper mapper, IReportService reportService) : base(teleMedecineContext)
         {
             this._teleMedecineContext = teleMedecineContext;
             this._mapper = mapper;
             this._logger = logger;
+            this._reportService=reportService;  
+
         }
 
         public void AddDoctorDetails()
@@ -429,7 +434,7 @@ namespace TechMed.BL.Repository.BaseClasses
 
             return getPatientCaseDetails;
         }
-        public async Task<bool> PostTreatmentPlan(TreatmentVM treatmentVM)
+        public async Task<bool> PostTreatmentPlan(TreatmentVM treatmentVM,string ContentRootPath)
         {
             try
             {
@@ -501,6 +506,8 @@ namespace TechMed.BL.Repository.BaseClasses
                         _teleMedecineContext.Add(patientCaseDiagonosticTest);
                     }
                     int i = _teleMedecineContext.SaveChanges();
+
+                  await   _reportService.GeneratePdfReport(treatmentVM.PatientCaseID, ContentRootPath);
                     return true;
                 }
 

@@ -22,7 +22,7 @@ namespace TechMed.BL.Repository.BaseClasses
         private readonly TeleMedecineContext _teleMedecineContext;
         private readonly IMapper _mapper;
         private readonly ILogger<PatientCaseRepository> _logger;
-        private readonly IDoctorRepository _doctorRepository;
+        //private readonly IDoctorRepository _doctorRepository;
         private readonly SMSSetting _smsSettings;
         private readonly string SMSSetting ="";
         public PatientCaseRepository(ILogger<PatientCaseRepository> logger, TeleMedecineContext teleMedecineContext, IMapper mapper, IDoctorRepository doctorRepository, IOptions<SMSSetting> smsSettings) : base(teleMedecineContext)
@@ -30,7 +30,7 @@ namespace TechMed.BL.Repository.BaseClasses
             this._teleMedecineContext = teleMedecineContext;
             this._mapper = mapper;
             this._logger = logger;
-            this._doctorRepository = doctorRepository;
+            //this._doctorRepository = doctorRepository;
             this._smsSettings = smsSettings.Value;
         }
 
@@ -653,8 +653,7 @@ namespace TechMed.BL.Repository.BaseClasses
         //    }
 
         //}
-
-        public async Task<PatientCaseVM> GetPatientCaseDetailsByCaseID(long PatientCaseID,string contentRootPath)
+        public async Task<PatientCaseVM> GetPatientCaseDetailsByCaseID(Int64 PatientCaseID,string contentRootPath)
         {
             PatientCaseVM patientCase = new PatientCaseVM();
             try
@@ -783,6 +782,7 @@ namespace TechMed.BL.Repository.BaseClasses
                         Value = vitals.Value,
                         VitalName = vitals.Vital.Vital,
                         Date = vitals.Date,
+                        Unit = vitals.Vital.Unit,
                         Id = vitals.Vital.Id
                     }).ToList();
                     patientCase.caseDocumentList = patientCaseDetails.PatientCaseDocuments.Select(doc => new PatientCaseDocDTO()
