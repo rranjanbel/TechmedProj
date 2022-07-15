@@ -24,6 +24,7 @@ namespace TechMed.BL.Repository.BaseClasses
         private readonly ILogger<PatientCaseRepository> _logger;
         private readonly IDoctorRepository _doctorRepository;
         private readonly SMSSetting _smsSettings;
+        private readonly string SMSSetting ="";
         public PatientCaseRepository(ILogger<PatientCaseRepository> logger, TeleMedecineContext teleMedecineContext, IMapper mapper, IDoctorRepository doctorRepository, IOptions<SMSSetting> smsSettings) : base(teleMedecineContext)
         {
             this._teleMedecineContext = teleMedecineContext;
