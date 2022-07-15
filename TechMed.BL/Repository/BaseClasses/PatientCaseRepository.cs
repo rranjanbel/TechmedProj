@@ -423,9 +423,21 @@ namespace TechMed.BL.Repository.BaseClasses
 
             try
             {
+
+
+
                 if (patientReferToDoctorVM != null)
                 {
-                    if(patientReferToDoctorVM.AssignedDocterID > 0)
+
+
+                    int Busydoctors =  _teleMedecineContext.TwilioMeetingRoomInfos
+                                    .Where(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" && a.AssignedDoctorId == patientReferToDoctorVM.AssignedDocterID).Count();
+                    if (Busydoctors>0)
+                    {
+                        return outPatientReferToDoctorVM;
+                    }
+
+                    if (patientReferToDoctorVM.AssignedDocterID > 0)
                     {
                         patientQueue.AssignedDoctorId = patientReferToDoctorVM.AssignedDocterID;
                         patientQueue.Comment = "Manually assign doctor";
@@ -1112,11 +1124,19 @@ namespace TechMed.BL.Repository.BaseClasses
             OnlineDrListDTO drListDTO = new OnlineDrListDTO();
             int specilizationID = await _teleMedecineContext.PatientCases.Where(a => a.Id == patientCaseID).Select(s => s.SpecializationId).FirstOrDefaultAsync();
             var doctors = await _teleMedecineContext.DoctorMasters.Include(d => d.Specialization).Where(a => a.IsOnline == true && a.SpecializationId == specilizationID).ToListAsync();
+            var Busydoctors = await _teleMedecineContext.TwilioMeetingRoomInfos
+                .Where(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" &&a.AssignedDoctorId!=null && a.AssignedDoctor.SpecializationId== specilizationID).ToListAsync();
+            //filter busy
+           
             if(doctors != null)
             {
                 foreach (var item in doctors)
                 {
                     UserDetail userDetail = _teleMedecineContext.UserDetails.Where(a => a.UserId == item.UserId).FirstOrDefault();
+                    if (Busydoctors.Any(a=>a.AssignedDoctorId==item.Id))
+                    {
+                        continue;
+                    }
                     onlineDrLists.Add(new OnlineDrListDTO
                     {
                         DoctorID = item.Id,
