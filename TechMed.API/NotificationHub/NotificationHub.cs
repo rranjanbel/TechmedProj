@@ -22,7 +22,7 @@ namespace TechMed.API.NotificationHub
         public string message { get; set; }
         public string receiverEmail { get; set; }
         public string senderEmail { get; set; }
-        public int patientCaseId { get; set; }
+        public long patientCaseId { get; set; }
         public string roomName { get; set; }
         public int patientId { get; set; }
     }

@@ -44,7 +44,7 @@ namespace TechMed.BL.Repository.BaseClasses
             return (await _teleMedecineContext.SaveChangesAsync()) > 0;
         }
 
-        public async Task<PatientQueue> PatientQueueGet(int patientCaseID)
+        public async Task<PatientQueue> PatientQueueGet(Int64 patientCaseID)
         {
             return await _teleMedecineContext.PatientQueues
                 .Include(x => x.PatientCase)
@@ -52,7 +52,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 .ThenInclude(x => x.User)
                 .Include(x=>x.AssignedDoctor)
                 .ThenInclude(x=>x.User)
-                .FirstOrDefaultAsync(x => x.PatientCaseId == patientCaseID);
+                .FirstOrDefaultAsync(x => x.PatientCaseId == patientCaseID && x.CaseFileStatusId ==4);
         }
 
         public async Task<bool> MeetingRoomCloseFlagUpdate(long ID, bool isClosed)
