@@ -21,17 +21,20 @@ namespace TechMed.API.Controllers
         private readonly ITwilioMeetingRepository _twilioRoomDb;
         private readonly ILogger<VideoCallController> _logger;
         private bool CanCallByPHC = true;
+        private readonly IPatientCaseRepository _patientCaseRepository;
         public VideoCallController(IMapper mapper,
             ITwilioVideoSDKService twilioVideoSDK,
             ITwilioMeetingRepository twilioRoomDb,
             IHubContext<SignalRBroadcastHub,
                 IHubClient> hubContext,
-            ILogger<VideoCallController> logger)
+            ILogger<VideoCallController> logger,
+            IPatientCaseRepository patientCaseRepository)
         {
             _twilioVideoSDK = twilioVideoSDK;
             _hubContext = hubContext;
             _twilioRoomDb = twilioRoomDb;
             _logger = logger;
+            _patientCaseRepository = patientCaseRepository; 
         }
 
         [HttpGet("token")]
@@ -42,7 +45,7 @@ namespace TechMed.API.Controllers
 
 
         [HttpPost("begindialingcalltouser")]
-        public async Task<IActionResult> BeginDialingCallToUser([Required][FromQuery] int patientCaseId)
+        public async Task<IActionResult> BeginDialingCallToUser([Required][FromQuery] Int64 patientCaseId)
         {
             ApiResponseModel<bool> apiResponseModel = new ApiResponseModel<bool>();
             var patientInfo = await _twilioRoomDb.PatientQueueGet(patientCaseId);
@@ -55,7 +58,8 @@ namespace TechMed.API.Controllers
 
 
             //need to check availability of doctor by checkin in queue and other
-            if (1 == 1) //is enduser available to have call
+            var doctors = _patientCaseRepository.GetSelectedOnlineDoctors(patientCaseId);
+            if (doctors != null) //is enduser available to have call
             {
                 apiResponseModel.isSuccess = true;
                 await _hubContext.Clients.All.BroadcastMessage(new SignalRNotificationModel()

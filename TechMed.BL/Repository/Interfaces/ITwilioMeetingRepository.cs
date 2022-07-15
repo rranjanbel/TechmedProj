@@ -16,7 +16,7 @@ namespace TechMed.BL.Repository.Interfaces
         Task<TwilioMeetingRoomInfo> MeetingRoomInfoGet(string RoomName);
         Task<TwilioMeetingRoomInfo> MeetingRoomInfoGet(int patientCaseId);
         Task<bool> MeetingRoomInfoAdd(TwilioMeetingRoomInfo doctorMeetingRoomInfo);
-        Task<PatientQueue> PatientQueueGet(int patientCaseID);
+        Task<PatientQueue> PatientQueueGet(Int64 patientCaseID);
         Task<bool> MeetingRoomCloseFlagUpdate(long ID, bool isClosed);
         Task<bool> SetMeetingRoomClosed(string roomName, bool isPartiallyClosed);
         Task<bool> MeetingRoomComposeVideoUpdate(CompositionResource compositionResource, string roomName);
