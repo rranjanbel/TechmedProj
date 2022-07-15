@@ -1329,10 +1329,18 @@ namespace TechMed.API.Controllers
             //    });
             //    var result = _patientCaeRepository.UploadCaseDoc(caseDocuments, contentRootPath);
             //}
+            try
+            {
+                var pdfFile = await _reportService.GeneratePdfReport(10703, _webHostEnvironment.ContentRootPath);
+                return File(pdfFile,
+                "application/octet-stream", "SimplePdf.pdf");
+            }
+            catch (Exception ex)
+            {
 
-            var pdfFile =await _reportService.GeneratePdfReport(10703, _webHostEnvironment.ContentRootPath);
-            return File(pdfFile,
-            "application/octet-stream", "SimplePdf.pdf");
+                throw ex;
+            }
+           
         }
     }
 }
