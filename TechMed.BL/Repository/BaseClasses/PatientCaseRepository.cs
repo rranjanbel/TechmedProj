@@ -1112,11 +1112,19 @@ namespace TechMed.BL.Repository.BaseClasses
             OnlineDrListDTO drListDTO = new OnlineDrListDTO();
             int specilizationID = await _teleMedecineContext.PatientCases.Where(a => a.Id == patientCaseID).Select(s => s.SpecializationId).FirstOrDefaultAsync();
             var doctors = await _teleMedecineContext.DoctorMasters.Include(d => d.Specialization).Where(a => a.IsOnline == true && a.SpecializationId == specilizationID).ToListAsync();
+            var Busydoctors = await _teleMedecineContext.TwilioMeetingRoomInfos
+                .Where(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" &&a.AssignedDoctorId!=null && a.AssignedDoctor.SpecializationId== specilizationID).ToListAsync();
+            //filter busy
+           
             if(doctors != null)
             {
                 foreach (var item in doctors)
                 {
                     UserDetail userDetail = _teleMedecineContext.UserDetails.Where(a => a.UserId == item.UserId).FirstOrDefault();
+                    if (Busydoctors.Any(a=>a.AssignedDoctorId==item.Id))
+                    {
+                        continue;
+                    }
                     onlineDrLists.Add(new OnlineDrListDTO
                     {
                         DoctorID = item.Id,
