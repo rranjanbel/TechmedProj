@@ -423,9 +423,21 @@ namespace TechMed.BL.Repository.BaseClasses
 
             try
             {
+
+
+
                 if (patientReferToDoctorVM != null)
                 {
-                    if(patientReferToDoctorVM.AssignedDocterID > 0)
+
+
+                    int Busydoctors =  _teleMedecineContext.TwilioMeetingRoomInfos
+                                    .Where(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" && a.AssignedDoctorId == patientReferToDoctorVM.AssignedDocterID).Count();
+                    if (Busydoctors>0)
+                    {
+                        return outPatientReferToDoctorVM;
+                    }
+
+                    if (patientReferToDoctorVM.AssignedDocterID > 0)
                     {
                         patientQueue.AssignedDoctorId = patientReferToDoctorVM.AssignedDocterID;
                         patientQueue.Comment = "Manually assign doctor";
