@@ -505,7 +505,7 @@ namespace TechMed.BL.Repository.BaseClasses
                         outPatientReferToDoctorVM.AssignedDocterID = patientQueue.AssignedDoctorId;
                         outPatientReferToDoctorVM.PatientCaseID = patientQueue.PatientCaseId;
                         outPatientReferToDoctorVM.PHCID = patientQueue.AssignedBy;
-                        outPatientReferToDoctorVM.Status = "Sucess !";
+                        outPatientReferToDoctorVM.Status = "Success";
                         outPatientReferToDoctorVM.Message = "Assigned to doctor sucessfully !";
                         try
                         {
@@ -524,7 +524,7 @@ namespace TechMed.BL.Repository.BaseClasses
                         }
                         catch (Exception ex)
                         {
-                            outPatientReferToDoctorVM.Status = "Sucess !";
+                            outPatientReferToDoctorVM.Status = "Success";
                             outPatientReferToDoctorVM.Message = "Assigned to doctor sucessfully ! but notification did not add";
                             _logger.LogError("Exception generate when going to add notification for patient case Id :" + patientQueue.PatientCaseId, ex);
                         }
