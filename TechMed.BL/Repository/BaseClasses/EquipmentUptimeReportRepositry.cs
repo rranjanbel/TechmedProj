@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using TechMed.BL.CommanClassesAndFunctions;
 using TechMed.BL.DTOMaster;
 using TechMed.BL.Repository.Interfaces;
 using TechMed.BL.ViewModels;
@@ -39,6 +40,8 @@ namespace TechMed.BL.Repository.BaseClasses
                 if (equipmentUptimeReport != null)
                 {
                     equipmentUptime = _mapper.Map<EquipmentUptimeReport>(equipmentUptimeReport);
+                    equipmentUptime.CreatedOn = UtilityMaster.GetLocalDateTime();
+                    equipmentUptime.UpdatedOn = UtilityMaster.GetLocalDateTime();
                     var ressult = _teleMedecineContext.EquipmentUptimeReports.AddAsync(equipmentUptime);
                     i = await _teleMedecineContext.SaveChangesAsync();
                     if (i > 0)
