@@ -506,17 +506,17 @@ namespace TechMed.BL.Repository.BaseClasses
                         _teleMedecineContext.Add(patientCaseDiagonosticTest);
                     }
                     int i = _teleMedecineContext.SaveChanges();
-                    //try
-                    //{
-                    //    await _reportService.GeneratePdfReport(treatmentVM.PatientCaseID, ContentRootPath);
+                    try
+                    {
+                        await _reportService.GeneratePdfReport(treatmentVM.PatientCaseID, ContentRootPath);
 
-                    //}
-                    //catch (Exception ex)
-                    //{
+                    }
+                    catch (Exception ex)
+                    {
+                        throw;
+                    }
 
-                    //}
 
-                  
                     return true;
                 }
 
