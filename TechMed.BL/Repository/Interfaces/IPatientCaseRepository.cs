@@ -30,7 +30,7 @@ namespace TechMed.BL.Repository.Interfaces
         int GetLoggedPHCID(string userId);
         Task<OnlineDoctorListVM> GetSelectedOnlineDoctors(long patientCaseID);
         Task<List<PatientQueueByDoctor>> GetPatientQueueByDoctor(int specializationID);
-        Task<List<PatientQueueVM>> GetPatientQueue();
+        Task<List<PatientQueueVM>> GetPatientQueue(int PHCID);
 
         bool UploadCaseDocFromByte(List<CaseDocumentBase64VM> caseDocuments, string contentRootPath);
         Task<PatientReferToDoctorVM> AddPatientInDoctorsQueue(PatientReferToDoctorVM patientReferToDoctorVM);

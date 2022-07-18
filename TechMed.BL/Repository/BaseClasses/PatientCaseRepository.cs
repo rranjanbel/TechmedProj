@@ -1233,7 +1233,7 @@ namespace TechMed.BL.Repository.BaseClasses
             };
             return queueByDoctors;
         }
-        public async Task<List<PatientQueueVM>> GetPatientQueue()
+        public async Task<List<PatientQueueVM>> GetPatientQueue(int PHCID)
         {
             List<PatientQueueVM> queueByDoctors = new List<PatientQueueVM>();
             PatientQueueVM patientQueue;
@@ -1250,11 +1250,12 @@ namespace TechMed.BL.Repository.BaseClasses
                 patientQueue.Gender = item.Gender;
                 patientQueue.PatientCaseID = item.PatientCaseID;
                 patientQueue.AssignedDoctorID = item.AssignedDoctorID;
+                patientQueue.PHCID = item.PHCID;
                 patientQueue.WaitList = item.WaitList;                
 
                 queueByDoctors.Add(patientQueue);
             };
-            return queueByDoctors;
+            return queueByDoctors.Where(a => a.PHCID == PHCID).ToList();
         }
 
         public async Task<PatientReferToDoctorVM> AddPatientInDoctorsQueue(PatientReferToDoctorVM patientReferToDoctorVM)
