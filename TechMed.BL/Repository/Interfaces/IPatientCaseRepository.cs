@@ -33,6 +33,8 @@ namespace TechMed.BL.Repository.Interfaces
         Task<List<PatientQueueVM>> GetPatientQueue();
 
         bool UploadCaseDocFromByte(List<CaseDocumentBase64VM> caseDocuments, string contentRootPath);
+        Task<PatientReferToDoctorVM> AddPatientInDoctorsQueue(PatientReferToDoctorVM patientReferToDoctorVM);
+
 
     }
 }

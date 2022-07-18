@@ -638,5 +638,62 @@ namespace TechMed.API.Controllers
                 return StatusCode(500, ModelState);
             }
         }
+
+        [HttpPost]
+        [Route("AddPatientInDoctorsQueue")]
+        [ProducesResponseType(201, Type = typeof(PatientReferToDoctorVM))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> AddPatientInDoctorsQueue([FromBody] PatientReferToDoctorVM referDoctor)
+        {
+            PatientReferToDoctorVM updatedPatientCasevm = new PatientReferToDoctorVM();
+
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    ModelState.AddModelError("AddPatientInDoctorsQueue", "Patient case model state is not valid");
+                    return BadRequest(ModelState);
+                }
+                if (referDoctor != null)
+                {
+                    updatedPatientCasevm = await _patientCaeRepository.AddPatientInDoctorsQueue(referDoctor);
+                    if (updatedPatientCasevm != null)
+                    {
+                        if (updatedPatientCasevm.Status.ToLower() == "success")
+                        {
+                            _logger.LogInformation($"AddPatientInDoctorsQueue : Sucess response returned ");
+                            return CreatedAtRoute(201, updatedPatientCasevm);
+                        }
+                        else
+                        {
+                            _logger.LogInformation($"AddPatientInDoctorsQueue : Fail response returned ");
+                            return StatusCode(404, updatedPatientCasevm);
+                        }
+
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("AddPatientInDoctorsQueue", $"did not refer patient case to doctor");
+                        _logger.LogError("AddPatientInDoctorsQueue :did not refer patient case to doctor");
+                        return StatusCode(404, ModelState);
+                    }
+
+                }
+                else
+                {
+                    ModelState.AddModelError("AddReferDoctorInPatientCase", "Refer doctor model state is not valid");
+                    _logger.LogError("AddReferDoctorInPatientCase :refer doctor has null value");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError("AddReferDoctorInPatientCase", $"Something went wrong when add refer doctor {ex.Message}");
+                _logger.LogError("Exception in AddReferDoctorInPatientCase API " + ex);
+                return StatusCode(500, ModelState);
+            }
+        }
     }
 }
