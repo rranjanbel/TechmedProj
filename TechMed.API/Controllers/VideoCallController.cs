@@ -7,6 +7,7 @@ using TechMed.BL.Repository.Interfaces;
 using TechMed.BL.TwilioAPI.Service;
 using TechMed.BL.ViewModels;
 using TechMed.DL.Models;
+using TechMed.DL.ViewModel;
 using Twilio.Base;
 using Twilio.Rest.Video.V1;
 
@@ -58,8 +59,14 @@ namespace TechMed.API.Controllers
 
 
             //need to check availability of doctor by checkin in queue and other
-            var doctors = _patientCaseRepository.GetSelectedOnlineDoctors(patientCaseId);
-            if (doctors != null) //is enduser available to have call
+            List<OnlineDoctorVM> onlineDrLists = new List<OnlineDoctorVM>();
+            OnlineDoctorListVM onlineDoctorList = await _patientCaseRepository.GetSelectedOnlineDoctors(patientCaseId);
+            if(onlineDoctorList.Status.ToLower() =="success")
+            {
+                onlineDrLists = onlineDoctorList.OnlineDoctors;
+            }
+            
+            if (onlineDrLists.Count > 0) //is enduser available to have call
             {
                 apiResponseModel.isSuccess = true;
                 await _hubContext.Clients.All.BroadcastMessage(new SignalRNotificationModel()

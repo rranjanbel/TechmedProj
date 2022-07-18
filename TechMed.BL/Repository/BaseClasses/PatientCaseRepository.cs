@@ -1160,54 +1160,63 @@ namespace TechMed.BL.Repository.BaseClasses
             OnlineDoctorListVM onlineDoctorList = new OnlineDoctorListVM();
             List<OnlineDoctorVM> onlineDrLists = new List<OnlineDoctorVM>();
             OnlineDoctorVM drListDTO = new OnlineDoctorVM();
-            int specilizationID = await _teleMedecineContext.PatientCases.Where(a => a.Id == patientCaseID).Select(s => s.SpecializationId).FirstOrDefaultAsync();
-            var doctors = await _teleMedecineContext.DoctorMasters.Include(d => d.Specialization).Where(a => a.IsOnline == true && a.SpecializationId == specilizationID).ToListAsync();
-           
-            //filter busy
-           
-            if(doctors != null)
+            try
             {
-                var Busydoctors = await _teleMedecineContext.TwilioMeetingRoomInfos.Include(d => d.AssignedDoctor)
-               .Where(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" && a.AssignedDoctorId != null && a.AssignedDoctor.SpecializationId == specilizationID && a.AssignedDoctor.IsOnline == true).ToListAsync();
-                foreach (var item in doctors)
-                {
-                    UserDetail userDetail = _teleMedecineContext.UserDetails.Where(a => a.UserId == item.UserId).FirstOrDefault();
-                    if (Busydoctors.Any(a=>a.AssignedDoctorId==item.Id))
-                    {
-                        continue;
-                    }
-                    onlineDrLists.Add(new OnlineDoctorVM
-                    {
-                        DoctorID = item.Id,
-                        DoctorFName = userDetail.FirstName,
-                        DoctorMName = userDetail.MiddleName ==null?"": userDetail.MiddleName,
-                        DoctorLName = userDetail.LastName,
-                        Photo = userDetail.Photo,
-                        Specialty = item.Specialization.Specialization                       
-                        
-                    });
+                int specilizationID = await _teleMedecineContext.PatientCases.Where(a => a.Id == patientCaseID).Select(s => s.SpecializationId).FirstOrDefaultAsync();
+                var doctors = await _teleMedecineContext.DoctorMasters.Include(d => d.Specialization).Where(a => a.IsOnline == true && a.SpecializationId == specilizationID).ToListAsync();
 
-                } 
-                
-                if(onlineDrLists.Count ==0)
+                //filter busy
+
+                if (doctors != null)
+                {
+                    var Busydoctors = await _teleMedecineContext.TwilioMeetingRoomInfos.Include(d => d.AssignedDoctor)
+                   .Where(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" && a.AssignedDoctorId != null && a.AssignedDoctor.SpecializationId == specilizationID && a.AssignedDoctor.IsOnline == true).ToListAsync();
+                    foreach (var item in doctors)
+                    {
+                        UserDetail userDetail = _teleMedecineContext.UserDetails.Where(a => a.UserId == item.UserId).FirstOrDefault();
+                        if (Busydoctors.Any(a => a.AssignedDoctorId == item.Id))
+                        {
+                            continue;
+                        }
+                        onlineDrLists.Add(new OnlineDoctorVM
+                        {
+                            DoctorID = item.Id,
+                            DoctorFName = userDetail.FirstName,
+                            DoctorMName = userDetail.MiddleName == null ? "" : userDetail.MiddleName,
+                            DoctorLName = userDetail.LastName,
+                            Photo = userDetail.Photo,
+                            Specialty = item.Specialization.Specialization
+
+                        });
+
+                    }
+
+                    if (onlineDrLists.Count == 0)
+                    {
+                        onlineDoctorList.OnlineDoctors = onlineDrLists;
+                        onlineDoctorList.Status = "Fail";
+                        onlineDoctorList.Message = "All the doctors are busy, please add patient to waitlist.";
+                    }
+                    else
+                    {
+                        onlineDoctorList.OnlineDoctors = onlineDrLists;
+                        onlineDoctorList.Status = "Success";
+                        onlineDoctorList.Message = "These docoters are avilable to see the patients.";
+                    }
+                }
+                else
                 {
                     onlineDoctorList.OnlineDoctors = onlineDrLists;
                     onlineDoctorList.Status = "Fail";
                     onlineDoctorList.Message = "All the doctors are busy, please add patient to waitlist.";
                 }
-                else
-                {
-                    onlineDoctorList.OnlineDoctors = onlineDrLists;
-                    onlineDoctorList.Status = "Success";
-                    onlineDoctorList.Message = "These docoters are avilable to see the patients.";
-                }
             }
-            else
+            catch (Exception ex)
             {
-                onlineDoctorList.OnlineDoctors = onlineDrLists;
-                onlineDoctorList.Status = "Fail";
-                onlineDoctorList.Message = "All the doctors are busy, please add patient to waitlist.";
+                string strMesg = ex.Message;
+                throw;
             }
+          
 
             return onlineDoctorList;
 
