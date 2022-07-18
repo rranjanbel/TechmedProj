@@ -60,72 +60,76 @@ namespace TechMed.API.Services
             string htmlVitalTemplate = File.ReadAllText(path + @"Vital.html");
             string htmlVital = "";
             patientCaseVM.vitals = patientCaseVM.vitals.Where(a => a.Value != null && a.Value != "").ToList();
-            var t = Partition<PatientCaseVitalsVM>(patientCaseVM.vitals, 3);
+            //var t = Partition<PatientCaseVitalsVM>(patientCaseVM.vitals, 3);
 
-            var List1 = t[0];
-            var List2 = t[1];
-            var List3 = t[2];
-            for (int i = 0; i < patientCaseVM.vitals.Count; i++)
+            //var List1 = t[0];
+            //var List2 = t[1];
+            //var List3 = t[2];
+            if (patientCaseVM.vitals!=null)
             {
-                string unit = (patientCaseVM.vitals[i].Unit.ToLower().Trim() == "string" ? "" : patientCaseVM.vitals[i].Unit.ToLower().Trim() == "bool" ? "" : patientCaseVM.vitals[i].Unit);
-                if (string.IsNullOrEmpty(unit))
+                for (int i = 0; i < patientCaseVM.vitals.Count; i++)
                 {
-                    unit = unit.Trim('[').Trim(']');
-                }
-                else
-                {
-                    unit = "[" + unit.Trim() + "]";
+                    string unit = (patientCaseVM.vitals[i].Unit.ToLower().Trim() == "string" ? "" : patientCaseVM.vitals[i].Unit.ToLower().Trim() == "bool" ? "" : patientCaseVM.vitals[i].Unit);
+                    if (string.IsNullOrEmpty(unit))
+                    {
+                        unit = unit.Trim('[').Trim(']');
+                    }
+                    else
+                    {
+                        unit = "[" + unit.Trim() + "]";
 
-                }
-                htmlVital = htmlVital + htmlVitalTemplate;
-                if (i == patientCaseVM.vitals.Count)
-                {
+                    }
+                    htmlVital = htmlVital + htmlVitalTemplate;
+                    if (i == patientCaseVM.vitals.Count)
+                    {
 
-                    htmlVital = htmlVital.Replace("{{vitalName1}}", "");
-                    htmlVital = htmlVital.Replace("{{vitalValue1}}", "");
-                    htmlVital = htmlVital.Replace("{{vitalName2}}", "");
-                    htmlVital = htmlVital.Replace("{{vitalValue2}}", "");
-                    htmlVital = htmlVital.Replace("{{vitalName3}}", "");
-                    htmlVital = htmlVital.Replace("{{vitalValue3}}", "");
-                    break;
-                }
-                else
-                {
-                    //write1
+                        htmlVital = htmlVital.Replace("{{vitalName1}}", "");
+                        htmlVital = htmlVital.Replace("{{vitalValue1}}", "");
+                        htmlVital = htmlVital.Replace("{{vitalName2}}", "");
+                        htmlVital = htmlVital.Replace("{{vitalValue2}}", "");
+                        htmlVital = htmlVital.Replace("{{vitalName3}}", "");
+                        htmlVital = htmlVital.Replace("{{vitalValue3}}", "");
+                        break;
+                    }
+                    else
+                    {
+                        //write1
 
-                    htmlVital = htmlVital.Replace("{{vitalName1}}", patientCaseVM.vitals[i].VitalName + " " + unit);
-                    htmlVital = htmlVital.Replace("{{vitalValue1}}", patientCaseVM.vitals[i].Value);
-                    i++;
-                }
-                if (i == patientCaseVM.vitals.Count)
-                {
-                    htmlVital = htmlVital.Replace("{{vitalName2}}", "");
-                    htmlVital = htmlVital.Replace("{{vitalValue2}}", "");
-                    htmlVital = htmlVital.Replace("{{vitalName3}}", "");
-                    htmlVital = htmlVital.Replace("{{vitalValue3}}", "");
-                    break;
-                }
-                else
-                {
-                    //write1
-                    htmlVital = htmlVital.Replace("{{vitalName2}}", patientCaseVM.vitals[i].VitalName + " " + unit);
-                    htmlVital = htmlVital.Replace("{{vitalValue2}}", patientCaseVM.vitals[i].Value);
-                    i++;
-                }
-                if (i == patientCaseVM.vitals.Count)
-                {
-                    htmlVital = htmlVital.Replace("{{vitalName3}}", "");
-                    htmlVital = htmlVital.Replace("{{vitalValue3}}", "");
-                    break;
-                }
-                else
-                {
-                    //write1
-                    htmlVital = htmlVital.Replace("{{vitalName3}}", patientCaseVM.vitals[i].VitalName + " " + unit);
-                    htmlVital = htmlVital.Replace("{{vitalValue3}}", patientCaseVM.vitals[i].Value);
-                    i++;
+                        htmlVital = htmlVital.Replace("{{vitalName1}}", patientCaseVM.vitals[i].VitalName + " " + unit);
+                        htmlVital = htmlVital.Replace("{{vitalValue1}}", patientCaseVM.vitals[i].Value);
+                        i++;
+                    }
+                    if (i == patientCaseVM.vitals.Count)
+                    {
+                        htmlVital = htmlVital.Replace("{{vitalName2}}", "");
+                        htmlVital = htmlVital.Replace("{{vitalValue2}}", "");
+                        htmlVital = htmlVital.Replace("{{vitalName3}}", "");
+                        htmlVital = htmlVital.Replace("{{vitalValue3}}", "");
+                        break;
+                    }
+                    else
+                    {
+                        //write1
+                        htmlVital = htmlVital.Replace("{{vitalName2}}", patientCaseVM.vitals[i].VitalName + " " + unit);
+                        htmlVital = htmlVital.Replace("{{vitalValue2}}", patientCaseVM.vitals[i].Value);
+                        i++;
+                    }
+                    if (i == patientCaseVM.vitals.Count)
+                    {
+                        htmlVital = htmlVital.Replace("{{vitalName3}}", "");
+                        htmlVital = htmlVital.Replace("{{vitalValue3}}", "");
+                        break;
+                    }
+                    else
+                    {
+                        //write1
+                        htmlVital = htmlVital.Replace("{{vitalName3}}", patientCaseVM.vitals[i].VitalName + " " + unit);
+                        htmlVital = htmlVital.Replace("{{vitalValue3}}", patientCaseVM.vitals[i].Value);
+                        i++;
+                    }
                 }
             }
+           
 
             //foreach (var vital in patientCaseVM.vitals)
             //{
@@ -214,7 +218,7 @@ namespace TechMed.API.Services
                 {
                     DocumentTypeId = 2,
                     file = Convert.ToBase64String(testFileBytes),
-                    name = "Test",
+                    name = PatientCaseID.ToString()+"_Case_Prescription",
                     patientCaseId = PatientCaseID
                 });
                 var result = _patientCaeRepository.UploadCaseDocFromByte(caseDocuments, contentRootPath);
