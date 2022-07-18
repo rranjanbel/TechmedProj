@@ -197,6 +197,8 @@ namespace TechMed.BL.Repository.BaseClasses
                 if (employeeTraining != null)
                 {
                     employee = _mapper.Map<EmployeeTraining>(employeeTraining);
+                    employee.CreatedOn = UtilityMaster.GetLocalDateTime();
+                    employee.UpdatedOn = UtilityMaster.GetLocalDateTime();
                     var ressult = _teleMedecineContext.EmployeeTrainings.AddAsync(employee);
                     i = await _teleMedecineContext.SaveChangesAsync();
                     if (i > 0)
