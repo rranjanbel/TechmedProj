@@ -29,6 +29,11 @@ namespace TechMed.API.Services
 
             var html = $@"";
             html = File.ReadAllText(path + @"PrescriptionPreviewPdf.html");
+
+            html = html.Replace("{{MPGovLogo}}", MPGovLogo);
+            html = html.Replace("{{MPArogyam}}", MPArogyam);
+            html = html.Replace("{{NHMLogo}}", NHMLogo);
+
             html = html.Replace("{{phcName}}", patientCaseVM.PHCName);
             html = html.Replace("{{district}}", patientCaseVM.patientMaster.District);
             html = html.Replace("{{city}}", patientCaseVM.patientMaster.City);
