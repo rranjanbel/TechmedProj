@@ -1173,7 +1173,7 @@ namespace TechMed.BL.Repository.BaseClasses
                    .Where(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" && a.AssignedDoctorId != null && a.AssignedDoctor.SpecializationId == specilizationID && a.AssignedDoctor.IsOnline == true).ToListAsync();
                     foreach (var item in doctors)
                     {
-                        UserDetail userDetail = _teleMedecineContext.UserDetails.Where(a => a.UserId == item.UserId).FirstOrDefault();
+                        UserDetail userDetail = _teleMedecineContext.UserDetails.Include(s => s.Gender).Where(a => a.UserId == item.UserId).FirstOrDefault();
                         if (Busydoctors.Any(a => a.AssignedDoctorId == item.Id))
                         {
                             continue;
@@ -1185,6 +1185,7 @@ namespace TechMed.BL.Repository.BaseClasses
                             DoctorMName = userDetail.MiddleName == null ? "" : userDetail.MiddleName,
                             DoctorLName = userDetail.LastName,
                             Photo = userDetail.Photo,
+                            Gender = userDetail.Gender.Gender,
                             Specialty = item.Specialization.Specialization
 
                         });

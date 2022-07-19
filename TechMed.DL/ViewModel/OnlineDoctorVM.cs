@@ -13,6 +13,7 @@ namespace TechMed.DL.ViewModel
         public string DoctorMName { get; set; }
         public string DoctorLName { get; set; }
         public string Specialty { get; set; }
+        public string Gender { get; set; }
         public string Photo { get; set; }
     }
 }
