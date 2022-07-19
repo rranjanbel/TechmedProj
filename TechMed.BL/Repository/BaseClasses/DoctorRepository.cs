@@ -513,7 +513,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     }
                     catch (Exception ex)
                     {
-                        throw;
+                        _logger.LogError("Exception in GeneratePdfReport service " + ex);
                     }
 
 
