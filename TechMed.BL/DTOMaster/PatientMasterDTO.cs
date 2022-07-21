@@ -28,6 +28,7 @@ namespace TechMed.BL.DTOMaster
         public int DistrictId { get; set; }
         public string? District { get; set; }
         public string? City { get; set; }
+        public string? Block { get; set; }
         public string PinCode { get; set; }
         public string? Photo { get; set; }
         public DateTime Dob { get; set; }

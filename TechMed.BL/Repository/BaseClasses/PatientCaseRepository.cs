@@ -722,7 +722,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     var patientCaseMedicine = await _teleMedecineContext.PatientCases.Include(a => a.PatientCaseMedicines).ThenInclude(d => d.DrugMaster).Where(x => x.Id == PatientCaseID).ToListAsync();
                     var patientCaseDiagonisis = await _teleMedecineContext.PatientCases.Include(b => b.PatientCaseDiagonosticTests).ThenInclude(e => e.DiagonosticTest).Where(x => x.Id == PatientCaseID).ToListAsync();
                     var IsVideoCallClosed = _teleMedecineContext.TwilioMeetingRoomInfos.FirstOrDefault(a => a.PatientCaseId == PatientCaseID);
-                    var patientDetails = _teleMedecineContext.PatientCases.Include(p => p.Patient).ThenInclude(s => s.State).ThenInclude(d => d.DistrictMasters).FirstOrDefault(a => a.Id == PatientCaseID);
+                    var patientDetails = _teleMedecineContext.PatientCases.Include(p => p.Patient.Phc.Block).Include(p => p.Patient).ThenInclude(s => s.State).ThenInclude(d => d.DistrictMasters).FirstOrDefault(a => a.Id == PatientCaseID);
 
                     if (patientCaseDetails == null)
                     {
@@ -796,6 +796,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     {
                         patientCase.patientMaster.District = patientDetails.Patient.District.DistrictName;
                         patientCase.patientMaster.State = patientDetails.Patient.State.StateName;
+                        patientCase.patientMaster.Block = patientDetails.Patient.Phc.Block.BlockName;
                     }
                     if(patientQuue != null)
                     {
