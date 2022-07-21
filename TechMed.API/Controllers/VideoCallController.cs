@@ -68,6 +68,7 @@ namespace TechMed.API.Controllers
             
             if (onlineDrLists.Count > 0) //is enduser available to have call
             {
+                PatientCase patientCase = await  _patientCaseRepository.GetByID(patientCaseId);
                 apiResponseModel.isSuccess = true;
                 await _hubContext.Clients.All.BroadcastMessage(new SignalRNotificationModel()
                 {
@@ -75,7 +76,8 @@ namespace TechMed.API.Controllers
                     senderEmail = CanCallByPHC ? patientInfo.AssignedByNavigation.User.Email : patientInfo.AssignedDoctor.User.Email,
                     message = CanCallByPHC ? patientInfo.AssignedByNavigation.Phcname : patientInfo.AssignedDoctor.User.Name,
                     messageType = enumSignRNotificationType.BeginDialingCall.ToString(),
-                    patientCaseId = patientCaseId
+                    patientCaseId = patientCaseId,
+                    patientId = patientCase.PatientId
                 });
             }
             else
