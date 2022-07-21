@@ -36,7 +36,7 @@ namespace TechMed.API.Services
 
             html = html.Replace("{{phcName}}", patientCaseVM.PHCName);
             html = html.Replace("{{district}}", patientCaseVM.patientMaster.District);
-            html = html.Replace("{{city}}", patientCaseVM.patientMaster.City);
+            html = html.Replace("{{city}}", patientCaseVM.patientMaster.Block);
             html = html.Replace("{{state}}", patientCaseVM.patientMaster.State);
 
             html = html.Replace("{{doctorName}}", patientCaseVM.DoctorName);
@@ -156,7 +156,7 @@ namespace TechMed.API.Services
             }
 
             html = html.Replace("{{Examination}}", Examination);
-            html = html.Replace("{{reviewDate}}", patientCaseVM.patientCase.ReviewDate == null ? "NA" : Convert.ToDateTime(patientCaseVM.patientCase.ReviewDate).ToString("dd/MMM/yyyy HH:mm:ss"));
+            html = html.Replace("{{reviewDate}}", patientCaseVM.patientCase.ReviewDate == null ? "NA" : Convert.ToDateTime(patientCaseVM.patientCase.ReviewDate).ToString("dd/MMM/yyyy"));
             html = html.Replace("{{createdOndateTime}}", Convert.ToDateTime(patientCaseVM.patientCase.CreatedOn).ToString("dd/MMM/yyyy HH:mm:ss"));
 
 
