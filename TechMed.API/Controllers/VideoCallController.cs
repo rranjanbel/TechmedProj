@@ -94,6 +94,7 @@ namespace TechMed.API.Controllers
         public async Task<IActionResult> ConnectToMeetingRoom([Required][FromQuery] int patientCaseId, [Required][FromQuery] string meetingInstance, [Required][FromQuery] bool isDoctor)
         {
             ApiResponseModel<bool> apiResponseModel = new ApiResponseModel<bool>();
+            PatientCase patientCase = await _patientCaseRepository.GetByID(patientCaseId);
             string callBackUrlForTwilio = string.Format("{0}://{1}{2}/api/webhookcallback/twilioroomstatuscallback", Request.Scheme, Request.Host.Value, Request.PathBase);
             try
             {
@@ -118,7 +119,8 @@ namespace TechMed.API.Controllers
                         RoomStatusCallback = roomFromTwilio.StatusCallback.ToString(),
                         TwilioRoomStatus = roomFromTwilio.Status.ToString(),
                         AssignedBy = patientInfo.AssignedBy,
-                        AssignedDoctorId=patientInfo.AssignedDoctorId
+                        AssignedDoctorId=patientInfo.AssignedDoctorId,
+                        
                     });
                     apiResponseModel.isSuccess = true;
                     apiResponseModel.data = true;
@@ -130,7 +132,8 @@ namespace TechMed.API.Controllers
                         message = "",
                         messageType = enumSignRNotificationType.NotifyParticipientToJoin.ToString(),
                         patientCaseId = patientCaseId,
-                        roomName = meetingInstance
+                        roomName = meetingInstance,
+                        patientId = patientCase.PatientId
                     });
 
 
