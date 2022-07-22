@@ -506,15 +506,22 @@ namespace TechMed.BL.Repository.BaseClasses
                         _teleMedecineContext.Add(patientCaseDiagonosticTest);
                     }
                     int i = _teleMedecineContext.SaveChanges();
-                    try
+                    if(i > 0)
                     {
-                        await _reportService.GeneratePdfReport(treatmentVM.PatientCaseID, ContentRootPath);
+                        //End video call
 
+                        //Generate PDF
+                        try
+                        {
+                            await _reportService.GeneratePdfReport(treatmentVM.PatientCaseID, ContentRootPath);
+
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogError("Exception in GeneratePdfReport service " + ex);
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError("Exception in GeneratePdfReport service " + ex);
-                    }
+                    
 
 
                     return true;

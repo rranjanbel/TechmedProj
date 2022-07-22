@@ -13,7 +13,7 @@ namespace TechMed.BL.Repository.Interfaces
     public interface IPatientCaseRepository : IRepository<PatientCase>
     {
         Task<PatientCase> CreateAsync(PatientCase patientCase);
-        Task<PatientCase> GetByID(int id);
+        Task<PatientCase> GetByID(long id);
         Task<PatientCase> GetByPHCUserID(int userId);
         Task<PatientCaseVM> GetPatientCaseDetails(int PHCID, int PatientID);
         Task<PatientCaseDetailsVM> PostPatientCaseDetails(PatientCaseDetailsVM patientCaseVM);

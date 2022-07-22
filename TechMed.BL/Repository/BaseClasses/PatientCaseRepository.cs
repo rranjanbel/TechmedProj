@@ -40,9 +40,11 @@ namespace TechMed.BL.Repository.BaseClasses
             return patientcasenew;
         }
 
-        public Task<PatientCase> GetByID(int id)
+        public async Task<PatientCase> GetByID(long id)
         {
-            throw new NotImplementedException();
+            PatientCase patientCase = new PatientCase();
+            patientCase = await _teleMedecineContext.PatientCases.FirstOrDefaultAsync(a => a.Id == id);
+            return patientCase;
         }
 
         public Task<PatientCase> GetByPHCUserID(int userId)
@@ -776,12 +778,11 @@ namespace TechMed.BL.Repository.BaseClasses
                     }
                     if(IsVideoCallClosed != null)
                     {
-                        //bool isVideoCallCloased = IsVideoCallClosed.IsClosed == null?false : IsVideoCallClosed.IsClosed.Value;
-                        patientCase.VideoCallStatus = true;
+                        patientCase.VideoCallStatus = IsVideoCallClosed.TwilioRoomStatus !=null? IsVideoCallClosed.TwilioRoomStatus : "status not avialble";                       
                     }
                     else
                     {
-                        patientCase.VideoCallStatus = false;
+                        patientCase.VideoCallStatus = "data not found";
                     }
 
                     patientCase.PatientID = patientCaseDetails.Patient.Id;
