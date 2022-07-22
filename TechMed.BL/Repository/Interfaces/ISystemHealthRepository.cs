@@ -10,5 +10,6 @@ namespace TechMed.BL.Repository.Interfaces
     {
         public Task<bool> GetAPIStatus();
         public Task<bool> GetANGStatus();
+        public Task<bool> SaveStatusInDB(string APIHost, string ANGHost);
     }
 }

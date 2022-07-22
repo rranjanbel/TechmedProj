@@ -29,6 +29,8 @@ namespace TechMed.API.Services
 
             var html = $@"";
             html = File.ReadAllText(path + @"PrescriptionPreviewPdf.html");
+            var Footer = $@"";
+            Footer = File.ReadAllText(path + @"footer.html");
 
             html = html.Replace("{{MPGovLogo}}", MPGovLogo);
             html = html.Replace("{{MPArogyam}}", MPArogyam);
@@ -157,8 +159,8 @@ namespace TechMed.API.Services
 
             html = html.Replace("{{Examination}}", Examination);
             html = html.Replace("{{reviewDate}}", patientCaseVM.patientCase.ReviewDate == null ? "NA" : Convert.ToDateTime(patientCaseVM.patientCase.ReviewDate).ToString("dd/MMM/yyyy"));
-            html = html.Replace("{{createdOndateTime}}", Convert.ToDateTime(patientCaseVM.patientCase.CreatedOn).ToString("dd/MMM/yyyy HH:mm:ss"));
-
+            //html = html.Replace("{{createdOndateTime}}", Convert.ToDateTime(patientCaseVM.patientCase.CreatedOn).ToString("dd/MMM/yyyy HH:mm:ss"));
+            Footer = Footer.Replace("{{createdOndateTime}}", Convert.ToDateTime(patientCaseVM.patientCase.CreatedOn).ToString("dd/MMM/yyyy HH:mm:ss"));
 
             string MedicineTemplate = "  <tr>                    <td style=\"text-align:left\">{{medicineName}}</td>                    <td style=\"text-align:center\">{{Quantity}}</td>                    <td style=\"text-align:center\">{{dose}}</td>                    <td style=\"text-align:center\">{{duration}}</td>                    <td style=\"text-align:left\">{{doseDuration}}</td>                </tr>";
             string Medicine = "";
@@ -206,7 +208,7 @@ namespace TechMed.API.Services
             //};
 
             var testFilePath = "path/to/test.pdf";
-            var testFileBytes = BtnCreatePdf_Click(html);
+            var testFileBytes = BtnCreatePdf_Click(html, Footer);
             //PdfSharpConvert(html);
             //var testFileBytes = _converter.Convert(htmlToPdfDocument);
 
@@ -263,7 +265,7 @@ namespace TechMed.API.Services
 
 
 
-        protected byte[] BtnCreatePdf_Click(string htmlString)
+        protected byte[] BtnCreatePdf_Click(string htmlString,string footerString="this is header")
         {
             // read parameters from the webpage
 
@@ -294,12 +296,24 @@ namespace TechMed.API.Services
             // instantiate a html to pdf converter object
             HtmlToPdf converter = new HtmlToPdf();
 
+
+
+            converter.Options.DisplayFooter = true;
+            converter.Footer.DisplayOnFirstPage = true;
+            converter.Footer.DisplayOnOddPages = true;
+            converter.Footer.DisplayOnEvenPages = true;
+            converter.Footer.Height = 50;
+            PdfHtmlSection headerHtml = new PdfHtmlSection(footerString,"");
+            headerHtml.AutoFitHeight = HtmlToPdfPageFitMode.AutoFit;
+            converter.Footer.Add(headerHtml);
+
             // set converter options
             //converter.Options.PdfPageSize = pageSize;
             //converter.Options.PdfPageOrientation = pdfOrientation;
             //converter.Options.WebPageWidth = webPageWidth;
             //converter.Options.WebPageHeight = webPageHeight;
             converter.Options.DisplayHeader = true;
+            converter.Options.DisplayFooter = true;
             // create a new pdf document converting an url
             PdfDocument doc = converter.ConvertHtmlString(htmlString);
             doc.Pages.Remove(doc.Pages[0]);
