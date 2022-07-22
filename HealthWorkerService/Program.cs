@@ -11,6 +11,10 @@ var builder = new ConfigurationBuilder()
 
 var Configuration = builder.Build();
 var connectionString =Configuration.GetConnectionString("TeliMedConn");
+string str= Configuration.GetValue<string>("Host:APIHost");
+var strv=Configuration.GetSection("MyConfig");
+var strvs=Configuration.GetSection("ConnectionStrings");
+var t=Configuration.GetSection("MyConfig").Get<MyConfig>();
 //var services = new ServiceCollection();
 //services.AddDbContext<TeleMedecineContext>(o => o.UseSqlServer(connectionString), ServiceLifetime.Transient);
 //services.AddScoped<IUserRepository, UserRepository>();
@@ -25,9 +29,10 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.AddDbContext<TeleMedecineContext>(o => o.UseSqlServer(connectionString), ServiceLifetime.Singleton);
         services.AddHostedService<Worker>();
         services.AddSingleton<ISystemHealthRepository, SystemHealthRepository>();
-
+        services.Configure<MyConfig>(Configuration.GetSection("MyConfig"));
 
     }).UseWindowsService()
     .Build();
+
 
 await host.RunAsync();

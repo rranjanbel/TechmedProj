@@ -6,13 +6,12 @@ namespace TechMed.DL.Models
     public partial class ServerHealth
     {
         public long Id { get; set; }
-        public DateTime Date { get; set; }
-        public int? Workinghours { get; set; }
-        public string? Workingtime { get; set; }
-        public TimeSpan? ServerUpTime { get; set; }
-        public TimeSpan? ServerDownTime { get; set; }
-        public string? DownTiming { get; set; }
-        public string? Reason { get; set; }
-        public decimal? Availability { get; set; }
+        public DateTime StartDateTime { get; set; }
+        public DateTime EndDateTime { get; set; }
+        public TimeSpan TimeDuration { get; set; }
+        public long TimeDurationSS { get; set; }
+        public string? CurrentStatus { get; set; }
+        public string? Details { get; set; }
+
     }
 }

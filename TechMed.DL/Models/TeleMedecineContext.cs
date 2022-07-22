@@ -1314,18 +1314,21 @@ namespace TechMed.DL.Models
 
                 entity.Property(e => e.Id).HasColumnName("ID");
 
-                entity.Property(e => e.Availability).HasColumnType("decimal(18, 2)");
+                //entity.Property(e => e.Availability).HasColumnType("decimal(18, 2)");
 
-                entity.Property(e => e.Date).HasColumnType("date");
-
-                entity.Property(e => e.DownTiming).HasMaxLength(250);
-
-                entity.Property(e => e.Reason)
-                    .HasMaxLength(500)
+                entity.Property(e => e.StartDateTime).HasColumnType("datetime");
+                entity.Property(e => e.EndDateTime).HasColumnType("datetime");
+                entity.Property(e => e.TimeDuration).HasColumnType("timespan");
+                entity.Property(e => e.TimeDurationSS).HasColumnType("bigint");
+                entity.Property(e => e.CurrentStatus)
+                    .HasMaxLength(250)
                     .IsUnicode(false);
-
-                entity.Property(e => e.Workingtime).HasMaxLength(150);
-            });
+                entity.Property(e => e.Details)
+                    .HasMaxLength(500)
+                    .IsUnicode(false)
+                    ;
+                
+    });
 
             modelBuilder.Entity<Setting>(entity =>
             {

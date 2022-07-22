@@ -107,6 +107,7 @@ builder.Services.AddScoped<ICDSSGuidelineRepository, CDSSGuidelineRepository>();
 builder.Services.AddScoped<IMasterRepository, MasterRepository>();
 builder.Services.AddScoped<ISettingMaster, SettingMaster>();
 builder.Services.AddScoped<IReportService, ReportService>();
+builder.Services.AddScoped<ISystemHealthRepository, SystemHealthRepository>();
 
 builder.Services.AddScoped<IMailService, MailService>();
 builder.Services.AddScoped<ISnomedRepository, SnomedRepository>();
