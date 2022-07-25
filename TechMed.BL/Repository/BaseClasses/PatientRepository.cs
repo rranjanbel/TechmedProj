@@ -133,6 +133,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     todaysPatient.Gender = item.Gender;
                     todaysPatient.CaseHeading = item.CaseHeading;
                     todaysPatient.DateOfRegistration = item.DateOfRegistration;
+                    todaysPatient.CaseFileNumber = item.CaseFileNumber;
                     todaysPatientList.Add(todaysPatient);
                 }
             }

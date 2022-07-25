@@ -273,6 +273,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 mapdata.id = item.PatientCase.Patient.Id;
                 mapdata.PatientCaseID = item.PatientCase.Id;
                 mapdata.CaseHeading = item.PatientCase.CaseHeading;
+                mapdata.CaseFileNumber = item.PatientCase.CaseFileNumber;
                 //mapdata.status = item.PatientCase.Patient.PatientStatus.PatientStatus;
                 DTOList.Add(mapdata);
             }
