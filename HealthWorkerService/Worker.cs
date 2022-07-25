@@ -27,7 +27,7 @@ namespace HealthWorkerService
                 await _systemHealthRepository.SaveStatusInDB(APIHost, AngHost); 
                 //_logger.LogInformation("ANG Status : " + await _systemHealthRepository.GetANGStatus());
                 //_logger.LogInformation("API Status : " + await _systemHealthRepository.GetAPIStatus());
-                await Task.Delay(1000, stoppingToken);
+                await Task.Delay(2000, stoppingToken);
             }
         }
     }

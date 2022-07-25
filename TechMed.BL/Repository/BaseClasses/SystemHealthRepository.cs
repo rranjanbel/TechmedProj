@@ -39,7 +39,7 @@ namespace TechMed.BL.Repository.BaseClasses
             {
                 using (HttpClient Client = new HttpClient())
                 {
-
+                    Client.Timeout = TimeSpan.FromSeconds(1);
                     HttpResponseMessage result = Client.GetAsync(uri).Result;
                     HttpStatusCode StatusCode = result.StatusCode;
 
