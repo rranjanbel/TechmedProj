@@ -23,13 +23,14 @@ namespace TechMed.BL.Repository.BaseClasses
         private readonly ILogger<UserRepository> _logger;
         private readonly IReportService _reportService;
         private readonly IPatientCaseRepository _patientCaeRepository;
+        //private readonly ITwilioMeetingRepository _twilioRoomDb;
         public DoctorRepository(ILogger<UserRepository> logger, TeleMedecineContext teleMedecineContext, IMapper mapper, IReportService reportService) : base(teleMedecineContext)
         {
             this._teleMedecineContext = teleMedecineContext;
             this._mapper = mapper;
             this._logger = logger;
             this._reportService = reportService;
-
+           // _twilioRoomDb = twilioRoomDb;
         }
 
         public void AddDoctorDetails()
@@ -1153,7 +1154,13 @@ namespace TechMed.BL.Repository.BaseClasses
             return patientSearchResults;
         }
 
-        //public ApiResponseModel<dynamic>  DismissCall( string roomInstance, int patientCaseId, bool isPartiallyClosed)
+        public async Task<string> GetTwilioReferenceID(long patientCaseID)
+        {
+            string referenceValue = await _teleMedecineContext.TwilioMeetingRoomInfos.Where(a => a.PatientCaseId ==patientCaseID).Select(s => s.RoomName).FirstOrDefaultAsync();
+            return referenceValue;
+        }
+
+        //public async ApiResponseModel<dynamic> DismissCall(string roomInstance, int patientCaseId, bool isPartiallyClosed)
         //{
         //    ApiResponseModel<dynamic> apiResponseModel = new ApiResponseModel<dynamic>();
         //    string callBackUrlForTwilio = string.Format("{0}://{1}{2}/api/webhookcallback/twiliocomposevideostatuscallback", Request.Scheme, Request.Host.Value, Request.PathBase);
@@ -1165,7 +1172,7 @@ namespace TechMed.BL.Repository.BaseClasses
         //        {
         //            apiResponseModel.isSuccess = false;
         //            apiResponseModel.errorMessage = "Invalid Information";
-        //            BadRequest(apiResponseModel);
+        //            return apiResponseModel;
         //        }
         //        try
         //        {
@@ -1175,7 +1182,7 @@ namespace TechMed.BL.Repository.BaseClasses
         //        }
         //        catch (Exception ex)
         //        {
-
+        //            return apiResponseModel;
         //        }
         //        await _twilioRoomDb.SetMeetingRoomClosed(roomInstance, isPartiallyClosed);
 

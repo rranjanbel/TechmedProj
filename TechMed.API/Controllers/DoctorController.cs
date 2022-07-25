@@ -8,6 +8,9 @@ using TechMed.DL.ViewModel;
 using TechMed.BL.Repository.Interfaces;
 using TechMed.BL.ViewModels;
 using TechMed.BL.CommanClassesAndFunctions;
+using Microsoft.Net.Http.Headers;
+using Newtonsoft.Json;
+using Microsoft.Extensions.Options;
 
 namespace TechMed.API.Controllers
 {
@@ -22,7 +25,8 @@ namespace TechMed.API.Controllers
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly ILogger<DoctorController> _logger;
         private readonly IReportService _reportService;
-        public DoctorController(IMapper mapper, ILogger<DoctorController> logger, TeleMedecineContext teleMedecineContext, IDoctorRepository doctorRepository, IWebHostEnvironment webHostEnvironment, IReportService reportService)
+        private readonly ApplicationRootUri _applicationRootUrl;
+        public DoctorController(IMapper mapper, ILogger<DoctorController> logger, TeleMedecineContext teleMedecineContext, IDoctorRepository doctorRepository, IWebHostEnvironment webHostEnvironment, IReportService reportService, ApplicationRootUri applicationRootUrl)
         {
             doctorBusinessMaster = new DoctorBusinessMaster(teleMedecineContext, mapper);
             _doctorRepository = doctorRepository;
@@ -30,6 +34,7 @@ namespace TechMed.API.Controllers
             _webHostEnvironment = webHostEnvironment;
             _logger = logger;
             _reportService=reportService;
+            _applicationRootUrl = applicationRootUrl;
         }
         [Route("GetListOfNotification")]
         [HttpPost]
@@ -544,16 +549,41 @@ namespace TechMed.API.Controllers
         {
             try
             {
+                ApiResponseModel<dynamic> apiResponseModel = new ApiResponseModel<dynamic>();
                 if (treatmentVM.PatientCaseID == null || treatmentVM.PatientCaseID < 1 || !ModelState.IsValid)
                 {
                     _logger.LogError("PostTreatmentPlan : ModelState is invalid");
                     return BadRequest(treatmentVM.PatientCaseID);
                 }
-                var DTO = await _doctorRepository.PostTreatmentPlan(treatmentVM, _webHostEnvironment.ContentRootPath);
-                if (DTO)
+                var result = await _doctorRepository.PostTreatmentPlan(treatmentVM, _webHostEnvironment.ContentRootPath);
+                if (result)
                 {
                     _logger.LogInformation($"PostTreatmentPlan : Sucess response returned ");
-                    return Ok(DTO);
+                    string roomInstance = await _doctorRepository.GetTwilioReferenceID(treatmentVM.PatientCaseID); 
+                    string apiKey = Request.Headers[HeaderNames.Authorization].ToString();
+                    string baseUrl = _applicationRootUrl.baseUrl;
+                    string apiUrl = baseUrl + "videoCall/dismisscall";
+                    //https://localhost:7043/api/videoCall/dismisscall
+
+
+                    using (var httpClient = new HttpClient())
+                    {  
+                        var content = new FormUrlEncodedContent(new[]
+                                    {
+                                        new KeyValuePair<string, string>("roomInstance", roomInstance),
+                                        new KeyValuePair<string, string>("patientCaseId", treatmentVM.PatientCaseID.ToString()),
+                                        new KeyValuePair<string, string>("isPartiallyClosed", "true")
+                                    });
+
+                        using (var response = await httpClient.PostAsync(apiUrl, content))
+                        {
+                            string apiResponse = await response.Content.ReadAsStringAsync();                          
+                            apiResponseModel = JsonConvert.DeserializeObject<ApiResponseModel<dynamic>>(apiResponse);
+                        }
+                        
+                    }
+
+                    return Ok(apiResponseModel);
                 }
                 else
                 {

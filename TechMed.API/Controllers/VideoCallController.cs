@@ -362,7 +362,8 @@ namespace TechMed.API.Controllers
             string callBackUrlForTwilio = string.Format("{0}://{1}{2}/api/webhookcallback/twiliocomposevideostatuscallback", Request.Scheme, Request.Host.Value, Request.PathBase);
             try
             {
-                var patientInfo = await _twilioRoomDb.PatientQueueGet(patientCaseId);
+                //var patientInfo = await _twilioRoomDb.PatientQueueGet(patientCaseId);
+                var patientInfo = await _twilioRoomDb.PatientQueueAfterTretment(patientCaseId);
                 var roomInfo = await _twilioRoomDb.MeetingRoomInfoGet(roomInstance);
                 if (patientInfo == null || roomInfo == null)
                 {
@@ -378,7 +379,7 @@ namespace TechMed.API.Controllers
                 }
                 catch (Exception ex)
                 {
-
+                    _logger.LogError("Exception in DismissCall API when call close room SDK. " + ex);
                 }
                 await _twilioRoomDb.SetMeetingRoomClosed(roomInstance, isPartiallyClosed);
 

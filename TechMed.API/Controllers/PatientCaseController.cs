@@ -429,7 +429,7 @@ namespace TechMed.API.Controllers
                     _logger.LogError("GetPatientCaseDocList : PatientcaseId is null ");
                     return StatusCode(404, ModelState);
                 }
-                rootUrl = this._myConfiguration.Url;
+                rootUrl = this._myConfiguration.baseUrl;
                 caseDocList = await _patientCaeRepository.GetPatientCaseDocList(PatientCaseID, rootUrl);
                 if (caseDocList != null)
                 {

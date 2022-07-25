@@ -49,6 +49,7 @@ namespace TechMed.BL.Repository.Interfaces
         public Task<string> CheckMobile(string Mobile);
         public Task<DoctorDTO> GetDoctorDetailsByUserID(GetDoctorDetailByUserIDVM getDoctorDetailByUserIDVM);
         List<DoctorPatientSearchVM> GetAdvanceSearchDoctorsPatient(AdvanceDoctorPatientSearchVM searchParameter);
+        public Task<string> GetTwilioReferenceID(long patientCaseID);
 
     }
 }

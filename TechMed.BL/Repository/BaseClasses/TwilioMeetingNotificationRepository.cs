@@ -151,5 +151,16 @@ namespace TechMed.BL.Repository.BaseClasses
             }
             return true;
         }
+
+        public async Task<PatientQueue> PatientQueueAfterTretment(Int64 patientCaseID)
+        {
+            return await _teleMedecineContext.PatientQueues
+                .Include(x => x.PatientCase)
+                .Include(x => x.AssignedByNavigation)
+                .ThenInclude(x => x.User)
+                .Include(x => x.AssignedDoctor)
+                .ThenInclude(x => x.User)
+                .FirstOrDefaultAsync(x => x.PatientCaseId == patientCaseID && x.CaseFileStatusId == 5);
+        }
     }
 }
