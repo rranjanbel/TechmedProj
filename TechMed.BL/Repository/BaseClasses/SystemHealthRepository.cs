@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -6,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TechMed.BL.Repository.Interfaces;
 using TechMed.DL.Models;
+using TechMed.DL.ViewModel;
 
 namespace TechMed.BL.Repository.BaseClasses
 {
@@ -17,16 +19,17 @@ namespace TechMed.BL.Repository.BaseClasses
             _teleMedecineContext = teleMedecineContext;
         }
 
-        public async Task<bool> GetANGStatus()
+        public async Task<bool> GetANGStatus(string ANGHost)
         {
-            var v = _teleMedecineContext.ServerHealths.ToList();
+            //var v = _teleMedecineContext.ServerHealths.ToList();
             bool result = await IsValidUri(new Uri("https://telemed-ang-dev.azurewebsites.net/"));
             return result;
         }
 
-        public async Task<bool> GetAPIStatus()
+        public async Task<bool> GetAPIStatus(string APIHost)
         {
-            bool result = await IsValidUri(new Uri("https://localhost:7043/api/SystemHealth/GetAPIStatus"));
+            APIHost = APIHost + "/api/SystemHealth/GetAPIStatus";
+            bool result = await IsValidUri(new Uri(APIHost));
             return result;
 
         }
@@ -59,19 +62,50 @@ namespace TechMed.BL.Repository.BaseClasses
 
         }
 
-        public async Task<bool> SaveStatusInDB(string APIHost,string ANGHost)
+        public async Task<bool> SaveStatusInDB(string APIHost, string ANGHost)
         {
-            bool apir = await GetAPIStatus();
-            bool angr = await GetANGStatus();
-            if (apir&& angr)
+            try
             {
-                //get staus URL
-                //if
-                //ServerHealth serverHealth=new ServerHealth({ 
-                
-                //});
+                bool apir = await GetAPIStatus(APIHost);
+                bool angr = await GetANGStatus(ANGHost);
+                string Status = "Online";
+                DateTime StartTime = DateTime.Now;
+                DateTime EndTime = DateTime.Now;
+                string Details = "Online";
+
+                if (!apir || !angr)
+                {
+                    Status = "Offline";
+                }
+                if (!apir)
+                {
+                    Details = "API Offline";
+                }
+                if (!angr)
+                {
+                    Details = "ANG Offline";
+                }
+                if (!apir && !angr)
+                {
+                    Details = "Offline";
+                }
+                var Results = _teleMedecineContext.UpdateServerHealth.FromSqlInterpolated($"EXEC [dbo].[UpdateServerHealth] @StartTime ={StartTime}, @EndTime ={EndTime}, @Status ={Status},@Details={Details}");
+                UpdateServerHealthVM data;
+                foreach (var item in Results)
+                {
+                    data = new UpdateServerHealthVM();
+                    data.Success = item.Success;
+                }
+
             }
-            throw new NotImplementedException();
+            catch (Exception ex)
+            {
+
+                return false;
+            }
+            return true;
+
+
         }
     }
 

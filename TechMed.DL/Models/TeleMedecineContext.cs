@@ -124,6 +124,7 @@ namespace TechMed.DL.Models
         public virtual DbSet<TodaysPatientCountVM> TodaysPatientCount { get; set; } = null!;
         public virtual DbSet<PatientQueueByDoctor> PatientQueueByDoctorList { get; set; } = null!;
         public virtual DbSet<PatientQueueVM> PatientQueuesList { get; set; } = null!;
+        public virtual DbSet<UpdateServerHealthVM> UpdateServerHealth { get; set; } = null!;
 
 
 

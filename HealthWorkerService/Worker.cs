@@ -8,29 +8,32 @@ namespace HealthWorkerService
     {
         private readonly ILogger<Worker> _logger;
         private readonly ISystemHealthRepository _systemHealthRepository;
-        private readonly IOptions<MyConfig> config;
-        public Worker(ILogger<Worker> logger, ISystemHealthRepository systemHealthRepository, IOptions<MyConfig> config)
+        private readonly IOptions<HostUrl> config;
+        public Worker(ILogger<Worker> logger, ISystemHealthRepository systemHealthRepository, IOptions<HostUrl> config)
         {
             _logger = logger;
             _systemHealthRepository = systemHealthRepository;
             this.config=config;
-            var t = config.Value.ApplicationName;
+            
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             while (!stoppingToken.IsCancellationRequested)
             {
+                var APIHost = config.Value.APIHost;
+                var AngHost = config.Value.AngHost;
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-                _logger.LogInformation("ANG Status : " + await _systemHealthRepository.GetANGStatus());
-                _logger.LogInformation("API Status : " + await _systemHealthRepository.GetAPIStatus());
+                await _systemHealthRepository.SaveStatusInDB(APIHost, AngHost); 
+                //_logger.LogInformation("ANG Status : " + await _systemHealthRepository.GetANGStatus());
+                //_logger.LogInformation("API Status : " + await _systemHealthRepository.GetAPIStatus());
                 await Task.Delay(1000, stoppingToken);
             }
         }
     }
-    public class MyConfig
+    public class HostUrl
     {
-        public string? ApplicationName { get; set; }
-        public int Version { get; set; }
+        public string? APIHost { get; set; }
+        public string? AngHost { get; set; }
     }
 }
