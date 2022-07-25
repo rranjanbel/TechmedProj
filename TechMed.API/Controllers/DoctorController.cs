@@ -11,6 +11,9 @@ using TechMed.BL.CommanClassesAndFunctions;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 using Microsoft.Extensions.Options;
+using TechMed.BL.TwilioAPI.Service;
+using Microsoft.AspNetCore.SignalR;
+using TechMed.API.NotificationHub;
 
 namespace TechMed.API.Controllers
 {
@@ -26,7 +29,19 @@ namespace TechMed.API.Controllers
         private readonly ILogger<DoctorController> _logger;
         private readonly IReportService _reportService;
         private readonly ApplicationRootUri _applicationRootUrl;
-        public DoctorController(IMapper mapper, ILogger<DoctorController> logger, TeleMedecineContext teleMedecineContext, IDoctorRepository doctorRepository, IWebHostEnvironment webHostEnvironment, IReportService reportService, ApplicationRootUri applicationRootUrl)
+        readonly ITwilioVideoSDKService _twilioVideoSDK;
+        private readonly IHubContext<SignalRBroadcastHub, IHubClient> _hubContext;
+        private readonly ITwilioMeetingRepository _twilioRoomDb;
+        public DoctorController(IMapper mapper,
+            ILogger<DoctorController> logger,
+            TeleMedecineContext teleMedecineContext,
+            IDoctorRepository doctorRepository,
+            IWebHostEnvironment webHostEnvironment,
+            IReportService reportService,
+            ApplicationRootUri applicationRootUrl,
+            ITwilioVideoSDKService twilioVideoSDK,
+            ITwilioMeetingRepository twilioRoomDb,
+            IHubContext<SignalRBroadcastHub,IHubClient> hubContext)
         {
             doctorBusinessMaster = new DoctorBusinessMaster(teleMedecineContext, mapper);
             _doctorRepository = doctorRepository;
@@ -35,6 +50,9 @@ namespace TechMed.API.Controllers
             _logger = logger;
             _reportService=reportService;
             _applicationRootUrl = applicationRootUrl;
+            _twilioVideoSDK = twilioVideoSDK;
+            _hubContext = hubContext;
+            _twilioRoomDb = twilioRoomDb;
         }
         [Route("GetListOfNotification")]
         [HttpPost]
@@ -559,30 +577,18 @@ namespace TechMed.API.Controllers
                 if (result)
                 {
                     _logger.LogInformation($"PostTreatmentPlan : Sucess response returned ");
-                    string roomInstance = await _doctorRepository.GetTwilioReferenceID(treatmentVM.PatientCaseID); 
-                    string apiKey = Request.Headers[HeaderNames.Authorization].ToString();
-                    string baseUrl = _applicationRootUrl.baseUrl;
-                    string apiUrl = baseUrl + "videoCall/dismisscall";
-                    //https://localhost:7043/api/videoCall/dismisscall
-
-
-                    using (var httpClient = new HttpClient())
-                    {  
-                        var content = new FormUrlEncodedContent(new[]
-                                    {
-                                        new KeyValuePair<string, string>("roomInstance", roomInstance),
-                                        new KeyValuePair<string, string>("patientCaseId", treatmentVM.PatientCaseID.ToString()),
-                                        new KeyValuePair<string, string>("isPartiallyClosed", "true")
-                                    });
-
-                        using (var response = await httpClient.PostAsync(apiUrl, content))
-                        {
-                            string apiResponse = await response.Content.ReadAsStringAsync();                          
-                            apiResponseModel = JsonConvert.DeserializeObject<ApiResponseModel<dynamic>>(apiResponse);
-                        }
-                        
+                    string roomInstance = await _doctorRepository.GetTwilioReferenceID(treatmentVM.PatientCaseID);
+                    bool isPartiallyClosed = true;
+                    try
+                    {
+                        apiResponseModel = await DismissCall(roomInstance, treatmentVM.PatientCaseID, isPartiallyClosed);
                     }
-
+                    catch (Exception ex)
+                    {
+                        apiResponseModel.isSuccess = false;
+                        apiResponseModel.errorMessage = ex.Message;
+                        _logger.LogError("Exception in DismissCall " + ex);
+                    }
                     return Ok(apiResponseModel);
                 }
                 else
@@ -1371,6 +1377,76 @@ namespace TechMed.API.Controllers
                 throw ex;
             }
 
+        }
+
+        private async Task<ApiResponseModel<dynamic>> DismissCall(string roomInstance, long patientCaseId, bool isPartiallyClosed)
+        {
+            ApiResponseModel<dynamic> apiResponseModel = new ApiResponseModel<dynamic>();
+            string callBackUrlForTwilio = string.Format("{0}://{1}{2}/api/webhookcallback/twiliocomposevideostatuscallback", Request.Scheme, Request.Host.Value, Request.PathBase);
+            try
+            {
+                //var patientInfo = await _twilioRoomDb.PatientQueueGet(patientCaseId);
+                var patientInfo = await _twilioRoomDb.PatientQueueAfterTretment(patientCaseId);
+                var roomInfo = await _twilioRoomDb.MeetingRoomInfoGet(roomInstance);
+                if (patientInfo == null || roomInfo == null)
+                {
+                    apiResponseModel.isSuccess = false;
+                    apiResponseModel.errorMessage = "Invalid Information";
+                    return apiResponseModel;
+                }
+                try
+                {
+                    var roomInfoFromTwilio = await _twilioVideoSDK.CloseRoomAsync(roomInstance);
+                    var composeVideo = await _twilioVideoSDK.ComposeVideo(roomInfoFromTwilio.Sid, callBackUrlForTwilio);
+                    await _twilioRoomDb.MeetingRoomComposeVideoUpdate(composeVideo, roomInstance);
+                }
+                catch (Exception ex)
+                {
+                    apiResponseModel.isSuccess = false;
+                    apiResponseModel.errorMessage = ex.Message;
+                    _logger.LogError("Exception in DismissCall API when call close room SDK. " + ex);
+                }
+                await _twilioRoomDb.SetMeetingRoomClosed(roomInstance, isPartiallyClosed);
+
+
+                await _hubContext.Clients.All.BroadcastMessage(new SignalRNotificationModel()
+                {
+                    receiverEmail = patientInfo.AssignedDoctor.User.Email,
+                    senderEmail = patientInfo.AssignedByNavigation.User.Email,
+                    message = "",
+                    messageType = enumSignRNotificationType.NotifyParticipientToExit.ToString(),
+                    patientCaseId = patientCaseId,
+                    roomName = roomInstance
+                });
+
+                await _hubContext.Clients.All.BroadcastMessage(new SignalRNotificationModel()
+                {
+                    receiverEmail = patientInfo.AssignedByNavigation.User.Email,
+                    senderEmail = patientInfo.AssignedDoctor.User.Email,
+                    message = "",
+                    messageType = enumSignRNotificationType.NotifyParticipientToExit.ToString(),
+                    patientCaseId = patientCaseId,
+                    roomName = roomInstance
+                });
+
+                if(apiResponseModel.isSuccess == false)
+                {
+                    apiResponseModel.isSuccess = false;
+                }
+                else
+                {
+                    apiResponseModel.isSuccess = true;
+                }
+             
+                return apiResponseModel;
+            }
+            catch (Exception ex)
+            {
+                apiResponseModel.isSuccess = false;
+                apiResponseModel.errorMessage = ex.Message;
+                _logger.LogError("Exception in DismissCall API " + ex);
+                return apiResponseModel;
+            }
         }
     }
 }
