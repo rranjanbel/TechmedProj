@@ -8,6 +8,6 @@ namespace TechMed.BL.ModelMaster
 {
     public class ApplicationRootUri
     {
-        public string Url { get; set; }
+        public string baseUrl { get; set; }
     }
 }

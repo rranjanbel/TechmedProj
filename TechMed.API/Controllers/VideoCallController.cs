@@ -48,7 +48,7 @@ namespace TechMed.API.Controllers
         [HttpPost("begindialingcalltouser")]
         public async Task<IActionResult> BeginDialingCallToUser([Required][FromQuery] Int64 patientCaseId)
         {
-            ApiResponseModel<bool> apiResponseModel = new ApiResponseModel<bool>();
+            ApiResponseModel<int> apiResponseModel = new ApiResponseModel<int>();
             var patientInfo = await _twilioRoomDb.PatientQueueGet(patientCaseId);
             
             if (patientInfo == null)
@@ -70,14 +70,15 @@ namespace TechMed.API.Controllers
             {
                 PatientCase patientCase = await  _patientCaseRepository.GetByID(patientCaseId);
                 apiResponseModel.isSuccess = true;
+                apiResponseModel.data = patientCase.PatientId;
                 await _hubContext.Clients.All.BroadcastMessage(new SignalRNotificationModel()
                 {
                     receiverEmail = CanCallByPHC ? patientInfo.AssignedDoctor.User.Email : patientInfo.AssignedByNavigation.User.Email,
                     senderEmail = CanCallByPHC ? patientInfo.AssignedByNavigation.User.Email : patientInfo.AssignedDoctor.User.Email,
                     message = CanCallByPHC ? patientInfo.AssignedByNavigation.Phcname : patientInfo.AssignedDoctor.User.Name,
                     messageType = enumSignRNotificationType.BeginDialingCall.ToString(),
-                    patientCaseId = patientCaseId,
-                    patientId = patientCase.PatientId
+                    patientCaseId = patientCaseId
+                   
                 });
             }
             else
@@ -93,7 +94,7 @@ namespace TechMed.API.Controllers
         [HttpGet("connecttomeetingroom")]
         public async Task<IActionResult> ConnectToMeetingRoom([Required][FromQuery] int patientCaseId, [Required][FromQuery] string meetingInstance, [Required][FromQuery] bool isDoctor)
         {
-            ApiResponseModel<bool> apiResponseModel = new ApiResponseModel<bool>();
+            ApiResponseModel<int> apiResponseModel = new ApiResponseModel<int>();
             PatientCase patientCase = await _patientCaseRepository.GetByID(patientCaseId);
             string callBackUrlForTwilio = string.Format("{0}://{1}{2}/api/webhookcallback/twilioroomstatuscallback", Request.Scheme, Request.Host.Value, Request.PathBase);
             try
@@ -123,7 +124,7 @@ namespace TechMed.API.Controllers
                         
                     });
                     apiResponseModel.isSuccess = true;
-                    apiResponseModel.data = true;
+                    apiResponseModel.data = patientCase.PatientId;
 
                     await _hubContext.Clients.All.BroadcastMessage(new SignalRNotificationModel()
                     {
@@ -132,8 +133,8 @@ namespace TechMed.API.Controllers
                         message = "",
                         messageType = enumSignRNotificationType.NotifyParticipientToJoin.ToString(),
                         patientCaseId = patientCaseId,
-                        roomName = meetingInstance,
-                        patientId = patientCase.PatientId
+                        roomName = meetingInstance
+                       
                     });
 
 
@@ -163,7 +164,7 @@ namespace TechMed.API.Controllers
                         return BadRequest(apiResponseModel);
                     }
                     apiResponseModel.isSuccess = true;
-                    apiResponseModel.data = true;
+                    apiResponseModel.data = patientCase.PatientId;
                     return Ok(apiResponseModel);
                 }
             }
@@ -361,7 +362,8 @@ namespace TechMed.API.Controllers
             string callBackUrlForTwilio = string.Format("{0}://{1}{2}/api/webhookcallback/twiliocomposevideostatuscallback", Request.Scheme, Request.Host.Value, Request.PathBase);
             try
             {
-                var patientInfo = await _twilioRoomDb.PatientQueueGet(patientCaseId);
+                //var patientInfo = await _twilioRoomDb.PatientQueueGet(patientCaseId);
+                var patientInfo = await _twilioRoomDb.PatientQueueAfterTretment(patientCaseId);
                 var roomInfo = await _twilioRoomDb.MeetingRoomInfoGet(roomInstance);
                 if (patientInfo == null || roomInfo == null)
                 {
@@ -377,7 +379,7 @@ namespace TechMed.API.Controllers
                 }
                 catch (Exception ex)
                 {
-
+                    _logger.LogError("Exception in DismissCall API when call close room SDK. " + ex);
                 }
                 await _twilioRoomDb.SetMeetingRoomClosed(roomInstance, isPartiallyClosed);
 

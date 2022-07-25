@@ -22,6 +22,7 @@ namespace TechMed.BL.ViewModels
         public int  PHCUserID { get; set; }
         public string CaseHeading { get; set; } 
         public DateTime DateOfRegistration { get; set; }
+        public string CaseFileNumber { get; set; }
 
     }
 }

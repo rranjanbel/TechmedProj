@@ -23,13 +23,14 @@ namespace TechMed.BL.Repository.BaseClasses
         private readonly ILogger<UserRepository> _logger;
         private readonly IReportService _reportService;
         private readonly IPatientCaseRepository _patientCaeRepository;
+        //private readonly ITwilioMeetingRepository _twilioRoomDb;
         public DoctorRepository(ILogger<UserRepository> logger, TeleMedecineContext teleMedecineContext, IMapper mapper, IReportService reportService) : base(teleMedecineContext)
         {
             this._teleMedecineContext = teleMedecineContext;
             this._mapper = mapper;
             this._logger = logger;
             this._reportService = reportService;
-
+           // _twilioRoomDb = twilioRoomDb;
         }
 
         public void AddDoctorDetails()
@@ -272,6 +273,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 mapdata.id = item.PatientCase.Patient.Id;
                 mapdata.PatientCaseID = item.PatientCase.Id;
                 mapdata.CaseHeading = item.PatientCase.CaseHeading;
+                mapdata.CaseFileNumber = item.PatientCase.CaseFileNumber;
                 //mapdata.status = item.PatientCase.Patient.PatientStatus.PatientStatus;
                 DTOList.Add(mapdata);
             }
@@ -1152,5 +1154,70 @@ namespace TechMed.BL.Repository.BaseClasses
             };
             return patientSearchResults;
         }
+
+        public async Task<string> GetTwilioReferenceID(long patientCaseID)
+        {
+            string referenceValue = await _teleMedecineContext.TwilioMeetingRoomInfos.Where(a => a.PatientCaseId ==patientCaseID).Select(s => s.RoomName).FirstOrDefaultAsync();
+            return referenceValue;
+        }
+
+        //public async ApiResponseModel<dynamic> DismissCall(string roomInstance, int patientCaseId, bool isPartiallyClosed)
+        //{
+        //    ApiResponseModel<dynamic> apiResponseModel = new ApiResponseModel<dynamic>();
+        //    string callBackUrlForTwilio = string.Format("{0}://{1}{2}/api/webhookcallback/twiliocomposevideostatuscallback", Request.Scheme, Request.Host.Value, Request.PathBase);
+        //    try
+        //    {
+        //        var patientInfo = await _twilioRoomDb.PatientQueueGet(patientCaseId);
+        //        var roomInfo = await _twilioRoomDb.MeetingRoomInfoGet(roomInstance);
+        //        if (patientInfo == null || roomInfo == null)
+        //        {
+        //            apiResponseModel.isSuccess = false;
+        //            apiResponseModel.errorMessage = "Invalid Information";
+        //            return apiResponseModel;
+        //        }
+        //        try
+        //        {
+        //            var roomInfoFromTwilio = await _twilioVideoSDK.CloseRoomAsync(roomInstance);
+        //            var composeVideo = await _twilioVideoSDK.ComposeVideo(roomInfoFromTwilio.Sid, callBackUrlForTwilio);
+        //            await _twilioRoomDb.MeetingRoomComposeVideoUpdate(composeVideo, roomInstance);
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            return apiResponseModel;
+        //        }
+        //        await _twilioRoomDb.SetMeetingRoomClosed(roomInstance, isPartiallyClosed);
+
+
+        //        await _hubContext.Clients.All.BroadcastMessage(new SignalRNotificationModel()
+        //        {
+        //            receiverEmail = patientInfo.AssignedDoctor.User.Email,
+        //            senderEmail = patientInfo.AssignedByNavigation.User.Email,
+        //            message = "",
+        //            messageType = enumSignRNotificationType.NotifyParticipientToExit.ToString(),
+        //            patientCaseId = patientCaseId,
+        //            roomName = roomInstance
+        //        });
+
+        //        await _hubContext.Clients.All.BroadcastMessage(new SignalRNotificationModel()
+        //        {
+        //            receiverEmail = patientInfo.AssignedByNavigation.User.Email,
+        //            senderEmail = patientInfo.AssignedDoctor.User.Email,
+        //            message = "",
+        //            messageType = enumSignRNotificationType.NotifyParticipientToExit.ToString(),
+        //            patientCaseId = patientCaseId,
+        //            roomName = roomInstance
+        //        });
+
+        //        apiResponseModel.isSuccess = true;
+        //        return Ok(apiResponseModel);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        apiResponseModel.isSuccess = false;
+        //        apiResponseModel.errorMessage = ex.Message;
+        //        _logger.LogError("Exception in DismissCall API " + ex);
+        //        return BadRequest(apiResponseModel);
+        //    }
+        //}
     }
 }

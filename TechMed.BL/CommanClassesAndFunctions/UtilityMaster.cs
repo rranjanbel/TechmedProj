@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using TechMed.DL.Models;
+using TechMed.DL.ViewModel;
 
 namespace TechMed.BL.CommanClassesAndFunctions
 {
@@ -315,6 +317,34 @@ namespace TechMed.BL.CommanClassesAndFunctions
                 throw;
             }
            
+        }
+
+        public static async Task<HttpResponseMessage> PostAPICallAsync(HttpClientRequestModel oRequest, object PostData)
+        {
+            string url = oRequest.BaseUrl + oRequest.MethodNameOrUrl;
+            using (var client = new HttpClient())
+            {
+                var request = new HttpRequestMessage(HttpMethod.Post, url);
+                if (PostData != null)
+                {
+                    request.Content = new StringContent(JsonConvert.SerializeObject(PostData), Encoding.UTF8, "application/json");
+                    request.Headers.Add("x-api-key", oRequest.ApiKey);
+                }
+                var response = await client.SendAsync(request);
+                string result = await response.Content.ReadAsStringAsync();
+                if (response.StatusCode == System.Net.HttpStatusCode.Created)
+                {
+                    return response;
+                }
+                else if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    return response;
+                }
+                else
+                {
+                    return response;
+                }
+            }
         }
     }
 }
