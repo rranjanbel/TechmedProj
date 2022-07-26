@@ -8,8 +8,8 @@ namespace TechMed.BL.Repository.Interfaces
 {
     public interface ISystemHealthRepository
     {
-        public Task<bool> GetAPIStatus();
-        public Task<bool> GetANGStatus();
+        public Task<bool> GetAPIStatus(string APIHost);
+        public Task<bool> GetANGStatus(string ANGHost);
         public Task<bool> SaveStatusInDB(string APIHost, string ANGHost);
     }
 }

@@ -8,7 +8,7 @@ namespace TechMed.DL.Models
         public long Id { get; set; }
         public DateTime StartDateTime { get; set; }
         public DateTime EndDateTime { get; set; }
-        public TimeSpan TimeDuration { get; set; }
+        public string? TimeDuration { get; set; }
         public long TimeDurationSS { get; set; }
         public string? CurrentStatus { get; set; }
         public string? Details { get; set; }
