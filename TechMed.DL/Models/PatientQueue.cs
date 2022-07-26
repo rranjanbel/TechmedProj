@@ -13,6 +13,8 @@ namespace TechMed.DL.Models
         public DateTime StatusOn { get; set; }
         public string Comment { get; set; } = null!;
         public DateTime AssignedOn { get; set; }
+        public DateTime? UpdatedOn { get; set; }
+        public bool IsQueueChanged { get; set; }
 
         public virtual Phcmaster AssignedByNavigation { get; set; } = null!;
         public virtual DoctorMaster AssignedDoctor { get; set; } = null!;
