@@ -695,5 +695,67 @@ namespace TechMed.API.Controllers
                 return StatusCode(500, ModelState);
             }
         }
+        [HttpPost]
+        [Route("RemovePatientFromDoctorsQueue")]
+        [ProducesResponseType(201, Type = typeof(RemovePatientFromQueueVM))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> RemovePatientFromDoctorsQueue(long PatientCaseID = 0)
+        {
+            RemovePatientFromQueueVM removePatientFromQueue = new RemovePatientFromQueueVM();  
+            try
+            {              
+                if (PatientCaseID > 0)
+                {
+                    removePatientFromQueue = await _patientCaeRepository.RemovePatientFromDoctorsQueue(PatientCaseID);
+                    if (removePatientFromQueue != null)
+                    {
+                        if (removePatientFromQueue.Status.ToLower() == "success")
+                        {
+                            _logger.LogInformation($"RemovePatientFromDoctorsQueue : Sucess response returned ");                            
+                            return StatusCode(200, removePatientFromQueue);
+                        }
+                        else
+                        {
+                            _logger.LogInformation($"RemovePatientFromDoctorsQueue : Fail response returned ");
+                            return StatusCode(404, removePatientFromQueue);
+                        }
+
+                    }
+                    else
+                    {
+                        removePatientFromQueue.Status = "fail";
+                        removePatientFromQueue.ErrorMessage = "Do not remove patient from queue";
+                        removePatientFromQueue.PatientCaseID = PatientCaseID;
+                        removePatientFromQueue.PatientID = 0;
+                        ModelState.AddModelError("RemovePatientFromDoctorsQueue", $"did not refer patient case to doctor");
+                        _logger.LogError("RemovePatientFromDoctorsQueue :did not refer patient case to doctor");
+                        return StatusCode(404, removePatientFromQueue);
+                    }
+
+                }
+                else
+                {
+                    removePatientFromQueue.Status = "fail";
+                    removePatientFromQueue.ErrorMessage = "Patient case ID has null value";
+                    removePatientFromQueue.PatientCaseID = PatientCaseID;
+                    removePatientFromQueue.PatientID = 0;
+                    ModelState.AddModelError("RemovePatientFromDoctorsQueue", "Patient case ID has null value");
+                    _logger.LogError("RemovePatientFromDoctorsQueue :Patient case ID has null value");
+                    return StatusCode(404, removePatientFromQueue);
+                }
+            }
+            catch (Exception ex)
+            {
+                removePatientFromQueue.Status = "fail";
+                removePatientFromQueue.ErrorMessage = ex.Message;
+                removePatientFromQueue.PatientCaseID = PatientCaseID;
+                removePatientFromQueue.PatientID =  0;
+
+                ModelState.AddModelError("RemovePatientFromDoctorsQueue", $"Something went wrong when remove refer doctor {ex.Message}");
+                _logger.LogError("Exception in RemovePatientFromDoctorsQueue API " + ex);
+                return StatusCode(500, removePatientFromQueue);
+            }
+        }
     }
 }

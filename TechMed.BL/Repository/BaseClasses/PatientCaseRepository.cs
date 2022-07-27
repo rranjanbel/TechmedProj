@@ -472,6 +472,9 @@ namespace TechMed.BL.Repository.BaseClasses
                     patientQueue.CaseFileStatusId = await GetCaseFileStatus();                                      
                     patientQueue.StatusOn = UtilityMaster.GetLocalDateTime();
                     patientQueue.AssignedOn = UtilityMaster.GetLocalDateTime();
+                    patientQueue.UpdatedOn = UtilityMaster.GetLocalDateTime();
+                    patientQueue.IsQueueChanged = false;
+                    
                     //patientQueue.AssignedDoctorId = patientReferToDoctorVM.AssignedDocterID;
                     //patientQueue.Comment = "Assigned by PHC";
 
@@ -485,11 +488,13 @@ namespace TechMed.BL.Repository.BaseClasses
                     else
                     {
                         existingpatientQueue.AssignedDoctorId = patientQueue.AssignedDoctorId;
-                        existingpatientQueue.StatusOn = UtilityMaster.GetLocalDateTime();
+                        //existingpatientQueue.StatusOn = UtilityMaster.GetLocalDateTime();
                         existingpatientQueue.AssignedOn = UtilityMaster.GetLocalDateTime();
                         existingpatientQueue.AssignedBy = patientReferToDoctorVM.PHCID;
                         existingpatientQueue.CaseFileStatusId = await GetCaseFileStatus();
                         existingpatientQueue.Comment = "Reassign the doctor";
+                        existingpatientQueue.UpdatedOn = UtilityMaster.GetLocalDateTime();
+                        existingpatientQueue.IsQueueChanged = true;
                         _teleMedecineContext.Entry(existingpatientQueue).State = EntityState.Modified;
                     }
 
@@ -1406,6 +1411,58 @@ namespace TechMed.BL.Repository.BaseClasses
 
         }
 
+        public async Task<RemovePatientFromQueueVM> RemovePatientFromDoctorsQueue(long patientCaseID)
+        {
+            int i = 0;
+           RemovePatientFromQueueVM removePatientFromQueue = new RemovePatientFromQueueVM();
+            PatientQueue patientQueue = await _teleMedecineContext.PatientQueues.FirstOrDefaultAsync(a => a.PatientCaseId == patientCaseID);
+            if(patientQueue != null)
+            {
+                patientQueue.UpdatedOn = UtilityMaster.GetLocalDateTime(); 
+                patientQueue.IsQueueChanged = true;               
+                patientQueue.CaseFileStatusId = 6;
+                _teleMedecineContext.Entry(patientQueue).State = EntityState.Modified;
+                PatientCase patientCase = _teleMedecineContext.PatientCases.FirstOrDefault(a => a.Id == patientCaseID);
+                if(patientCase != null)
+                {
+                    patientCase.CaseStatusID = 2;
+                    _teleMedecineContext.Entry(patientCase).State = EntityState.Modified;
+                }
+                try
+                {
+                    i = _teleMedecineContext.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
+               
+                if(i > 0)
+                {
+                    removePatientFromQueue.Status = "success";
+                    removePatientFromQueue.ErrorMessage = "";
+                    removePatientFromQueue.PatientCaseID = patientCaseID;
+                    removePatientFromQueue.PatientID = patientCase!=null?patientCase.PatientId:0;
+                }
+                else
+                {
+                    removePatientFromQueue.Status = "fail";
+                    removePatientFromQueue.ErrorMessage = "Patient queue did not updated.";
+                    removePatientFromQueue.PatientCaseID = patientCaseID;
+                    removePatientFromQueue.PatientID = patientCase != null ? patientCase.PatientId : 0;
+                }
+
+                return removePatientFromQueue;
+            }
+            else
+            {
+                removePatientFromQueue.Status = "fail";
+                removePatientFromQueue.ErrorMessage = "PatientcaseID has null value";
+                removePatientFromQueue.PatientCaseID = patientCaseID;
+                removePatientFromQueue.PatientID = 0;
+                return removePatientFromQueue;
+            }
+        }
     }
     public class DoctorQueues
     {
