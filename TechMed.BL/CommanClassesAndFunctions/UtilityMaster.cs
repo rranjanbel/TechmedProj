@@ -54,6 +54,12 @@ namespace TechMed.BL.CommanClassesAndFunctions
             }
         }
 
+        public static double TimeDifferenceInMin(DateTime endTime, DateTime startTime)
+        {
+            TimeSpan ts = endTime - startTime;
+            return ts.TotalMinutes;
+        }
+
         public static string GetDetailsAgeOfPatient(DateTime dateOfBirth)
         {
             DateTime dtToday = GetLocalDateTime().Date;

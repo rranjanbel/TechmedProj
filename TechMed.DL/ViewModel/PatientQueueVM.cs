@@ -20,7 +20,9 @@ namespace TechMed.DL.ViewModel
         public long PatientCaseID { get; set; }
         public int AssignedDoctorID { get; set; }
         public int PHCID { get; set; }
-        public long WaitList { get; set; }        
+        public long WaitList { get; set; }
+        public DateTime AssignedOn { get; set; }
+        public DateTime StatusOn { get; set; }
 
     }
 }

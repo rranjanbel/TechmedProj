@@ -1254,7 +1254,7 @@ namespace TechMed.BL.Repository.BaseClasses
         {
             List<PatientQueueVM> queueByDoctors = new List<PatientQueueVM>();
             PatientQueueVM patientQueue;
-            var Results = await _teleMedecineContext.PatientQueuesList.FromSqlInterpolated($"EXEC [dbo].[GetPatientQueues]").ToListAsync();
+            var Results = await _teleMedecineContext.PatientQueuesList.FromSqlInterpolated($"EXEC [dbo].[GetAllPatientQueues]").ToListAsync();
             foreach (var item in Results)
             {
                 patientQueue = new PatientQueueVM();
@@ -1268,10 +1268,59 @@ namespace TechMed.BL.Repository.BaseClasses
                 patientQueue.PatientCaseID = item.PatientCaseID;
                 patientQueue.AssignedDoctorID = item.AssignedDoctorID;
                 patientQueue.PHCID = item.PHCID;
-                patientQueue.WaitList = item.WaitList;                
+                patientQueue.WaitList = item.WaitList;
+                patientQueue.AssignedOn = item.AssignedOn;
+                patientQueue.StatusOn = item.StatusOn;
 
                 queueByDoctors.Add(patientQueue);
             };
+            //Check patient queue status
+            var patinetOnCall = queueByDoctors.FirstOrDefault(a => a.WaitList == 0);
+            if(patinetOnCall !=null)
+            {
+                DateTime currentTime = UtilityMaster.GetLocalDateTime();
+                DateTime statusTime = patinetOnCall.AssignedOn;
+                double totalMin = UtilityMaster.TimeDifferenceInMin(currentTime, statusTime);
+                if(totalMin > 5)
+                {
+                    PatientQueue patientQueueValue = _teleMedecineContext.PatientQueues.FirstOrDefault(a => a.PatientCaseId == patinetOnCall.PatientCaseID);
+                    if (patientQueueValue != null)
+                    {
+                        patientQueueValue.AssignedOn = UtilityMaster.GetLocalDateTime();
+                        patientQueueValue.UpdatedOn = UtilityMaster.GetLocalDateTime();
+                        patientQueueValue.IsQueueChanged = true;
+                        _teleMedecineContext.Entry(patientQueueValue).State = EntityState.Modified;
+                        int res =_teleMedecineContext.SaveChanges();
+                        if(res > 0)
+                        {
+                            queueByDoctors = new List<PatientQueueVM>();
+                            var Results2 = await _teleMedecineContext.PatientQueuesList.FromSqlInterpolated($"EXEC [dbo].[GetAllPatientQueues]").ToListAsync();
+                            foreach (var item in Results2)
+                            {
+                                patientQueue = new PatientQueueVM();
+                                patientQueue.SrNo = item.SrNo;
+                                patientQueue.Patient = item.Patient;
+                                patientQueue.CaseHeading = item.CaseHeading;
+                                patientQueue.PatientID = item.PatientID;
+                                patientQueue.Doctor = item.Doctor;
+                                patientQueue.Specialization = item.Specialization;
+                                patientQueue.Gender = item.Gender;
+                                patientQueue.PatientCaseID = item.PatientCaseID;
+                                patientQueue.AssignedDoctorID = item.AssignedDoctorID;
+                                patientQueue.PHCID = item.PHCID;
+                                patientQueue.WaitList = item.WaitList;
+                                patientQueue.AssignedOn = item.AssignedOn;
+                                patientQueue.StatusOn = item.StatusOn;
+
+                                queueByDoctors.Add(patientQueue);
+                            };
+                        }
+
+                    }
+                    
+                }               
+               
+            }
             return queueByDoctors.Where(a => a.PHCID == PHCID).ToList();
         }
 
