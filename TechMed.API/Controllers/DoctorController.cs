@@ -14,12 +14,13 @@ using Microsoft.Extensions.Options;
 using TechMed.BL.TwilioAPI.Service;
 using Microsoft.AspNetCore.SignalR;
 using TechMed.API.NotificationHub;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TechMed.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class DoctorController : ControllerBase
     {
         DoctorBusinessMaster doctorBusinessMaster;
@@ -395,17 +396,17 @@ namespace TechMed.API.Controllers
                     return BadRequest(doctorVM.DoctorID);
                 }
                 var DTO = await _doctorRepository.GetTodayesPatients(doctorVM);
-                if (DTO.Count > 0)
-                {
+                //if (DTO.Count > 0)
+                //{
                     _logger.LogInformation($"GetTodayesPatients : Sucess response returned ");
                     return Ok(DTO);
-                }
-                else
-                {
-                    ModelState.AddModelError("", $"Data not found!");
-                    _logger.LogError("GetTodayesPatients : Data not found");
-                    return StatusCode(404, ModelState);
-                }
+                //}
+                //else
+                //{
+                //    ModelState.AddModelError("", $"Data not found!");
+                //    _logger.LogError("GetTodayesPatients : Data not found");
+                //    return StatusCode(404, ModelState);
+                //}
             }
             catch (Exception ex)
             {
@@ -431,17 +432,17 @@ namespace TechMed.API.Controllers
                     return BadRequest(doctorVM.DoctorID);
                 }
                 var DTO = await _doctorRepository.GetCompletedConsultationPatientsHistory(doctorVM);
-                if (DTO.Count > 0)
-                {
+                //if (DTO.Count > 0)
+                //{
                     _logger.LogInformation($"GetCompletedConsultationPatientsHistory : Sucess response returned ");
                     return Ok(DTO);
-                }
-                else
-                {
-                    ModelState.AddModelError("", $"Data not found!");
-                    _logger.LogError("GetCompletedConsultationPatientsHistory : Data not found" );
-                    return StatusCode(404, ModelState);
-                }
+                //}
+                //else
+                //{
+                //    ModelState.AddModelError("", $"Data not found!");
+                //    _logger.LogError("GetCompletedConsultationPatientsHistory : Data not found" );
+                //    return StatusCode(404, ModelState);
+                //}
             }
             catch (Exception ex)
             {
@@ -466,17 +467,17 @@ namespace TechMed.API.Controllers
                     return BadRequest(doctorVM.DoctorID);
                 }
                 var DTO = await _doctorRepository.GetYesterdayPatientsHistory(doctorVM);
-                if (DTO.Count > 0)
-                {
+                //if (DTO.Count > 0)
+                //{
                     _logger.LogInformation($"GetYesterdayPatientsHistory : Sucess response returned ");
                     return Ok(DTO);
-                }
-                else
-                {
-                    ModelState.AddModelError("", $"Data not found!");
-                    _logger.LogError("GetYesterdayPatientsHistory : Data not found");
-                    return StatusCode(404, ModelState);
-                }
+                //}
+                //else
+                //{
+                //    ModelState.AddModelError("", $"Data not found!");
+                //    _logger.LogError("GetYesterdayPatientsHistory : Data not found");
+                //    return StatusCode(404, ModelState);
+                //}
             }
             catch (Exception ex)
             {
@@ -965,17 +966,17 @@ namespace TechMed.API.Controllers
                     return BadRequest(doctorVM.DoctorID);                   
                 }
                 var DTO = await _doctorRepository.GetLatestReferredCount(doctorVM);
-                if (DTO > 0)
-                {
+                //if (DTO > 0)
+                //{
                     _logger.LogInformation($"GetLatestReferredCount : Sucess response returned ");
                     return Ok(DTO);
-                }
-                else
-                {
-                    ModelState.AddModelError("", $"Data not found!");
-                    _logger.LogError("GetLatestReferredCount : Data not found");
-                    return StatusCode(404, ModelState);
-                }
+                //}
+                //else
+                //{
+                //    ModelState.AddModelError("", $"Data not found!");
+                //    _logger.LogError("GetLatestReferredCount : Data not found");
+                //    return StatusCode(404, ModelState);
+                //}
             }
             catch (Exception ex)
             {

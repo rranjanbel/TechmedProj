@@ -9,7 +9,7 @@ namespace TechMed.DL.Models
         public long? PatientCaseId { get; set; }
         public string RoomName { get; set; } = null!;
         public string MeetingSid { get; set; } = null!;
-        public int? Duration { get; set; }
+        public decimal? Duration { get; set; }
         public bool? IsClosed { get; set; }
         public DateTime? CloseDate { get; set; }
         public DateTime? CreateDate { get; set; }
