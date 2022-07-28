@@ -1154,6 +1154,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 searchResult.Doctor = item.Doctor;
                 searchResult.ID = item.ID;
                 searchResult.DateOfRegistration = item.DateOfRegistration;
+                searchResult.PHCName = item.PHCName;
                 patientSearchResults.Add(searchResult);
             };
             return patientSearchResults;

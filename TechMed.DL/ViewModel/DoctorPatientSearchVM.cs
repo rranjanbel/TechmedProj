@@ -19,5 +19,6 @@ namespace TechMed.DL.ViewModel
         public string Doctor { get; set; }
         public int ID { get; set; } 
         public DateTime DateOfRegistration { get; set; }
+        public string? PHCName { get; set; }
     }
 }
