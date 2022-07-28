@@ -26,6 +26,7 @@ namespace TechMed.DL.Models
         public virtual DbSet<CountryMaster> CountryMasters { get; set; } = null!;
         public virtual DbSet<DiagnosticTestMaster> DiagnosticTestMasters { get; set; } = null!;
         public virtual DbSet<DistrictMaster> DistrictMasters { get; set; } = null!;
+        public virtual DbSet<CityMaster> CityMasters { get; set; } = null!;
         public virtual DbSet<DivisionMaster> DivisionMasters { get; set; } = null!;
         public virtual DbSet<DoctorMaster> DoctorMasters { get; set; } = null!;
         //public virtual DbSet<DoctorMeetingRoomInfo> DoctorMeetingRoomInfos { get; set; } = null!;
@@ -322,6 +323,17 @@ namespace TechMed.DL.Models
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_DistrictMaster_StateMaster");
             });
+            modelBuilder.Entity<CityMaster>(entity =>
+            {
+                entity.ToTable("CityMaster");
+
+                entity.Property(e => e.ID).HasColumnName("ID");
+
+                entity.Property(e => e.CityName)
+                    .HasMaxLength(150)
+                    .IsUnicode(false);
+            });
+
 
             modelBuilder.Entity<DivisionMaster>(entity =>
             {
