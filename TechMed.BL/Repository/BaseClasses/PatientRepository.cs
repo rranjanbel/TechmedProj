@@ -742,6 +742,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 searchResult.PhoneNumber = item.PhoneNumber;
                 searchResult.ID = item.ID;
                 searchResult.DateOfRegistration = item.DateOfRegistration;
+                searchResult.Phcname = item.Phcname;
                 patientSearchResults.Add(searchResult);
             };
             return patientSearchResults;
