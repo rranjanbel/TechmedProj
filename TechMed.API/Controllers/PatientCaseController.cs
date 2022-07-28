@@ -757,5 +757,37 @@ namespace TechMed.API.Controllers
                 return StatusCode(500, removePatientFromQueue);
             }
         }
+
+        [HttpGet]
+        [Route("GetAllPHCPatientQueue")]
+        [ProducesResponseType(200, Type = typeof(List<ALLPatientsQueueVM>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetAllPHCPatientQueue()
+        {
+            List<ALLPatientsQueueVM> patientQueues = new List<ALLPatientsQueueVM>();
+            try
+            {
+                patientQueues = await _patientCaeRepository.GetAllPatientQueue();
+                if (patientQueues != null && patientQueues.Count > 0)
+                {
+                    _logger.LogInformation($"GetSelectedOnlineDoctors : Sucess response returned ");
+                    return StatusCode(200, patientQueues);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetSelectedOnlineDoctors", $"did not get doctor list for PatientcaseID ");
+                    _logger.LogError("GetSelectedOnlineDoctors : did not get patient Queue : ");
+                    return StatusCode(404, new { Message = "Did not get patient Queue" });
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError("GetSelectedOnlineDoctors", $"Something went wrong when get patient queue by doctor {ex.Message}");
+                _logger.LogError("Exception in GetSelectedOnlineDoctors API " + ex);
+                return StatusCode(500, ModelState);
+            }
+        }
     }
 }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace TechMed.DL.ViewModel
 {
     [Keyless]
-    public class PatientQueueVM
+    public class ALLPatientsQueueVM
     {
         public long SrNo { get; set; }
         public string Patient { get; set; }
@@ -21,8 +21,10 @@ namespace TechMed.DL.ViewModel
         public int AssignedDoctorID { get; set; }
         public int PHCID { get; set; }
         public long WaitList { get; set; }
-        public DateTime AssignedOn { get; set; }
-        public DateTime StatusOn { get; set; }
-       
+        public DateTime AssignedOn { get; set; }      
+        public string PHCName { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public long RegID { get; set; }
+
     }
 }
