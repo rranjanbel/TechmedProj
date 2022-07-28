@@ -12,7 +12,7 @@ namespace TechMed.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class DashBoardController : ControllerBase
     {
         private readonly IMapper _mapper;

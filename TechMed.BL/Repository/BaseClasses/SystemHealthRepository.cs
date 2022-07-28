@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using TechMed.BL.CommanClassesAndFunctions;
 using TechMed.BL.Repository.Interfaces;
 using TechMed.DL.Models;
 using TechMed.DL.ViewModel;
@@ -69,8 +70,8 @@ namespace TechMed.BL.Repository.BaseClasses
                 bool apir = await GetAPIStatus(APIHost);
                 bool angr = await GetANGStatus(ANGHost);
                 string Status = "Online";
-                DateTime StartTime = DateTime.Now;
-                DateTime EndTime = DateTime.Now;
+                DateTime StartTime = UtilityMaster.GetLocalDateTime();
+                DateTime EndTime = UtilityMaster.GetLocalDateTime();
                 string Details = "Online";
 
                 if (!apir || !angr)

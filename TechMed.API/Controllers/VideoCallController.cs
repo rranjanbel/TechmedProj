@@ -369,7 +369,7 @@ namespace TechMed.API.Controllers
                 {
                     apiResponseModel.isSuccess = false;
                     apiResponseModel.errorMessage = "Invalid Information";
-                    BadRequest(apiResponseModel);
+                   return BadRequest(apiResponseModel);
                 }
                 try
                 {
