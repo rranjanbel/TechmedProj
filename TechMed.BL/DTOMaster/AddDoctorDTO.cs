@@ -28,15 +28,15 @@ namespace TechMed.BL.DTOMaster
         public string PhoneNumber { get; set; } = null!;
         [Required]
         public string DigitalSignature { get; set; } = null!;
-        [Required]
+        //[Required]
         public string PanNo { get; set; } = null!;
-        [Required]
+        //[Required]
         public string BankName { get; set; } = null!;
-        [Required]
+        //[Required]
         public string BranchName { get; set; } = null!;
-        [Required]
+        //[Required]
         public string AccountNumber { get; set; } = null!;
-        [Required]
+        //[Required]
         public string Ifsccode { get; set; } = null!;
         [Required]
         public int CreatedBy { get; set; }

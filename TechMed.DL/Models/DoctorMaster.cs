@@ -26,11 +26,11 @@ namespace TechMed.DL.Models
         public string Designation { get; set; } = null!;
         public string PhoneNumber { get; set; } = null!;
         public string DigitalSignature { get; set; } = null!;
-        public string Panno { get; set; } = null!;
-        public string BankName { get; set; } = null!;
-        public string BranchName { get; set; } = null!;
-        public string AccountNumber { get; set; } = null!;
-        public string Ifsccode { get; set; } = null!;
+        public string? Panno { get; set; } = null!;
+        public string? BankName { get; set; } = null!;
+        public string? BranchName { get; set; } = null!;
+        public string? AccountNumber { get; set; } = null!;
+        public string? Ifsccode { get; set; } = null!;
         public bool IsOnline { get; set; }
         public DateTime? LastOnlineAt { get; set; }
         public int? CreatedBy { get; set; }
