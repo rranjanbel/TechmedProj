@@ -35,6 +35,7 @@ namespace TechMed.BL.Repository.Interfaces
         bool UploadCaseDocFromByte(List<CaseDocumentBase64VM> caseDocuments, string contentRootPath);
         Task<PatientReferToDoctorVM> AddPatientInDoctorsQueue(PatientReferToDoctorVM patientReferToDoctorVM);
         Task<RemovePatientFromQueueVM> RemovePatientFromDoctorsQueue(long patientCaseID);
+        Task<List<ALLPatientsQueueVM>> GetAllPatientQueue();
 
 
     }
