@@ -36,6 +36,7 @@ namespace TechMed.BL.Repository.Interfaces
         Task<PatientReferToDoctorVM> AddPatientInDoctorsQueue(PatientReferToDoctorVM patientReferToDoctorVM);
         Task<RemovePatientFromQueueVM> RemovePatientFromDoctorsQueue(long patientCaseID);
         Task<List<ALLPatientsQueueVM>> GetAllPatientQueue();
+        Task<List<AllPendingPatient>> GetAllPendingPatient();
 
 
     }

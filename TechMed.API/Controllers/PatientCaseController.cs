@@ -789,5 +789,37 @@ namespace TechMed.API.Controllers
                 return StatusCode(500, ModelState);
             }
         }
+
+        [HttpGet]
+        [Route("GetAllPandingPatientQueue")]
+        [ProducesResponseType(200, Type = typeof(List<AllPendingPatient>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetAllPandingPatientQueue()
+        {
+            List<AllPendingPatient> patientQueues = new List<AllPendingPatient>();
+            try
+            {
+                patientQueues = await _patientCaeRepository.GetAllPendingPatient();
+                if (patientQueues != null && patientQueues.Count > 0)
+                {
+                    _logger.LogInformation($"GetAllPandingPatientQueue : Sucess response returned ");
+                    return StatusCode(200, patientQueues);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetAllPandingPatientQueue", $"did not get panding list ");
+                    _logger.LogError("GetAllPandingPatientQueue : did not get panding patient Queue : ");
+                    return StatusCode(404, new { Message = "Did not get panding patient Queue" });
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError("GetAllPandingPatientQueue", $"Something went wrong when get panding patient list {ex.Message}");
+                _logger.LogError("Exception in GetAllPandingPatientQueue API " + ex);
+                return StatusCode(500, ModelState);
+            }
+        }
     }
 }
