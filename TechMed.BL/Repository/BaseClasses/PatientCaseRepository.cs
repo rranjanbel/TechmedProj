@@ -1523,7 +1523,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 patientQueue = new ALLPatientsQueueVM();
                 patientQueue.SrNo = item.SrNo;
                 patientQueue.Patient = item.Patient;
-                patientQueue.CaseHeading = item.CaseHeading;
+                patientQueue.CaseHeading = item.CaseHeading;               
                 patientQueue.PatientID = item.PatientID;
                 patientQueue.Doctor = item.Doctor;
                 patientQueue.Specialization = item.Specialization;
@@ -1536,6 +1536,33 @@ namespace TechMed.BL.Repository.BaseClasses
                 patientQueue.PHCName = item.PHCName;
                 patientQueue.CreatedOn = item.CreatedOn;
                 patientQueue.RegID = item.RegID;
+
+                queueByDoctors.Add(patientQueue);
+            };
+
+            return queueByDoctors;
+        }
+
+        public async Task<List<AllPendingPatient>> GetAllPendingPatient()
+        {
+            List<AllPendingPatient> queueByDoctors = new List<AllPendingPatient>();
+            AllPendingPatient patientQueue;
+            var Results = await _teleMedecineContext.AllPendingPatientList.FromSqlInterpolated($"EXEC [dbo].[GetAllPandingPatientList]").ToListAsync();
+            foreach (var item in Results)
+            {
+                patientQueue = new AllPendingPatient();
+                patientQueue.SrNo = item.SrNo;
+                patientQueue.Patient = item.Patient;
+                patientQueue.CaseHeading = item.CaseHeading;
+                patientQueue.PatientID = item.PatientID;              
+                patientQueue.Specialization = item.Specialization;               
+                patientQueue.PatientCaseID = item.PatientCaseID;              
+                patientQueue.PHCID = item.PHCID;               
+                patientQueue.PHCName = item.PHCName;
+                patientQueue.CreatedOn = item.CreatedOn;
+                patientQueue.RegID = item.RegID;
+                patientQueue.CaseFileStatusID = item.CaseFileStatusID;
+                patientQueue.CaseStatusID = item.CaseStatusID;
 
                 queueByDoctors.Add(patientQueue);
             };
