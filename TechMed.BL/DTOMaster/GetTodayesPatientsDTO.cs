@@ -28,7 +28,8 @@ namespace TechMed.BL.DTOMaster
         public string status { get; set; }
         public bool canCallInitiate { get; set; }
         public DateTime? DateOfRegistration { get; set; }
-        public string CaseFileNumber { get; set; }  
+        public string CaseFileNumber { get; set; }
+        public string? Phcname { get; set; }
 
     }
 }

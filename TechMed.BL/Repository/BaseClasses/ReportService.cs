@@ -72,15 +72,8 @@ namespace TechMed.API.Services
                 for (int i = 0; i < patientCaseVM.vitals.Count; i++)
                 {
                     string unit = (patientCaseVM.vitals[i].Unit.ToLower().Trim() == "string" ? "" : patientCaseVM.vitals[i].Unit.ToLower().Trim() == "bool" ? "" : patientCaseVM.vitals[i].Unit);
-                    if (string.IsNullOrEmpty(unit))
-                    {
-                        unit = unit.Trim('[').Trim(']');
-                    }
-                    else
-                    {
-                        unit = "[" + unit.Trim() + "]";
-
-                    }
+                    if (string.IsNullOrEmpty(unit))unit = unit.Trim('[').Trim(']');
+                    else unit = "[" + unit.Trim() + "]";
                     htmlVital = htmlVital + htmlVitalTemplate;
                     if (i == patientCaseVM.vitals.Count)
                     {
@@ -96,6 +89,9 @@ namespace TechMed.API.Services
                     else
                     {
                         //write1
+                        unit = (patientCaseVM.vitals[i].Unit.ToLower().Trim() == "string" ? "" : patientCaseVM.vitals[i].Unit.ToLower().Trim() == "bool" ? "" : patientCaseVM.vitals[i].Unit);
+                        if (string.IsNullOrEmpty(unit)) unit = unit.Trim('[').Trim(']');
+                        else unit = "[" + unit.Trim() + "]";
 
                         htmlVital = htmlVital.Replace("{{vitalName1}}", patientCaseVM.vitals[i].VitalName + " " + unit);
                         htmlVital = htmlVital.Replace("{{vitalValue1}}", patientCaseVM.vitals[i].Value);
@@ -112,6 +108,9 @@ namespace TechMed.API.Services
                     else
                     {
                         //write1
+                        unit = (patientCaseVM.vitals[i].Unit.ToLower().Trim() == "string" ? "" : patientCaseVM.vitals[i].Unit.ToLower().Trim() == "bool" ? "" : patientCaseVM.vitals[i].Unit);
+                        if (string.IsNullOrEmpty(unit)) unit = unit.Trim('[').Trim(']');
+                        else unit = "[" + unit.Trim() + "]";
                         htmlVital = htmlVital.Replace("{{vitalName2}}", patientCaseVM.vitals[i].VitalName + " " + unit);
                         htmlVital = htmlVital.Replace("{{vitalValue2}}", patientCaseVM.vitals[i].Value);
                         i++;
@@ -125,6 +124,9 @@ namespace TechMed.API.Services
                     else
                     {
                         //write1
+                        unit = (patientCaseVM.vitals[i].Unit.ToLower().Trim() == "string" ? "" : patientCaseVM.vitals[i].Unit.ToLower().Trim() == "bool" ? "" : patientCaseVM.vitals[i].Unit);
+                        if (string.IsNullOrEmpty(unit)) unit = unit.Trim('[').Trim(']');
+                        else unit = "[" + unit.Trim() + "]";
                         htmlVital = htmlVital.Replace("{{vitalName3}}", patientCaseVM.vitals[i].VitalName + " " + unit);
                         htmlVital = htmlVital.Replace("{{vitalValue3}}", patientCaseVM.vitals[i].Value);
                         i++;

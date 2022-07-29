@@ -286,6 +286,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 .Include(d => d.PatientCase.Patient.Gender)
                 .Include(c => c.AssignedByNavigation)
                 .Include(a => a.PatientCase)
+                .Include(a => a.PatientCase.Patient.Phc)
                 .Include(b => b.PatientCase.Patient)
                 .Where(a => a.CaseFileStatusId == 5 && a.AssignedDoctorId == doctorVM.DoctorID
                  && a.AssignedOn.Year == today.Year
@@ -308,6 +309,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 mapdata.PatientCaseID = item.PatientCase.Id;
                 mapdata.CaseHeading = item.PatientCase.CaseHeading;
                 mapdata.DateOfRegistration = item.PatientCase.Patient.CreatedOn;
+                mapdata.Phcname = item.PatientCase.Patient.Phc.Phcname;
                 //mapdata.status = item.PatientCase.Patient.PatientStatus.PatientStatus;
                 DTOList.Add(mapdata);
             }
@@ -321,6 +323,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 .Include(c => c.AssignedByNavigation)
                 .Include(a => a.PatientCase)
                 .Include(b => b.PatientCase.Patient)
+                .Include(b => b.PatientCase.Patient.Phc)
                 .Where(a => a.CaseFileStatusId == 5 && a.AssignedDoctorId == doctorVM.DoctorID
                  && a.AssignedOn.Year <= today.Year
                 && a.AssignedOn.Month <= today.Month
@@ -342,6 +345,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 mapdata.PatientCaseID = item.PatientCase.Id;
                 mapdata.CaseHeading = item.PatientCase.CaseHeading;
                 mapdata.DateOfRegistration = item.PatientCase.Patient.CreatedOn;
+                mapdata.Phcname = item.PatientCase.Patient.Phc.Phcname;
                 //mapdata.status = item.PatientCase.Patient.PatientStatus.PatientStatus;
                 DTOList.Add(mapdata);
             }
@@ -1150,6 +1154,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 searchResult.Doctor = item.Doctor;
                 searchResult.ID = item.ID;
                 searchResult.DateOfRegistration = item.DateOfRegistration;
+                searchResult.PHCName = item.PHCName;
                 patientSearchResults.Add(searchResult);
             };
             return patientSearchResults;

@@ -228,6 +228,42 @@ namespace TechMed.API.Controllers
         }
 
         [HttpGet]
+        [Route("GetAllCityMaster")]
+        [ProducesResponseType(200, Type = typeof(List<CityMasterDTO>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetAllCityMaster()
+        {
+            CityMasterDTO mapdata = new CityMasterDTO();
+            try
+            {
+                var spemasters = await _teleMedecineContext.CityMasters.ToListAsync();
+
+                var DTOList = new List<CityMasterDTO>();
+                foreach (var item in spemasters)
+                {
+                    mapdata = _mapper.Map<CityMasterDTO>(item);
+                    DTOList.Add(mapdata);
+                }
+                if (DTOList != null)
+                {
+                    return Ok(DTOList);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetAllCityMaster", "GetAllCityMaster did not find");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("GetAllCityMaster", $"Something went wrong when GetAllCityMaster {ex.Message}");
+                _logger.LogError("Exception in GetAllCityMaster API " + ex);
+                return StatusCode(500, ModelState);
+            }
+        }
+
+        [HttpGet]
         [Route("GetAllGenderMaster")]
         [ProducesResponseType(200, Type = typeof(List<GenderMasterDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

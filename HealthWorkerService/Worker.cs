@@ -21,12 +21,21 @@ namespace HealthWorkerService
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                var APIHost = config.Value.APIHost;
-                var AngHost = config.Value.AngHost;
-                _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-                await _systemHealthRepository.SaveStatusInDB(APIHost, AngHost); 
-                //_logger.LogInformation("ANG Status : " + await _systemHealthRepository.GetANGStatus());
-                //_logger.LogInformation("API Status : " + await _systemHealthRepository.GetAPIStatus());
+                try
+                {
+                    var APIHost = config.Value.APIHost;
+                    var AngHost = config.Value.AngHost;
+                    _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+                    await _systemHealthRepository.SaveStatusInDB(APIHost, AngHost);
+                    //_logger.LogInformation("ANG Status : " + await _systemHealthRepository.GetANGStatus());
+                    //_logger.LogInformation("API Status : " + await _systemHealthRepository.GetAPIStatus());
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError("Exception : " , ex);
+
+                }
+
                 await Task.Delay(2000, stoppingToken);
             }
         }

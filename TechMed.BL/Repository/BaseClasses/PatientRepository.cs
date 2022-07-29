@@ -579,6 +579,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     todaysPatient.Gender = item.Gender;
                     todaysPatient.CaseHeading = item.CaseHeading;
                     todaysPatient.DateOfRegistration = item.DateOfRegistration;
+                    todaysPatient.Phcname = item.Phcname;
 
                     patientList.Add(todaysPatient);
                 }
@@ -742,6 +743,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 searchResult.PhoneNumber = item.PhoneNumber;
                 searchResult.ID = item.ID;
                 searchResult.DateOfRegistration = item.DateOfRegistration;
+                searchResult.Phcname = item.Phcname;
                 patientSearchResults.Add(searchResult);
             };
             return patientSearchResults;
