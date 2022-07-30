@@ -726,7 +726,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     var patientQuue = _teleMedecineContext.PatientQueues.Include(a => a.AssignedDoctor).ThenInclude(s => s.User).ThenInclude(c => c.UserDetailUsers).Include(f => f.AssignedDoctor.Specialization).FirstOrDefault(x => x.PatientCaseId == PatientCaseID);
                     var patientCaseMedicine = await _teleMedecineContext.PatientCases.Include(a => a.PatientCaseMedicines).ThenInclude(d => d.DrugMaster).Where(x => x.Id == PatientCaseID).ToListAsync();
                     var patientCaseDiagonisis = await _teleMedecineContext.PatientCases.Include(b => b.PatientCaseDiagonosticTests).ThenInclude(e => e.DiagonosticTest).Where(x => x.Id == PatientCaseID).ToListAsync();
-                    var IsVideoCallClosed = _teleMedecineContext.TwilioMeetingRoomInfos.FirstOrDefault(a => a.PatientCaseId == PatientCaseID);
+                    var IsVideoCallClosed = _teleMedecineContext.TwilioMeetingRoomInfos.Where(a => a.PatientCaseId == PatientCaseID).OrderByDescending(x => x.Id).Take(1);
                     var patientDetails = _teleMedecineContext.PatientCases.Include(p => p.Patient.Phc.Block).Include(p => p.Patient).ThenInclude(s => s.State).ThenInclude(d => d.DistrictMasters).FirstOrDefault(a => a.Id == PatientCaseID);
 
                     if (patientCaseDetails == null)
@@ -783,7 +783,12 @@ namespace TechMed.BL.Repository.BaseClasses
                     }
                     if(IsVideoCallClosed != null)
                     {
-                        patientCase.VideoCallStatus = IsVideoCallClosed.TwilioRoomStatus !=null? IsVideoCallClosed.TwilioRoomStatus : "status not avialble";                       
+                        //IsVideoCallClosed = IsVideoCallClosed !=null? IsVideoCallClosed.FirstOrDefault();
+                        foreach (var item in IsVideoCallClosed)
+                        {
+                            patientCase.VideoCallStatus = item.TwilioRoomStatus !=null? item.TwilioRoomStatus : "status not avialble";
+                        }
+                                              
                     }
                     else
                     {
