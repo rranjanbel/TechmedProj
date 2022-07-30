@@ -14,8 +14,8 @@ namespace TechMed.DL.ViewModel
         public DateTime date { get; set; }
         public string? WorkingHours { get; set; }
         public int WorkingTime { get; set; }
-        public int ServerUpTime { get; set; }
-        public int ServerDownTime { get; set; }
+        public Int64 ServerUpTime { get; set; }
+        public Int64 ServerDownTime { get; set; }
         public string? DownTimings { get; set; }
         public int Availability { get; set; }         
     }
