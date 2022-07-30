@@ -22,6 +22,6 @@ namespace TechMed.BL.Repository.Interfaces
         Task<bool> MeetingRoomComposeVideoUpdate(CompositionResource compositionResource, string roomName);
         Task<bool> UpdateRoomStatusFromTwilioWebHook(RoomStatusRequest roomStatusRequest);
         Task<bool> UpdateComposeVideoStatusFromTwilioWebHook(VideoCompositionStatusRequest videoCompositionStatusRequest);
-        Task<PatientQueue> PatientQueueAfterTretment(Int64 patientCaseID);
+        Task<PatientQueue> PatientQueueAfterTretment(Int64 patientCaseID, bool isPartiallyClosed);
     }
 }
