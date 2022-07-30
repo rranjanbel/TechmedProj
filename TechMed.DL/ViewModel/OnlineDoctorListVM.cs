@@ -10,6 +10,7 @@ namespace TechMed.DL.ViewModel
     {
         public List<OnlineDoctorVM> OnlineDoctors { get; set; }
         public string Status { get; set; }
+        public int StatusID { get; set; } = 0;
         public string Message { get; set; }
     }
 }

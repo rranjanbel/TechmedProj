@@ -1208,12 +1208,14 @@ namespace TechMed.BL.Repository.BaseClasses
                     {
                         onlineDoctorList.OnlineDoctors = onlineDrLists;
                         onlineDoctorList.Status = "Fail";
+                        onlineDoctorList.StatusID = 1;
                         onlineDoctorList.Message = "All the doctors are busy, please add patient to waitlist.";
                     }
                     else
                     {
                         onlineDoctorList.OnlineDoctors = onlineDrLists;
                         onlineDoctorList.Status = "Success";
+                        onlineDoctorList.StatusID = 0;
                         onlineDoctorList.Message = "These docoters are avilable to see the patients.";
                     }
                 }
@@ -1221,13 +1223,18 @@ namespace TechMed.BL.Repository.BaseClasses
                 {
                     onlineDoctorList.OnlineDoctors = onlineDrLists;
                     onlineDoctorList.Status = "Fail";
-                    onlineDoctorList.Message = "All the doctors are busy, please add patient to waitlist.";
+                    onlineDoctorList.StatusID = 2;
+                    onlineDoctorList.Message = "All the doctors are offline, for the selected specialization.";
                 }
             }
             catch (Exception ex)
             {
                 string strMesg = ex.Message;
-                throw;
+                onlineDoctorList.OnlineDoctors = onlineDrLists;
+                onlineDoctorList.Status = "Fail";
+                onlineDoctorList.StatusID = 3;
+                onlineDoctorList.Message = strMesg;
+               
             }
           
 
