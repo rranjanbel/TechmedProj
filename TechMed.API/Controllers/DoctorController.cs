@@ -579,7 +579,7 @@ namespace TechMed.API.Controllers
                 {
                     _logger.LogInformation($"PostTreatmentPlan : Sucess response returned ");
                     string roomInstance = await _doctorRepository.GetTwilioReferenceID(treatmentVM.PatientCaseID);
-                    bool isPartiallyClosed = true;
+                    bool isPartiallyClosed = false;
                     try
                     {
                         apiResponseModel = await DismissCall(roomInstance, treatmentVM.PatientCaseID, isPartiallyClosed);
@@ -1387,7 +1387,7 @@ namespace TechMed.API.Controllers
             try
             {
                 //var patientInfo = await _twilioRoomDb.PatientQueueGet(patientCaseId);
-                var patientInfo = await _twilioRoomDb.PatientQueueAfterTretment(patientCaseId);
+                var patientInfo = await _twilioRoomDb.PatientQueueAfterTretment(patientCaseId,isPartiallyClosed);
                 var roomInfo = await _twilioRoomDb.MeetingRoomInfoGet(roomInstance);
                 if (patientInfo == null || roomInfo == null)
                 {

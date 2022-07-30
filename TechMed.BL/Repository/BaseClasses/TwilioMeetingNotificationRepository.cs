@@ -157,7 +157,7 @@ namespace TechMed.BL.Repository.BaseClasses
             return true;
         }
 
-        public async Task<PatientQueue> PatientQueueAfterTretment(Int64 patientCaseID)
+        public async Task<PatientQueue> PatientQueueAfterTretment(Int64 patientCaseID,bool isPartiallyClosed)
         {
             return await _teleMedecineContext.PatientQueues
                 .Include(x => x.PatientCase)
@@ -165,7 +165,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 .ThenInclude(x => x.User)
                 .Include(x => x.AssignedDoctor)
                 .ThenInclude(x => x.User)
-                .FirstOrDefaultAsync(x => x.PatientCaseId == patientCaseID && x.CaseFileStatusId == 5);
+                .FirstOrDefaultAsync(x => x.PatientCaseId == patientCaseID && (isPartiallyClosed?true :x.CaseFileStatusId == 5));
         }
     }
 }

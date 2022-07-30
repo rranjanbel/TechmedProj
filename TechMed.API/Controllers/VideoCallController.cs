@@ -363,7 +363,7 @@ namespace TechMed.API.Controllers
             try
             {
                 //var patientInfo = await _twilioRoomDb.PatientQueueGet(patientCaseId);
-                var patientInfo = await _twilioRoomDb.PatientQueueAfterTretment(patientCaseId);
+                var patientInfo = await _twilioRoomDb.PatientQueueAfterTretment(patientCaseId, isPartiallyClosed);
                 var roomInfo = await _twilioRoomDb.MeetingRoomInfoGet(roomInstance);
                 if (patientInfo == null || roomInfo == null)
                 {
