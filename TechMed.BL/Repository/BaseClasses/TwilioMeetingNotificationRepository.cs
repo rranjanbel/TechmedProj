@@ -39,7 +39,8 @@ namespace TechMed.BL.Repository.BaseClasses
         }
         public async Task<bool> MeetingRoomInfoAdd(TwilioMeetingRoomInfo doctorMeetingRoomInfo)
         {
-            doctorMeetingRoomInfo.CreateDate = DateTime.Now.ToUniversalTime();
+            //doctorMeetingRoomInfo.CreateDate = DateTime.Now.ToUniversalTime();
+            doctorMeetingRoomInfo.CreateDate = UtilityMaster.GetLocalDateTime();
             _teleMedecineContext.TwilioMeetingRoomInfos.Add(doctorMeetingRoomInfo);
             _teleMedecineContext.Entry(doctorMeetingRoomInfo).State = EntityState.Added;
             return (await _teleMedecineContext.SaveChangesAsync()) > 0;
@@ -79,8 +80,10 @@ namespace TechMed.BL.Repository.BaseClasses
             if (meetInfo != null)
             {
                 meetInfo.IsClosed = true;
-                meetInfo.CloseDate = DateTime.Now.ToUniversalTime();
-                meetInfo.Duration = Convert.ToDecimal( DateTime.Now.ToUniversalTime().Subtract(meetInfo.CreateDate.Value).TotalMinutes);
+                //meetInfo.CloseDate = DateTime.Now.ToUniversalTime();
+                meetInfo.CloseDate = UtilityMaster.GetLocalDateTime();
+                //meetInfo.Duration = Convert.ToDecimal(DateTime.Now.ToUniversalTime().Subtract(meetInfo.CreateDate.Value).TotalMinutes);
+                meetInfo.Duration = Convert.ToDecimal(UtilityMaster.GetLocalDateTime().Subtract(meetInfo.CreateDate.Value).TotalMinutes);
                 meetInfo.TwilioRoomStatus = isPartiallyClosed? "Disconnected":"Completed";
                 _teleMedecineContext.TwilioMeetingRoomInfos.Add(meetInfo);
                 _teleMedecineContext.Entry(meetInfo).State = EntityState.Modified;

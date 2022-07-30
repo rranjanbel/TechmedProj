@@ -494,7 +494,7 @@ namespace TechMed.BL.Repository.BaseClasses
                         existingpatientQueue.CaseFileStatusId = await GetCaseFileStatus();
                         existingpatientQueue.Comment = "Reassign the doctor";
                         existingpatientQueue.UpdatedOn = UtilityMaster.GetLocalDateTime();
-                        existingpatientQueue.IsQueueChanged = true;
+                        existingpatientQueue.IsQueueChanged = false;
                         _teleMedecineContext.Entry(existingpatientQueue).State = EntityState.Modified;
                     }
 
@@ -1279,7 +1279,7 @@ namespace TechMed.BL.Repository.BaseClasses
             if(patinetOnCall !=null)
             {
                 DateTime currentTime = UtilityMaster.GetLocalDateTime();
-                DateTime statusTime = patinetOnCall.AssignedOn;
+                DateTime statusTime = patinetOnCall.StatusOn;
                 double totalMin = UtilityMaster.TimeDifferenceInMin(currentTime, statusTime);
                 if(totalMin > 5)
                 {
@@ -1288,7 +1288,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     {
                         patientQueueValue.AssignedOn = UtilityMaster.GetLocalDateTime();
                         patientQueueValue.UpdatedOn = UtilityMaster.GetLocalDateTime();
-                        patientQueueValue.IsQueueChanged = true;
+                        //patientQueueValue.IsQueueChanged = true;
                         _teleMedecineContext.Entry(patientQueueValue).State = EntityState.Modified;
                         int res =_teleMedecineContext.SaveChanges();
                         if(res > 0)
