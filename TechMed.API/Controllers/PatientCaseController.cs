@@ -595,7 +595,7 @@ namespace TechMed.API.Controllers
                 {
                     ModelState.AddModelError("GetSelectedOnlineDoctors", $"did not get doctor list for PatientcaseID ");
                     _logger.LogError("GetSelectedOnlineDoctors : did not get patient Queue : ");
-                    return StatusCode(404, new { Message = "Did not get patient Queue" });
+                    return StatusCode(404, new { Message = "Doctor do not available for this specialization right now." });
                 }
             }
             catch (Exception ex)

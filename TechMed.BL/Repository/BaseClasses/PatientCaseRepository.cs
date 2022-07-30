@@ -1293,7 +1293,8 @@ namespace TechMed.BL.Repository.BaseClasses
                     {
                         patientQueueValue.AssignedOn = UtilityMaster.GetLocalDateTime();
                         patientQueueValue.UpdatedOn = UtilityMaster.GetLocalDateTime();
-                        //patientQueueValue.IsQueueChanged = true;
+                        patientQueueValue.StatusOn = UtilityMaster.GetLocalDateTime();
+                        patientQueueValue.IsQueueChanged = false;
                         _teleMedecineContext.Entry(patientQueueValue).State = EntityState.Modified;
                         int res =_teleMedecineContext.SaveChanges();
                         if(res > 0)
