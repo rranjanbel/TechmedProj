@@ -1088,7 +1088,7 @@ namespace TechMed.BL.Repository.BaseClasses
             }
             catch (Exception ex)
             {
-                string message = ex.Message;
+                throw;
             }
 
 

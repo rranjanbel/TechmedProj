@@ -1208,7 +1208,7 @@ namespace TechMed.API.Controllers
             {
 
                 prescribedMedicines = await _dashBoardRepository.GetDashboardSystemHealthReport(fromDate, toDate);
-                if (prescribedMedicines != null)
+                if (prescribedMedicines.Count > 0)
                 {
                     return Ok(prescribedMedicines);
                 }
