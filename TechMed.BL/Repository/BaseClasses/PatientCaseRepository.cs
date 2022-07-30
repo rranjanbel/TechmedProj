@@ -1179,7 +1179,7 @@ namespace TechMed.BL.Repository.BaseClasses
 
                 //filter busy
 
-                if (doctors != null)
+                if (doctors.Count > 0 )
                 {
                     var Busydoctors = await _teleMedecineContext.TwilioMeetingRoomInfos.Include(d => d.AssignedDoctor)
                    .Where(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" && a.AssignedDoctorId != null && a.AssignedDoctor.SpecializationId == specilizationID && a.AssignedDoctor.IsOnline == true).ToListAsync();
@@ -1233,7 +1233,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 onlineDoctorList.OnlineDoctors = onlineDrLists;
                 onlineDoctorList.Status = "Fail";
                 onlineDoctorList.StatusID = 3;
-                onlineDoctorList.Message = strMesg;
+                onlineDoctorList.Message = "Something went wrong when get online doctor list.";
                
             }
           
