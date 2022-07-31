@@ -467,8 +467,9 @@ namespace TechMed.BL.Repository.BaseClasses
                         }
 
                     }
-                    patientQueue.PatientCaseId = patientReferToDoctorVM.PatientCaseID;                   
-                    patientQueue.AssignedBy = patientReferToDoctorVM.PHCID;
+                    patientQueue.PatientCaseId = patientReferToDoctorVM.PatientCaseID;
+                    //patientQueue.AssignedBy = patientReferToDoctorVM.PHCID;
+                    patientQueue.AssignedBy = _teleMedecineContext.PatientCases.Where(a => a.Id == patientReferToDoctorVM.PatientCaseID).Select(s => s.CreatedBy).FirstOrDefault();
                     patientQueue.CaseFileStatusId = await GetCaseFileStatus();                                      
                     patientQueue.StatusOn = UtilityMaster.GetLocalDateTime();
                     patientQueue.AssignedOn = UtilityMaster.GetLocalDateTime();
@@ -490,7 +491,7 @@ namespace TechMed.BL.Repository.BaseClasses
                         existingpatientQueue.AssignedDoctorId = patientQueue.AssignedDoctorId;
                         //existingpatientQueue.StatusOn = UtilityMaster.GetLocalDateTime();
                         existingpatientQueue.AssignedOn = UtilityMaster.GetLocalDateTime();
-                        existingpatientQueue.AssignedBy = patientReferToDoctorVM.PHCID;
+                        existingpatientQueue.AssignedBy = _teleMedecineContext.PatientCases.Where(a => a.Id == patientReferToDoctorVM.PatientCaseID).Select(s => s.CreatedBy).FirstOrDefault(); 
                         existingpatientQueue.CaseFileStatusId = await GetCaseFileStatus();
                         existingpatientQueue.Comment = "Reassign the doctor";
                         existingpatientQueue.UpdatedOn = UtilityMaster.GetLocalDateTime();
