@@ -1224,7 +1224,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     onlineDoctorList.OnlineDoctors = onlineDrLists;
                     onlineDoctorList.Status = "Fail";
                     onlineDoctorList.StatusID = 2;
-                    onlineDoctorList.Message = "All the doctors are offline, for the selected specialization.";
+                    onlineDoctorList.Message = "No doctor is available, please try after sometime.";
                 }
             }
             catch (Exception ex)
