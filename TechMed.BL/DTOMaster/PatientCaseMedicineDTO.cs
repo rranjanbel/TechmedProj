@@ -21,6 +21,7 @@ namespace TechMed.BL.DTOMaster
         public bool? Td { get; set; }
         public bool? Qid { get; set; }
         public string DrugName { get; set; }
+        public string? DrugformAndStrength { get; set; }
         public string DrugFormAndVolume { get; set; }
         public int Duration { get; set; } = 0;
     }

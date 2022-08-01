@@ -747,6 +747,7 @@ namespace TechMed.BL.Repository.BaseClasses
                                 pcaseMedicine.DrugMasterID = med.DrugMasterId;
                                 pcaseMedicine.DrugName = med.DrugMaster.NameOfDrug;
                                 pcaseMedicine.DrugFormAndVolume = med.DrugMaster.DrugformAndStrength;
+                                pcaseMedicine.DrugformAndStrength = med.DrugMaster.DrugformAndStrength;
                                 pcaseMedicine.Morning = med.Morning;
                                 pcaseMedicine.Night = med.Night;
                                 pcaseMedicine.AfterMeal = med.AfterMeal;
