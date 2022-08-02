@@ -872,6 +872,11 @@ namespace TechMed.BL.Repository.BaseClasses
                 return true;
             }
         }
+        public async Task<bool> IsEmailExists(string Email)
+        {
+            bool isExist = await _teleMedecineContext.UserMasters.AnyAsync(a => a.Email.Trim() == Email.Trim());
+            return isExist;
+        }
         public async Task<DoctorMaster> AddDoctor(DoctorMaster doctorMaster, UserMaster userMaster, UserDetail userDetail, AddDoctorDTO doctorDTO, string RootPath, string webRootPath)
         {
             int i = 0;

@@ -1234,7 +1234,7 @@ namespace TechMed.DL.Models
             {
                 entity.ToTable("PHCMaster");
 
-                entity.HasIndex(e => new { e.Id, e.Phcname }, "UC_PHCName")
+                entity.HasIndex(e => new {  e.Phcname }, "UC_PHCName")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("ID");
@@ -1532,7 +1532,7 @@ namespace TechMed.DL.Models
 
                 entity.Property(e => e.Dob)
                     .HasColumnType("date")
-                    .HasColumnName("DOB");
+                    .HasColumnName("DOB").IsRequired(false);
 
                 entity.Property(e => e.EmailId)
                     .HasMaxLength(150)
@@ -1635,7 +1635,7 @@ namespace TechMed.DL.Models
             {
                 entity.ToTable("UserMaster");
 
-                entity.HasIndex(e => new { e.Id, e.Email }, "UC_UserMaster")
+                entity.HasIndex(e => new { e.Email }, "UC_UserMaster")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("ID");

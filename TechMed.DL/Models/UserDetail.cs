@@ -11,7 +11,7 @@ namespace TechMed.DL.Models
         public string FirstName { get; set; } = null!;
         public string? MiddleName { get; set; }
         public string? LastName { get; set; }
-        public DateTime Dob { get; set; }
+        public DateTime? Dob { get; set; }
         public int GenderId { get; set; }
         public string EmailId { get; set; } = null!;
         public string PhoneNumber { get; set; } = null!;

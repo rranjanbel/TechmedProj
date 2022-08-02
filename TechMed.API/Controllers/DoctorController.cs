@@ -1102,6 +1102,13 @@ namespace TechMed.API.Controllers
             {
                 string contentRootPath = _webHostEnvironment.ContentRootPath;
                 string webRootPath = _webHostEnvironment.WebRootPath;
+
+                if (await _doctorRepository.IsEmailExists(doctorDTO.detailsDTO.EmailId))
+                {
+                    ModelState.AddModelError("AddDoctor", "Same EmailId is already in system.");
+                    return StatusCode(404, ModelState);
+                }
+
                 if (string.IsNullOrWhiteSpace(_webHostEnvironment.WebRootPath))
                 {
                     //_webHostEnvironment.WebRootPath = Path.Combine(Directory.GetCurrentDirectory(), "");
