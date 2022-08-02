@@ -29,15 +29,15 @@ namespace TechMed.BL.DTOMaster
         [Required]
         public string DigitalSignature { get; set; } = null!;
         //[Required]
-        public string PanNo { get; set; } = null!;
+        public string? PanNo { get; set; } = null!;
         //[Required]
-        public string BankName { get; set; } = null!;
+        public string? BankName { get; set; } = null!;
         //[Required]
-        public string BranchName { get; set; } = null!;
+        public string? BranchName { get; set; } = null!;
         //[Required]
-        public string AccountNumber { get; set; } = null!;
+        public string? AccountNumber { get; set; } = null!;
         //[Required]
-        public string Ifsccode { get; set; } = null!;
+        public string? Ifsccode { get; set; } = null!;
         [Required]
         public int CreatedBy { get; set; }
         public AddDoctorDetaisDTO detailsDTO { get; set; } = null!;
@@ -69,9 +69,9 @@ namespace TechMed.BL.DTOMaster
         public string Address { get; set; } = null!;
         [Required]
         public string Photo { get; set; } = null!;
-        [Required]
-        public int IdproofTypeId { get; set; }
-        [Required]
-        public string IdproofNumber { get; set; } = null!;
+        //[Required]
+        public int? IdproofTypeId { get; set; }
+        //[Required]
+        public string? IdproofNumber { get; set; } = null!;
     }
 }
