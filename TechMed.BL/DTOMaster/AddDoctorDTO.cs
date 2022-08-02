@@ -52,7 +52,7 @@ namespace TechMed.BL.DTOMaster
         [Required]
         public string LastName { get; set; } = null!;
         //[Required]
-        public DateTime Dob { get; set; }
+        public DateTime? Dob { get; set; }
         [Required]
         public int GenderId { get; set; }
         [Required]
