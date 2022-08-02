@@ -56,7 +56,9 @@ namespace TechMed.BL.Repository.BaseClasses
                             UserUsertype userUsertype = new UserUsertype();
                             userUsertype.UserId = userMaster.Id;
                             userUsertype.UserTypeId = 3;
-                            context.UserUsertypes.AddAsync(userUsertype);
+                            //context.UserUsertypes.AddAsync(userUsertype);
+                            string query = "INSERT INTO [dbo].[UserUsertype]([UserID],[UserTypeID])VALUES("+ userUsertype.UserId + ","+ userUsertype.UserTypeId + ")";
+                            context.Database.ExecuteSqlRaw(query);
                             int x = await context.SaveChangesAsync();
                             transaction.Commit();
 

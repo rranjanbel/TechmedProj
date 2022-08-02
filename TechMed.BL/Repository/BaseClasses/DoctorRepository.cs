@@ -874,7 +874,7 @@ namespace TechMed.BL.Repository.BaseClasses
         }
         public async Task<bool> IsEmailExists(string Email)
         {
-            bool isExist = await _teleMedecineContext.UserMasters.AnyAsync(a => a.Email.Trim() == Email.Trim());
+            bool isExist = await _teleMedecineContext.UserMasters.AnyAsync(a => a.Email.Trim().ToLower() == Email.Trim().ToLower());
             return isExist;
         }
         public async Task<DoctorMaster> AddDoctor(DoctorMaster doctorMaster, UserMaster userMaster, UserDetail userDetail, AddDoctorDTO doctorDTO, string RootPath, string webRootPath)
@@ -917,6 +917,14 @@ namespace TechMed.BL.Repository.BaseClasses
                     }
                     if (i > 0 && j > 0 && K > 0)
                     {
+                        UserUsertype userUsertype = new UserUsertype();
+                        userUsertype.UserId = userMaster.Id;
+                        userUsertype.UserTypeId = 4;
+                        //context.UserUsertypes.AddAsync(userUsertype);
+                        string query = "INSERT INTO [dbo].[UserUsertype]([UserID],[UserTypeID])VALUES(" + userUsertype.UserId + "," + userUsertype.UserTypeId + ")";
+                        _teleMedecineContext.Database.ExecuteSqlRaw(query);
+                        int x = await _teleMedecineContext.SaveChangesAsync();
+
                         transaction.Commit();
                         doctor = await _teleMedecineContext.DoctorMasters.FirstOrDefaultAsync(a => a.Id == doctorMaster.Id);
                         //phcmasternew = (Phcmaster)newPHC;
@@ -939,13 +947,14 @@ namespace TechMed.BL.Repository.BaseClasses
         }
         public async Task<string> CheckEmail(string Email)
         {
-            UserDetail userDetail = await _teleMedecineContext.UserDetails.FirstOrDefaultAsync(a => a.EmailId.ToLower() == Email.ToLower());
-            UserMaster userMaster = await _teleMedecineContext.UserMasters.FirstOrDefaultAsync(a => a.Email.ToLower() == Email.ToLower());
-            if (userDetail != null)
+         
+            bool userDetail = await _teleMedecineContext.UserDetails.AnyAsync(a => a.EmailId.Trim().ToLower() == Email.Trim().ToLower());
+            bool userMaster = await _teleMedecineContext.UserMasters.AnyAsync(a => a.Email.Trim().ToLower() == Email.Trim().ToLower());
+            if (userDetail)
             {
                 return "Email already exists in UserDetail!";
             }
-            if (userMaster != null)
+            if (userMaster)
             {
                 return "Email already exists in User!";
             }
@@ -953,13 +962,14 @@ namespace TechMed.BL.Repository.BaseClasses
         }
         public async Task<string> CheckMobile(string Mobile)
         {
-            UserDetail userDetail = await _teleMedecineContext.UserDetails.FirstOrDefaultAsync(a => a.PhoneNumber == Mobile);
-            UserMaster userMaster = await _teleMedecineContext.UserMasters.FirstOrDefaultAsync(a => a.Mobile == Mobile);
-            if (userDetail != null)
+            //bool userDetail = await _teleMedecineContext.UserDetails.AnyAsync(a => a.PhoneNumber.Trim().ToLower() == Mobile.Trim().ToLower());
+            bool userDetail = await _teleMedecineContext.DoctorMasters.AnyAsync(a => a.PhoneNumber.Trim().ToLower() == Mobile.Trim().ToLower());
+            bool userMaster = await _teleMedecineContext.UserMasters.AnyAsync(a => a.Mobile.Trim().ToLower() == Mobile.Trim().ToLower());
+            if (userDetail)
             {
-                return "Mobile already exists in UserDetail!";
+                return "Mobile already exists in Doctor!";
             }
-            if (userMaster != null)
+            if (userMaster)
             {
                 return "Mobile already exists in User!";
             }
