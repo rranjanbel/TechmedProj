@@ -18,6 +18,7 @@ namespace TechMed.BL.Repository.Interfaces
         Task<Phcmaster> AddPHCUser(Phcmaster phcmaster, UserMaster userMaster);
         Task<List<PHCMasterDTO>> GetAllPHC(int districtId);
         bool IsPHCExit(string name);
+        bool IsUserMailExist(string email);
         bool PostSpokeMaintenance (SpokeMaintenanceDTO spokeDTO, string contentRootPath);
         Task<EmployeeTrainingDTO> AddEmployeeTraining(EmployeeTrainingDTO employeeTraining);
     }

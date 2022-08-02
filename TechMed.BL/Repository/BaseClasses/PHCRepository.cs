@@ -53,6 +53,11 @@ namespace TechMed.BL.Repository.BaseClasses
                         }
                         if (i > 0 && j > 0)
                         {
+                            UserUsertype userUsertype = new UserUsertype();
+                            userUsertype.UserId = userMaster.Id;
+                            userUsertype.UserTypeId = 3;
+                            context.UserUsertypes.AddAsync(userUsertype);
+                            int x = await context.SaveChangesAsync();
                             transaction.Commit();
 
                             phcmasternew = context.Phcmasters.FirstOrDefault(a => a.Id == phcmaster.Id);
@@ -167,7 +172,12 @@ namespace TechMed.BL.Repository.BaseClasses
 
         public bool IsPHCExit(string name)
         {
-           bool isExist = _teleMedecineContext.Phcmasters.Any(a => a.Phcname == name);
+           bool isExist = _teleMedecineContext.Phcmasters.Where( x => name.Contains(x.Phcname) ).Any();            
+            return isExist;
+        }
+        public bool IsUserMailExist(string email)
+        {
+            bool isExist = _teleMedecineContext.UserMasters.Where(x => email.Contains(x.Email)).Any();
             return isExist;
         }
 

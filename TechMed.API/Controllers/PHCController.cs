@@ -169,7 +169,12 @@ namespace TechMed.API.Controllers
                     ModelState.AddModelError("AddPHC", "Same name of PHC is already in system");
                     return StatusCode(404, ModelState);
                 }
-                if(phcMaster != null)
+                if (_phcRepository.IsUserMailExist(phcdto.MailId))
+                {
+                    ModelState.AddModelError("AddPHC", "Same user mail already in system");
+                    return StatusCode(404, ModelState);
+                }
+                if (phcMaster != null)
                 { 
                     string user = string.Empty;
                     if (User.Identity.IsAuthenticated)
