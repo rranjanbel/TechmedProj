@@ -66,13 +66,16 @@ namespace TechMed.BL.TwilioAPI.Service
         {
             var room = await RoomResource.CreateAsync(
             recordParticipantsOnConnect: true,
-            statusCallbackMethod: Twilio.Http.HttpMethod.Post   ,
-            unusedRoomTimeout: 60,
+            statusCallbackMethod: Twilio.Http.HttpMethod.Post,
+            emptyRoomTimeout:1,
+            unusedRoomTimeout: 1,
+            
             //emptyRoomTimeout: 10,
             statusCallback: new Uri(callBackUrl),
             type: RoomResource.RoomTypeEnum.GroupSmall,
             maxParticipants: 2,
             uniqueName: roomname
+//            videoCodecs: new List<RoomResource.VideoCodecEnum>() { RoomResource.VideoCodecEnum.H264}
             );
 
 
