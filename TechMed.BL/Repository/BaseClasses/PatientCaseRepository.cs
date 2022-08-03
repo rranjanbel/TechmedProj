@@ -414,18 +414,34 @@ namespace TechMed.BL.Repository.BaseClasses
             }
         }
 
-        public async Task<PatientReferToDoctorVM> PostPatientReferToDoctor(PatientReferToDoctorVM patientReferToDoctorVM)
+        public async Task<PatientReferToDoctorVM> PostPatientReferToDoctor(PatientReferToDoctorVM patientReferToDoctorVM, string token)
         {
             PatientReferToDoctorVM outPatientReferToDoctorVM = new PatientReferToDoctorVM();
             PatientQueue patientQueue = new PatientQueue();
             string message = string.Empty;
             int autoAssignDoctorID = 0;
             int i = 0;
+            int loggedUserId = 0;
+            int caseCreatedBy = 0;
 
             try
             {
+                if(token !=null || token !="")
+                {
+                    LoginHistory loginHistory = _teleMedecineContext.LoginHistories.FirstOrDefault(a => a.UserToken == token);
+                    caseCreatedBy = _teleMedecineContext.PatientCases.Where(a => a.Id == patientReferToDoctorVM.PatientCaseID).Select(s => s.CreatedBy).FirstOrDefault(); ;
+                    if (loginHistory.UserId != caseCreatedBy && loginHistory.UserTypeId == 3)
+                    {
+                        outPatientReferToDoctorVM.AssignedDocterID = 0;
+                        outPatientReferToDoctorVM.PatientCaseID = patientReferToDoctorVM.PatientCaseID;
+                        outPatientReferToDoctorVM.PHCID = patientReferToDoctorVM.PHCID;
+                        outPatientReferToDoctorVM.Status = "Fail";
+                        outPatientReferToDoctorVM.Message = "Patient case created on other PHC";
+                        return outPatientReferToDoctorVM;
+                    }
 
-
+                }
+              
 
                 if (patientReferToDoctorVM != null)
                 {
@@ -468,8 +484,8 @@ namespace TechMed.BL.Repository.BaseClasses
 
                     }
                     patientQueue.PatientCaseId = patientReferToDoctorVM.PatientCaseID;
-                    //patientQueue.AssignedBy = patientReferToDoctorVM.PHCID;
-                    patientQueue.AssignedBy = _teleMedecineContext.PatientCases.Where(a => a.Id == patientReferToDoctorVM.PatientCaseID).Select(s => s.CreatedBy).FirstOrDefault();
+                    patientQueue.AssignedBy = caseCreatedBy;
+                    //patientQueue.AssignedBy = _teleMedecineContext.PatientCases.Where(a => a.Id == patientReferToDoctorVM.PatientCaseID).Select(s => s.CreatedBy).FirstOrDefault();
                     patientQueue.CaseFileStatusId = await GetCaseFileStatus();                                      
                     patientQueue.StatusOn = UtilityMaster.GetLocalDateTime();
                     patientQueue.AssignedOn = UtilityMaster.GetLocalDateTime();
@@ -491,7 +507,7 @@ namespace TechMed.BL.Repository.BaseClasses
                         existingpatientQueue.AssignedDoctorId = patientQueue.AssignedDoctorId;
                         //existingpatientQueue.StatusOn = UtilityMaster.GetLocalDateTime();
                         existingpatientQueue.AssignedOn = UtilityMaster.GetLocalDateTime();
-                        existingpatientQueue.AssignedBy = _teleMedecineContext.PatientCases.Where(a => a.Id == patientReferToDoctorVM.PatientCaseID).Select(s => s.CreatedBy).FirstOrDefault(); 
+                        existingpatientQueue.AssignedBy = caseCreatedBy;
                         existingpatientQueue.CaseFileStatusId = await GetCaseFileStatus();
                         existingpatientQueue.Comment = "Reassign the doctor";
                         existingpatientQueue.UpdatedOn = UtilityMaster.GetLocalDateTime();
