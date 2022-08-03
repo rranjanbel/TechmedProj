@@ -11,7 +11,7 @@ namespace TechMed.API.Controllers
     {
         readonly ITwilioVideoSDKService _twilioVideoSDK;
         private readonly ITwilioMeetingRepository _twilioRoomDb;
-        private readonly ILogger<WebHookCallbackController> _logger;    
+        private readonly ILogger<WebHookCallbackController> _logger;
         public WebHookCallbackController(
             ITwilioVideoSDKService twilioVideoSDK,
             ITwilioMeetingRepository twilioRoomDb,
@@ -22,14 +22,16 @@ namespace TechMed.API.Controllers
             _logger = logger;
         }
         [HttpPost("twilioroomstatuscallback")]
-        public async Task<IActionResult> TwilioRoomStatusCallback([FromQuery]RoomStatusRequest roomStatusRequest)
+        public async Task<IActionResult> TwilioRoomStatusCallback([FromQuery] RoomStatusRequest roomStatusRequest)
         {
+            _logger.LogInformation("Received TwilioRoomStatusCallback");
             try
             {
 
                 if (!string.IsNullOrEmpty(roomStatusRequest.RoomName))
                 {
                     await _twilioRoomDb.UpdateRoomStatusFromTwilioWebHook(roomStatusRequest);
+                    _logger.LogInformation("TwilioRoomStatusCallback Trigger Update");
                 }
 
                 return Ok();
@@ -46,10 +48,14 @@ namespace TechMed.API.Controllers
         {
             try
             {
+                _logger.LogInformation("Received twiliocomposevideostatuscallback");
+
 
                 if (!string.IsNullOrEmpty(videoCompositionStatusRequest.RoomSid))
                 {
                     await _twilioRoomDb.UpdateComposeVideoStatusFromTwilioWebHook(videoCompositionStatusRequest);
+                    _logger.LogInformation("twiliocomposevideostatuscallback Trigger Update");
+               
                 }
 
                 return Ok();
