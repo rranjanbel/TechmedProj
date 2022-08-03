@@ -24,7 +24,7 @@ namespace TechMed.API.Controllers
         [HttpPost("twilioroomstatuscallback")]
         public async Task<IActionResult> TwilioRoomStatusCallback([FromQuery] RoomStatusRequest roomStatusRequest)
         {
-            _logger.LogInformation("Received TwilioRoomStatusCallback");
+            _logger.LogInformation("Received TwilioRoomStatusCallback",roomStatusRequest);
             try
             {
 
@@ -48,7 +48,7 @@ namespace TechMed.API.Controllers
         {
             try
             {
-                _logger.LogInformation("Received twiliocomposevideostatuscallback");
+                _logger.LogInformation("Received twiliocomposevideostatuscallback", videoCompositionStatusRequest);
 
 
                 if (!string.IsNullOrEmpty(videoCompositionStatusRequest.RoomSid))
