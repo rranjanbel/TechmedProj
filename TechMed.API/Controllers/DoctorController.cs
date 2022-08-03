@@ -1182,7 +1182,7 @@ namespace TechMed.API.Controllers
                     userMaster.Email = doctorDTO.detailsDTO.EmailId;
                     userMaster.Name = doctorDTO.detailsDTO.FirstName;
                     userMaster.Mobile = doctorDTO.PhoneNumber;
-                    userMaster.HashPassword = EncodeAndDecordPassword.EncodePassword("doctot@123"); 
+                    userMaster.HashPassword = EncodeAndDecordPassword.EncodePassword("doctor@123"); 
                     userMaster.LoginAttempts = 0;
                     userMaster.LastLoginAt = UtilityMaster.GetLocalDateTime();
                     userMaster.IsActive = true;

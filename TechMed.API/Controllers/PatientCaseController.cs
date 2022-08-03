@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Microsoft.Net.Http.Headers;
 using TechMed.BL.CommanClassesAndFunctions;
 using TechMed.BL.DTOMaster;
 using TechMed.BL.ModelMaster;
@@ -223,6 +224,7 @@ namespace TechMed.API.Controllers
 
             try
             {
+
                 if (!ModelState.IsValid)
                 {
                     ModelState.AddModelError("AddReferDoctorInPatientCase", "Patient case model state is not valid");
@@ -230,7 +232,9 @@ namespace TechMed.API.Controllers
                 }
                 if (referDoctor != null)
                 {
-                    updatedPatientCasevm = await _patientCaeRepository.PostPatientReferToDoctor(referDoctor);
+                    var bearer_token = Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
+
+                    updatedPatientCasevm = await _patientCaeRepository.PostPatientReferToDoctor(referDoctor, bearer_token);
                     if (updatedPatientCasevm != null)
                     {
                         if(updatedPatientCasevm.Status.ToLower() == "success")

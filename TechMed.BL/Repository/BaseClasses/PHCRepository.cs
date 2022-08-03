@@ -172,14 +172,16 @@ namespace TechMed.BL.Repository.BaseClasses
             return pHCDetails;
         }
 
-        public bool IsPHCExit(string name)
+        public async Task<bool> IsPHCExit(string name)
         {
-           bool isExist = _teleMedecineContext.Phcmasters.Where( x => name.Contains(x.Phcname) ).Any();            
+           name = name.Trim().ToLower();
+           bool isExist =await _teleMedecineContext.Phcmasters.AnyAsync( x => x.Phcname.Trim().ToLower()== name);            
             return isExist;
         }
-        public bool IsUserMailExist(string email)
+        public async Task<bool> IsUserMailExist(string email)
         {
-            bool isExist = _teleMedecineContext.UserMasters.Where(x => email.Contains(x.Email)).Any();
+            email = email.Trim().ToLower();
+            bool isExist =await _teleMedecineContext.UserMasters.AnyAsync(x =>x.Email.Trim().ToLower()== email);
             return isExist;
         }
 

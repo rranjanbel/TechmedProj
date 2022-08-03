@@ -164,12 +164,12 @@ namespace TechMed.API.Controllers
                 {
                     return BadRequest(ModelState);
                 }
-                if (_phcRepository.IsPHCExit(phcdto.Phcname))
+                if (await _phcRepository.IsPHCExit(phcdto.Phcname))
                 {
                     ModelState.AddModelError("AddPHC", "Same name of PHC is already in system");
                     return StatusCode(404, ModelState);
                 }
-                if (_phcRepository.IsUserMailExist(phcdto.MailId))
+                if (await _phcRepository.IsUserMailExist(phcdto.MailId))
                 {
                     ModelState.AddModelError("AddPHC", "Same user mail already in system");
                     return StatusCode(404, ModelState);
