@@ -24,6 +24,8 @@ namespace TechMed.BL.ViewModels
         public string LastName { get; set; } = null!;
         public string Gender { get; set; } = null!;       
         public string Moname { get; set; } = null!;
-              
+        public string employeeName { get; set; } = null!;
+
+
     }
 }

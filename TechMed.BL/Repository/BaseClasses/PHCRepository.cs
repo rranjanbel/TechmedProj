@@ -165,7 +165,8 @@ namespace TechMed.BL.Repository.BaseClasses
                                City = usrdet.City,
                                PinCode = usrdet.PinCode,
                                Gender = genmas.Gender,
-                               Id = pm.Id
+                               Id = pm.Id,
+                               employeeName = pm.EmployeeName
                           }).FirstOrDefaultAsync();
 
             pHCDetails = (PHCDetailsVM)phcresult;      
