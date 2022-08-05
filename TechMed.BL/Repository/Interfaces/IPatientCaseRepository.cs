@@ -18,7 +18,7 @@ namespace TechMed.BL.Repository.Interfaces
         Task<PatientCaseVM> GetPatientCaseDetails(int PHCID, int PatientID);
         Task<PatientCaseDetailsVM> PostPatientCaseDetails(PatientCaseDetailsVM patientCaseVM);
         Task<PatientCaseWithDoctorVM> GetPatientQueueDetails(int PHCID, int PatientID);
-        Task<PatientReferToDoctorVM> PostPatientReferToDoctor(PatientReferToDoctorVM patientReferToDoctorVM, string token);
+        Task<PatientReferToDoctorVM> PostPatientReferToDoctor(PatientReferToDoctorVM patientReferToDoctorVM);
         Task<PatientFeedbackDTO> PostPatientFeedBack(PatientFeedbackDTO patientFeedback);
         Task<PatientCaseVM> GetPatientCaseDetailsByCaseID(Int64 PatientCaseID, string contentRootPath);
         Task<PatientCaseLevelDTO> GetPatientCaseLevels(int patientID);
@@ -37,6 +37,7 @@ namespace TechMed.BL.Repository.Interfaces
         Task<RemovePatientFromQueueVM> RemovePatientFromDoctorsQueue(long patientCaseID);
         Task<List<ALLPatientsQueueVM>> GetAllPatientQueue();
         Task<List<AllPendingPatient>> GetAllPendingPatient();
+        Task<PatientReferToDoctorVM> PatientReferToDoctorByAdmin(PatientReferToDoctorVM patientReferToDoctorVM);
 
 
     }

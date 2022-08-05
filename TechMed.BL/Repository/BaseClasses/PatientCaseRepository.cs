@@ -414,7 +414,7 @@ namespace TechMed.BL.Repository.BaseClasses
             }
         }
 
-        public async Task<PatientReferToDoctorVM> PostPatientReferToDoctor(PatientReferToDoctorVM patientReferToDoctorVM, string token)
+        public async Task<PatientReferToDoctorVM> PostPatientReferToDoctor(PatientReferToDoctorVM patientReferToDoctorVM)
         {
             PatientReferToDoctorVM outPatientReferToDoctorVM = new PatientReferToDoctorVM();
             PatientQueue patientQueue = new PatientQueue();
@@ -453,8 +453,11 @@ namespace TechMed.BL.Repository.BaseClasses
 
                     TwilioMeetingRoomInfo videoCallStatus = _teleMedecineContext.TwilioMeetingRoomInfos
                                     .Where(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" && a.AssignedDoctorId == patientReferToDoctorVM.AssignedDocterID).OrderByDescending(x => x.CloseDate).FirstOrDefault();
-                                    
-                    if(videoCallStatus !=null)
+
+                    // TwilioMeetingRoomInfo videoCallStatus = await _teleMedecineContext.TwilioMeetingRoomInfos.Include(d => d.AssignedDoctor)
+                    //.Where(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" && a.AssignedDoctorId == patientReferToDoctorVM.AssignedDocterID && a.AssignedDoctor.IsOnline == true).ToListAsync();
+
+                    if (videoCallStatus !=null)
                     {
                         //TwilioMeetingRoomInfo twilioMeeting = videoCallStatus.OrderByDescending(a => a.CloseDate).FirstOrDefault();
                         callInitiatedTime = videoCallStatus != null ? videoCallStatus.CloseDate : UtilityMaster.GetLocalDateTime();
@@ -1203,6 +1206,7 @@ namespace TechMed.BL.Repository.BaseClasses
             OnlineDoctorListVM onlineDoctorList = new OnlineDoctorListVM();
             List<OnlineDoctorVM> onlineDrLists = new List<OnlineDoctorVM>();
             OnlineDoctorVM drListDTO = new OnlineDoctorVM();
+            DateTime currentDT = UtilityMaster.GetLocalDateTime();
             try
             {
                 int specilizationID = await _teleMedecineContext.PatientCases.Where(a => a.Id == patientCaseID).Select(s => s.SpecializationId).FirstOrDefaultAsync();
@@ -1244,6 +1248,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     }
                     else
                     {
+                        
                         onlineDoctorList.OnlineDoctors = onlineDrLists;
                         onlineDoctorList.Status = "Success";
                         onlineDoctorList.StatusID = 0;
@@ -1318,54 +1323,87 @@ namespace TechMed.BL.Repository.BaseClasses
                 queueByDoctors.Add(patientQueue);
             };
             //Check patient queue status
-            var patinetOnCall = queueByDoctors.FirstOrDefault(a => a.WaitList == 0);
-            if(patinetOnCall !=null)
+            bool IsChangeRequire = false;
+            foreach (var item in queueByDoctors)
             {
-                DateTime currentTime = UtilityMaster.GetLocalDateTime();
-                DateTime statusTime = patinetOnCall.StatusOn;
-                double totalMin = UtilityMaster.TimeDifferenceInMin(currentTime, statusTime);
-                if(totalMin > 5)
+                if (item.WaitList == 0)
                 {
-                    PatientQueue patientQueueValue = _teleMedecineContext.PatientQueues.FirstOrDefault(a => a.PatientCaseId == patinetOnCall.PatientCaseID);
-                    if (patientQueueValue != null)
+                    DateTime currentTime = UtilityMaster.GetLocalDateTime();
+                    DateTime statusTime = item.StatusOn;
+                    double totalMin = UtilityMaster.TimeDifferenceInMin(currentTime, statusTime);
+                    if (totalMin > 5)
                     {
-                        patientQueueValue.AssignedOn = UtilityMaster.GetLocalDateTime();
+                        IsChangeRequire = true;
+                        PatientQueue patientQueueChange = _teleMedecineContext.PatientQueues.FirstOrDefault(a => a.PatientCaseId == item.PatientCaseID && a.CaseFileStatusId == 4);
+                        TwilioMeetingRoomInfo videoCallStatus = _teleMedecineContext.TwilioMeetingRoomInfos
+                                    .Where(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" && a.PatientCaseId == item.PatientCaseID).OrderByDescending(x => x.CloseDate).FirstOrDefault();
+
+                        if (patientQueueChange != null && videoCallStatus == null)
+                        {
+                            patientQueueChange.AssignedOn = UtilityMaster.GetLocalDateTime();
+                            patientQueueChange.UpdatedOn = UtilityMaster.GetLocalDateTime();
+                            patientQueueChange.StatusOn = UtilityMaster.GetLocalDateTime();
+                            //patientQueueChange.IsQueueChanged = true;
+                            _teleMedecineContext.Entry(patientQueueChange).State = EntityState.Modified;
+                            int res = _teleMedecineContext.SaveChanges();
+                        }
+                    }
+                    else
+                    {
+                        IsChangeRequire = false;
+                        //When patient queue come at 0.
+                        PatientQueue patientQueueValue = _teleMedecineContext.PatientQueues.FirstOrDefault(a => a.PatientCaseId == item.PatientCaseID);
+                        if (patientQueueValue != null && patientQueueValue.IsQueueChanged ==false)
+                        {
+                            //patientQueueValue.AssignedOn = UtilityMaster.GetLocalDateTime();
+                            patientQueueValue.UpdatedOn = UtilityMaster.GetLocalDateTime();
+                            patientQueueValue.StatusOn = UtilityMaster.GetLocalDateTime();
+                            patientQueueValue.IsQueueChanged = true;
+                            _teleMedecineContext.Entry(patientQueueValue).State = EntityState.Modified;
+                            int res = _teleMedecineContext.SaveChanges();
+                        }
+                    }
+                  
+                }
+                else if(item.WaitList == 1 && IsChangeRequire)
+                {
+                    PatientQueue patientQueueValue = _teleMedecineContext.PatientQueues.FirstOrDefault(a => a.PatientCaseId == item.PatientCaseID);
+                    if (patientQueueValue != null )
+                    {
+                        //patientQueueValue.AssignedOn = UtilityMaster.GetLocalDateTime();
                         patientQueueValue.UpdatedOn = UtilityMaster.GetLocalDateTime();
                         patientQueueValue.StatusOn = UtilityMaster.GetLocalDateTime();
-                        patientQueueValue.IsQueueChanged = false;
+                        //patientQueueValue.IsQueueChanged = true;
                         _teleMedecineContext.Entry(patientQueueValue).State = EntityState.Modified;
-                        int res =_teleMedecineContext.SaveChanges();
-                        if(res > 0)
-                        {
-                            queueByDoctors = new List<PatientQueueVM>();
-                            var Results2 = await _teleMedecineContext.PatientQueuesList.FromSqlInterpolated($"EXEC [dbo].[GetAllPatientQueues]").ToListAsync();
-                            foreach (var item in Results2)
-                            {
-                                patientQueue = new PatientQueueVM();
-                                patientQueue.SrNo = item.SrNo;
-                                patientQueue.Patient = item.Patient;
-                                patientQueue.CaseHeading = item.CaseHeading;
-                                patientQueue.PatientID = item.PatientID;
-                                patientQueue.Doctor = item.Doctor;
-                                patientQueue.Specialization = item.Specialization;
-                                patientQueue.Gender = item.Gender;
-                                patientQueue.PatientCaseID = item.PatientCaseID;
-                                patientQueue.AssignedDoctorID = item.AssignedDoctorID;
-                                patientQueue.PHCID = item.PHCID;
-                                patientQueue.WaitList = item.WaitList;
-                                patientQueue.AssignedOn = item.AssignedOn;
-                                patientQueue.StatusOn = item.StatusOn;
-
-                                queueByDoctors.Add(patientQueue);
-                            };
-                        }
-
+                        int res = _teleMedecineContext.SaveChanges();
                     }
-                    
-                }               
-               
+                }
             }
-            return queueByDoctors.Where(a => a.PHCID == PHCID).ToList();
+            queueByDoctors = new List<PatientQueueVM>();
+            var Results2 = await _teleMedecineContext.PatientQueuesList.FromSqlInterpolated($"EXEC [dbo].[GetAllPatientQueues]").ToListAsync();
+            foreach (var item in Results2)
+            {
+                patientQueue = new PatientQueueVM();
+                patientQueue.SrNo = item.SrNo;
+                patientQueue.Patient = item.Patient;
+                patientQueue.CaseHeading = item.CaseHeading;
+                patientQueue.PatientID = item.PatientID;
+                patientQueue.Doctor = item.Doctor;
+                patientQueue.Specialization = item.Specialization;
+                patientQueue.Gender = item.Gender;
+                patientQueue.PatientCaseID = item.PatientCaseID;
+                patientQueue.AssignedDoctorID = item.AssignedDoctorID;
+                patientQueue.PHCID = item.PHCID;
+                patientQueue.WaitList = item.WaitList;
+                patientQueue.AssignedOn = item.AssignedOn;
+                patientQueue.StatusOn = item.StatusOn;
+
+                queueByDoctors.Add(patientQueue);
+            };
+
+          
+
+                return queueByDoctors.Where(a => a.PHCID == PHCID).ToList();
         }
 
         public async Task<PatientReferToDoctorVM> AddPatientInDoctorsQueue(PatientReferToDoctorVM patientReferToDoctorVM)
@@ -1612,6 +1650,175 @@ namespace TechMed.BL.Repository.BaseClasses
             };
 
             return queueByDoctors;
+        }
+
+        public async Task<PatientReferToDoctorVM> PatientReferToDoctorByAdmin(PatientReferToDoctorVM patientReferToDoctorVM)
+        {
+            PatientReferToDoctorVM outPatientReferToDoctorVM = new PatientReferToDoctorVM();
+            PatientQueue patientQueue = new PatientQueue();
+            string message = string.Empty;
+            int autoAssignDoctorID = 0;
+            int i = 0;
+            int loggedUserId = 0;
+            int caseCreatedBy = 0;
+            DateTime? callInitiatedTime = UtilityMaster.GetLocalDateTime();
+            DateTime currentTime = UtilityMaster.GetLocalDateTime();
+            caseCreatedBy = _teleMedecineContext.PatientCases.Where(a => a.Id == patientReferToDoctorVM.PatientCaseID).Select(s => s.CreatedBy).FirstOrDefault();
+
+            try
+            { 
+
+                if (patientReferToDoctorVM != null)
+                {
+                    //int Busydoctors = _teleMedecineContext.TwilioMeetingRoomInfos
+                    //                .Where(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" && a.AssignedDoctorId == patientReferToDoctorVM.AssignedDocterID).Count();
+
+                    TwilioMeetingRoomInfo videoCallStatus = _teleMedecineContext.TwilioMeetingRoomInfos
+                                    .Where(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" && a.AssignedDoctorId == patientReferToDoctorVM.AssignedDocterID).OrderByDescending(x => x.CloseDate).FirstOrDefault();
+
+                    if (videoCallStatus != null)
+                    {
+                        //TwilioMeetingRoomInfo twilioMeeting = videoCallStatus.OrderByDescending(a => a.CloseDate).FirstOrDefault();
+                        callInitiatedTime = videoCallStatus != null ? videoCallStatus.CloseDate : UtilityMaster.GetLocalDateTime();
+                        double diffInMin = UtilityMaster.TimeDifferenceInMin(callInitiatedTime.Value, currentTime);
+
+                        if (diffInMin < 30)
+                        {
+                            outPatientReferToDoctorVM.AssignedDocterID = 0;
+                            outPatientReferToDoctorVM.PatientCaseID = patientReferToDoctorVM.PatientCaseID;
+                            outPatientReferToDoctorVM.PHCID = patientReferToDoctorVM.PHCID;
+                            outPatientReferToDoctorVM.Status = "Fail";
+                            outPatientReferToDoctorVM.Message = "Doctor is busy, please call other Doctor !";
+                            return outPatientReferToDoctorVM;
+                        }
+                    }
+
+
+                    if (patientReferToDoctorVM.AssignedDocterID > 0)
+                    {
+                        patientQueue.AssignedDoctorId = patientReferToDoctorVM.AssignedDocterID;
+                        patientQueue.Comment = "Manually assign doctor";
+                    }
+                    else
+                    {
+                        autoAssignDoctorID = AutoAssignDoctor(patientReferToDoctorVM.PatientCaseID);
+                        if (autoAssignDoctorID > 0)
+                        {
+                            patientQueue.AssignedDoctorId = autoAssignDoctorID;
+                            patientQueue.Comment = "Auto assign doctor";
+                        }
+                        else
+                        {
+                            outPatientReferToDoctorVM.AssignedDocterID = 0;
+                            outPatientReferToDoctorVM.PatientCaseID = patientQueue.PatientCaseId;
+                            outPatientReferToDoctorVM.PHCID = patientQueue.AssignedBy;
+                            outPatientReferToDoctorVM.Status = "Fail";
+                            outPatientReferToDoctorVM.Message = "Assigned doctor is not avialble !";
+                            return outPatientReferToDoctorVM;
+                        }
+
+                    }
+                    patientQueue.PatientCaseId = patientReferToDoctorVM.PatientCaseID;
+                    patientQueue.AssignedBy = caseCreatedBy;
+                    //patientQueue.AssignedBy = _teleMedecineContext.PatientCases.Where(a => a.Id == patientReferToDoctorVM.PatientCaseID).Select(s => s.CreatedBy).FirstOrDefault();
+                    patientQueue.CaseFileStatusId = await GetCaseFileStatus();
+                    patientQueue.StatusOn = UtilityMaster.GetLocalDateTime();
+                    patientQueue.AssignedOn = UtilityMaster.GetLocalDateTime();
+                    patientQueue.UpdatedOn = UtilityMaster.GetLocalDateTime();
+                    patientQueue.IsQueueChanged = false;
+
+                    //patientQueue.AssignedDoctorId = patientReferToDoctorVM.AssignedDocterID;
+                    //patientQueue.Comment = "Assigned by PHC";
+
+                    PatientQueue existingpatientQueue = _teleMedecineContext.PatientQueues.FirstOrDefault(a => a.PatientCaseId == patientReferToDoctorVM.PatientCaseID && a.CaseFileStatusId != 5);
+                    if (existingpatientQueue == null)
+                    {
+                        //_teleMedecineContext.PatientQueues.Add(patientQueue);
+                        _teleMedecineContext.Entry(patientQueue).State = EntityState.Added;
+
+                    }
+                    else
+                    {
+                        existingpatientQueue.AssignedDoctorId = patientQueue.AssignedDoctorId;
+                        //existingpatientQueue.StatusOn = UtilityMaster.GetLocalDateTime();
+                        existingpatientQueue.AssignedOn = UtilityMaster.GetLocalDateTime();
+                        existingpatientQueue.AssignedBy = caseCreatedBy;
+                        existingpatientQueue.CaseFileStatusId = await GetCaseFileStatus();
+                        existingpatientQueue.Comment = "Reassign the doctor";
+                        existingpatientQueue.UpdatedOn = UtilityMaster.GetLocalDateTime();
+                        existingpatientQueue.IsQueueChanged = false;
+                        _teleMedecineContext.Entry(existingpatientQueue).State = EntityState.Modified;
+                    }
+
+                    PatientCase patientCase = _teleMedecineContext.PatientCases.FirstOrDefault(a => a.Id == patientReferToDoctorVM.PatientCaseID);
+                    if (patientCase != null)
+                    {
+                        patientCase.CaseStatusID = 3;
+                        _teleMedecineContext.Entry(patientCase).State = EntityState.Modified;
+                    }
+                    i = _teleMedecineContext.SaveChanges();
+
+
+                    if (i > 0)
+                    {
+                        outPatientReferToDoctorVM.AssignedDocterID = patientQueue.AssignedDoctorId;
+                        outPatientReferToDoctorVM.PatientCaseID = patientQueue.PatientCaseId;
+                        outPatientReferToDoctorVM.PHCID = patientQueue.AssignedBy;
+                        outPatientReferToDoctorVM.Status = "Success";
+                        outPatientReferToDoctorVM.Message = "Assigned to doctor sucessfully !";
+                        try
+                        {
+                            PatientCaseQueDetail patientCaseQue = GetPatientInfo(patientQueue.PatientCaseId);
+                            message = patientCaseQue.PHCName + "  PHC center has an updated information for Patient Name :" + patientCaseQue.PatientName + "(" + patientCaseQue.PatientID + ")";
+                            // message = "PHC center has an updated information for Patient case ID : (" + patientQueue.PatientCaseId + ")";
+                            Notification notification = new Notification();
+                            notification.ToUser = patientCaseQue.DoctorUserID;
+                            notification.FromUser = patientQueue.AssignedBy;
+                            notification.Message = message;
+                            notification.CreatedOn = patientQueue.AssignedOn;
+                            notification.SeenOn = patientQueue.AssignedOn;
+                            notification.IsSeen = false;
+                            _teleMedecineContext.Notifications.Add(notification);
+                            int j = _teleMedecineContext.SaveChanges();
+                        }
+                        catch (Exception ex)
+                        {
+                            outPatientReferToDoctorVM.Status = "Success";
+                            outPatientReferToDoctorVM.Message = "Assigned to doctor sucessfully ! but notification did not add";
+                            _logger.LogError("Exception generate when going to add notification for patient case Id :" + patientQueue.PatientCaseId, ex);
+                        }
+
+
+                        return outPatientReferToDoctorVM;
+                    }
+                    else
+                    {
+                        outPatientReferToDoctorVM.AssignedDocterID = 0;
+                        outPatientReferToDoctorVM.PatientCaseID = patientQueue.PatientCaseId;
+                        outPatientReferToDoctorVM.PHCID = patientQueue.AssignedBy;
+                        outPatientReferToDoctorVM.Status = "Fail";
+                        outPatientReferToDoctorVM.Message = "Error: When assigned to doctor!";
+                        return outPatientReferToDoctorVM;
+                    }
+
+
+                }
+                else
+                {
+                    outPatientReferToDoctorVM.AssignedDocterID = 0;
+                    outPatientReferToDoctorVM.PatientCaseID = patientQueue.PatientCaseId;
+                    outPatientReferToDoctorVM.PHCID = patientQueue.AssignedBy;
+                    outPatientReferToDoctorVM.Status = "Fail";
+                    outPatientReferToDoctorVM.Message = "Error: View model has no data!";
+                    return outPatientReferToDoctorVM;
+                }
+            }
+            catch (Exception ex)
+            {
+                string messageExp = ex.Message;
+                _logger.LogError("Exception generate when going to assign doctor for patient case Id :" + patientQueue.PatientCaseId, ex);
+                throw;
+            }
         }
     }
     public class DoctorQueues

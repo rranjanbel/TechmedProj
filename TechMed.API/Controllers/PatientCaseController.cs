@@ -232,9 +232,9 @@ namespace TechMed.API.Controllers
                 }
                 if (referDoctor != null)
                 {
-                    var bearer_token = Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
+                    //var bearer_token = Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
 
-                    updatedPatientCasevm = await _patientCaeRepository.PostPatientReferToDoctor(referDoctor, bearer_token);
+                    updatedPatientCasevm = await _patientCaeRepository.PostPatientReferToDoctor(referDoctor);
                     if (updatedPatientCasevm != null)
                     {
                         if(updatedPatientCasevm.Status.ToLower() == "success")
