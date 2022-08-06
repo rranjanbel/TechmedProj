@@ -1298,7 +1298,7 @@ namespace TechMed.BL.Repository.BaseClasses
             };
             return queueByDoctors;
         }
-        public async Task<List<PatientQueueVM>> GetPatientQueue(int PHCID)
+        public async Task<List<PatientQueueVM>> GetPatientQueue(int PHCID = 0)
         {
             List<PatientQueueVM> queueByDoctors = new List<PatientQueueVM>();
             PatientQueueVM patientQueue;
@@ -1353,7 +1353,7 @@ namespace TechMed.BL.Repository.BaseClasses
                         IsChangeRequire = false;
                         //When patient queue come at 0.
                         PatientQueue patientQueueValue = _teleMedecineContext.PatientQueues.FirstOrDefault(a => a.PatientCaseId == item.PatientCaseID);
-                        if (patientQueueValue != null && patientQueueValue.IsQueueChanged ==false)
+                        if (patientQueueValue != null && patientQueueValue.IsQueueChanged == false)
                         {
                             //patientQueueValue.AssignedOn = UtilityMaster.GetLocalDateTime();
                             patientQueueValue.UpdatedOn = UtilityMaster.GetLocalDateTime();
@@ -1363,12 +1363,12 @@ namespace TechMed.BL.Repository.BaseClasses
                             int res = _teleMedecineContext.SaveChanges();
                         }
                     }
-                  
+
                 }
-                else if(item.WaitList == 1 && IsChangeRequire)
+                else if (item.WaitList == 1 && IsChangeRequire)
                 {
                     PatientQueue patientQueueValue = _teleMedecineContext.PatientQueues.FirstOrDefault(a => a.PatientCaseId == item.PatientCaseID);
-                    if (patientQueueValue != null )
+                    if (patientQueueValue != null)
                     {
                         //patientQueueValue.AssignedOn = UtilityMaster.GetLocalDateTime();
                         patientQueueValue.UpdatedOn = UtilityMaster.GetLocalDateTime();
@@ -1401,9 +1401,16 @@ namespace TechMed.BL.Repository.BaseClasses
                 queueByDoctors.Add(patientQueue);
             };
 
-          
-
+            if (PHCID == 0)
+            {
+                return queueByDoctors.ToList();
+            }
+            else
+            {
                 return queueByDoctors.Where(a => a.PHCID == PHCID).ToList();
+            }
+
+
         }
 
         public async Task<PatientReferToDoctorVM> AddPatientInDoctorsQueue(PatientReferToDoctorVM patientReferToDoctorVM)

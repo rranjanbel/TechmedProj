@@ -24,13 +24,15 @@ namespace TechMed.API.Controllers
         [HttpPost("twilioroomstatuscallback")]
         public async Task<IActionResult> TwilioRoomStatusCallback([FromQuery] RoomStatusRequest roomStatusRequest)
         {
-            _logger.LogInformation("Received TwilioRoomStatusCallback",roomStatusRequest);
+            _logger.LogInformation("TwilioRoomStatusCallback, Received TwilioRoomStatusCallback", roomStatusRequest);
             try
             {
-
+                _logger.LogInformation("TwilioRoomStatusCallback, Checking..  Is room null or empty?" + roomStatusRequest.RoomName);
                 if (!string.IsNullOrEmpty(roomStatusRequest.RoomName))
                 {
+                    _logger.LogInformation("TwilioRoomStatusCallback, Isnull room check false" + roomStatusRequest.RoomName);
                     await _twilioRoomDb.UpdateRoomStatusFromTwilioWebHook(roomStatusRequest);
+                    _logger.LogInformation("TwilioRoomStatusCallback, Room Status Request" + roomStatusRequest);
                     _logger.LogInformation("TwilioRoomStatusCallback Trigger Update");
                 }
 
@@ -48,9 +50,9 @@ namespace TechMed.API.Controllers
         {
             try
             {
-                _logger.LogInformation("Received twiliocomposevideostatuscallback", videoCompositionStatusRequest);
+                _logger.LogInformation("Received twiliocomposevideostatuscallback, request model : ", videoCompositionStatusRequest);
 
-
+                _logger.LogInformation("Received twiliocomposevideostatuscallback, SID: ", videoCompositionStatusRequest.RoomSid);
                 if (!string.IsNullOrEmpty(videoCompositionStatusRequest.RoomSid))
                 {
                     await _twilioRoomDb.UpdateComposeVideoStatusFromTwilioWebHook(videoCompositionStatusRequest);

@@ -33,6 +33,7 @@ namespace TechMed.API.Controllers
         readonly ITwilioVideoSDKService _twilioVideoSDK;
         private readonly IHubContext<SignalRBroadcastHub, IHubClient> _hubContext;
         private readonly ITwilioMeetingRepository _twilioRoomDb;
+        private readonly IPatientCaseRepository _patientCaseRepository;
         public DoctorController(IMapper mapper,
             ILogger<DoctorController> logger,
             TeleMedecineContext teleMedecineContext,
@@ -42,18 +43,20 @@ namespace TechMed.API.Controllers
             ApplicationRootUri applicationRootUrl,
             ITwilioVideoSDKService twilioVideoSDK,
             ITwilioMeetingRepository twilioRoomDb,
-            IHubContext<SignalRBroadcastHub,IHubClient> hubContext)
+            IHubContext<SignalRBroadcastHub,IHubClient> hubContext,
+            IPatientCaseRepository patientCaseRepository)
         {
             doctorBusinessMaster = new DoctorBusinessMaster(teleMedecineContext, mapper);
             _doctorRepository = doctorRepository;
             _mapper = mapper;
             _webHostEnvironment = webHostEnvironment;
             _logger = logger;
-            _reportService=reportService;
+            _reportService = reportService;
             _applicationRootUrl = applicationRootUrl;
             _twilioVideoSDK = twilioVideoSDK;
             _hubContext = hubContext;
             _twilioRoomDb = twilioRoomDb;
+            _patientCaseRepository = patientCaseRepository;
         }
         [Route("GetListOfNotification")]
         [HttpPost]
@@ -578,11 +581,15 @@ namespace TechMed.API.Controllers
                 if (result)
                 {
                     _logger.LogInformation($"PostTreatmentPlan : Sucess response returned ");
+                    //close video call
                     string roomInstance = await _doctorRepository.GetTwilioReferenceID(treatmentVM.PatientCaseID);
                     bool isPartiallyClosed = false;
                     try
                     {
                         apiResponseModel = await DismissCall(roomInstance, treatmentVM.PatientCaseID, isPartiallyClosed);
+                        //Call queue refresh
+                        var patientQueue = await _patientCaseRepository.GetPatientQueue(0);
+
                     }
                     catch (Exception ex)
                     {
