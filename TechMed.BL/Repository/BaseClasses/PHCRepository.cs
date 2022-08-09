@@ -13,6 +13,7 @@ using TechMed.BL.DTOMaster;
 using TechMed.BL.Repository.Interfaces;
 using TechMed.BL.ViewModels;
 using TechMed.DL.Models;
+using TechMed.DL.ViewModel;
 
 namespace TechMed.BL.Repository.BaseClasses
 {
@@ -22,13 +23,13 @@ namespace TechMed.BL.Repository.BaseClasses
         //private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
         private readonly ILogger<PHCRepository> _logger;
-        public PHCRepository(ILogger<PHCRepository> logger, TeleMedecineContext teleMedecineContext, IMapper mapper) : base(teleMedecineContext)
+        private readonly IMailService _mailService;
+        public PHCRepository(ILogger<PHCRepository> logger, TeleMedecineContext teleMedecineContext, IMapper mapper, IMailService mailService) : base(teleMedecineContext)
         {
             this._teleMedecineContext = teleMedecineContext;
             this._mapper = mapper;
             this._logger = logger;
-
-
+            _mailService = mailService;
         }
 
         public async Task<Phcmaster> AddPHCUser(Phcmaster phcmaster, UserMaster userMaster)
@@ -60,10 +61,17 @@ namespace TechMed.BL.Repository.BaseClasses
                             string query = "INSERT INTO [dbo].[UserUsertype]([UserID],[UserTypeID])VALUES("+ userUsertype.UserId + ","+ userUsertype.UserTypeId + ")";
                             context.Database.ExecuteSqlRaw(query);
                             int x = await context.SaveChangesAsync();
-                            transaction.Commit();
-
-                            phcmasternew = context.Phcmasters.FirstOrDefault(a => a.Id == phcmaster.Id);
-                            //phcmasternew = (Phcmaster)newPHC;
+                            if(x > 0)
+                            {
+                                transaction.Commit();
+                                phcmasternew = context.Phcmasters.FirstOrDefault(a => a.Id == phcmaster.Id);
+                                //Send Mail to User
+                                //bool response = await SendMail(userMaster.Email, userUsertype.UserTypeId);
+                            }
+                            else
+                            {
+                                transaction.Rollback();
+                            }
                         }
                         else
                         {
@@ -315,6 +323,31 @@ namespace TechMed.BL.Repository.BaseClasses
                 return "";
             }
            
+        }
+
+        public async Task<bool> SendMail(string userID, int userTypeID)
+        {
+            try
+            {
+                EmailTemplate emailTemplate = _teleMedecineContext.EmailTemplates.FirstOrDefault(a => a.UsertTypeID == userTypeID);
+                if (emailTemplate == null)
+                {
+                    List<IFormFile> formFiles;
+                    MailRequest mailrequest = new MailRequest();
+                    mailrequest.Subject = emailTemplate.Subject;
+                    mailrequest.Body = emailTemplate.Body + "/n/r" + "User ID : " + userID + " , Password : phc@12345";
+                    mailrequest.ToEmail = userID;
+                    mailrequest.Attachments = null;
+                    await _mailService.SendEmailAsync(mailrequest);
+                }
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+                throw;
+            }
+          
         }
     }
 }

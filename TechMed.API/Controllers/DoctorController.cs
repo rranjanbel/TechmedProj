@@ -691,6 +691,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> PatientAbsent(PatientAbsentVM patientAbsentVM)
         {
+            ApiResponseModel<dynamic> apiResponseModel = new ApiResponseModel<dynamic>();
             try
             {
                 if (patientAbsentVM.CaseID < 1 || !ModelState.IsValid)
@@ -702,7 +703,26 @@ namespace TechMed.API.Controllers
                 if (DTO)
                 {
                     _logger.LogInformation($"PatientAbsent : Sucess response returned ");
-                    return Ok(DTO);
+                    //Check and End video call
+                   
+                    string roomInstance = await _doctorRepository.GetTwilioReferenceID(patientAbsentVM.CaseID);
+                    bool isPartiallyClosed = false;
+                    try
+                    {
+                        apiResponseModel = await DismissCall(roomInstance, patientAbsentVM.CaseID, isPartiallyClosed);
+                        //Call queue refresh
+                        var patientQueue = await _patientCaseRepository.GetPatientQueue(0);
+
+                    }
+                    catch (Exception ex)
+                    {
+                        apiResponseModel.isSuccess = false;
+                        apiResponseModel.errorMessage = ex.Message;
+                        _logger.LogError("Exception in DismissCall " + ex);
+                    }
+                    return Ok(apiResponseModel);
+
+                    //return Ok(DTO);
                 }
                 else
                 {
@@ -1265,6 +1285,8 @@ namespace TechMed.API.Controllers
                     doctorDTO1.detailsDTO.IdproofTypeId = userDetail.IdproofTypeId;
                     doctorDTO1.detailsDTO.IdproofNumber = userDetail.IdproofNumber;
                     doctorDTO1.detailsDTO.Address = userDetail.Address;
+                    
+
                     return CreatedAtRoute(200, doctorDTO1);
                 }
             }

@@ -1,6 +1,7 @@
 ﻿
 using MailKit.Net.Smtp;
 using MailKit.Security;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using System;
@@ -16,6 +17,7 @@ namespace TechMed.BL.Repository.BaseClasses
     public class MailService : IMailService
     {
         private readonly MailSettings _mailSettings;
+        private readonly ILogger<MailService> _logger;
         public MailService(MailSettings mailSettings)
         {
             _mailSettings = mailSettings;

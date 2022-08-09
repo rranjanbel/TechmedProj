@@ -23,14 +23,14 @@ namespace TechMed.BL.Repository.BaseClasses
         private readonly ILogger<UserRepository> _logger;
         private readonly IReportService _reportService;
         private readonly IPatientCaseRepository _patientCaeRepository;
-        //private readonly ITwilioMeetingRepository _twilioRoomDb;
-        public DoctorRepository(ILogger<UserRepository> logger, TeleMedecineContext teleMedecineContext, IMapper mapper, IReportService reportService) : base(teleMedecineContext)
+        private readonly IMailService _mailService;
+        public DoctorRepository(ILogger<UserRepository> logger, TeleMedecineContext teleMedecineContext, IMapper mapper, IReportService reportService, IMailService mailService) : base(teleMedecineContext)
         {
             this._teleMedecineContext = teleMedecineContext;
             this._mapper = mapper;
             this._logger = logger;
             this._reportService = reportService;
-           // _twilioRoomDb = twilioRoomDb;
+            _mailService = mailService;
         }
 
         public void AddDoctorDetails()
@@ -605,7 +605,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     patientQueue.StatusOn = UtilityMaster.GetLocalDateTime();
                     patientQueue.CaseFileStatusId = CaseFileStatus.Id;
                     patientQueue.Comment = patientAbsentVM.Comment;
-                    _teleMedecineContext.SaveChanges();
+                   int i = _teleMedecineContext.SaveChanges();                   
                     return true;
                 }
 
@@ -927,6 +927,9 @@ namespace TechMed.BL.Repository.BaseClasses
 
                         transaction.Commit();
                         doctor = await _teleMedecineContext.DoctorMasters.FirstOrDefaultAsync(a => a.Id == doctorMaster.Id);
+
+                        //Send Mail to User
+                       // bool response = await SendMail(userMaster.Email, userUsertype.UserTypeId);
                         //phcmasternew = (Phcmaster)newPHC;
                     }
                     else
@@ -1180,6 +1183,31 @@ namespace TechMed.BL.Repository.BaseClasses
             string referenceValue = await _teleMedecineContext.TwilioMeetingRoomInfos.Where(a => a.PatientCaseId ==patientCaseID).Select(s => s.RoomName).FirstOrDefaultAsync();
             return referenceValue;
         }
-       
+
+        public async Task<bool> SendMail(string userID, int userTypeID)
+        {
+            try
+            {
+                EmailTemplate emailTemplate = _teleMedecineContext.EmailTemplates.FirstOrDefault(a => a.UsertTypeID == userTypeID);
+                if (emailTemplate == null)
+                {
+                    //List<IFormFile> formFiles;
+                    MailRequest mailrequest = new MailRequest();
+                    mailrequest.Subject = emailTemplate.Subject;
+                    mailrequest.Body = emailTemplate.Body + "/n/r" + "User ID : " + userID + " , Password : doctor@12345";
+                    mailrequest.ToEmail = userID;
+                    mailrequest.Attachments = null;
+                    await _mailService.SendEmailAsync(mailrequest);
+                }
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+                throw;
+            }
+
+        }
+
     }
 }
