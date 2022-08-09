@@ -22,12 +22,13 @@ namespace TechMed.API.Controllers
             _logger = logger;
         }
         [HttpPost("twilioroomstatuscallback")]
-        public async Task<IActionResult> TwilioRoomStatusCallback([FromQuery] RoomStatusRequest roomStatusRequest)
+        public async Task<IActionResult> TwilioRoomStatusCallback([FromQuery] RoomStatusRequest roomStatusRequest, [FromForm] RoomStatusRequest roomStatusRequestNew)
         {
-            _logger.LogInformation("TwilioRoomStatusCallback, Received TwilioRoomStatusCallback", roomStatusRequest);
+            _logger.LogInformation("TwilioRoomStatusCallback, Received TwilioRoomStatusCallback", roomStatusRequest, roomStatusRequestNew);
             try
             {
-                _logger.LogInformation("TwilioRoomStatusCallback, Checking..  Is room null or empty?" + roomStatusRequest.RoomName);
+                _logger.LogInformation("TwilioRoomStatusCallback, Checking..  Is room null or empty?" + roomStatusRequest.RoomName+" - new - "+ roomStatusRequestNew.RoomName);
+                _logger.LogInformation("TwilioRoomStatusCallback, object", Newtonsoft.Json.JsonConvert.SerializeObject( roomStatusRequest)," - new - ", Newtonsoft.Json.JsonConvert.SerializeObject(roomStatusRequestNew));
                 if (!string.IsNullOrEmpty(roomStatusRequest.RoomName))
                 {
                     _logger.LogInformation("TwilioRoomStatusCallback, Isnull room check false" + roomStatusRequest.RoomName);
