@@ -121,7 +121,7 @@ namespace TechMed.API.Services
         {
             return await _userRepository.InsertLoginHistory(userEmail, new LoginHistory()
             {
-                LogedInTime = DateTime.UtcNow,
+                LogedInTime = UtilityMaster.GetLocalDateTime(),
                 UserToken = token
             });
         }
