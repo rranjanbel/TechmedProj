@@ -930,7 +930,7 @@ namespace TechMed.BL.Repository.BaseClasses
 
                         //Send Mail to User
                        // bool response = await SendMail(userMaster.Email, userUsertype.UserTypeId);
-                        //phcmasternew = (Phcmaster)newPHC;
+                        
                     }
                     else
                     {

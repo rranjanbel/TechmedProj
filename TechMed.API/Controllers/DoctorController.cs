@@ -584,9 +584,10 @@ namespace TechMed.API.Controllers
                     //close video call
                     string roomInstance = await _doctorRepository.GetTwilioReferenceID(treatmentVM.PatientCaseID);
                     bool isPartiallyClosed = false;
+                    bool isPatientAbsent = false;
                     try
                     {
-                        apiResponseModel = await DismissCall(roomInstance, treatmentVM.PatientCaseID, isPartiallyClosed);
+                        apiResponseModel = await DismissCall(roomInstance, treatmentVM.PatientCaseID, isPartiallyClosed, isPatientAbsent);
                         //Call queue refresh
                         var patientQueue = await _patientCaseRepository.GetPatientQueue(0);
 
@@ -707,9 +708,10 @@ namespace TechMed.API.Controllers
                    
                     string roomInstance = await _doctorRepository.GetTwilioReferenceID(patientAbsentVM.CaseID);
                     bool isPartiallyClosed = false;
+                    bool isPatientAbsent = true;
                     try
                     {
-                        apiResponseModel = await DismissCall(roomInstance, patientAbsentVM.CaseID, isPartiallyClosed);
+                        apiResponseModel = await DismissCall(roomInstance, patientAbsentVM.CaseID, isPartiallyClosed, isPatientAbsent);
                         //Call queue refresh
                         var patientQueue = await _patientCaseRepository.GetPatientQueue(0);
 
@@ -1416,14 +1418,20 @@ namespace TechMed.API.Controllers
 
         }
 
-        private async Task<ApiResponseModel<dynamic>> DismissCall(string roomInstance, long patientCaseId, bool isPartiallyClosed)
+        private async Task<ApiResponseModel<dynamic>> DismissCall(string roomInstance, long patientCaseId, bool isPartiallyClosed,bool isPatientAbsent =false)
         {
             ApiResponseModel<dynamic> apiResponseModel = new ApiResponseModel<dynamic>();
             string callBackUrlForTwilio = string.Format("{0}://{1}{2}/api/webhookcallback/twiliocomposevideostatuscallback", Request.Scheme, Request.Host.Value, Request.PathBase);
             try
             {
                 //var patientInfo = await _twilioRoomDb.PatientQueueGet(patientCaseId);
-                var patientInfo = await _twilioRoomDb.PatientQueueAfterTretment(patientCaseId,isPartiallyClosed);
+                var patientInfo = await _twilioRoomDb.PatientQueueAfterTretment(patientCaseId, isPartiallyClosed);
+                if (isPatientAbsent)
+                {
+                    patientInfo = null;
+                    patientInfo = await _twilioRoomDb.PatientQueueAfterPatientAbsent(patientCaseId, isPartiallyClosed);
+                }
+                
                 var roomInfo = await _twilioRoomDb.MeetingRoomInfoGet(roomInstance);
                 if (patientInfo == null || roomInfo == null)
                 {
