@@ -521,6 +521,7 @@ namespace TechMed.BL.Repository.BaseClasses
             var userMaster = await _teleMedecineContext.UserMasters.FirstOrDefaultAsync(a => a.Email == userEmail);
             if (userMaster != null)
             {
+                //loginHistory.LogedInTime=UtilityMaster.GetLocalDateTime();
                 var userUsertype = _teleMedecineContext.UserUsertypes.Include(a => a.UserType).FirstOrDefault(a => a.UserId == userMaster.Id);
 
                 loginHistory.UserId = userUsertype.UserId;
