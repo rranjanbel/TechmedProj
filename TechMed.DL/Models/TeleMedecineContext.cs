@@ -77,6 +77,7 @@ namespace TechMed.DL.Models
         public virtual DbSet<ServerUpTimeReport> ServerUpTimeReports { get; set; } = null!;
         public virtual DbSet<CDSSGuideline> CDSSGuidelines { get; set; } = null!;
         public virtual DbSet<AgeGroupMaster> AgeGroupMasters { get; set; } = null!;
+        public virtual DbSet<EmailTemplate> EmailTemplates { get; set; } = null!;
 
 
         public virtual DbSet<SPResultGetPatientDetails> SPResultGetPatientDetails { get; set; } = null!;

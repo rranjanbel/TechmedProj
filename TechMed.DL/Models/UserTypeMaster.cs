@@ -8,6 +8,7 @@ namespace TechMed.DL.Models
         public UserTypeMaster()
         {
             LoginHistories = new HashSet<LoginHistory>();
+            EmailTemplates = new HashSet<EmailTemplate>();
         }
 
         public int Id { get; set; }
@@ -15,5 +16,6 @@ namespace TechMed.DL.Models
         public bool IsActive { get; set; }
 
         public virtual ICollection<LoginHistory> LoginHistories { get; set; }
+        public virtual ICollection<EmailTemplate> EmailTemplates { get; set; }
     }
 }
