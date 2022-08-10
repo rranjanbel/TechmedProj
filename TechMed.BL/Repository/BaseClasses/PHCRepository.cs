@@ -142,6 +142,52 @@ namespace TechMed.BL.Repository.BaseClasses
             pHCDetails = (PHCDetailsIdsVM)phcresult;
             return pHCDetails;
         }
+        public async Task<List<SearchPHCDetailsIdsVM>> SearchPHCDetailByName(string name)
+        {
+            List<SearchPHCDetailsIdsVM> pHCDetails = new List<SearchPHCDetailsIdsVM>();
+            var phcresult =  (from pm in _teleMedecineContext.Phcmasters
+                                   join cm in _teleMedecineContext.ClusterMasters on pm.ClusterId equals cm.Id
+                                   join zo in _teleMedecineContext.BlockMasters on pm.BlockId equals zo.Id
+                                   join ur in _teleMedecineContext.UserMasters on pm.UserId equals ur.Id
+                                   join ud in _teleMedecineContext.UserDetails on ur.Id equals ud.UserId into usr
+                                   from usrdet in usr.DefaultIfEmpty()
+                                   join st in _teleMedecineContext.StateMasters on usrdet.StateId equals st.Id into smast
+                                   from satmas in smast.DefaultIfEmpty()
+                                   join gn in _teleMedecineContext.GenderMasters on usrdet.GenderId equals gn.Id into gmast
+                                   from genmas in gmast.DefaultIfEmpty()
+                                   where pm.Phcname.Contains(name)
+                                   select new SearchPHCDetailsIdsVM
+                                   {
+                                       Phcname = pm.Phcname,
+                                       ClusterName = pm.Cluster.Cluster,
+                                       ClusterId = pm.ClusterId,
+                                       DivisionID=pm.DivisionId,
+                                       DistrictID=pm.DistrictId,
+                                       StateID= satmas.Id,
+                                       EmployeeName=pm.EmployeeName,   
+                                       BLockName = pm.Block.BlockName,
+                                       Moname = pm.Moname,
+                                       Address = pm.Address,
+                                       PhoneNo = pm.PhoneNo,
+                                       MailId = pm.MailId,
+                                       FirstName = usrdet.FirstName,
+                                       MiddleName = usrdet.MiddleName,
+                                       LastName = usrdet.LastName,
+                                       State = satmas.StateName,
+                                       City = usrdet.City,
+                                       PinCode = usrdet.PinCode,
+                                       Gender = genmas.Gender,
+                                       PHCId = pm.Id,
+                                       BLockID = pm.BlockId,
+                                       District="",
+                                       Division=""
+                                       
+                                       
+                                   }).ToList();
+
+            pHCDetails = phcresult;
+            return pHCDetails;
+        }
 
         public async Task<PHCDetailsVM> GetPHCDetailByUserID(int userId)
         {

@@ -21,5 +21,6 @@ namespace TechMed.BL.Repository.Interfaces
         Task<bool> IsUserMailExist(string email);
         bool PostSpokeMaintenance (SpokeMaintenanceDTO spokeDTO, string contentRootPath);
         Task<EmployeeTrainingDTO> AddEmployeeTraining(EmployeeTrainingDTO employeeTraining);
+        public Task<List<SearchPHCDetailsIdsVM>> SearchPHCDetailByName(string email);
     }
 }
