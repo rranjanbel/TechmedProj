@@ -942,20 +942,25 @@ namespace TechMed.BL.Repository.BaseClasses
                         userUsertype.UserTypeId = 4;
                         //context.UserUsertypes.AddAsync(userUsertype);
                         string query = "INSERT INTO [dbo].[UserUsertype]([UserID],[UserTypeID])VALUES(" + userUsertype.UserId + "," + userUsertype.UserTypeId + ")";
-                        _teleMedecineContext.Database.ExecuteSqlRaw(query);
-                        int x = await _teleMedecineContext.SaveChangesAsync();
+                        int x =_teleMedecineContext.Database.ExecuteSqlRaw(query);
+                        //int x = await _teleMedecineContext.SaveChangesAsync();
+                        if(x > 0)
+                        {
+                            transaction.Commit();
+                            doctor = await _teleMedecineContext.DoctorMasters.FirstOrDefaultAsync(a => a.Id == doctorMaster.Id);
 
-                        transaction.Commit();
-                        doctor = await _teleMedecineContext.DoctorMasters.FirstOrDefaultAsync(a => a.Id == doctorMaster.Id);
+                            //Send Mail to User
+                            //bool response = await SendMail(userMaster.Email, userUsertype.UserTypeId);
+                        }
+                        else
+                        {
+                            transaction.Rollback();
+                        }
 
-                        //Send Mail to User
-                       // bool response = await SendMail(userMaster.Email, userUsertype.UserTypeId);
+                      
                         
                     }
-                    else
-                    {
-                        transaction.Rollback();
-                    }
+                   
                 }
                 catch (Exception ex)
                 {
@@ -1209,7 +1214,7 @@ namespace TechMed.BL.Repository.BaseClasses
             try
             {
                 EmailTemplate emailTemplate = _teleMedecineContext.EmailTemplates.FirstOrDefault(a => a.UsertTypeID == userTypeID);
-                if (emailTemplate == null)
+                if (emailTemplate != null)
                 {
                     //List<IFormFile> formFiles;
                     MailRequest mailrequest = new MailRequest();
@@ -1224,7 +1229,7 @@ namespace TechMed.BL.Repository.BaseClasses
             catch (Exception)
             {
                 return false;
-                throw;
+                //throw;
             }
 
         }

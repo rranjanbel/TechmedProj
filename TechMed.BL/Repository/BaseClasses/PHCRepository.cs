@@ -59,9 +59,10 @@ namespace TechMed.BL.Repository.BaseClasses
                             userUsertype.UserTypeId = 3;
                             //context.UserUsertypes.AddAsync(userUsertype);
                             string query = "INSERT INTO [dbo].[UserUsertype]([UserID],[UserTypeID])VALUES("+ userUsertype.UserId + ","+ userUsertype.UserTypeId + ")";
-                            context.Database.ExecuteSqlRaw(query);
-                            int x = await context.SaveChangesAsync();
-                            if(x > 0)
+                            int x = context.Database.ExecuteSqlRaw(query);
+                            //int x = await context.SaveChangesAsync();
+                          
+                            if (x > 0)
                             {
                                 transaction.Commit();
                                 phcmasternew = context.Phcmasters.FirstOrDefault(a => a.Id == phcmaster.Id);
@@ -376,9 +377,9 @@ namespace TechMed.BL.Repository.BaseClasses
             try
             {
                 EmailTemplate emailTemplate = _teleMedecineContext.EmailTemplates.FirstOrDefault(a => a.UsertTypeID == userTypeID);
-                if (emailTemplate == null)
+                if (emailTemplate != null)
                 {
-                    List<IFormFile> formFiles;
+                    //List<IFormFile> formFiles;
                     MailRequest mailrequest = new MailRequest();
                     mailrequest.Subject = emailTemplate.Subject;
                     mailrequest.Body = emailTemplate.Body + "/n/r" + "User ID : " + userID + " , Password : phc@12345";
@@ -391,7 +392,7 @@ namespace TechMed.BL.Repository.BaseClasses
             catch (Exception)
             {
                 return false;
-                throw;
+                //throw;
             }
           
         }

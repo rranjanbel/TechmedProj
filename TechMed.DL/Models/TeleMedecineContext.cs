@@ -171,6 +171,29 @@ namespace TechMed.DL.Models
                     .HasConstraintName("FK_BlockMaster_DistrictMaster");
             });
 
+            modelBuilder.Entity<EmailTemplate>(entity =>
+            {
+                entity.ToTable("EmailTemplate");
+
+                entity.Property(e => e.ID).HasColumnName("ID");
+
+                entity.Property(e => e.Subject)
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+                entity.Property(e => e.Body)
+                   .HasMaxLength(4000)
+                   .IsUnicode(false);
+                entity.Property(e => e.ApplicationURL)
+                .HasMaxLength(500)
+                .IsUnicode(false);
+
+                entity.HasOne(d => d.UserType)
+                    .WithMany(p => p.EmailTemplates)
+                    .HasForeignKey(d => d.UsertTypeID)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_EmailTemplate_UserTypeMaster");
+            });
+
             modelBuilder.Entity<AgeGroupMaster>(entity =>
             {
                 entity.ToTable("AgeGroupMaster");
