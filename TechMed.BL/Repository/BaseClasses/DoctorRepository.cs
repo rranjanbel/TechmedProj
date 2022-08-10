@@ -57,6 +57,26 @@ namespace TechMed.BL.Repository.BaseClasses
             }
             return DTO;
         }
+        public async Task<List<DoctorDTO>> SearchDoctorDetails(GetDoctorDetailVM getDoctorDetailVM)
+        {
+            // DoctorMaster doctorMaster = await _teleMedecineContext.DoctorMasters.Where(o => o.User.Email.ToLower() == getDoctorDetailVM.UserEmailID.ToLower()).FirstOrDefaultAsync();
+            var matches = (from m in _teleMedecineContext.DoctorMasters
+                        .Include(d => d.User)
+                          where m.User.Email.Contains(getDoctorDetailVM.UserEmailID)
+                          select m).ToList();
+            var DTO = new List<DoctorDTO>();
+            if (matches != null)
+            {
+                foreach (var item in matches)
+                {
+                    DoctorDTO doctorDTO = _mapper.Map<DoctorDTO>(item);
+                    UserDetail userDetail = await _teleMedecineContext.UserDetails.Where(o => o.UserId == item.UserId).FirstOrDefaultAsync();
+                    doctorDTO.detailsDTO = _mapper.Map<DetailsDTO>(userDetail);
+                    DTO.Add(doctorDTO);
+                }
+            }
+            return DTO;
+        }
         public async Task<List<DrugsMasterDTO>> GetListOfMedicine()
         {
             List<DrugsMaster> masters = await _teleMedecineContext.DrugsMasters.OrderBy(a => a.NameOfDrug).ToListAsync();
