@@ -854,7 +854,7 @@ namespace TechMed.BL.Repository.BaseClasses
                         string relativePath = patientQuue.AssignedDoctor.DigitalSignature;
                         try
                         {
-                            patientCase.DoctorSignature = UtilityMaster.DownloadFile(relativePath, contentRootPath);
+                            patientCase.DoctorSignature = UtilityMaster.DownloadFile(relativePath, contentRootPath,Path.GetFileName(patientQuue.AssignedDoctor.DigitalSignature));
                         }
                         catch (Exception ex)
                         {

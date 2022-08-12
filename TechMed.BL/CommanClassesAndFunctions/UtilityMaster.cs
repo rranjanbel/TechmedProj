@@ -280,7 +280,7 @@ namespace TechMed.BL.CommanClassesAndFunctions
             return true;
         }
 
-        public static string DownloadFile(string relativePath, string? contentRootPath)
+        public static string DownloadFile(string relativePath, string? contentRootPath,string FileName)
         {
             try
             {
@@ -296,7 +296,7 @@ namespace TechMed.BL.CommanClassesAndFunctions
                         contentType = "application/octet-stream";
                     }
 
-                    string path = @"\\MyStaticFiles\\Images\\Doctor\\Test_Signature.jpg";
+                    string path = @"\\MyStaticFiles\\Images\\Doctor\\"+ FileName;
                     filePath = contentRootPath + path;
                     if (File.Exists(filePath))
                     {
