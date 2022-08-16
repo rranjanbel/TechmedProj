@@ -22,5 +22,7 @@ namespace TechMed.BL.Repository.Interfaces
         bool PostSpokeMaintenance (SpokeMaintenanceDTO spokeDTO, string contentRootPath);
         Task<EmployeeTrainingDTO> AddEmployeeTraining(EmployeeTrainingDTO employeeTraining);
         public Task<List<SearchPHCDetailsIdsVM>> SearchPHCDetailByName(string email);
+        public Task<List<string>> GetAllPHCName();
+        public Task<SearchPHCDetailsIdsVM> GetPHCDetailByByName(string name);
     }
 }

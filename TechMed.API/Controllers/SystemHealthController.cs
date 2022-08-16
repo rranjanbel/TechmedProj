@@ -31,7 +31,7 @@ namespace TechMed.API.Controllers
             try
             {
                 return Ok(true);
-                
+
             }
             catch (Exception ex)
             {

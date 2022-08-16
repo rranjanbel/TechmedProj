@@ -62,8 +62,8 @@ namespace TechMed.BL.Repository.BaseClasses
             // DoctorMaster doctorMaster = await _teleMedecineContext.DoctorMasters.Where(o => o.User.Email.ToLower() == getDoctorDetailVM.UserEmailID.ToLower()).FirstOrDefaultAsync();
             var matches = (from m in _teleMedecineContext.DoctorMasters
                         .Include(d => d.User)
-                          where m.User.Email.Contains(getDoctorDetailVM.UserEmailID)
-                          select m).ToList();
+                           where m.User.Email.Contains(getDoctorDetailVM.UserEmailID)
+                           select m).ToList();
             var DTO = new List<DoctorDTO>();
             if (matches != null)
             {
@@ -76,6 +76,13 @@ namespace TechMed.BL.Repository.BaseClasses
                 }
             }
             return DTO;
+        }
+        public async Task<List<string>> GetAllDoctorEmails()
+        {
+            List<string> list = (from m in _teleMedecineContext.DoctorMasters
+                        .Include(d => d.User)
+                                 select m.User.Email).ToList();
+            return list;
         }
         public async Task<List<DrugsMasterDTO>> GetListOfMedicine()
         {
@@ -514,7 +521,7 @@ namespace TechMed.BL.Repository.BaseClasses
                                 Noon = item.Noon,
                                 Od = item.OD,
                                 Td = item.TD,
-                                Qid=item.QID,
+                                Qid = item.QID,
                                 DrugMasterId = item.DrugID,
                                 PatientCaseId = treatmentVM.PatientCaseID,
                                 Duration = item.Duration,
@@ -532,7 +539,7 @@ namespace TechMed.BL.Repository.BaseClasses
                         _teleMedecineContext.Add(patientCaseDiagonosticTest);
                     }
                     int i = _teleMedecineContext.SaveChanges();
-                    if(i > 0)
+                    if (i > 0)
                     {
                         //End video call
 
@@ -547,7 +554,7 @@ namespace TechMed.BL.Repository.BaseClasses
                             _logger.LogError("Exception in GeneratePdfReport service " + ex);
                         }
                     }
-                    
+
 
 
                     return true;
@@ -625,7 +632,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     patientQueue.StatusOn = UtilityMaster.GetLocalDateTime();
                     patientQueue.CaseFileStatusId = CaseFileStatus.Id;
                     patientQueue.Comment = patientAbsentVM.Comment;
-                   int i = _teleMedecineContext.SaveChanges();                   
+                    int i = _teleMedecineContext.SaveChanges();
                     return true;
                 }
 
@@ -942,9 +949,9 @@ namespace TechMed.BL.Repository.BaseClasses
                         userUsertype.UserTypeId = 4;
                         //context.UserUsertypes.AddAsync(userUsertype);
                         string query = "INSERT INTO [dbo].[UserUsertype]([UserID],[UserTypeID])VALUES(" + userUsertype.UserId + "," + userUsertype.UserTypeId + ")";
-                        int x =_teleMedecineContext.Database.ExecuteSqlRaw(query);
+                        int x = _teleMedecineContext.Database.ExecuteSqlRaw(query);
                         //int x = await _teleMedecineContext.SaveChangesAsync();
-                        if(x > 0)
+                        if (x > 0)
                         {
                             transaction.Commit();
                             doctor = await _teleMedecineContext.DoctorMasters.FirstOrDefaultAsync(a => a.Id == doctorMaster.Id);
@@ -957,10 +964,10 @@ namespace TechMed.BL.Repository.BaseClasses
                             transaction.Rollback();
                         }
 
-                      
-                        
+
+
                     }
-                   
+
                 }
                 catch (Exception ex)
                 {
@@ -975,7 +982,7 @@ namespace TechMed.BL.Repository.BaseClasses
         }
         public async Task<string> CheckEmail(string Email)
         {
-         
+
             bool userDetail = await _teleMedecineContext.UserDetails.AnyAsync(a => a.EmailId.Trim().ToLower() == Email.Trim().ToLower());
             bool userMaster = await _teleMedecineContext.UserMasters.AnyAsync(a => a.Email.Trim().ToLower() == Email.Trim().ToLower());
             if (userDetail)
@@ -1205,7 +1212,7 @@ namespace TechMed.BL.Repository.BaseClasses
 
         public async Task<string> GetTwilioReferenceID(long patientCaseID)
         {
-            string referenceValue = await _teleMedecineContext.TwilioMeetingRoomInfos.Where(a => a.PatientCaseId ==patientCaseID).Select(s => s.RoomName).FirstOrDefaultAsync();
+            string referenceValue = await _teleMedecineContext.TwilioMeetingRoomInfos.Where(a => a.PatientCaseId == patientCaseID).Select(s => s.RoomName).FirstOrDefaultAsync();
             return referenceValue;
         }
 

@@ -193,6 +193,41 @@ namespace TechMed.API.Controllers
                 return StatusCode(500, ModelState);
             }
         }
+        [Route("GetAllDoctorEmails")]
+        [HttpPost]
+        [ProducesResponseType(200, Type = typeof(List<string>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetAllDoctorEmails()
+        {
+            try
+            {
+                //if (getDoctorDetailVM == null)
+                //{
+                //    _logger.LogError("GetAllDoctorEmails :  ModelState is null ");
+                //    return BadRequest(ModelState);
+                //}
+                var DTO = await _doctorRepository.GetAllDoctorEmails();
+                if (DTO.Count > 0)
+                {
+                    _logger.LogInformation($"GetAllDoctorEmails : Sucess response returned ");
+                    return Ok(DTO);
+                }
+                else
+                {
+                    ModelState.AddModelError("", $"Data not found!");
+                    _logger.LogError("GetAllDoctorEmails :  Data not found ");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError("SearchDoctorDetails", $"Something went wrong {ex.Message}");
+                _logger.LogError("Exception in SearchDoctorDetails API " + ex);
+                return StatusCode(500, ModelState);
+            }
+        }
         [Route("GetListOfMedicine")]
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(List<DrugsMasterDTO>))]

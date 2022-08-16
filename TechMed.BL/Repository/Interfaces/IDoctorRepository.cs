@@ -53,5 +53,7 @@ namespace TechMed.BL.Repository.Interfaces
         public Task<string> GetTwilioReferenceID(long patientCaseID);
         public Task<List<DoctorDTO>> SearchDoctorDetails(GetDoctorDetailVM getDoctorDetailVM);
 
+        public Task<List<string>> GetAllDoctorEmails();
+
     }
 }

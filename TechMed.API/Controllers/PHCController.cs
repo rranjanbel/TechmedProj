@@ -119,6 +119,70 @@ namespace TechMed.API.Controllers
                 return StatusCode(500, ModelState);
             }
         }
+        
+
+        [HttpGet]
+        [Route("GetPHCDetailByName")]
+        [ProducesResponseType(200, Type = typeof(SearchPHCDetailsIdsVM))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetPHCDetailByName(string name)
+        {
+            SearchPHCDetailsIdsVM pHCDetailsVM = new SearchPHCDetailsIdsVM();
+            try
+            {
+                pHCDetailsVM = await _phcRepository.GetPHCDetailByByName(name);
+                if (pHCDetailsVM != null)
+                {
+                    //var phcMasterDTO = _mapper.Map<PHCHospitalDTO>(phcmaster);
+                    return Ok(pHCDetailsVM);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetPHCDetailsByEmailID", "PHC detail did not find");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError("GetPHCDetailsByEmailID", $"Something went wrong when GetPHCDetailsByUserID {ex.Message}");
+                _logger.LogError("Exception in GetPHCDetailsByEmailID API " + ex);
+                return StatusCode(500, ModelState);
+            }
+        }
+
+
+        [HttpGet]
+        [Route("GetAllPHCName")]
+        [ProducesResponseType(200, Type = typeof(List<string>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetAllPHCName()
+        {
+            List<string> phCName = new List<string>();  
+            try
+            {
+                phCName = await _phcRepository.GetAllPHCName();
+                if (phCName != null)
+                {
+                    //var phcMasterDTO = _mapper.Map<PHCHospitalDTO>(phcmaster);
+                    return Ok(phCName);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetPHCDetailsByEmailID", "PHC detail did not find");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError("GetPHCDetailsByEmailID", $"Something went wrong when GetPHCDetailsByUserID {ex.Message}");
+                _logger.LogError("Exception in GetPHCDetailsByEmailID API " + ex);
+                return StatusCode(500, ModelState);
+            }
+        }
         [HttpGet]
         [Route("GetPHCDetailsByUserID")]
         [ProducesResponseType(200, Type = typeof(PHCHospitalDTO))]

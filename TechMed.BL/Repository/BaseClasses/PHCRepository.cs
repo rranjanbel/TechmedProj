@@ -36,7 +36,7 @@ namespace TechMed.BL.Repository.BaseClasses
         {
             int i = 0;
             int j = 0;
-            Phcmaster phcmasternew = new Phcmaster();            
+            Phcmaster phcmasternew = new Phcmaster();
 
             using (TeleMedecineContext context = new TeleMedecineContext())
             {
@@ -58,10 +58,10 @@ namespace TechMed.BL.Repository.BaseClasses
                             userUsertype.UserId = userMaster.Id;
                             userUsertype.UserTypeId = 3;
                             //context.UserUsertypes.AddAsync(userUsertype);
-                            string query = "INSERT INTO [dbo].[UserUsertype]([UserID],[UserTypeID])VALUES("+ userUsertype.UserId + ","+ userUsertype.UserTypeId + ")";
+                            string query = "INSERT INTO [dbo].[UserUsertype]([UserID],[UserTypeID])VALUES(" + userUsertype.UserId + "," + userUsertype.UserTypeId + ")";
                             int x = context.Database.ExecuteSqlRaw(query);
                             //int x = await context.SaveChangesAsync();
-                          
+
                             if (x > 0)
                             {
                                 transaction.Commit();
@@ -85,15 +85,15 @@ namespace TechMed.BL.Repository.BaseClasses
                         transaction.Rollback();
                     }
                 }
-            }        
-           
+            }
+
             return phcmasternew;
         }
 
         public async Task<Phcmaster> GetByID(int id)
         {
             Phcmaster phcmaster = new Phcmaster();
-            phcmaster = await _teleMedecineContext.Phcmasters.Where(a => a.Id == id).FirstOrDefaultAsync(); 
+            phcmaster = await _teleMedecineContext.Phcmasters.Where(a => a.Id == id).FirstOrDefaultAsync();
             return phcmaster;
         }
 
@@ -108,45 +108,7 @@ namespace TechMed.BL.Repository.BaseClasses
         public async Task<PHCDetailsIdsVM> GetPHCDetailByEmailID(string email)
         {
             PHCDetailsIdsVM pHCDetails = new PHCDetailsIdsVM();
-            var phcresult = await(from pm in _teleMedecineContext.Phcmasters
-                                  join cm in _teleMedecineContext.ClusterMasters on pm.ClusterId equals cm.Id
-                                  join zo in _teleMedecineContext.BlockMasters on pm.BlockId equals zo.Id
-                                  join ur in _teleMedecineContext.UserMasters on pm.UserId equals ur.Id
-                                  join ud in _teleMedecineContext.UserDetails on ur.Id equals ud.UserId into usr
-                                  from usrdet in usr.DefaultIfEmpty()
-                                  join st in _teleMedecineContext.StateMasters on usrdet.StateId equals st.Id into smast
-                                  from satmas in smast.DefaultIfEmpty()
-                                  join gn in _teleMedecineContext.GenderMasters on usrdet.GenderId equals gn.Id into gmast
-                                  from genmas in gmast.DefaultIfEmpty()
-                                  where ur.Email.Contains(email)  
-                                  select new PHCDetailsIdsVM
-                                  {
-                                      Phcname = pm.Phcname,
-                                      ClusterName = pm.Cluster.Cluster,
-                                      BLockName = pm.Block.BlockName,
-                                      Moname = pm.Moname,
-                                      Address = pm.Address,
-                                      PhoneNo = pm.PhoneNo,
-                                      MailId = pm.MailId,
-                                      FirstName = usrdet.FirstName,
-                                      MiddleName = usrdet.MiddleName,
-                                      LastName = usrdet.LastName,
-                                      State = satmas.StateName,
-                                      City = usrdet.City,
-                                      PinCode = usrdet.PinCode,
-                                      Gender = genmas.Gender,
-                                      PHCId = pm.Id,
-                                      BLockID = pm.BlockId,
-                                      ClusterId = pm.ClusterId
-                                  }).FirstOrDefaultAsync();
-
-            pHCDetails = (PHCDetailsIdsVM)phcresult;
-            return pHCDetails;
-        }
-        public async Task<List<SearchPHCDetailsIdsVM>> SearchPHCDetailByName(string name)
-        {
-            List<SearchPHCDetailsIdsVM> pHCDetails = new List<SearchPHCDetailsIdsVM>();
-            var phcresult =  (from pm in _teleMedecineContext.Phcmasters
+            var phcresult = await (from pm in _teleMedecineContext.Phcmasters
                                    join cm in _teleMedecineContext.ClusterMasters on pm.ClusterId equals cm.Id
                                    join zo in _teleMedecineContext.BlockMasters on pm.BlockId equals zo.Id
                                    join ur in _teleMedecineContext.UserMasters on pm.UserId equals ur.Id
@@ -156,16 +118,11 @@ namespace TechMed.BL.Repository.BaseClasses
                                    from satmas in smast.DefaultIfEmpty()
                                    join gn in _teleMedecineContext.GenderMasters on usrdet.GenderId equals gn.Id into gmast
                                    from genmas in gmast.DefaultIfEmpty()
-                                   where pm.Phcname.Contains(name)
-                                   select new SearchPHCDetailsIdsVM
+                                   where ur.Email.Contains(email)
+                                   select new PHCDetailsIdsVM
                                    {
                                        Phcname = pm.Phcname,
                                        ClusterName = pm.Cluster.Cluster,
-                                       ClusterId = pm.ClusterId,
-                                       DivisionID=pm.DivisionId,
-                                       DistrictID=pm.DistrictId,
-                                       StateID= satmas.Id,
-                                       EmployeeName=pm.EmployeeName,   
                                        BLockName = pm.Block.BlockName,
                                        Moname = pm.Moname,
                                        Address = pm.Address,
@@ -180,64 +137,158 @@ namespace TechMed.BL.Repository.BaseClasses
                                        Gender = genmas.Gender,
                                        PHCId = pm.Id,
                                        BLockID = pm.BlockId,
-                                       District="",
-                                       Division=""
-                                       
-                                       
-                                   }).ToList();
+                                       ClusterId = pm.ClusterId
+                                   }).FirstOrDefaultAsync();
+
+            pHCDetails = (PHCDetailsIdsVM)phcresult;
+            return pHCDetails;
+        }
+        public async Task<List<SearchPHCDetailsIdsVM>> SearchPHCDetailByName(string name)
+        {
+            List<SearchPHCDetailsIdsVM> pHCDetails = new List<SearchPHCDetailsIdsVM>();
+            var phcresult = (from pm in _teleMedecineContext.Phcmasters
+                             join cm in _teleMedecineContext.ClusterMasters on pm.ClusterId equals cm.Id
+                             join zo in _teleMedecineContext.BlockMasters on pm.BlockId equals zo.Id
+                             join ur in _teleMedecineContext.UserMasters on pm.UserId equals ur.Id
+                             join ud in _teleMedecineContext.UserDetails on ur.Id equals ud.UserId into usr
+                             from usrdet in usr.DefaultIfEmpty()
+                             join st in _teleMedecineContext.StateMasters on usrdet.StateId equals st.Id into smast
+                             from satmas in smast.DefaultIfEmpty()
+                             join gn in _teleMedecineContext.GenderMasters on usrdet.GenderId equals gn.Id into gmast
+                             from genmas in gmast.DefaultIfEmpty()
+                             where pm.Phcname.Contains(name)
+                             select new SearchPHCDetailsIdsVM
+                             {
+                                 Phcname = pm.Phcname,
+                                 ClusterName = pm.Cluster.Cluster,
+                                 ClusterId = pm.ClusterId,
+                                 DivisionID = pm.DivisionId,
+                                 DistrictID = pm.DistrictId,
+                                 StateID = satmas.Id,
+                                 EmployeeName = pm.EmployeeName,
+                                 BLockName = pm.Block.BlockName,
+                                 Moname = pm.Moname,
+                                 Address = pm.Address,
+                                 PhoneNo = pm.PhoneNo,
+                                 MailId = pm.MailId,
+                                 FirstName = usrdet.FirstName,
+                                 MiddleName = usrdet.MiddleName,
+                                 LastName = usrdet.LastName,
+                                 State = satmas.StateName,
+                                 City = usrdet.City,
+                                 PinCode = usrdet.PinCode,
+                                 Gender = genmas.Gender,
+                                 PHCId = pm.Id,
+                                 BLockID = pm.BlockId,
+                                 District = "",
+                                 Division = ""
+
+
+                             }).ToList();
 
             pHCDetails = phcresult;
             return pHCDetails;
         }
+        public async Task<SearchPHCDetailsIdsVM> GetPHCDetailByByName(string name)
+        {
+            name = name.ToLower();
+            SearchPHCDetailsIdsVM pHCDetails = new SearchPHCDetailsIdsVM();
+            pHCDetails =await ( from pm in _teleMedecineContext.Phcmasters
+                             join cm in _teleMedecineContext.ClusterMasters on pm.ClusterId equals cm.Id
+                             join zo in _teleMedecineContext.BlockMasters on pm.BlockId equals zo.Id
+                             join ur in _teleMedecineContext.UserMasters on pm.UserId equals ur.Id
+                             join ud in _teleMedecineContext.UserDetails on ur.Id equals ud.UserId into usr
+                             from usrdet in usr.DefaultIfEmpty()
+                             join st in _teleMedecineContext.StateMasters on usrdet.StateId equals st.Id into smast
+                             from satmas in smast.DefaultIfEmpty()
+                             join gn in _teleMedecineContext.GenderMasters on usrdet.GenderId equals gn.Id into gmast
+                             from genmas in gmast.DefaultIfEmpty()
+                             where pm.Phcname.ToLower() == name
+                             select new SearchPHCDetailsIdsVM
+                             {
+                                 Phcname = pm.Phcname,
+                                 ClusterName = pm.Cluster.Cluster,
+                                 ClusterId = pm.ClusterId,
+                                 DivisionID = pm.DivisionId,
+                                 DistrictID = pm.DistrictId,
+                                 StateID = satmas.Id,
+                                 EmployeeName = pm.EmployeeName,
+                                 BLockName = pm.Block.BlockName,
+                                 Moname = pm.Moname,
+                                 Address = pm.Address,
+                                 PhoneNo = pm.PhoneNo,
+                                 MailId = pm.MailId,
+                                 FirstName = usrdet.FirstName,
+                                 MiddleName = usrdet.MiddleName,
+                                 LastName = usrdet.LastName,
+                                 State = satmas.StateName,
+                                 City = usrdet.City,
+                                 PinCode = usrdet.PinCode,
+                                 Gender = genmas.Gender,
+                                 PHCId = pm.Id,
+                                 BLockID = pm.BlockId,
+                                 District = "",
+                                 Division = ""
+                             }).FirstOrDefaultAsync();
 
+
+            return pHCDetails;
+        }
+        public async Task<List<string>> GetAllPHCName()
+        {
+            List<string> list = (from m in _teleMedecineContext.Phcmasters
+                                     //.Include(d => d.User)
+                                 select m.Phcname).ToList();
+            return list;
+        }
         public async Task<PHCDetailsVM> GetPHCDetailByUserID(int userId)
         {
-            PHCDetailsVM pHCDetails = new PHCDetailsVM();           
+            PHCDetailsVM pHCDetails = new PHCDetailsVM();
             var phcresult = await (from pm in _teleMedecineContext.Phcmasters
-                          join cm in _teleMedecineContext.ClusterMasters on pm.ClusterId equals cm.Id
-                          join zo in _teleMedecineContext.BlockMasters on pm.BlockId equals zo.Id
-                          join ur in _teleMedecineContext.UserMasters on pm.UserId equals ur.Id
-                          join ud in _teleMedecineContext.UserDetails on ur.Id equals ud.UserId into usr
-                          from usrdet in usr.DefaultIfEmpty()
-                          join st in _teleMedecineContext.StateMasters on usrdet.StateId equals st.Id into smast
-                          from satmas in smast.DefaultIfEmpty()
-                          join gn in _teleMedecineContext.GenderMasters on usrdet.GenderId equals gn.Id into gmast
-                          from genmas in gmast.DefaultIfEmpty()
-                          where pm.UserId == userId
-                          select new PHCDetailsVM
-                          {
-                              Phcname = pm.Phcname,
-                              ClusterName = pm.Cluster.Cluster,
-                              BlockName = pm.Block.BlockName,
-                               Moname = pm.Moname,
-                               Address = pm.Address,
-                               PhoneNo = pm.PhoneNo,
-                               MailId = pm.MailId,
-                               FirstName = usrdet.FirstName,
-                               MiddleName = usrdet.MiddleName,
-                               LastName = usrdet.LastName,
-                               State = satmas.StateName,
-                               City = usrdet.City,
-                               PinCode = usrdet.PinCode,
-                               Gender = genmas.Gender,
-                               Id = pm.Id,
-                               employeeName = pm.EmployeeName
-                          }).FirstOrDefaultAsync();
+                                   join cm in _teleMedecineContext.ClusterMasters on pm.ClusterId equals cm.Id
+                                   join zo in _teleMedecineContext.BlockMasters on pm.BlockId equals zo.Id
+                                   join ur in _teleMedecineContext.UserMasters on pm.UserId equals ur.Id
+                                   join ud in _teleMedecineContext.UserDetails on ur.Id equals ud.UserId into usr
+                                   from usrdet in usr.DefaultIfEmpty()
+                                   join st in _teleMedecineContext.StateMasters on usrdet.StateId equals st.Id into smast
+                                   from satmas in smast.DefaultIfEmpty()
+                                   join gn in _teleMedecineContext.GenderMasters on usrdet.GenderId equals gn.Id into gmast
+                                   from genmas in gmast.DefaultIfEmpty()
+                                   where pm.UserId == userId
+                                   select new PHCDetailsVM
+                                   {
+                                       Phcname = pm.Phcname,
+                                       ClusterName = pm.Cluster.Cluster,
+                                       BlockName = pm.Block.BlockName,
+                                       Moname = pm.Moname,
+                                       Address = pm.Address,
+                                       PhoneNo = pm.PhoneNo,
+                                       MailId = pm.MailId,
+                                       FirstName = usrdet.FirstName,
+                                       MiddleName = usrdet.MiddleName,
+                                       LastName = usrdet.LastName,
+                                       State = satmas.StateName,
+                                       City = usrdet.City,
+                                       PinCode = usrdet.PinCode,
+                                       Gender = genmas.Gender,
+                                       Id = pm.Id,
+                                       employeeName = pm.EmployeeName
+                                   }).FirstOrDefaultAsync();
 
-            pHCDetails = (PHCDetailsVM)phcresult;      
+            pHCDetails = (PHCDetailsVM)phcresult;
             return pHCDetails;
         }
 
         public async Task<bool> IsPHCExit(string name)
         {
-           name = name.Trim().ToLower();
-           bool isExist =await _teleMedecineContext.Phcmasters.AnyAsync( x => x.Phcname.Trim().ToLower()== name);            
+            name = name.Trim().ToLower();
+            bool isExist = await _teleMedecineContext.Phcmasters.AnyAsync(x => x.Phcname.Trim().ToLower() == name);
             return isExist;
         }
         public async Task<bool> IsUserMailExist(string email)
         {
             email = email.Trim().ToLower();
-            bool isExist =await _teleMedecineContext.UserMasters.AnyAsync(x =>x.Email.Trim().ToLower()== email);
+            bool isExist = await _teleMedecineContext.UserMasters.AnyAsync(x => x.Email.Trim().ToLower() == email);
             return isExist;
         }
 
@@ -245,7 +296,7 @@ namespace TechMed.BL.Repository.BaseClasses
         {
             List<PHCMasterDTO> phcList = new List<PHCMasterDTO>();
             PHCMasterDTO phcDTO;
-           var phcs = await _teleMedecineContext.Phcmasters.Where(a => a.DistrictId == districtId).ToListAsync();
+            var phcs = await _teleMedecineContext.Phcmasters.Where(a => a.DistrictId == districtId).ToListAsync();
             foreach (var phc in phcs)
             {
                 phcDTO = new PHCMasterDTO();
@@ -258,8 +309,8 @@ namespace TechMed.BL.Repository.BaseClasses
 
         public async Task<EmployeeTrainingDTO> AddEmployeeTraining(EmployeeTrainingDTO employeeTraining)
         {
-            int i = 0;            
-            EmployeeTraining employee = new EmployeeTraining();         
+            int i = 0;
+            EmployeeTraining employee = new EmployeeTraining();
 
             EmployeeTrainingDTO insertedEmployeeTraining = new EmployeeTrainingDTO();
             try
@@ -281,9 +332,9 @@ namespace TechMed.BL.Repository.BaseClasses
             {
                 string excpMessage = ex.Message;
             }
-          
-           
-           
+
+
+
 
             return insertedEmployeeTraining;
         }
@@ -293,31 +344,31 @@ namespace TechMed.BL.Repository.BaseClasses
             SpokeMaintenance spokeMaintenance;
             //List<PatientCaseDocDTO> patientCaseDocuments = new List<PatientCaseDocDTO>();
             int l = 0;
-            
+
 
             if (spokeDTO != null)
-            {                
+            {
                 string relativePath = @"/MyFiles/PHCDocuments/";
                 var myfilename = string.Format(@"{0}", Guid.NewGuid());
 
                 if (spokeDTO.file.Length > 0)
                 {
                     l = 0;
-                    myfilename = myfilename+"."+Path.GetExtension( spokeDTO.file.FileName);
+                    myfilename = myfilename + "." + Path.GetExtension(spokeDTO.file.FileName);
                     string fileName = SaveDocument(spokeDTO.file, contentRootPath, myfilename);
-                    if(fileName != null)
+                    if (fileName != null)
                     {
                         //string fullPath = Path.Combine(path, fileName);
                         string fullRelativePath = Path.Combine(relativePath, fileName);
                         spokeMaintenance = new SpokeMaintenance();
                         spokeMaintenance.Phcid = spokeDTO.Phcid;
                         spokeMaintenance.FilePath = fullRelativePath;
-                        spokeMaintenance.Date = spokeDTO.dateTime ;
+                        spokeMaintenance.Date = spokeDTO.dateTime;
 
                         this._teleMedecineContext.Entry(spokeMaintenance).State = EntityState.Added;
                         l = this.Context.SaveChanges();
                     }
-                  
+
                 }
                 if (l > 0)
                 {
@@ -341,13 +392,13 @@ namespace TechMed.BL.Repository.BaseClasses
         {
             try
             {
-             
+
                 string saveFilename = "";
 
-               string relativePath = @"\\MyStaticFiles\\PHCDocuments\\";
+                string relativePath = @"\\MyStaticFiles\\PHCDocuments\\";
 
                 //Create   
-               // var filePath = Path.Combine(relativePath, updatedFileName);
+                // var filePath = Path.Combine(relativePath, updatedFileName);
                 var fileType = Path.GetExtension(file.FileName);
                 //Convert to base64
                 string base64Value = UtilityMaster.ConvertToBase64(file);
@@ -369,7 +420,7 @@ namespace TechMed.BL.Repository.BaseClasses
             {
                 return "";
             }
-           
+
         }
 
         public async Task<bool> SendMail(string userID, int userTypeID)
@@ -394,7 +445,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 return false;
                 //throw;
             }
-          
+
         }
     }
 }
