@@ -46,7 +46,7 @@ namespace TechMed.API.Controllers
         }
 
         [HttpPost("twiliocomposevideostatuscallback")]
-        public async Task<IActionResult> TwilioComposeVideoStatusCallback([FromQuery] VideoCompositionStatusRequest videoCompositionStatusRequest)
+        public async Task<IActionResult> TwilioComposeVideoStatusCallback([FromForm] VideoCompositionStatusRequest videoCompositionStatusRequest)
         {
             try
             {
