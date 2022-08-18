@@ -957,7 +957,7 @@ namespace TechMed.BL.Repository.BaseClasses
                             doctor = await _teleMedecineContext.DoctorMasters.FirstOrDefaultAsync(a => a.Id == doctorMaster.Id);
 
                             //Send Mail to User
-                            //bool response = await SendMail(userMaster.Email, userUsertype.UserTypeId);
+                            bool response = await SendMail(userMaster.Email, userUsertype.UserTypeId);
                         }
                         else
                         {

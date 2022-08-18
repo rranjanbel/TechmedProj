@@ -67,7 +67,7 @@ namespace TechMed.BL.Repository.BaseClasses
                                 transaction.Commit();
                                 phcmasternew = context.Phcmasters.FirstOrDefault(a => a.Id == phcmaster.Id);
                                 //Send Mail to User
-                                //bool response = await SendMail(userMaster.Email, userUsertype.UserTypeId);
+                                bool response = await SendMail(userMaster.Email, userUsertype.UserTypeId);
                             }
                             else
                             {
