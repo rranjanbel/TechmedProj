@@ -22,16 +22,15 @@ namespace TechMed.API.Controllers
             _logger = logger;
         }
         [HttpPost("twilioroomstatuscallback")]
-        public async Task<IActionResult> TwilioRoomStatusCallback([FromQuery] RoomStatusRequest roomStatusRequest, [FromForm] RoomStatusRequest roomStatusRequestNew)
+        public async Task<IActionResult> TwilioRoomStatusCallback([FromForm] RoomStatusRequest roomStatusRequest)
         {
-            _logger.LogInformation("TwilioRoomStatusCallback, Received TwilioRoomStatusCallback", roomStatusRequest, roomStatusRequestNew);
+            _logger.LogInformation("TwilioRoomStatusCallback, Received TwilioRoomStatusCallback", roomStatusRequest);
             try
             {
-                _logger.LogInformation("TwilioRoomStatusCallback, Checking..  Is room null or empty?" + roomStatusRequest.RoomName+" - new - "+ roomStatusRequestNew.RoomName);
-                _logger.LogInformation("TwilioRoomStatusCallback, object", Newtonsoft.Json.JsonConvert.SerializeObject( roomStatusRequest)," - new - ", Newtonsoft.Json.JsonConvert.SerializeObject(roomStatusRequestNew));
-                if (!string.IsNullOrEmpty(roomStatusRequest.RoomName))
+                _logger.LogInformation("TwilioRoomStatusCallback, Checking..  Is room null or empty?" + roomStatusRequest.RoomName,roomStatusRequest.AccountSid,roomStatusRequest.RoomStatus);
+                 if (!string.IsNullOrEmpty(roomStatusRequest.RoomName))
                 {
-                    _logger.LogInformation("TwilioRoomStatusCallback, Isnull room check false" + roomStatusRequest.RoomName);
+                    _logger.LogInformation("TwilioRoomStatusCallback, Isnull room check false" + roomStatusRequest.RoomName,roomStatusRequest.RoomType);
                     await _twilioRoomDb.UpdateRoomStatusFromTwilioWebHook(roomStatusRequest);
                     _logger.LogInformation("TwilioRoomStatusCallback, Room Status Request" + roomStatusRequest);
                     _logger.LogInformation("TwilioRoomStatusCallback Trigger Update");
