@@ -27,11 +27,24 @@ namespace TechMed.API.Controllers
             _logger.LogInformation("TwilioRoomStatusCallback, Received TwilioRoomStatusCallback", roomStatusRequest);
             try
             {
-                _logger.LogInformation("TwilioRoomStatusCallback, Checking..  Is room null or empty?" + roomStatusRequest.RoomName,roomStatusRequest.AccountSid,roomStatusRequest.RoomStatus);
+                _logger.LogInformation("TwilioRoomStatusCallback, Checking..  Is room null or empty?" + roomStatusRequest.RoomSid+" "+roomStatusRequest.RoomName + " " +  roomStatusRequest.AccountSid + " " + roomStatusRequest.RoomStatus);
                  if (!string.IsNullOrEmpty(roomStatusRequest.RoomName))
                 {
                     _logger.LogInformation("TwilioRoomStatusCallback, Isnull room check false" + roomStatusRequest.RoomName,roomStatusRequest.RoomType);
                     await _twilioRoomDb.UpdateRoomStatusFromTwilioWebHook(roomStatusRequest);
+
+                    try
+                    {
+                        string callBackUrlForTwilio = string.Format("{0}://{1}{2}/api/webhookcallback/twiliocomposevideostatuscallback", Request.Scheme, Request.Host.Value, Request.PathBase);
+                        var composeVideo = await _twilioVideoSDK.ComposeVideo(roomStatusRequest.RoomSid, callBackUrlForTwilio);
+                        await _twilioRoomDb.MeetingRoomComposeVideoUpdate(composeVideo, roomStatusRequest.RoomName);
+
+                    }
+                    catch (Exception)
+                    {
+                    }
+                    
+
                     _logger.LogInformation("TwilioRoomStatusCallback, Room Status Request" + roomStatusRequest);
                     _logger.LogInformation("TwilioRoomStatusCallback Trigger Update");
                 }
@@ -46,11 +59,12 @@ namespace TechMed.API.Controllers
         }
 
         [HttpPost("twiliocomposevideostatuscallback")]
-        public async Task<IActionResult> TwilioComposeVideoStatusCallback([FromQuery] VideoCompositionStatusRequest videoCompositionStatusRequest)
+        public async Task<IActionResult> TwilioComposeVideoStatusCallback([FromForm] VideoCompositionStatusRequest videoCompositionStatusRequest)
         {
             try
             {
-                _logger.LogInformation("Received twiliocomposevideostatuscallback, request model : ", videoCompositionStatusRequest);
+                _logger.LogInformation("Received twiliocomposevideostatuscallback, request model : " + videoCompositionStatusRequest.RoomSid+" "+ videoCompositionStatusRequest.MediaUri, videoCompositionStatusRequest.Size
+                    , videoCompositionStatusRequest.StatusCallbackEvent, videoCompositionStatusRequest.CompositionSid, videoCompositionStatusRequest.CompositionUri, videoCompositionStatusRequest.Duration, videoCompositionStatusRequest.RoomSid);
 
                 _logger.LogInformation("Received twiliocomposevideostatuscallback, SID: ", videoCompositionStatusRequest.RoomSid);
                 if (!string.IsNullOrEmpty(videoCompositionStatusRequest.RoomSid))
