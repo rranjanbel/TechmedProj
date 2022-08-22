@@ -470,5 +470,42 @@ namespace TechMed.API.Controllers
 
         }
 
+        [Route("UpdatePHCDetails")]
+        [HttpPost]
+        [ProducesResponseType(200, Type = typeof(bool))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdatePHCDetails(UpdatePHCDTO updatePHCDTO)
+        {
+
+            try
+            {
+                _logger.LogInformation($"Update PHC Details : call web api add UpdatePHCDetails");
+                if (updatePHCDTO == null || updatePHCDTO.Id < 1 || !ModelState.IsValid)
+                {
+                    _logger.LogError("UpdatePHCDetails : ModelState is invalid");
+                    return BadRequest(ModelState);
+                }
+                var DTO = await _phcRepository.UpdatePHCDetails(updatePHCDTO);
+                if (DTO)
+                {
+                    _logger.LogInformation($"UpdatePHCDetails : Sucess response returned ");
+                    return Ok(DTO);
+                }
+                else
+                {
+                    ModelState.AddModelError("", $"Data not updated!");
+                    _logger.LogError("UpdatePHCDetails : Data not updated");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError("", $"Something went wrong {ex.Message}");
+                _logger.LogError("Exception in UpdateDoctorDetails API " + ex);
+                return StatusCode(500, ModelState);
+            }
+        }
     }
 }

@@ -24,5 +24,6 @@ namespace TechMed.BL.Repository.Interfaces
         public Task<List<SearchPHCDetailsIdsVM>> SearchPHCDetailByName(string email);
         public Task<List<string>> GetAllPHCName();
         public Task<SearchPHCDetailsIdsVM> GetPHCDetailByByName(string name);
+        public Task<bool> UpdatePHCDetails(UpdatePHCDTO updatePHCDTO);
     }
 }

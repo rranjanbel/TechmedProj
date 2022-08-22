@@ -181,7 +181,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 masters.Qualification = doctorDTO.Qualification;
                 masters.Designation = doctorDTO.Designation;
                 masters.PhoneNumber = doctorDTO.PhoneNumber;
-                masters.DigitalSignature = doctorDTO.DigitalSignature;
+                //masters.DigitalSignature = doctorDTO.DigitalSignature;
                 masters.Panno = doctorDTO.PanNo;
                 masters.BankName = doctorDTO.BankName;
                 masters.BranchName = doctorDTO.BranchName;
@@ -196,26 +196,27 @@ namespace TechMed.BL.Repository.BaseClasses
                 if (doctorDTO.detailsDTO != null)
                 {
                     UserDetail userDetail = await _teleMedecineContext.UserDetails.Where(a => a.UserId == masters.UserId).FirstOrDefaultAsync();
-                    userDetail.TitleId = doctorDTO.detailsDTO.TitleId;
+                    //userDetail.TitleId = doctorDTO.detailsDTO.TitleId;
                     userDetail.FirstName = doctorDTO.detailsDTO.FirstName;
                     userDetail.MiddleName = doctorDTO.detailsDTO.MiddleName;
                     userDetail.LastName = doctorDTO.detailsDTO.LastName;
                     userDetail.Dob = doctorDTO.detailsDTO.Dob;
                     userDetail.GenderId = doctorDTO.detailsDTO.GenderId;
-                    userDetail.EmailId = doctorDTO.detailsDTO.EmailId;
+                    //userDetail.EmailId = doctorDTO.detailsDTO.EmailId;
                     userDetail.PhoneNumber = doctorDTO.PhoneNumber;
                     //userDetail.FatherName = "";
-                    userDetail.CountryId = doctorDTO.detailsDTO.CountryId;
-                    userDetail.StateId = doctorDTO.detailsDTO.StateId;
-                    userDetail.City = doctorDTO.detailsDTO.City;
-                    //userDetail.Address = "";
-                    userDetail.PinCode = doctorDTO.detailsDTO.PinCode;
+                    //userDetail.CountryId = doctorDTO.detailsDTO.CountryId;
+                    //userDetail.StateId = doctorDTO.detailsDTO.StateId;
+                    //userDetail.City = doctorDTO.detailsDTO.City;
+                    userDetail.Address = doctorDTO.detailsDTO.Address;
+                    //userDetail.PinCode = doctorDTO.detailsDTO.PinCode;
                     //userDetail.Photo { get; set; } = null!;
                     //userDetail.Occupation { get; set; }
                     //userDetail.IsMarried { get; set; }
                     //userDetail.NoOfChildren { get; set; }
-                    //userDetail.IdproofTypeId { get; set; }
-                    //userDetail.IdproofNumber { get; set; }
+                    userDetail.IdproofTypeId= doctorDTO.detailsDTO.IdproofTypeId;
+                    userDetail.IdproofNumber= doctorDTO.detailsDTO.IdproofNumber;
+                    
                     userDetail.UpdatedBy = doctorDTO.UpdatedBy;
                     userDetail.UpdatedOn = UtilityMaster.GetLocalDateTime();
                     if (!string.IsNullOrEmpty(doctorDTO.detailsDTO.PhotoNewUpdate))
