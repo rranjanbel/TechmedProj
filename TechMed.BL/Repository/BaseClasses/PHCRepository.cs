@@ -32,7 +32,7 @@ namespace TechMed.BL.Repository.BaseClasses
             _mailService = mailService;
         }
 
-        public async Task<Phcmaster> AddPHCUser(Phcmaster phcmaster, UserMaster userMaster)
+        public async Task<Phcmaster> AddPHCUser(Phcmaster phcmaster, UserMaster userMaster, string password)
         {
             int i = 0;
             int j = 0;
@@ -67,7 +67,7 @@ namespace TechMed.BL.Repository.BaseClasses
                                 transaction.Commit();
                                 phcmasternew = context.Phcmasters.FirstOrDefault(a => a.Id == phcmaster.Id);
                                 //Send Mail to User
-                                bool response = await SendMail(userMaster.Email, userUsertype.UserTypeId);
+                                bool response = await SendMail(userMaster.Email, userUsertype.UserTypeId, password);
                             }
                             else
                             {
@@ -423,7 +423,7 @@ namespace TechMed.BL.Repository.BaseClasses
 
         }
 
-        public async Task<bool> SendMail(string userID, int userTypeID)
+        public async Task<bool> SendMail(string userID, int userTypeID, string password)
         {
             try
             {
@@ -433,7 +433,10 @@ namespace TechMed.BL.Repository.BaseClasses
                     //List<IFormFile> formFiles;
                     MailRequest mailrequest = new MailRequest();
                     mailrequest.Subject = emailTemplate.Subject;
-                    mailrequest.Body = emailTemplate.Body + "/n/r" + "User ID : " + userID + " , Password : phc@12345";
+                    mailrequest.Body = emailTemplate.Body + Environment.NewLine + "User ID: " + userID +","+ Environment.NewLine + "Password: " + password
+                        + Environment.NewLine
+                        + Environment.NewLine
+                        + "Warm Regards.";
                     mailrequest.ToEmail = userID;
                     mailrequest.Attachments = null;
                     await _mailService.SendEmailAsync(mailrequest);

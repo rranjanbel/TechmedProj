@@ -214,9 +214,9 @@ namespace TechMed.BL.Repository.BaseClasses
                     //userDetail.Occupation { get; set; }
                     //userDetail.IsMarried { get; set; }
                     //userDetail.NoOfChildren { get; set; }
-                    userDetail.IdproofTypeId= doctorDTO.detailsDTO.IdproofTypeId;
-                    userDetail.IdproofNumber= doctorDTO.detailsDTO.IdproofNumber;
-                    
+                    userDetail.IdproofTypeId = doctorDTO.detailsDTO.IdproofTypeId;
+                    userDetail.IdproofNumber = doctorDTO.detailsDTO.IdproofNumber;
+
                     userDetail.UpdatedBy = doctorDTO.UpdatedBy;
                     userDetail.UpdatedOn = UtilityMaster.GetLocalDateTime();
                     if (!string.IsNullOrEmpty(doctorDTO.detailsDTO.PhotoNewUpdate))
@@ -905,7 +905,7 @@ namespace TechMed.BL.Repository.BaseClasses
             bool isExist = await _teleMedecineContext.UserMasters.AnyAsync(a => a.Email.Trim().ToLower() == Email.Trim().ToLower());
             return isExist;
         }
-        public async Task<DoctorMaster> AddDoctor(DoctorMaster doctorMaster, UserMaster userMaster, UserDetail userDetail, AddDoctorDTO doctorDTO, string RootPath, string webRootPath)
+        public async Task<DoctorMaster> AddDoctor(DoctorMaster doctorMaster, UserMaster userMaster, UserDetail userDetail, AddDoctorDTO doctorDTO, string RootPath, string webRootPath, string Password)
         {
             int i = 0;
             int j = 0;
@@ -958,7 +958,7 @@ namespace TechMed.BL.Repository.BaseClasses
                             doctor = await _teleMedecineContext.DoctorMasters.FirstOrDefaultAsync(a => a.Id == doctorMaster.Id);
 
                             //Send Mail to User
-                            bool response = await SendMail(userMaster.Email, userUsertype.UserTypeId);
+                            bool response = await SendMail(userMaster.Email, userUsertype.UserTypeId, Password);
                         }
                         else
                         {
@@ -1217,7 +1217,7 @@ namespace TechMed.BL.Repository.BaseClasses
             return referenceValue;
         }
 
-        public async Task<bool> SendMail(string userID, int userTypeID)
+        public async Task<bool> SendMail(string userID, int userTypeID, string Password)
         {
             try
             {
@@ -1227,7 +1227,10 @@ namespace TechMed.BL.Repository.BaseClasses
                     //List<IFormFile> formFiles;
                     MailRequest mailrequest = new MailRequest();
                     mailrequest.Subject = emailTemplate.Subject;
-                    mailrequest.Body = emailTemplate.Body + "/n/r" + "User ID : " + userID + " , Password : doctor@12345";
+                    mailrequest.Body = emailTemplate.Body + Environment.NewLine + "User ID: " + userID +","+ Environment.NewLine + "Password: " + Password
+                        + Environment.NewLine
+                        + Environment.NewLine
+                        + "Warm Regards.";
                     mailrequest.ToEmail = userID;
                     mailrequest.Attachments = null;
                     await _mailService.SendEmailAsync(mailrequest);

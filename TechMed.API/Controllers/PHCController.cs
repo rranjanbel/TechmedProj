@@ -287,12 +287,12 @@ namespace TechMed.API.Controllers
 
                     //phcMaster.CreatedBy = User.Identity.Name;
                     //phcMaster.UpdatedBy = phcdto.CreatedBy;
-
+                    string password = UtilityMaster.CreateRandomPassword(12);
                     UserMaster userMaster = new UserMaster();
                     userMaster.Email = phcMaster.MailId;
                     userMaster.Name = phcMaster.Moname;
                     userMaster.Mobile = phcMaster.PhoneNo;
-                    userMaster.HashPassword = EncodeAndDecordPassword.EncodePassword("phc@12345"); 
+                    userMaster.HashPassword = EncodeAndDecordPassword.EncodePassword(password);
                     userMaster.LoginAttempts = 0;
                     userMaster.LastLoginAt = UtilityMaster.GetLocalDateTime();
                     userMaster.IsActive = true;
@@ -302,7 +302,7 @@ namespace TechMed.API.Controllers
                     userMaster.CreatedOn = UtilityMaster.GetLocalDateTime();
                     userMaster.UpdatedOn = UtilityMaster.GetLocalDateTime();
 
-                    newCreatedPHC = await this._phcRepository.AddPHCUser(phcMaster, userMaster);
+                    newCreatedPHC = await this._phcRepository.AddPHCUser(phcMaster, userMaster, password);
 
                    // newCreatedPHC = await this._phcRepository.Create(phcMaster);
                 }
