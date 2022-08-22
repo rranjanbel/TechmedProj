@@ -195,7 +195,7 @@ namespace TechMed.BL.Repository.BaseClasses
 
                 if (doctorDTO.detailsDTO != null)
                 {
-                    UserDetail userDetail = await _teleMedecineContext.UserDetails.Where(a => a.UserId == doctorDTO.UserId).FirstOrDefaultAsync();
+                    UserDetail userDetail = await _teleMedecineContext.UserDetails.Where(a => a.UserId == masters.UserId).FirstOrDefaultAsync();
                     userDetail.TitleId = doctorDTO.detailsDTO.TitleId;
                     userDetail.FirstName = doctorDTO.detailsDTO.FirstName;
                     userDetail.MiddleName = doctorDTO.detailsDTO.MiddleName;
@@ -203,12 +203,12 @@ namespace TechMed.BL.Repository.BaseClasses
                     userDetail.Dob = doctorDTO.detailsDTO.Dob;
                     userDetail.GenderId = doctorDTO.detailsDTO.GenderId;
                     userDetail.EmailId = doctorDTO.detailsDTO.EmailId;
-                    userDetail.PhoneNumber = "";
-                    userDetail.FatherName = "";
+                    userDetail.PhoneNumber = doctorDTO.PhoneNumber;
+                    //userDetail.FatherName = "";
                     userDetail.CountryId = doctorDTO.detailsDTO.CountryId;
                     userDetail.StateId = doctorDTO.detailsDTO.StateId;
                     userDetail.City = doctorDTO.detailsDTO.City;
-                    userDetail.Address = "";
+                    //userDetail.Address = "";
                     userDetail.PinCode = doctorDTO.detailsDTO.PinCode;
                     //userDetail.Photo { get; set; } = null!;
                     //userDetail.Occupation { get; set; }
