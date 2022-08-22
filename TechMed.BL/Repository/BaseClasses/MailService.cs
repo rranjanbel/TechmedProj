@@ -48,7 +48,7 @@ namespace TechMed.BL.Repository.BaseClasses
                         }
                     }
                 }
-                builder.HtmlBody = mailRequest.Body;
+                builder.TextBody = mailRequest.Body;
                 email.Body = builder.ToMessageBody();
                 using var smtp = new SmtpClient();
                 smtp.Connect(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.StartTls);

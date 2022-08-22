@@ -1277,11 +1277,11 @@ namespace TechMed.API.Controllers
                     doctor.UpdatedBy = doctorDTO.CreatedBy;
                     doctor.CreatedOn = UtilityMaster.GetLocalDateTime();
                     doctor.UpdatedOn = UtilityMaster.GetLocalDateTime();
-
+                    string Password = UtilityMaster.CreateRandomPassword(12);
                     userMaster.Email = doctorDTO.detailsDTO.EmailId;
                     userMaster.Name = doctorDTO.detailsDTO.FirstName;
                     userMaster.Mobile = doctorDTO.PhoneNumber;
-                    userMaster.HashPassword = EncodeAndDecordPassword.EncodePassword("doctor@12345"); 
+                    userMaster.HashPassword = EncodeAndDecordPassword.EncodePassword(Password);
                     userMaster.LoginAttempts = 0;
                     userMaster.LastLoginAt = UtilityMaster.GetLocalDateTime();
                     userMaster.IsActive = true;
@@ -1312,7 +1312,7 @@ namespace TechMed.API.Controllers
                     userDetail.UpdatedBy = doctorDTO.CreatedBy;
                     userDetail.UpdatedOn = UtilityMaster.GetLocalDateTime();
 
-                    doctorCreated = await this._doctorRepository.AddDoctor(doctor, userMaster, userDetail, doctorDTO, contentRootPath,webRootPath);
+                    doctorCreated = await this._doctorRepository.AddDoctor(doctor, userMaster, userDetail, doctorDTO, contentRootPath,webRootPath, Password);
                 }
 
                 if (doctorCreated == null)
