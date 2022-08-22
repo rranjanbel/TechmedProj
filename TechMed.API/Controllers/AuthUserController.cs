@@ -168,8 +168,18 @@ namespace TechMed.API.Controllers
         {
             try
             {
+                string roleName = "";
                 var user = User.Identity.Name;
+                bool result = User.IsInRole("SuperAdmin");
+                //var roles = User.Claims.ToList();
+                //foreach (var role in roles)
+                //{
+                //    roleName = role.Value;
+                //}
+               
+               
                 
+
                 var _bearer_token = Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
                 var users = await _userService.LogoutUsers(_bearer_token);
                 _logger.LogInformation("User logout successfully ");

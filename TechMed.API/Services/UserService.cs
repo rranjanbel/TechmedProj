@@ -84,7 +84,8 @@ namespace TechMed.API.Services
                 return null;
 
             var claims = new[]{
-                new Claim(ClaimTypes.Name,login.Email)
+                new Claim(ClaimTypes.Name,login.Email),
+                new Claim(ClaimTypes.Role, userInfo?.Item2?.UserType.UserType)
             };
 
             var jwtResult = _jwtAuthManager.GenerateTokens(login.Email, claims, UtilityMaster.GetLocalDateTime());

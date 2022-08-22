@@ -211,7 +211,7 @@ namespace TechMed.API.Controllers
                 }
                 if (DTOList != null)
                 {
-                    return Ok(DTOList);
+                    return Ok(DTOList.OrderBy(o => o.DistrictName).ToList());
                 }
                 else
                 {
@@ -463,7 +463,7 @@ namespace TechMed.API.Controllers
                 }
                 if (DTOList != null)
                 {
-                    return Ok(DTOList);
+                    return Ok(DTOList.OrderBy(a => a.BlockName).ToList());
                 }
                 else
                 {
