@@ -13,6 +13,7 @@ namespace TechMed.API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
+    //[Authorize(Roles = "SuperAdmin,SysAdmin")]
     public class PHCController : ControllerBase
     {
         private readonly IMapper _mapper;       

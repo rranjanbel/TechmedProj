@@ -67,7 +67,7 @@ namespace TechMed.API.Controllers
                 }
                 if (DTOList != null)
                 {
-                    return Ok(DTOList);
+                    return Ok(DTOList.OrderBy(o=> o.Specialization).ToList());
                 }
                 else
                 {
@@ -103,7 +103,7 @@ namespace TechMed.API.Controllers
                 }
                 if (DTOList != null)
                 {
-                    return Ok(DTOList);
+                    return Ok(DTOList.OrderBy(o => o.FileStatus).ToList());
                 }
                 else
                 {
@@ -139,7 +139,7 @@ namespace TechMed.API.Controllers
                 }
                 if (DTOList != null)
                 {
-                    return Ok(DTOList);
+                    return Ok(DTOList.OrderBy(o => o.CountryName).ToList());
                 }
                 else
                 {
@@ -175,7 +175,7 @@ namespace TechMed.API.Controllers
                 }
                 if (DTOList != null)
                 {
-                    return Ok(DTOList);
+                    return Ok(DTOList.OrderBy(o => o.Name).ToList());
                 }
                 else
                 {
@@ -247,7 +247,7 @@ namespace TechMed.API.Controllers
                 }
                 if (DTOList != null)
                 {
-                    return Ok(DTOList);
+                    return Ok(DTOList.OrderBy(o => o.CityName).ToList());
                 }
                 else
                 {
@@ -283,7 +283,7 @@ namespace TechMed.API.Controllers
                 }
                 if (DTOList != null)
                 {
-                    return Ok(DTOList);
+                    return Ok(DTOList.OrderBy(o => o.Gender).ToList());
                 }
                 else
                 {
@@ -319,7 +319,7 @@ namespace TechMed.API.Controllers
                 }
                 if (DTOList != null)
                 {
-                    return Ok(DTOList);
+                    return Ok(DTOList.OrderBy(o => o.IdproofType).ToList());
                 }
                 else
                 {
@@ -355,7 +355,7 @@ namespace TechMed.API.Controllers
                 }
                 if (DTOList != null)
                 {
-                    return Ok(DTOList);
+                    return Ok(DTOList.OrderBy(o => o.Title).ToList());
                 }
                 else
                 {
@@ -391,7 +391,7 @@ namespace TechMed.API.Controllers
                 }
                 if (DTOList != null)
                 {
-                    return Ok(DTOList);
+                    return Ok(DTOList.OrderBy(o => o.UserType).ToList());
                 }
                 else
                 {
@@ -427,7 +427,7 @@ namespace TechMed.API.Controllers
                 }
                 if (DTOList != null)
                 {
-                    return Ok(DTOList);
+                    return Ok(DTOList.OrderBy(o => o.Cluster).ToList());
                 }
                 else
                 {
@@ -499,7 +499,7 @@ namespace TechMed.API.Controllers
                 }
                 if (DTOList != null)
                 {
-                    return Ok(DTOList);
+                    return Ok(DTOList.OrderBy(o => o.StateName).ToList());
                 }
                 else
                 {
@@ -535,7 +535,7 @@ namespace TechMed.API.Controllers
                 }
                 if (DTOList != null)
                 {
-                    return Ok(DTOList);
+                    return Ok(DTOList.OrderBy(o => o.PatientStatus).ToList());
                 }
                 else
                 {
@@ -573,7 +573,7 @@ namespace TechMed.API.Controllers
                 }
                 if (phcs != null)
                 {
-                    return Ok(phcs);
+                    return Ok(phcs.OrderBy(o => o.PHCName).ToList());
                 }
                 else
                 {
@@ -603,7 +603,7 @@ namespace TechMed.API.Controllers
 
                 if (diagnosticTestList != null)
                 {
-                    return Ok(diagnosticTestList);
+                    return Ok(diagnosticTestList.OrderBy(o => o.Name).ToList());
                 }
                 else
                 {
@@ -633,7 +633,7 @@ namespace TechMed.API.Controllers
 
                 if (dugsList != null)
                 {
-                    return Ok(dugsList);
+                    return Ok(dugsList.OrderBy(o => o.Name).ToList());
                 }
                 else
                 {
@@ -665,7 +665,7 @@ namespace TechMed.API.Controllers
 
                 if (divisionList != null)
                 {
-                    return Ok(divisionList);
+                    return Ok(divisionList.OrderBy(o => o.Name).ToList());
                 }
                 else
                 {
@@ -695,7 +695,7 @@ namespace TechMed.API.Controllers
 
                 if (divisionList != null)
                 {
-                    return Ok(divisionList);
+                    return Ok(divisionList.OrderBy(o => o.Name).ToList());
                 }
                 else
                 {
@@ -739,7 +739,7 @@ namespace TechMed.API.Controllers
                     snomedCTCodes = await this._snomedRepository.SearchSnomedCodeByName(searchText);
                 }
 
-                return Ok(snomedCTCodes);
+                return Ok(snomedCTCodes.OrderBy(o => o.CodeName).ToList());
 
             }
             catch (Exception ex)
@@ -764,7 +764,7 @@ namespace TechMed.API.Controllers
 
                 if (districtList != null)
                 {
-                    return Ok(districtList);
+                    return Ok(districtList.OrderBy(o => o.DistrictName).ToList());
                 }
                 else
                 {
@@ -794,7 +794,7 @@ namespace TechMed.API.Controllers
 
                 if (blocks != null)
                 {
-                    return Ok(blocks);
+                    return Ok(blocks.OrderBy(o => o.BlockName).ToList());
                 }
                 else
                 {
