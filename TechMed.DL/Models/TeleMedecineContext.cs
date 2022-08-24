@@ -1078,9 +1078,7 @@ namespace TechMed.DL.Models
                     .HasMaxLength(500)
                     .IsUnicode(false);
 
-                entity.Property(e => e.City)
-                    .HasMaxLength(250)
-                    .IsUnicode(false);
+                entity.Property(e => e.BlockID).HasColumnName("BlockID");                   
 
                 entity.Property(e => e.CountryId).HasColumnName("CountryID");
 
@@ -1155,6 +1153,11 @@ namespace TechMed.DL.Models
                     .HasForeignKey(d => d.DistrictId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_PatientMaster_DistrictMaster");
+                entity.HasOne(d => d.Block)
+                  .WithMany(p => p.PatientMasters)
+                  .HasForeignKey(d => d.BlockID)
+                  .OnDelete(DeleteBehavior.ClientSetNull)
+                  .HasConstraintName("FK_NEWPatientMaster_BlockMaster");
 
                 entity.HasOne(d => d.Gender)
                     .WithMany(p => p.PatientMasters)

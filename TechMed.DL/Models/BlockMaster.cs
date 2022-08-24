@@ -9,6 +9,7 @@ namespace TechMed.DL.Models
         {
             DoctorMasters = new HashSet<DoctorMaster>();
             Phcmasters = new HashSet<Phcmaster>();
+            PatientMasters = new HashSet<PatientMaster>();
         }
 
         public int Id { get; set; }
@@ -23,5 +24,6 @@ namespace TechMed.DL.Models
         public virtual DistrictMaster District { get; set; } = null!;
         public virtual ICollection<DoctorMaster> DoctorMasters { get; set; }
         public virtual ICollection<Phcmaster> Phcmasters { get; set; }
+        public virtual ICollection<PatientMaster> PatientMasters { get; set; }
     }
 }

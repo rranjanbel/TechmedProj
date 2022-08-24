@@ -23,7 +23,7 @@ namespace TechMed.DL.Models
         public int CountryId { get; set; }
         public int StateId { get; set; }
         public int DistrictId { get; set; }
-        public string? City { get; set; }
+        public int BlockID { get; set; }
         public string PinCode { get; set; } = null!;
         public string? Photo { get; set; }
         public DateTime Dob { get; set; }
@@ -42,6 +42,7 @@ namespace TechMed.DL.Models
         public virtual CountryMaster Country { get; set; } = null!;
         public virtual Phcmaster? CreatedByNavigation { get; set; }
         public virtual DistrictMaster District { get; set; } = null!;
+        public virtual BlockMaster Block { get; set; } = null!;
         public virtual GenderMaster Gender { get; set; } = null!;
         public virtual IdproofTypeMaster Idproof { get; set; } = null!;
         public virtual MaritalStatus MaritalStatus { get; set; } = null!;
