@@ -40,8 +40,8 @@ namespace TechMed.DL.Models
 
         public int Id { get; set; }
         public string Email { get; set; } = null!;
-        public string Mobile { get; set; } = null!;
-        public string Name { get; set; } = null!;
+        public string? Mobile { get; set; } = null!;
+        public string? Name { get; set; } = null!;
         public string HashPassword { get; set; } = null!;
         public int? LoginAttempts { get; set; }
         public DateTime? LastLoginAt { get; set; }
