@@ -746,7 +746,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 searchResult.Phcname = item.Phcname;
                 patientSearchResults.Add(searchResult);
             };
-            return patientSearchResults;
+            return patientSearchResults.OrderByDescending(o => o.PatientID).ToList();
         }
 
         public async Task<List<SpecializationDTO>> GetSuggestedSpcialiazationByPatientCaseID(int Id)

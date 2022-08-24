@@ -13,7 +13,7 @@ namespace TechMed.API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    //[Authorize(Roles = "SuperAdmin,SysAdmin")]
+    //[Authorize(Roles = "SuperAdmin,SysAdmin,PHCUser")]
     public class PHCController : ControllerBase
     {
         private readonly IMapper _mapper;       
@@ -248,6 +248,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(201, Type = typeof(PHCDetailsVM))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+       // [Authorize(Roles = "SuperAdmin,SysAdmin")]
         public async Task<IActionResult> AddPHC([FromBody] PHCHospitalDTO phcdto)
         {
             Phcmaster newCreatedPHC = new Phcmaster();
@@ -365,6 +366,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(201, Type = typeof(EmployeeTrainingDTO))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+       // [Authorize(Roles = "SuperAdmin,SysAdmin")]
         public async Task<IActionResult> AddEmployeeTraining([FromBody] EmployeeTrainingDTO employeeTrainingDTO)
         {
            
@@ -422,6 +424,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+      //  [Authorize(Roles = "SuperAdmin,SysAdmin")]
         public async Task<IActionResult> UploadPHCDoc([FromForm] SpokeMaintenanceDTO spokeMaintenances)
         {
             bool status = false;
@@ -476,6 +479,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(bool))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin")]
         public async Task<IActionResult> UpdatePHCDetails(UpdatePHCDTO updatePHCDTO)
         {
 

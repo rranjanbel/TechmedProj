@@ -1432,7 +1432,7 @@ namespace TechMed.API.Controllers
                     if(patientSearchResults != null)
                     {
                         _logger.LogInformation($"AdvanceSearchResult : Sucess response returned ");
-                        return StatusCode(200, patientSearchResults);
+                        return StatusCode(200, patientSearchResults.OrderByDescending(o => o.PatientID).ToList());
                     }
                     else
                     {
