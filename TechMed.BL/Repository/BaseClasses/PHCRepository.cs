@@ -197,12 +197,18 @@ namespace TechMed.BL.Repository.BaseClasses
                                 join cm in _teleMedecineContext.ClusterMasters on pm.ClusterId equals cm.Id
                                 join zo in _teleMedecineContext.BlockMasters on pm.BlockId equals zo.Id
                                 join ur in _teleMedecineContext.UserMasters on pm.UserId equals ur.Id
-                                join ud in _teleMedecineContext.UserDetails on ur.Id equals ud.UserId into usr
-                                from usrdet in usr.DefaultIfEmpty()
-                                join st in _teleMedecineContext.StateMasters on usrdet.StateId equals st.Id into smast
-                                from satmas in smast.DefaultIfEmpty()
-                                join gn in _teleMedecineContext.GenderMasters on usrdet.GenderId equals gn.Id into gmast
-                                from genmas in gmast.DefaultIfEmpty()
+                                
+                                join ds in _teleMedecineContext.DistrictMasters on pm.DistrictId equals ds.Id
+                                join div in _teleMedecineContext.DivisionMasters on pm.DivisionId equals div.Id
+                                join stm in _teleMedecineContext.StateMasters on ds.StateId equals stm.Id
+
+                                //join ud in _teleMedecineContext.UserDetails on ur.Id equals ud.UserId 
+
+                                //from usrdet in usr.DefaultIfEmpty()
+                                //join st in _teleMedecineContext.StateMasters on usrdet.StateId equals st.Id into smast
+                                //from satmas in smast.DefaultIfEmpty()
+                                //join gn in _teleMedecineContext.GenderMasters on usrdet.GenderId equals gn.Id into gmast
+                                //from genmas in gmast.DefaultIfEmpty()
                                 where pm.Phcname.ToLower() == name
                                 select new SearchPHCDetailsIdsVM
                                 {
@@ -211,24 +217,24 @@ namespace TechMed.BL.Repository.BaseClasses
                                     ClusterId = pm.ClusterId,
                                     DivisionID = pm.DivisionId,
                                     DistrictID = pm.DistrictId,
-                                    StateID = satmas.Id,
+                                    StateID = stm.Id,
                                     EmployeeName = pm.EmployeeName,
                                     BLockName = pm.Block.BlockName,
                                     Moname = pm.Moname,
                                     Address = pm.Address,
                                     PhoneNo = pm.PhoneNo,
                                     MailId = pm.MailId,
-                                    FirstName = usrdet.FirstName,
-                                    MiddleName = usrdet.MiddleName,
-                                    LastName = usrdet.LastName,
-                                    State = satmas.StateName,
-                                    City = usrdet.City,
-                                    PinCode = usrdet.PinCode,
-                                    Gender = genmas.Gender,
+                                    FirstName = "",
+                                    MiddleName = "",
+                                    LastName = "",
+                                    State = stm.StateName,
+                                    City = "",
+                                    PinCode = "",
+                                    Gender = "",
                                     PHCId = pm.Id,
                                     BLockID = pm.BlockId,
-                                    District = "",
-                                    Division = ""
+                                    District = ds.DistrictName,
+                                    Division = div.Name
                                 }).FirstOrDefaultAsync();
 
 
