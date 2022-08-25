@@ -1319,6 +1319,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 patientQueue.WaitList = item.WaitList;
                 patientQueue.AssignedOn = item.AssignedOn;
                 patientQueue.StatusOn = item.StatusOn;
+                patientQueue.RegID = item.RegID;
 
                 queueByDoctors.Add(patientQueue);
             };
@@ -1397,6 +1398,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 patientQueue.WaitList = item.WaitList;
                 patientQueue.AssignedOn = item.AssignedOn;
                 patientQueue.StatusOn = item.StatusOn;
+                patientQueue.RegID = item.RegID;
 
                 queueByDoctors.Add(patientQueue);
             };
