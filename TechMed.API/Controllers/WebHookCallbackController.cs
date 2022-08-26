@@ -33,17 +33,17 @@ namespace TechMed.API.Controllers
                     _logger.LogInformation("TwilioRoomStatusCallback, Isnull room check false" + roomStatusRequest.RoomName,roomStatusRequest.RoomType);
                     await _twilioRoomDb.UpdateRoomStatusFromTwilioWebHook(roomStatusRequest);
 
-                    //try
-                    //{
-                    //    string callBackUrlForTwilio = string.Format("{0}://{1}{2}/api/webhookcallback/twiliocomposevideostatuscallback", Request.Scheme, Request.Host.Value, Request.PathBase);
-                    //    var composeVideo = await _twilioVideoSDK.ComposeVideo(roomStatusRequest.RoomSid, callBackUrlForTwilio);
-                    //    await _twilioRoomDb.MeetingRoomComposeVideoUpdate(composeVideo, roomStatusRequest.RoomName);
+                    try
+                    {
+                        string callBackUrlForTwilio = string.Format("{0}://{1}{2}/api/webhookcallback/twiliocomposevideostatuscallback", Request.Scheme, Request.Host.Value, Request.PathBase);
+                        var composeVideo = await _twilioVideoSDK.ComposeVideo(roomStatusRequest.RoomSid, callBackUrlForTwilio);
+                        await _twilioRoomDb.MeetingRoomComposeVideoUpdate(composeVideo, roomStatusRequest.RoomName);
 
-                    //}
-                    //catch (Exception)
-                    //{
-                    //}
-                    
+                    }
+                    catch (Exception)
+                    {
+                    }
+
 
                     _logger.LogInformation("TwilioRoomStatusCallback, Room Status Request" + roomStatusRequest);
                     _logger.LogInformation("TwilioRoomStatusCallback Trigger Update");
