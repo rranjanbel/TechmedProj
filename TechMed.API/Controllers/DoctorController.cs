@@ -1490,12 +1490,14 @@ namespace TechMed.API.Controllers
 
         private async Task<ApiResponseModel<dynamic>> DismissCall(string roomInstance, long patientCaseId, bool isPartiallyClosed,bool isPatientAbsent =false)
         {
+            _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, IsPatientabsent :" + isPatientAbsent);
             ApiResponseModel<dynamic> apiResponseModel = new ApiResponseModel<dynamic>();
             string callBackUrlForTwilio = string.Format("{0}://{1}{2}/api/webhookcallback/twiliocomposevideostatuscallback", Request.Scheme, Request.Host.Value, Request.PathBase);
             try
             {
                 //var patientInfo = await _twilioRoomDb.PatientQueueGet(patientCaseId);
                 var patientInfo = await _twilioRoomDb.PatientQueueAfterTretment(patientCaseId, isPartiallyClosed);
+                _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, PatientInfo :" + isPatientAbsent);
                 if (isPatientAbsent)
                 {
                     patientInfo = null;
@@ -1511,15 +1513,20 @@ namespace TechMed.API.Controllers
                 }
                 try
                 {
+                    _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, going to close the room :" );
                     var roomInfoFromTwilio = await _twilioVideoSDK.CloseRoomAsync(roomInstance);
+                    _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, going to compose video :"+ roomInfoFromTwilio);
                     var composeVideo = await _twilioVideoSDK.ComposeVideo(roomInfoFromTwilio.Sid, callBackUrlForTwilio);
+                    _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, going to call MeetingRoomComposeVideoUpdate, compose details :" + composeVideo);
                     await _twilioRoomDb.MeetingRoomComposeVideoUpdate(composeVideo, roomInstance);
+                    _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, going to call MeetingRoomComposeVideoUpdate, successfully" );
                 }
                 catch (Exception ex)
                 {
                     apiResponseModel.isSuccess = false;
                     apiResponseModel.errorMessage = ex.Message;
-                    _logger.LogError("Exception in DismissCall API when call close room SDK. " + ex);
+                    _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, Exception generated"+ex);
+                    _logger.LogError("Exception on DismissCall : Treatment plan or Patient Absent call DismissCall. " + ex);
                 }
                 await _twilioRoomDb.SetMeetingRoomClosed(roomInstance, isPartiallyClosed);
 
@@ -1559,7 +1566,8 @@ namespace TechMed.API.Controllers
             {
                 apiResponseModel.isSuccess = false;
                 apiResponseModel.errorMessage = ex.Message;
-                _logger.LogError("Exception in DismissCall API " + ex);
+                //_logger.LogError("Exception in DismissCall API " + ex);
+                _logger.LogError("Exception on DismissCall : Treatment plan or Patient Absent call DismissCall. " + ex);
                 return apiResponseModel;
             }
         }

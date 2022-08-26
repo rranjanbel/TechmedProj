@@ -479,7 +479,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(bool))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [Authorize(Roles = "SuperAdmin,SysAdmin")]
+        //[Authorize(Roles = "SuperAdmin,SysAdmin")]
         public async Task<IActionResult> UpdatePHCDetails(UpdatePHCDTO updatePHCDTO)
         {
 
