@@ -67,7 +67,7 @@ namespace TechMed.BL.TwilioAPI.Service
             var room = await RoomResource.CreateAsync(
             recordParticipantsOnConnect: true,
             statusCallbackMethod: Twilio.Http.HttpMethod.Post,
-            emptyRoomTimeout:2,
+            emptyRoomTimeout:30,
             unusedRoomTimeout: 15,
             
             //emptyRoomTimeout: 10,
