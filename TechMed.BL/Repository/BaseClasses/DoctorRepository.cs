@@ -1213,7 +1213,7 @@ namespace TechMed.BL.Repository.BaseClasses
 
         public async Task<string> GetTwilioReferenceID(long patientCaseID)
         {
-            string referenceValue = await _teleMedecineContext.TwilioMeetingRoomInfos.Where(a => a.PatientCaseId == patientCaseID).OrderByDescending(a => a.PatientCaseId).Select(s => s.RoomName).FirstOrDefaultAsync();
+            string referenceValue = await _teleMedecineContext.TwilioMeetingRoomInfos.Where(a => a.PatientCaseId == patientCaseID).OrderByDescending(a => a.PatientCaseId).Select(s => s.MeetingSid).FirstOrDefaultAsync();
             return referenceValue;
         }
 

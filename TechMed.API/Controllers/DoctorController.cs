@@ -1516,7 +1516,7 @@ namespace TechMed.API.Controllers
                 try
                 {
                     _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, going to close the room :" );
-                    var roomInfoFromTwilio = await _twilioVideoSDK.CloseRoomAsync(roomInstance);
+                    var roomInfoFromTwilio = await _twilioVideoSDK.CloseRoomAsync(roomInfo.MeetingSid);
                     _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, going to compose video :"+ roomInfoFromTwilio);                   
                     var composeVideo = await _twilioVideoSDK.ComposeVideo(roomInfoFromTwilio.Sid, callBackUrlForTwilio);
                     _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, going to call MeetingRoomComposeVideoUpdate, compose details :" + composeVideo);

@@ -373,7 +373,7 @@ namespace TechMed.API.Controllers
                 }
                 try
                 {
-                    var roomInfoFromTwilio = await _twilioVideoSDK.CloseRoomAsync(roomInstance);
+                    var roomInfoFromTwilio = await _twilioVideoSDK.CloseRoomAsync(roomInfo.MeetingSid);
                     var composeVideo = await _twilioVideoSDK.ComposeVideo(roomInfoFromTwilio.Sid, callBackUrlForTwilio);
                     await _twilioRoomDb.MeetingRoomComposeVideoUpdate(composeVideo, roomInstance);
                 }
