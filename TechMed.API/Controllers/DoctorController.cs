@@ -1497,7 +1497,11 @@ namespace TechMed.API.Controllers
             {
                 //var patientInfo = await _twilioRoomDb.PatientQueueGet(patientCaseId);
                 var patientInfo = await _twilioRoomDb.PatientQueueAfterTretment(patientCaseId, isPartiallyClosed);
-                _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, PatientInfo :" + isPatientAbsent);
+                var nullResult = "No result in patient info";
+                if(patientInfo != null)
+                    _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, PatientInfo :"+ patientInfo.PatientCaseId);
+                else
+                    _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, PatientInfo : return null data" );
                 if (isPatientAbsent)
                 {
                     patientInfo = null;
