@@ -28,8 +28,9 @@ namespace TechMed.API.Controllers
             try
             {
                 _logger.LogInformation("TwilioRoomStatusCallback, Checking..  Is room null or empty?" + roomStatusRequest.RoomSid+" "+roomStatusRequest.RoomName + " " +  roomStatusRequest.AccountSid + " " + roomStatusRequest.RoomStatus);
-                 if (!string.IsNullOrEmpty(roomStatusRequest.RoomName))
+                if (!string.IsNullOrEmpty(roomStatusRequest.RoomName) &&  !string.IsNullOrEmpty(roomStatusRequest.RoomStatus) && roomStatusRequest.RoomStatus.ToLower() == "completed")
                 {
+
                     _logger.LogInformation("TwilioRoomStatusCallback, Isnull room check false" + roomStatusRequest.RoomName,roomStatusRequest.RoomType);
                     await _twilioRoomDb.UpdateRoomStatusFromTwilioWebHook(roomStatusRequest);
 
