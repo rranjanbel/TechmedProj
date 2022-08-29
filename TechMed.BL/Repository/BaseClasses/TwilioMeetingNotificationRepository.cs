@@ -102,6 +102,10 @@ namespace TechMed.BL.Repository.BaseClasses
             if (meetInfo != null)
             {
                 meetInfo.IsClosed = true;
+                meetInfo.TwilioRoomStatus = meetInfo.TwilioRoomStatus == "Completed" ? "Completed" : "Disconnected";
+
+                meetInfo.Duration = !compositionResource.Duration.HasValue? Convert.ToDecimal(UtilityMaster.GetLocalDateTime().Subtract(meetInfo.CreateDate.Value).TotalMinutes):compositionResource.Duration;
+                
                 meetInfo.CompositeVideoSid = compositionResource.Sid;
                 meetInfo.CompositeVideoSize = compositionResource.Size;
                 _teleMedecineContext.TwilioMeetingRoomInfos.Add(meetInfo);
@@ -123,7 +127,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 if (!string.IsNullOrEmpty(roomStatusRequest.RoomStatus) && roomStatusRequest.RoomStatus.ToLower() == "completed")
                 {
 
-                    meetInfo.TwilioRoomStatus = meetInfo.TwilioRoomStatus == "Disconnected"? "Disconnected" : "Completed";
+                    meetInfo.TwilioRoomStatus = meetInfo.TwilioRoomStatus == "Completed" ? "Completed" : "Disconnected";
                     meetInfo.IsClosed = true;
                     meetInfo.CloseDate = UtilityMaster.GetLocalDateTime();
                     meetInfo.Duration = Convert.ToDecimal(UtilityMaster.GetLocalDateTime().Subtract(meetInfo.CreateDate.Value).TotalMinutes);

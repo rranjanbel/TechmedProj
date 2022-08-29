@@ -1516,6 +1516,7 @@ namespace TechMed.API.Controllers
                     _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, going to close the room :" );
                     var roomInfoFromTwilio = await _twilioVideoSDK.CloseRoomAsync(roomInstance);
                     _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, going to compose video :"+ roomInfoFromTwilio);
+                    await _twilioRoomDb.SetMeetingRoomClosed(roomInstance, isPartiallyClosed);
                     var composeVideo = await _twilioVideoSDK.ComposeVideo(roomInfoFromTwilio.Sid, callBackUrlForTwilio);
                     _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, going to call MeetingRoomComposeVideoUpdate, compose details :" + composeVideo);
                     await _twilioRoomDb.MeetingRoomComposeVideoUpdate(composeVideo, roomInstance);
@@ -1528,7 +1529,7 @@ namespace TechMed.API.Controllers
                     _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, Exception generated"+ex);
                     _logger.LogError("Exception on DismissCall : Treatment plan or Patient Absent call DismissCall. " + ex);
                 }
-                await _twilioRoomDb.SetMeetingRoomClosed(roomInstance, isPartiallyClosed);
+                //await _twilioRoomDb.SetMeetingRoomClosed(roomInstance, isPartiallyClosed);
 
 
                 await _hubContext.Clients.All.BroadcastMessage(new SignalRNotificationModel()
