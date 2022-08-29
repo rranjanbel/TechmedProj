@@ -119,9 +119,11 @@ namespace TechMed.BL.Repository.BaseClasses
             var meetInfo = await _teleMedecineContext.TwilioMeetingRoomInfos.FirstOrDefaultAsync(x => x.RoomName == roomStatusRequest.RoomName);
             if (meetInfo != null)
             {
+                
                 if (!string.IsNullOrEmpty(roomStatusRequest.RoomStatus) && roomStatusRequest.RoomStatus.ToLower() == "completed")
                 {
-                    meetInfo.TwilioRoomStatus = "Completed";
+
+                    meetInfo.TwilioRoomStatus = meetInfo.TwilioRoomStatus == "Disconnected"? "Disconnected" : "Completed";
                     meetInfo.IsClosed = true;
                     meetInfo.CloseDate = UtilityMaster.GetLocalDateTime();
                     meetInfo.Duration = Convert.ToDecimal(UtilityMaster.GetLocalDateTime().Subtract(meetInfo.CreateDate.Value).TotalMinutes);
