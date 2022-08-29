@@ -166,7 +166,7 @@ namespace TechMed.BL.Repository.BaseClasses
         }
 
         public async Task<PatientQueue> PatientQueueAfterTretment(Int64 patientCaseID, bool isPartiallyClosed)
-        {
+        {           
             return await _teleMedecineContext.PatientQueues
                 .Include(x => x.PatientCase)
                 .Include(x => x.AssignedByNavigation)
