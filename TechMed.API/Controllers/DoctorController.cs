@@ -1511,16 +1511,17 @@ namespace TechMed.API.Controllers
                     apiResponseModel.errorMessage = "Invalid Information";
                     return apiResponseModel;
                 }
+                _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, going to call SetMeetingRoomClosed.");
+                await _twilioRoomDb.SetMeetingRoomClosed(roomInstance, isPartiallyClosed);
                 try
                 {
                     _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, going to close the room :" );
                     var roomInfoFromTwilio = await _twilioVideoSDK.CloseRoomAsync(roomInstance);
-                    _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, going to compose video :"+ roomInfoFromTwilio);
-                    await _twilioRoomDb.SetMeetingRoomClosed(roomInstance, isPartiallyClosed);
+                    _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, going to compose video :"+ roomInfoFromTwilio);                   
                     var composeVideo = await _twilioVideoSDK.ComposeVideo(roomInfoFromTwilio.Sid, callBackUrlForTwilio);
                     _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, going to call MeetingRoomComposeVideoUpdate, compose details :" + composeVideo);
-                    await _twilioRoomDb.MeetingRoomComposeVideoUpdate(composeVideo, roomInstance);
-                    _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, going to call MeetingRoomComposeVideoUpdate, successfully" );
+                   // await _twilioRoomDb.MeetingRoomComposeVideoUpdate(composeVideo, roomInstance);
+                   // _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, going to call MeetingRoomComposeVideoUpdate, successfully" );
                 }
                 catch (Exception ex)
                 {
