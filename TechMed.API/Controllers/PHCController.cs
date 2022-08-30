@@ -12,8 +12,8 @@ namespace TechMed.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
-    //[Authorize(Roles = "SuperAdmin,SysAdmin,PHCUser")]
+   // [Authorize]
+    [Authorize(Roles = "SuperAdmin,SysAdmin,PHCUser")]
     public class PHCController : ControllerBase
     {
         private readonly IMapper _mapper;       
@@ -63,12 +63,15 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(PHCDetailsIdsVM))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetPHCDetailsByEmailID(string email)
+        //public async Task<IActionResult> GetPHCDetailsByEmailID(string email)
+        [Authorize(Roles = "PHCUser")]
+        public async Task<IActionResult> GetPHCDetailsByEmailID()
         {
             PHCDetailsIdsVM pHCDetailsVM = new PHCDetailsIdsVM();
+            string loggedUser = User.Identity.Name;
             try
             {
-                pHCDetailsVM = await _phcRepository.GetPHCDetailByEmailID(email);
+                pHCDetailsVM = await _phcRepository.GetPHCDetailByEmailID(loggedUser);
                 if (pHCDetailsVM != null)
                 {
                     //var phcMasterDTO = _mapper.Map<PHCHospitalDTO>(phcmaster);
@@ -83,7 +86,7 @@ namespace TechMed.API.Controllers
             catch (Exception ex)
             {
 
-                ModelState.AddModelError("GetPHCDetailsByEmailID", $"Something went wrong when GetPHCDetailsByUserID {ex.Message}");
+                ModelState.AddModelError("GetPHCDetailsByEmailID", $"Something went wrong when GetPHCDetailsByEmailID {ex.Message}");
                 _logger.LogError("Exception in GetPHCDetailsByEmailID API " + ex);
                 return StatusCode(500, ModelState);
             }
@@ -108,15 +111,15 @@ namespace TechMed.API.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("GetPHCDetailsByEmailID", "PHC detail did not find");
+                    ModelState.AddModelError("SearchPHCDetailByName", "PHC detail did not find");
                     return StatusCode(404, ModelState);
                 }
             }
             catch (Exception ex)
             {
 
-                ModelState.AddModelError("GetPHCDetailsByEmailID", $"Something went wrong when GetPHCDetailsByUserID {ex.Message}");
-                _logger.LogError("Exception in GetPHCDetailsByEmailID API " + ex);
+                ModelState.AddModelError("SearchPHCDetailByName", $"Something went wrong when SearchPHCDetailByName {ex.Message}");
+                _logger.LogError("Exception in SearchPHCDetailByName API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -140,15 +143,15 @@ namespace TechMed.API.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("GetPHCDetailsByEmailID", "PHC detail did not find");
+                    ModelState.AddModelError("GetPHCDetailByName", "PHC detail did not find");
                     return StatusCode(404, ModelState);
                 }
             }
             catch (Exception ex)
             {
 
-                ModelState.AddModelError("GetPHCDetailsByEmailID", $"Something went wrong when GetPHCDetailsByUserID {ex.Message}");
-                _logger.LogError("Exception in GetPHCDetailsByEmailID API " + ex);
+                ModelState.AddModelError("GetPHCDetailByName", $"Something went wrong when GetPHCDetailByName {ex.Message}");
+                _logger.LogError("Exception in GetPHCDetailByName API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -159,6 +162,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<string>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,PHCUser,Doctor")]
         public async Task<IActionResult> GetAllPHCName()
         {
             List<string> phCName = new List<string>();  
@@ -172,15 +176,15 @@ namespace TechMed.API.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("GetPHCDetailsByEmailID", "PHC detail did not find");
+                    ModelState.AddModelError("GetAllPHCName", "PHC detail did not find");
                     return StatusCode(404, ModelState);
                 }
             }
             catch (Exception ex)
             {
 
-                ModelState.AddModelError("GetPHCDetailsByEmailID", $"Something went wrong when GetPHCDetailsByUserID {ex.Message}");
-                _logger.LogError("Exception in GetPHCDetailsByEmailID API " + ex);
+                ModelState.AddModelError("GetAllPHCName", $"Something went wrong when GetAllPHCName {ex.Message}");
+                _logger.LogError("Exception in GetAllPHCName API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
@@ -193,6 +197,8 @@ namespace TechMed.API.Controllers
         {
             try
             {
+                string loggedUser = User.Identity.Name;
+
                 var phcmaster = await _phcRepository.GetByPHCUserID(userId);
                 if (phcmaster != null)
                 {
@@ -248,7 +254,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(201, Type = typeof(PHCDetailsVM))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-       // [Authorize(Roles = "SuperAdmin,SysAdmin")]
+        [Authorize(Roles = "SuperAdmin,SysAdmin")]
         public async Task<IActionResult> AddPHC([FromBody] PHCHospitalDTO phcdto)
         {
             Phcmaster newCreatedPHC = new Phcmaster();
@@ -366,7 +372,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(201, Type = typeof(EmployeeTrainingDTO))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-       // [Authorize(Roles = "SuperAdmin,SysAdmin")]
+        [Authorize(Roles = "SuperAdmin,SysAdmin")]
         public async Task<IActionResult> AddEmployeeTraining([FromBody] EmployeeTrainingDTO employeeTrainingDTO)
         {
            
@@ -424,7 +430,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-      //  [Authorize(Roles = "SuperAdmin,SysAdmin")]
+        [Authorize(Roles = "SuperAdmin,SysAdmin")]
         public async Task<IActionResult> UploadPHCDoc([FromForm] SpokeMaintenanceDTO spokeMaintenances)
         {
             bool status = false;
@@ -479,7 +485,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(bool))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        //[Authorize(Roles = "SuperAdmin,SysAdmin")]
+        [Authorize(Roles = "SuperAdmin,SysAdmin")]
         public async Task<IActionResult> UpdatePHCDetails(UpdatePHCDTO updatePHCDTO)
         {
 
