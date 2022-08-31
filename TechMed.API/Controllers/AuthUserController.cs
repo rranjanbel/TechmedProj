@@ -194,6 +194,7 @@ namespace TechMed.API.Controllers
         }
 
         [HttpGet("api/logout-from-other-device")]
+        [AllowAnonymous]
         public async Task<ActionResult> LogoutFromOtherDevice()
         {
             ApiResponseModel<bool> apiResponse = new ApiResponseModel<bool>();

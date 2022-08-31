@@ -13,7 +13,7 @@ namespace TechMed.API.Controllers
     [Route("api/[controller]")]
     [ApiController]
    // [Authorize]
-    [Authorize(Roles = "SuperAdmin,SysAdmin,PHCUser")]
+  
     public class PHCController : ControllerBase
     {
         private readonly IMapper _mapper;       
@@ -34,6 +34,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(PHCHospitalDTO))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,PHCUser")]
         public async Task<IActionResult> GetPHCDetailsByID(int id)
         {
             try
@@ -98,6 +99,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(SearchPHCDetailsIdsVM))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,PHCUser")]
         public async Task<IActionResult> SearchPHCDetailByName(string name)
         {
             List<SearchPHCDetailsIdsVM> pHCDetailsVM = new List<SearchPHCDetailsIdsVM>();
@@ -130,6 +132,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(SearchPHCDetailsIdsVM))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,PHCUser")]
         public async Task<IActionResult> GetPHCDetailByName(string name)
         {
             SearchPHCDetailsIdsVM pHCDetailsVM = new SearchPHCDetailsIdsVM();
@@ -193,6 +196,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(PHCHospitalDTO))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,PHCUser")]
         public async Task<IActionResult> GetPHCDetailsByUserID(int userId)
         {
             try
@@ -225,6 +229,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(PHCDetailsVM))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,PHCUser")]
         public async Task<IActionResult> GetPHCDetails(int userId)
         {
             try
@@ -341,6 +346,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<PHCMasterDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,PHCUser,Doctor")]
         public async Task<IActionResult> GetAllPHC(int districtId)
         {
             List<PHCMasterDTO> phcList = new List<PHCMasterDTO>();
@@ -430,7 +436,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [Authorize(Roles = "SuperAdmin,SysAdmin")]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,PHCUser")]
         public async Task<IActionResult> UploadPHCDoc([FromForm] SpokeMaintenanceDTO spokeMaintenances)
         {
             bool status = false;
@@ -485,7 +491,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(bool))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [Authorize(Roles = "SuperAdmin,SysAdmin")]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,PHCUser")]
         public async Task<IActionResult> UpdatePHCDetails(UpdatePHCDTO updatePHCDTO)
         {
 

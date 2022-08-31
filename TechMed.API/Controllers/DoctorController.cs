@@ -63,6 +63,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<NotificationDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,Doctor")]
         public async Task<IActionResult> GetListOfNotification(GetListOfNotificationVM getListOfNotificationVM)
         {
             try
@@ -98,6 +99,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(CdssguidelineMasterDTO))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,Doctor")]
         public async Task<IActionResult> GetCDSSGuideLines()
         {
             try
@@ -128,6 +130,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(DoctorDTO))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,Doctor")]
         public async Task<IActionResult> GetDoctorDetails(GetDoctorDetailVM getDoctorDetailVM)
         {
             try
@@ -163,6 +166,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<DoctorDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,Doctor")]
         public async Task<IActionResult> SearchDoctorDetails(GetDoctorDetailVM getDoctorDetailVM)
         {
             try
@@ -198,6 +202,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<string>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,Doctor")]
         public async Task<IActionResult> GetAllDoctorEmails()
         {
             try
@@ -233,6 +238,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<DrugsMasterDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,Doctor")]
         public async Task<IActionResult> GetListOfMedicine()
         {
             try
@@ -267,6 +273,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<VitalMasterDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,Doctor")]
         public async Task<IActionResult> GetListOfVital()
         {
             try
@@ -300,6 +307,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<PHCHospitalDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,Doctor")]
         public async Task<IActionResult> GetListOfPHCHospital()
         {
             try
@@ -334,6 +342,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<SpecializationDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,Doctor")]
         public async Task<IActionResult> GetListOfSpecializationMaster()
         {
             try
@@ -368,6 +377,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<SubSpecializationDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,Doctor")]
         public async Task<IActionResult> GetListOfSubSpecializationMaster(int SpecializationId)
         {
             try
@@ -404,6 +414,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(bool))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,Doctor")]
         public async Task<IActionResult> UpdateDoctorDetails(DoctorDTO doctorDTO)
         {
 
@@ -458,6 +469,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<GetTodayesPatientsDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,Doctor")]
         public async Task<IActionResult> GetTodayesPatients(DoctorVM doctorVM)
         {
 
@@ -494,6 +506,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<GetTodayesPatientsDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,Doctor")]
         public async Task<IActionResult> GetCompletedConsultationPatientsHistory(DoctorVM doctorVM)
         {
 
@@ -529,6 +542,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<GetTodayesPatientsDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,Doctor")]
         public async Task<IActionResult> GetYesterdayPatientsHistory(DoctorVM doctorVM)
         {
 
@@ -565,6 +579,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<GetTodayesPatientsDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,Doctor")]
         public async Task<IActionResult> GetPastPatientsHistory(DoctorVM doctorVM)
         {
 
@@ -602,6 +617,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(GetPatientCaseDetailsDTO))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,Doctor")]
         public async Task<IActionResult> GetPatientCaseDetailsAsync(GetPatientCaseDetailsVM caseDetailsVM)
         {
             try
@@ -637,6 +653,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(bool))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,Doctor")]
         public async Task<IActionResult> PostTreatmentPlan(TreatmentVM treatmentVM)
         {
             try
@@ -690,6 +707,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(bool))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,Doctor")]
         public async Task<IActionResult> DeleteNotification(long NotificationID)
         {
             try
@@ -725,6 +743,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(GetEHRDTO))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,Doctor")]
         public async Task<IActionResult> EHRdata(GetEHRVM getEHRVM)
         {
             try
@@ -760,6 +779,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(bool))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,Doctor")]
         public async Task<IActionResult> PatientAbsent(PatientAbsentVM patientAbsentVM)
         {
             ApiResponseModel<dynamic> apiResponseModel = new ApiResponseModel<dynamic>();
@@ -816,6 +836,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(bool))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,Doctor")]
         public async Task<IActionResult> ReferHigherFacility(PatientAbsentVM patientAbsentVM)
         {
             try
@@ -851,6 +872,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<GetCaseLabelDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,Doctor")]
         public async Task<IActionResult> GetCaseLabel(GetCaseLabelVM getCaseLabelVM)
         {
             try
@@ -896,6 +918,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<SearchPatientsDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,Doctor")]
         public async Task<IActionResult> SearchPatientDrDashBoard(SearchPatientVM searchPatientVM)
         {
             try
@@ -941,6 +964,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<SearchPatientsDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,Doctor")]
         public async Task<IActionResult> SearchPatientDrHistory(SearchPatientVM searchPatientVM)
         {
             try
@@ -986,6 +1010,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<PHCHospitalDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,Doctor")]
         public async Task<IActionResult> GetListOfPHCHospitalBlockWise(GetListOfPHCHospitalVM getListOfPHCHospitalVM)
         {
             try
@@ -1021,6 +1046,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<GetTodayesPatientsDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,Doctor")]
         public async Task<IActionResult> GetLatestReferred(DoctorVM doctorVM)
         {
             try
@@ -1055,6 +1081,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(int))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,Doctor")]
         public async Task<IActionResult> GetLatestReferredCount(DoctorVM doctorVM)
         {
             try
@@ -1091,6 +1118,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<bool>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,Doctor")]
         public async Task<IActionResult> UpdateIsDrOnline(UpdateIsDrOnlineVM doctorVM)
         {
             try
@@ -1126,6 +1154,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<bool>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,PHCUser,Doctor,GovEmployee")]
         public async Task<IActionResult> IsDrOnline(DoctorVM doctorVM)
         {
             try
@@ -1160,6 +1189,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<OnlineDrListDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,PHCUser,Doctor,GovEmployee")]
         public async Task<IActionResult> OnlineDrList()
         {
             try
@@ -1191,6 +1221,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(DoctorDTO))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,Doctor")]
         public async Task<IActionResult> AddDoctor([FromBody] AddDoctorDTO doctorDTO)
         {
             DoctorMaster doctor = new DoctorMaster();
@@ -1376,6 +1407,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(DoctorDTO))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,Doctor")]
         public async Task<IActionResult> GetDoctorDetailsByUserID(GetDoctorDetailByUserIDVM getDoctorDetailVM)
         {
             try
@@ -1412,6 +1444,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(201, Type = typeof(List<DoctorPatientSearchVM>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,Doctor")]
         public IActionResult AdvanceSearchResult([FromBody] AdvanceDoctorPatientSearchVM searchParameter)
         {
             List<DoctorPatientSearchVM> patientSearchResults = new List<DoctorPatientSearchVM>();
@@ -1455,6 +1488,7 @@ namespace TechMed.API.Controllers
 
         [HttpGet]
         [Route("GetPrescription")]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,Doctor,PHCUser")]
         public async Task<IActionResult> GetPrescription(int caseid = 10703)
         {
             //using (var ms = new MemoryStream(testFileBytes))

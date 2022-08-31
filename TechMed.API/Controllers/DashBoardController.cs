@@ -12,7 +12,7 @@ namespace TechMed.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+   // [Authorize]
     public class DashBoardController : ControllerBase
     {
         private readonly IMapper _mapper;
@@ -29,6 +29,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<DoctorDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,GovEmployee")]
         public async Task<IActionResult> DoctorsLoggedInToday(DoctorsLoggedInTodayVM doctorsLoggedInTodayVM)
         {
             try
@@ -63,6 +64,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<LoggedUserCountVM>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,GovEmployee")]
         public async Task<IActionResult> LoggedUserInToday()
         {            
             List<LoggedUserCountVM> loggedUserCounts = new List<LoggedUserCountVM>();
@@ -94,6 +96,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(LoggedUserCountVM))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,GovEmployee")]
         public IActionResult GetLoggedUserCount(int userTypeId = 3)
         {
             LoggedUserCountVM loggedUserCountVM = new LoggedUserCountVM();
@@ -129,6 +132,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(SpecializationReportVM))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,GovEmployee")]
         public async Task<IActionResult> GetTodaysTotalPatientCase()
         {
             List<SpecializationReportVM> todaysRegistorCase = new List<SpecializationReportVM>();
@@ -159,6 +163,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(SpecializationReportVM))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,GovEmployee")]
         public async Task<IActionResult> GetTodaysPatientQueue()
         {
             List<SpecializationReportVM> todaysRegistorCase = new List<SpecializationReportVM>();
@@ -189,6 +194,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<DashboardConsultationVM>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,GovEmployee")]
         public async Task<IActionResult> GetDashboardConsultation(GetDashboardConsultationVM getDashboardConsultationVM)
         {
             try
@@ -222,6 +228,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<PHCLoginHistoryReportVM>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,GovEmployee")]
         public IActionResult GetPHCLoginHistoryReport(int PHCId, DateTime? fromDate, DateTime? toDate)
         {
             List<PHCLoginHistoryReportVM> loginHistoryPHC = new List<PHCLoginHistoryReportVM>();
@@ -258,6 +265,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<PHCConsultationVM>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,GovEmployee")]
         public IActionResult GetPHCConsultationReport(int PHCId, DateTime? fromDate =null, DateTime? toDate =null)
         {
             List<PHCConsultationVM> phcConsultation = new List<PHCConsultationVM>();
@@ -294,6 +302,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<DashboardReportSummaryVM>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,GovEmployee")]
         public async Task<IActionResult> GetDashboardReportSummary(GetDashboardReportSummaryVM getDashboardReportSummaryVM)
         {
             try
@@ -328,6 +337,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<DashboardReportSummaryVM>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,GovEmployee")]
         public async Task<IActionResult> GetDashboardReportSummaryMonthly(GetDashboardReportSummaryMonthVM getDashboardReportSummaryVM)
         {
             try
@@ -360,6 +370,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<DashboardReportConsultationVM>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,GovEmployee")]
         public async Task<IActionResult> GetDashboardReportConsultation(GetDashboardReportConsultationVM dashboardReportConsultationVM)
         {
             try
@@ -393,6 +404,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(PHCMainpowerResultSetVM))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,GovEmployee")]
         public IActionResult GetPHCManpowerReport(int year, int month)
         {
             PHCMainpowerResultSetVM phcmanpowerReport = new PHCMainpowerResultSetVM();
@@ -433,6 +445,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<RegisterPatientVM>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,GovEmployee")]
         public IActionResult GetPatientRegisterReport(DateTime? fromDate = null, DateTime? toDate = null)
         {
             List<RegisterPatientVM> patientResiter = new List<RegisterPatientVM>();
@@ -470,6 +483,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(201, Type = typeof(EquipmentUptimeReportDTO))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,GovEmployee")]
         public async Task<IActionResult> AddEquipmentUptimeReport([FromBody] EquipmentUptimeReportDTO equipmentUptime)
         {
 
@@ -527,6 +541,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<GetReferredPatientVM>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,GovEmployee")]
         public IActionResult GetReferredPatientReport(DateTime? fromDate = null, DateTime? toDate = null)
         {
             List<GetReferredPatientVM> patientResiter = new List<GetReferredPatientVM>();
@@ -563,6 +578,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<GetReviewPatientVM>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,GovEmployee")]
         public IActionResult GetReviewPatientReport(DateTime? fromDate = null, DateTime? toDate = null)
         {
             List<GetReviewPatientVM> patientResiter = new List<GetReviewPatientVM>();
@@ -601,6 +617,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<GetDashboardSpokeMaintenanceVM>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,GovEmployee")]
         public IActionResult GetDashboardSpokeMaintenance(DateTime? fromDate = null, DateTime? toDate = null)
         {
             List<GetDashboardSpokeMaintenanceVM> patientResiter = new List<GetDashboardSpokeMaintenanceVM>();
@@ -637,6 +654,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<GetDashboardEmployeeFeedbackVM>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,GovEmployee")]
         public IActionResult GetDashboardEmployeeFeedback(int? Fromyear, string qtr)
         {
             List<GetDashboardEmployeeFeedbackVM> patientResiter = new List<GetDashboardEmployeeFeedbackVM>();
@@ -673,6 +691,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<GetDashboardEquipmentUptimeReportVM>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,GovEmployee")]
         public IActionResult GetDashboardEquipmentUptimeReport(int month , int year)
         {
             List<GetDashboardEquipmentUptimeReportVM> patientResiter = new List<GetDashboardEquipmentUptimeReportVM>();
@@ -703,6 +722,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<GetDashboardAppointmentVM>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,GovEmployee")]
         public IActionResult GetDashboardAppointment(DateTime? fromDate = null, DateTime? toDate = null)
         {
             List<GetDashboardAppointmentVM> patientResiter = new List<GetDashboardAppointmentVM>();
@@ -742,6 +762,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<GetDashboardDoctorAvgTimeVM>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,GovEmployee")]
         public IActionResult GetDashboardDoctorAvgTime(DateTime? fromDate = null, DateTime? toDate = null)
         {
             List<GetDashboardDoctorAvgTimeVM> patientResiter = new List<GetDashboardDoctorAvgTimeVM>();
@@ -778,6 +799,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<GetDashboardDoctorAvailabilityVM>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,GovEmployee")]
         public IActionResult GetDashboardDoctorAvailability(DateTime? fromDate = null, DateTime? toDate = null)
         {
             List<GetDashboardDoctorAvailabilityVM> patientResiter = new List<GetDashboardDoctorAvailabilityVM>();
@@ -814,6 +836,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<GetDashboardEquipmentHeaderReportVM>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,GovEmployee")]
         public IActionResult GetDashboardEquipmentHeaderReport(int month, int year)
         {
             List<GetDashboardEquipmentHeaderReportVM> patientResiter = new List<GetDashboardEquipmentHeaderReportVM>();
@@ -845,6 +868,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<PrescribedMedicineVM>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,GovEmployee")]
         public async Task<IActionResult> GetPrescribedMedicine(DateTime? fromDate = null, DateTime? toDate = null)
         {
             List<PrescribedMedicineVM> prescribedMedicines = new List<PrescribedMedicineVM>();
@@ -882,6 +906,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<GetDashboardDiagnosticPrescribedTestWiseVM>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,GovEmployee")]
         public async Task<IActionResult> GetDashboardDiagnosticPrescribedTestWise(DateTime? fromDate = null, DateTime? toDate = null)
         {
             List<GetDashboardDiagnosticPrescribedTestWiseVM> prescribedMedicines = new List<GetDashboardDiagnosticPrescribedTestWiseVM>();
@@ -918,6 +943,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<GetDashboardDiagnosticPrescribedPHCWiseVM>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,GovEmployee")]
         public async Task<IActionResult> GetDashboardDiagnosticPrescribedPHCWise(DateTime? fromDate, DateTime? toDate)
         {
             List<GetDashboardDiagnosticPrescribedPHCWiseVM> prescribedMedicines = new List<GetDashboardDiagnosticPrescribedPHCWiseVM>();
@@ -955,6 +981,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<PrescribedMedicinePHCWiseVM>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,GovEmployee")]
         public async Task<IActionResult> GetPrescribedMedicinePHCWise(DateTime? fromDate = null, DateTime? toDate = null)
         {
             List<PrescribedMedicinePHCWiseVM> prescribedMedicines = new List<PrescribedMedicinePHCWiseVM>();
@@ -991,6 +1018,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<GetDashboardGraphVM>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,GovEmployee")]
         public async Task<IActionResult> GetDashboardGraph()
         {
             List<GetDashboardGraphVM> prescribedMedicines = new List<GetDashboardGraphVM>();
@@ -1023,6 +1051,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<GetDashboardFeedbackSummaryReportVM>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,GovEmployee")]
         public async Task<IActionResult> GetDashboardFeedbackSummaryReport()
         {
             List<GetDashboardFeedbackSummaryReportVM> prescribedMedicines = new List<GetDashboardFeedbackSummaryReportVM>();
@@ -1054,6 +1083,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<GetDashboardFeedbackReportVM>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,GovEmployee")]
         public async Task<IActionResult> GetDashboardFeedbackReport(DateTime? fromDate = null, DateTime? toDate = null)
         {
             List<GetDashboardFeedbackReportVM> prescribedMedicines = new List<GetDashboardFeedbackReportVM>();
@@ -1090,6 +1120,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<GetDashboardDignosisSpecialityWiseVM>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,GovEmployee")]
         public async Task<IActionResult> GetDashboardDignosisSpecialityWise( int Specialityid,DateTime? fromDate = null, DateTime? toDate = null)
         {
             List<GetDashboardDignosisSpecialityWiseVM> prescribedMedicines = new List<GetDashboardDignosisSpecialityWiseVM>();
@@ -1126,6 +1157,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<GetDashboardDiseasephcWiseVM>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,GovEmployee")]
         public async Task<IActionResult> GetDashboardDiseasephcWise(DateTime? fromDate = null, DateTime? toDate = null)
         {
             List<GetDashboardDiseasephcWiseVM> prescribedMedicines = new List<GetDashboardDiseasephcWiseVM>();
@@ -1162,6 +1194,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<GetDashboardDiseaseAgeWiseVM>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,GovEmployee")]
         public async Task<IActionResult> GetDashboardDiseaseAgeWise(DateTime? fromDate = null, DateTime? toDate = null)
         {
             List<GetDashboardDiseaseAgeWiseVM> prescribedMedicines = new List<GetDashboardDiseaseAgeWiseVM>();
@@ -1200,6 +1233,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<GetDashboardSystemHealthReportVM>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,GovEmployee")]
         public async Task<IActionResult> GetDashboardSystemHealthReport(DateTime? fromDate = null, DateTime? toDate = null)
         {
             List<GetDashboardSystemHealthReportVM> prescribedMedicines = new List<GetDashboardSystemHealthReportVM>();
@@ -1232,6 +1266,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<RemoteSiteDowntimeSummaryDailyVM>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,GovEmployee")]
         public async Task<IActionResult> RemoteSiteDowntimeSummaryDaily(DateTime? fromDate = null, DateTime? toDate = null)
         {
             List<RemoteSiteDowntimeSummaryDailyVM> prescribedMedicines = new List<RemoteSiteDowntimeSummaryDailyVM>();
@@ -1270,6 +1305,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<RemoteSiteDowntimeSummaryMonthlyVM>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,GovEmployee")]
         public async Task<IActionResult> RemoteSiteDowntimeSummaryMonthly(int year, int Month)
         {
             List<RemoteSiteDowntimeSummaryMonthlyVM> prescribedMedicines = new List<RemoteSiteDowntimeSummaryMonthlyVM>();
@@ -1308,6 +1344,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<GetDashboardFeedbackSummaryReportDataVM>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,GovEmployee")]
         public async Task<IActionResult> GetDashboardFeedbackSummaryReportData()
         {
             List<GetDashboardFeedbackSummaryReportDataVM> listdata = new List<GetDashboardFeedbackSummaryReportDataVM>();

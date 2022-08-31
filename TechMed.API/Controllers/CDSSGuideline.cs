@@ -9,7 +9,8 @@ namespace TechMed.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
+    [Authorize(Roles = "SuperAdmin,Doctor")]
     public class CDSSGuideline : ControllerBase
     {
         private readonly IMapper _mapper;
