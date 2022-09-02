@@ -33,6 +33,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<UserLoginDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,GovEmployee")]
         public async Task<IActionResult> GetUsers()
         {
             try
@@ -71,6 +72,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(bool))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,PHCUser,Doctor,GovEmployee")]
         public async Task<IActionResult> IsValidUser(LoginVM login)
         {
             bool response = false;
@@ -104,6 +106,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(UserLoginDTO))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "SuperAdmin,SysAdmin,PHCUser,Doctor,GovEmployee")]
         public async Task<IActionResult> LogedUserDetails(string userEmail)
         {
             try
@@ -142,6 +145,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(ChangePassword))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [AllowAnonymous]
         public async Task<IActionResult> ChangePassword(ChangePassword login)
         {
             bool response = false;
@@ -180,6 +184,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [AllowAnonymous]
         public async Task<IActionResult> GetUserRole(string userEmail)
         {
             try

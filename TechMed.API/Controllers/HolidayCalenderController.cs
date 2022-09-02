@@ -9,7 +9,8 @@ namespace TechMed.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+   // [Authorize]
+    [Authorize(Roles = "SuperAdmin,SysAdmin,GovEmployee")]
     public class HolidayCalenderController : ControllerBase
     {
         private readonly IMapper _mapper;

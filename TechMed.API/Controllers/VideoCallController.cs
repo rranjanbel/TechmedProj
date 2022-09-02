@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using System.ComponentModel.DataAnnotations;
@@ -15,6 +16,7 @@ namespace TechMed.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [AllowAnonymous]
     public class VideoCallController : ControllerBase
     {
         readonly ITwilioVideoSDKService _twilioVideoSDK;

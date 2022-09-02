@@ -12,7 +12,7 @@ namespace TechMed.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "SuperAdmin,SysAdmin,GovEmployee")]
     public class MISController : ControllerBase
     {
         private readonly IMapper _mapper;

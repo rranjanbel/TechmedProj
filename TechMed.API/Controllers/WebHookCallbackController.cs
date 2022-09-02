@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TechMed.BL.Repository.Interfaces;
 using TechMed.BL.TwilioAPI.Service;
 using TechMed.BL.ViewModels;
@@ -7,6 +8,7 @@ namespace TechMed.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [AllowAnonymous]
     public class WebHookCallbackController : Controller
     {
         readonly ITwilioVideoSDKService _twilioVideoSDK;

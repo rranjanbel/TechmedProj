@@ -8,7 +8,8 @@ namespace TechMed.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
+    [Authorize(Roles = "SuperAdmin,SysAdmin")]
     public class MailController : ControllerBase
     {
         private readonly IMailService mailService;

@@ -1489,7 +1489,7 @@ namespace TechMed.API.Controllers
         [HttpGet]
         [Route("GetPrescription")]
         [Authorize(Roles = "SuperAdmin,SysAdmin,Doctor,PHCUser")]
-        public async Task<IActionResult> GetPrescription(int caseid = 10703)
+        public async Task<IActionResult> GetPrescription(int caseid = 0)
         {
             //using (var ms = new MemoryStream(testFileBytes))
             //{
