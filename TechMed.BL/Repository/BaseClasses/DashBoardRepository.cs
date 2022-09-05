@@ -220,7 +220,7 @@ namespace TechMed.BL.Repository.BaseClasses
             try
             {
 
-                if (PHCId > 0)
+                if (PHCId > -1)
                 {
                     var Results = _teleMedecineContext.PHCLoginHistoryReports.FromSqlInterpolated($"EXEC [dbo].[GetPHCLoginReport] @PHCID ={PHCId}, @FromDate ={fromDate}, @ToDate ={toDate}");
                     foreach (var item in Results)

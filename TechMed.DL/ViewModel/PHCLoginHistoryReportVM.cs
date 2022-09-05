@@ -11,15 +11,15 @@ namespace TechMed.DL.ViewModel
     public class PHCLoginHistoryReportVM
     {
         public long SrNo { get; set; }
-        public string DistrictName { get; set; }
-        public string BlockName { get; set; }
-        public string PHCName { get; set; }
-        public int UserID { get; set; }
-        public DateTime LogedDate { get; set; }
-        public string LoginTime { get; set; }
-        public string LogoutTime { get; set; }
-        public string TotalTime { get; set; }
-        public string Remark { get; set; }
-        public string Status { get; set; }
+        public string? DistrictName { get; set; }
+        public string? BlockName { get; set; }
+        public string? PHCName { get; set; }
+        public int? UserID { get; set; }
+        public DateTime? LogedDate { get; set; }
+        public string? LoginTime { get; set; }
+        public string? LogoutTime { get; set; }
+        public string? TotalTime { get; set; }
+        public string? Remark { get; set; }
+        public string? Status { get; set; }
     }
 }
