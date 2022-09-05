@@ -643,6 +643,38 @@ namespace TechMed.API.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("GetPatientQueueByDoctorID")]
+        [ProducesResponseType(200, Type = typeof(List<PatientQueueVM>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetPatientQueueByDoctorID(int doctorID)
+        {
+            List<PatientQueueVM> patientQueues = new List<PatientQueueVM>();
+            try
+            {
+                patientQueues = await _patientCaeRepository.GetPatientQueueByDocotorID(doctorID);
+                if (patientQueues != null && patientQueues.Count > 0)
+                {
+                    _logger.LogInformation($"GetPatientQueueByDoctorID : Sucess response returned ");
+                    return StatusCode(200, patientQueues);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetPatientQueueByDoctorID", $"did not get doctor list for PatientcaseID ");
+                    _logger.LogError("GetPatientQueueByDoctorID : did not get patient Queue : ");
+                    return StatusCode(404, new { Message = "Did not get patient Queue" });
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError("GetPatientQueueByDoctorID", $"Something went wrong when get patient queue by doctor {ex.Message}");
+                _logger.LogError("Exception in GetPatientQueueByDoctorID API " + ex);
+                return StatusCode(500, ModelState);
+            }
+        }
+
         [HttpPost]
         [Route("AddPatientInDoctorsQueue")]
         [ProducesResponseType(201, Type = typeof(PatientReferToDoctorVM))]
