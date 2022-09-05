@@ -1319,6 +1319,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 patientQueue.WaitList = item.WaitList;
                 patientQueue.AssignedOn = item.AssignedOn;
                 patientQueue.StatusOn = item.StatusOn;
+                patientQueue.DoctorID = item.DoctorID;
                 patientQueue.RegID = item.RegID;
 
                 queueByDoctors.Add(patientQueue);
@@ -1332,7 +1333,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     DateTime currentTime = UtilityMaster.GetLocalDateTime();
                     DateTime statusTime = item.StatusOn;
                     double totalMin = UtilityMaster.TimeDifferenceInMin(currentTime, statusTime);
-                    if (totalMin > 5)
+                    if (totalMin > 1)
                     {
                         IsChangeRequire = true;
                         PatientQueue patientQueueChange = _teleMedecineContext.PatientQueues.FirstOrDefault(a => a.PatientCaseId == item.PatientCaseID && a.CaseFileStatusId == 4);
@@ -1398,6 +1399,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 patientQueue.WaitList = item.WaitList;
                 patientQueue.AssignedOn = item.AssignedOn;
                 patientQueue.StatusOn = item.StatusOn;
+                patientQueue.DoctorID = item.DoctorID;
                 patientQueue.RegID = item.RegID;
 
                 queueByDoctors.Add(patientQueue);
@@ -1410,6 +1412,125 @@ namespace TechMed.BL.Repository.BaseClasses
             else
             {
                 return queueByDoctors.Where(a => a.PHCID == PHCID).ToList();
+            }
+
+
+        }
+
+        public async Task<List<PatientQueueVM>> GetPatientQueueByDocotorID(int doctorID = 0)
+        {
+            List<PatientQueueVM> queueByDoctors = new List<PatientQueueVM>();
+            PatientQueueVM patientQueue;
+            var Results = await _teleMedecineContext.PatientQueuesList.FromSqlInterpolated($"EXEC [dbo].[GetAllPatientQueues]").ToListAsync();
+            foreach (var item in Results)
+            {
+                patientQueue = new PatientQueueVM();
+                patientQueue.SrNo = item.SrNo;
+                patientQueue.Patient = item.Patient;
+                patientQueue.CaseHeading = item.CaseHeading;
+                patientQueue.PatientID = item.PatientID;
+                patientQueue.Doctor = item.Doctor;
+                patientQueue.Specialization = item.Specialization;
+                patientQueue.Gender = item.Gender;
+                patientQueue.PatientCaseID = item.PatientCaseID;
+                patientQueue.AssignedDoctorID = item.AssignedDoctorID;
+                patientQueue.PHCID = item.PHCID;
+                patientQueue.WaitList = item.WaitList;
+                patientQueue.AssignedOn = item.AssignedOn;
+                patientQueue.StatusOn = item.StatusOn;
+                patientQueue.DoctorID = item.DoctorID;
+                patientQueue.RegID = item.RegID;
+
+                queueByDoctors.Add(patientQueue);
+            };
+            //Check patient queue status
+            bool IsChangeRequire = false;
+            foreach (var item in queueByDoctors)
+            {
+                if (item.WaitList == 0)
+                {
+                    DateTime currentTime = UtilityMaster.GetLocalDateTime();
+                    DateTime statusTime = item.StatusOn;
+                    double totalMin = UtilityMaster.TimeDifferenceInMin(currentTime, statusTime);
+                    if (totalMin > 1)
+                    {
+                        IsChangeRequire = true;
+                        PatientQueue patientQueueChange = _teleMedecineContext.PatientQueues.FirstOrDefault(a => a.PatientCaseId == item.PatientCaseID && a.CaseFileStatusId == 4);
+                        TwilioMeetingRoomInfo videoCallStatus = _teleMedecineContext.TwilioMeetingRoomInfos
+                                    .Where(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" && a.PatientCaseId == item.PatientCaseID).OrderByDescending(x => x.CloseDate).FirstOrDefault();
+
+                        if (patientQueueChange != null && videoCallStatus == null)
+                        {
+                            patientQueueChange.AssignedOn = UtilityMaster.GetLocalDateTime();
+                            patientQueueChange.UpdatedOn = UtilityMaster.GetLocalDateTime();
+                            patientQueueChange.StatusOn = UtilityMaster.GetLocalDateTime();
+                            //patientQueueChange.IsQueueChanged = true;
+                            _teleMedecineContext.Entry(patientQueueChange).State = EntityState.Modified;
+                            int res = _teleMedecineContext.SaveChanges();
+                        }
+                    }
+                    else
+                    {
+                        IsChangeRequire = false;
+                        //When patient queue come at 0.
+                        PatientQueue patientQueueValue = _teleMedecineContext.PatientQueues.FirstOrDefault(a => a.PatientCaseId == item.PatientCaseID);
+                        if (patientQueueValue != null && patientQueueValue.IsQueueChanged == false)
+                        {
+                            //patientQueueValue.AssignedOn = UtilityMaster.GetLocalDateTime();
+                            patientQueueValue.UpdatedOn = UtilityMaster.GetLocalDateTime();
+                            patientQueueValue.StatusOn = UtilityMaster.GetLocalDateTime();
+                            patientQueueValue.IsQueueChanged = true;
+                            _teleMedecineContext.Entry(patientQueueValue).State = EntityState.Modified;
+                            int res = _teleMedecineContext.SaveChanges();
+                        }
+                    }
+
+                }
+                else if (item.WaitList == 1 && IsChangeRequire)
+                {
+                    PatientQueue patientQueueValue = _teleMedecineContext.PatientQueues.FirstOrDefault(a => a.PatientCaseId == item.PatientCaseID);
+                    if (patientQueueValue != null)
+                    {
+                        //patientQueueValue.AssignedOn = UtilityMaster.GetLocalDateTime();
+                        patientQueueValue.UpdatedOn = UtilityMaster.GetLocalDateTime();
+                        patientQueueValue.StatusOn = UtilityMaster.GetLocalDateTime();
+                        //patientQueueValue.IsQueueChanged = true;
+                        _teleMedecineContext.Entry(patientQueueValue).State = EntityState.Modified;
+                        int res = _teleMedecineContext.SaveChanges();
+                    }
+                }
+            }
+            queueByDoctors = new List<PatientQueueVM>();
+            var Results2 = await _teleMedecineContext.PatientQueuesList.FromSqlInterpolated($"EXEC [dbo].[GetAllPatientQueues]").ToListAsync();
+            foreach (var item in Results2)
+            {
+                patientQueue = new PatientQueueVM();
+                patientQueue.SrNo = item.SrNo;
+                patientQueue.Patient = item.Patient;
+                patientQueue.CaseHeading = item.CaseHeading;
+                patientQueue.PatientID = item.PatientID;
+                patientQueue.Doctor = item.Doctor;
+                patientQueue.Specialization = item.Specialization;
+                patientQueue.Gender = item.Gender;
+                patientQueue.PatientCaseID = item.PatientCaseID;
+                patientQueue.AssignedDoctorID = item.AssignedDoctorID;
+                patientQueue.PHCID = item.PHCID;
+                patientQueue.WaitList = item.WaitList;
+                patientQueue.AssignedOn = item.AssignedOn;
+                patientQueue.StatusOn = item.StatusOn;
+                patientQueue.DoctorID = item.DoctorID;
+                patientQueue.RegID = item.RegID;
+
+                queueByDoctors.Add(patientQueue);
+            };
+
+            if (doctorID == 0)
+            {
+                return queueByDoctors.ToList();
+            }
+            else
+            {
+                return queueByDoctors.Where(a => a.DoctorID == doctorID).ToList();
             }
 
 
