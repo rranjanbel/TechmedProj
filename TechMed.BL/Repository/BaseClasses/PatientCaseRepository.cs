@@ -1969,7 +1969,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 .FirstOrDefaultAsync();
             if (doctorId > 0)
             {
-                IsDoctorFree = _teleMedecineContext.TwilioMeetingRoomInfos.Any(a => a.IsClosed == false && a.TwilioRoomStatus == "" && a.AssignedDoctorId == doctorId);
+                IsDoctorFree = _teleMedecineContext.TwilioMeetingRoomInfos.Any(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" && a.AssignedDoctorId == doctorId);
             }
 
             if (IsDoctorFree)
