@@ -1333,7 +1333,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     DateTime currentTime = UtilityMaster.GetLocalDateTime();
                     DateTime statusTime = item.StatusOn;
                     double totalMin = UtilityMaster.TimeDifferenceInMin(currentTime, statusTime);
-                    if (totalMin > 1)
+                    if (totalMin > 3)
                     {
                         IsChangeRequire = true;
                         PatientQueue patientQueueChange = _teleMedecineContext.PatientQueues.FirstOrDefault(a => a.PatientCaseId == item.PatientCaseID && a.CaseFileStatusId == 4);
