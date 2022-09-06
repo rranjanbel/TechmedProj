@@ -59,14 +59,15 @@ namespace TechMed.API.Controllers
 
 
             //need to check availability of doctor by checkin in queue and other
-            List<OnlineDoctorVM> onlineDrLists = new List<OnlineDoctorVM>();
-            OnlineDoctorListVM onlineDoctorList = await _patientCaseRepository.GetSelectedOnlineDoctors(patientCaseId);
-            if(onlineDoctorList.Status.ToLower() =="success")
-            {
-                onlineDrLists = onlineDoctorList.OnlineDoctors;
-            }
-            
-            if (onlineDrLists.Count > 0) //is enduser available to have call
+            //List<OnlineDoctorVM> onlineDrLists = new List<OnlineDoctorVM>();
+            //OnlineDoctorListVM onlineDoctorList = await _patientCaseRepository.GetSelectedOnlineDoctors(patientCaseId);
+            //if(onlineDoctorList.Status.ToLower() =="success")
+            //{
+            //    onlineDrLists = onlineDoctorList.OnlineDoctors;
+            //}
+            bool isDoctorBusy = false;
+            isDoctorBusy = await _patientCaseRepository.IsDoctorFreeToReceiveCall(patientCaseId);
+            if (isDoctorBusy) //is enduser available to have call
             {
                 PatientCase patientCase = await  _patientCaseRepository.GetByID(patientCaseId);
                 apiResponseModel.isSuccess = true;

@@ -1370,7 +1370,11 @@ namespace TechMed.BL.Repository.BaseClasses
                 else if (item.WaitList == 1 && IsChangeRequire)
                 {
                     PatientQueue patientQueueValue = _teleMedecineContext.PatientQueues.FirstOrDefault(a => a.PatientCaseId == item.PatientCaseID);
-                    if (patientQueueValue != null)
+
+                    TwilioMeetingRoomInfo videoCallStatus = _teleMedecineContext.TwilioMeetingRoomInfos
+                                   .Where(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" && a.AssignedDoctorId == patientQueueValue.AssignedDoctorId).OrderByDescending(x => x.CloseDate).FirstOrDefault();
+
+                    if (patientQueueValue != null &&  videoCallStatus == null)
                     {
                         //patientQueueValue.AssignedOn = UtilityMaster.GetLocalDateTime();
                         patientQueueValue.UpdatedOn = UtilityMaster.GetLocalDateTime();
@@ -1458,7 +1462,10 @@ namespace TechMed.BL.Repository.BaseClasses
                         PatientQueue patientQueueChange = _teleMedecineContext.PatientQueues.FirstOrDefault(a => a.PatientCaseId == item.PatientCaseID && a.CaseFileStatusId == 4);
                         TwilioMeetingRoomInfo videoCallStatus = _teleMedecineContext.TwilioMeetingRoomInfos
                                     .Where(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" && a.PatientCaseId == item.PatientCaseID).OrderByDescending(x => x.CloseDate).FirstOrDefault();
-
+                        if(videoCallStatus != null)
+                        {
+                            videoCallStatus.CloseDate = currentTime;        
+                        }
                         if (patientQueueChange != null && videoCallStatus == null)
                         {
                             patientQueueChange.AssignedOn = UtilityMaster.GetLocalDateTime();
@@ -1949,6 +1956,27 @@ namespace TechMed.BL.Repository.BaseClasses
                 _logger.LogError("Exception generate when going to assign doctor for patient case Id :" + patientQueue.PatientCaseId, ex);
                 throw;
             }
+        }
+
+        public async Task<bool> IsDoctorFreeToReceiveCall(long patientCaseID)
+        {
+            bool IsDoctorFree = false;
+            DateTime localDate = UtilityMaster.GetLocalDateTime();
+            int doctorId = 0;
+            doctorId = await _teleMedecineContext.PatientQueues.Where(a => a.PatientCaseId == patientCaseID && a.CaseFileStatusId == 4 && a.AssignedOn.Day == localDate.Day && a.AssignedOn.Month == localDate.Month && a.AssignedOn.Year == localDate.Year)
+                .OrderByDescending(b => b.AssignedOn)
+                .Select(s => s.AssignedDoctorId)
+                .FirstOrDefaultAsync();
+            if (doctorId > 0)
+            {
+                IsDoctorFree = _teleMedecineContext.TwilioMeetingRoomInfos.Any(a => a.IsClosed == false && a.TwilioRoomStatus == "" && a.AssignedDoctorId == doctorId);
+            }
+
+            if (IsDoctorFree)
+                return false;
+            else
+                return true;
+            
         }
     }
     public class DoctorQueues

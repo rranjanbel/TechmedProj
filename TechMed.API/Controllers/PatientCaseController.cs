@@ -857,5 +857,45 @@ namespace TechMed.API.Controllers
                 return StatusCode(500, ModelState);
             }
         }
+
+        [HttpGet]
+        [Route("IsDoctorFreeToReceiveCall")]
+        [ProducesResponseType(200, Type = typeof(bool))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> IsDoctorFreeToReceiveCall(long PatientCaseID = 0)
+        {            
+            string contentRootPath = _webHostEnvironment.ContentRootPath;
+            bool isDoctorFreeToReceive = false;
+            try
+            {
+                if (PatientCaseID == 0)
+                {
+                    ModelState.AddModelError("IsDoctorFreeToReceiveCall", "Please provide patient case Id");
+                    _logger.LogError("IsDoctorFreeToReceiveCall : PatientcaseId is null ");
+                    return StatusCode(404, ModelState);
+                }
+                isDoctorFreeToReceive = await _patientCaeRepository.IsDoctorFreeToReceiveCall(PatientCaseID);
+                if (isDoctorFreeToReceive)
+                {
+                    _logger.LogInformation($"IsDoctorFreeToReceiveCall : Sucess response returned " + PatientCaseID);
+                    return StatusCode(200, isDoctorFreeToReceive);
+                }
+                else
+                {
+                    ModelState.AddModelError("IsDoctorFreeToReceiveCall", $"did not get patient case for PatientcaseID : {PatientCaseID}");
+                    _logger.LogError("IsDoctorFreeToReceiveCall : did not get patient case for PatientcaseID : " + PatientCaseID);
+                    return StatusCode(404, isDoctorFreeToReceive);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError("IsDoctorFreeToReceiveCall", $"Something went wrong when get patient case {ex.Message}");
+                _logger.LogError("Exception in IsDoctorFreeToReceiveCall API " + ex);
+                return StatusCode(500, ModelState);
+            }
+        }
+
     }
 }
