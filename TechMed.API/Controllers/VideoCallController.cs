@@ -48,6 +48,8 @@ namespace TechMed.API.Controllers
         [HttpPost("begindialingcalltouser")]
         public async Task<IActionResult> BeginDialingCallToUser([Required][FromQuery] Int64 patientCaseId)
         {
+            var user = User.Identity.Name;
+            bool role = User.IsInRole("PHCUser");
             ApiResponseModel<int> apiResponseModel = new ApiResponseModel<int>();
             var patientInfo = await _twilioRoomDb.PatientQueueGet(patientCaseId);
             
@@ -65,6 +67,14 @@ namespace TechMed.API.Controllers
             //{
             //    onlineDrLists = onlineDoctorList.OnlineDoctors;
             //}
+            if(role)
+            {
+                CanCallByPHC = true;
+            }
+            else
+            {
+                CanCallByPHC = false;
+            }
             bool isDoctorBusy = false;
             isDoctorBusy = await _patientCaseRepository.IsDoctorFreeToReceiveCall(patientCaseId);
             if (isDoctorBusy) //is enduser available to have call
