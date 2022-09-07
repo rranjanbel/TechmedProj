@@ -1981,13 +1981,13 @@ namespace TechMed.BL.Repository.BaseClasses
 
         public async Task<bool> UpdateCallStatusTime(long patientCaseID)
         {
-            //DateTime dateTime = UtilityMaster.GetLocalDateTime();
+            DateTime dateTime = UtilityMaster.GetLocalDateTime();
             int i = 0;
             PatientQueue patientQueue = await _teleMedecineContext.PatientQueues.FirstOrDefaultAsync(a => a.PatientCaseId == patientCaseID && a.CaseFileStatusId == 4);
            
             if (patientQueue != null)
             {
-                patientQueue.StatusOn = patientQueue.StatusOn.AddSeconds(45);
+                patientQueue.StatusOn = dateTime;
                 _teleMedecineContext.Entry(patientQueue).State = EntityState.Modified;
                 i = _teleMedecineContext.SaveChanges();
             }
