@@ -40,6 +40,7 @@ namespace TechMed.BL.Repository.Interfaces
         Task<PatientReferToDoctorVM> PatientReferToDoctorByAdmin(PatientReferToDoctorVM patientReferToDoctorVM);
         Task<List<PatientQueueVM>> GetPatientQueueByDocotorID(int doctorID = 0);
         Task<bool> IsDoctorFreeToReceiveCall(long patientCaseID);
+        Task<bool> UpdateCallStatusTime(long patientCaseID);
 
 
     }

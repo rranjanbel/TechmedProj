@@ -1978,6 +1978,24 @@ namespace TechMed.BL.Repository.BaseClasses
                 return true;
             
         }
+
+        public async Task<bool> UpdateCallStatusTime(long patientCaseID)
+        {
+            //DateTime dateTime = UtilityMaster.GetLocalDateTime();
+            int i = 0;
+            PatientQueue patientQueue = await _teleMedecineContext.PatientQueues.FirstOrDefaultAsync(a => a.PatientCaseId == patientCaseID && a.CaseFileStatusId == 4);
+           
+            if (patientQueue != null)
+            {
+                patientQueue.StatusOn = patientQueue.StatusOn.AddSeconds(45);
+                _teleMedecineContext.Entry(patientQueue).State = EntityState.Modified;
+                i = _teleMedecineContext.SaveChanges();
+            }
+            if (i > 0)
+                return true;
+            else
+                return false;
+        }
     }
     public class DoctorQueues
     {

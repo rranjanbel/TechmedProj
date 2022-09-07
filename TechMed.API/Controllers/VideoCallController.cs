@@ -48,8 +48,18 @@ namespace TechMed.API.Controllers
         [HttpPost("begindialingcalltouser")]
         public async Task<IActionResult> BeginDialingCallToUser([Required][FromQuery] Int64 patientCaseId)
         {
+            //Check user role who is calling
             var user = User.Identity.Name;
             bool role = User.IsInRole("PHCUser");
+            if (role)            
+                CanCallByPHC = true;      
+            else          
+                CanCallByPHC = false;
+
+            //Add some time in call status check
+            bool value = await _patientCaseRepository.UpdateCallStatusTime(patientCaseId);
+
+
             ApiResponseModel<int> apiResponseModel = new ApiResponseModel<int>();
             var patientInfo = await _twilioRoomDb.PatientQueueGet(patientCaseId);
             
@@ -60,23 +70,12 @@ namespace TechMed.API.Controllers
             }
 
 
-            //need to check availability of doctor by checkin in queue and other
-            //List<OnlineDoctorVM> onlineDrLists = new List<OnlineDoctorVM>();
-            //OnlineDoctorListVM onlineDoctorList = await _patientCaseRepository.GetSelectedOnlineDoctors(patientCaseId);
-            //if(onlineDoctorList.Status.ToLower() =="success")
-            //{
-            //    onlineDrLists = onlineDoctorList.OnlineDoctors;
-            //}
-            if(role)
-            {
-                CanCallByPHC = true;
-            }
-            else
-            {
-                CanCallByPHC = false;
-            }
+            //need to check availability of doctor by checkin in queue and other           
+            
+            // Check Doctor is free to receive the call
             bool isDoctorBusy = false;
             isDoctorBusy = await _patientCaseRepository.IsDoctorFreeToReceiveCall(patientCaseId);
+
             if (isDoctorBusy) //is enduser available to have call
             {
                 PatientCase patientCase = await  _patientCaseRepository.GetByID(patientCaseId);
