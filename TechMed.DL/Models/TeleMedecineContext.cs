@@ -129,8 +129,9 @@ namespace TechMed.DL.Models
         public virtual DbSet<UpdateServerHealthVM> UpdateServerHealth { get; set; } = null!;
         public virtual DbSet<ALLPatientsQueueVM> AllPatientQueueList { get; set; } = null!;
         public virtual DbSet<AllPendingPatient> AllPendingPatientList { get; set; } = null!;
+        public virtual DbSet<Configuration> Configurations { get; set; } = null!;
 
-
+        
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -672,6 +673,21 @@ namespace TechMed.DL.Models
                 entity.Property(e => e.Gender)
                     .HasMaxLength(50)
                     .IsUnicode(false);
+            });
+            modelBuilder.Entity<Configuration>(entity =>
+            {
+                entity.ToTable("Configuration");
+
+                entity.Property(e => e.ID).HasColumnName("ID");
+
+                entity.Property(e => e.Name)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+                entity.Property(e => e.Value)
+                   .HasMaxLength(4000)
+                   .IsUnicode(false);
+                entity.Property(e => e.UpdatedOn)
+             .HasColumnType("datetime");
             });
 
             modelBuilder.Entity<HolidayMaster>(entity =>
