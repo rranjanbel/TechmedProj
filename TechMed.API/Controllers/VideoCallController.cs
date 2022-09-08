@@ -102,9 +102,14 @@ namespace TechMed.API.Controllers
 
 
         [HttpGet("connecttomeetingroom")]
-        public async Task<IActionResult> ConnectToMeetingRoom([Required][FromQuery] int patientCaseId, [Required][FromQuery] string meetingInstance, [Required][FromQuery] bool isDoctor)
-        {            
-
+        public async Task<IActionResult> ConnectToMeetingRoom([Required][FromQuery] int patientCaseId, [Required][FromQuery] string meetingInstance, [Required][FromQuery] bool isDoctor, [Required][FromQuery]  bool isInitiator)
+        {
+            var user = User.Identity.Name;
+            bool role = User.IsInRole("PHCUser");
+            //if (role && isInitiator)
+            //    CanCallByPHC = false;
+            //else
+            //    CanCallByPHC = true;
             ApiResponseModel<int> apiResponseModel = new ApiResponseModel<int>();
             PatientCase patientCase = await _patientCaseRepository.GetByID(patientCaseId);
             string callBackUrlForTwilio = string.Format("{0}://{1}{2}/api/webhookcallback/twilioroomstatuscallback", Request.Scheme, Request.Host.Value, Request.PathBase);
@@ -122,7 +127,7 @@ namespace TechMed.API.Controllers
                 // if ((patientCaseInfo == null && CanCallByPHC && isDoctor) || (patientCaseInfo == null && !CanCallByPHC && !isDoctor))
                 // if ((patientCaseInfo == null && CanCallByPHC && isAccepter) || (patientCaseInfo == null && !CanCallByPHC && !isAccepter))
 
-                if ((patientCaseInfo == null && isDoctor) || (patientCaseInfo == null && !isDoctor))
+                if (patientCaseInfo == null && isInitiator) 
                 {
                     var roomFromTwilio = await _twilioVideoSDK.CreateRoomsAsync(meetingInstance, callBackUrlForTwilio);
                     var isSaved = await _twilioRoomDb.MeetingRoomInfoAdd(new TwilioMeetingRoomInfo()
@@ -139,17 +144,12 @@ namespace TechMed.API.Controllers
                     apiResponseModel.isSuccess = true;
                     apiResponseModel.data = patientCase.PatientId;
 
-                    //var user = User.Identity.Name;
-                    //bool role = User.IsInRole("PHCUser");
-                    //if (role)
-                    //    CanCallByPHC = true;
-                    //else
-                    //    CanCallByPHC = false;
+                  
 
                     await _hubContext.Clients.All.BroadcastMessage(new SignalRNotificationModel()
                     {
-                        receiverEmail = CanCallByPHC ? patientInfo.AssignedByNavigation.User.Email : patientInfo.AssignedDoctor.User.Email,
-                        senderEmail = CanCallByPHC ? patientInfo.AssignedDoctor.User.Email : patientInfo.AssignedByNavigation.User.Email,
+                        receiverEmail = !role ? patientInfo.AssignedByNavigation.User.Email : patientInfo.AssignedDoctor.User.Email,
+                        senderEmail = !role ? patientInfo.AssignedDoctor.User.Email : patientInfo.AssignedByNavigation.User.Email,
                         message = "",
                         messageType = enumSignRNotificationType.NotifyParticipientToJoin.ToString(),
                         patientCaseId = patientCaseId,
