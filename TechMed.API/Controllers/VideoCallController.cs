@@ -102,8 +102,15 @@ namespace TechMed.API.Controllers
 
 
         [HttpGet("connecttomeetingroom")]
-        public async Task<IActionResult> ConnectToMeetingRoom([Required][FromQuery] int patientCaseId, [Required][FromQuery] string meetingInstance, [Required][FromQuery] bool isDoctor)
+        public async Task<IActionResult> ConnectToMeetingRoom([Required][FromQuery] int patientCaseId, [Required][FromQuery] string meetingInstance, [Required][FromQuery] bool isAccepter)
         {
+            var user = User.Identity.Name;
+            bool role = User.IsInRole("PHCUser");
+            if (role)
+                CanCallByPHC = true;
+            else
+                CanCallByPHC = false;
+
             ApiResponseModel<int> apiResponseModel = new ApiResponseModel<int>();
             PatientCase patientCase = await _patientCaseRepository.GetByID(patientCaseId);
             string callBackUrlForTwilio = string.Format("{0}://{1}{2}/api/webhookcallback/twilioroomstatuscallback", Request.Scheme, Request.Host.Value, Request.PathBase);
@@ -118,8 +125,9 @@ namespace TechMed.API.Controllers
                 }
                 var patientCaseInfo = await _twilioRoomDb.MeetingRoomInfoGet(meetingInstance);
                 var patientInfo = await _twilioRoomDb.PatientQueueGet(patientCaseId);
+                // if ((patientCaseInfo == null && CanCallByPHC && isDoctor) || (patientCaseInfo == null && !CanCallByPHC && !isDoctor))
 
-                if ((patientCaseInfo == null && CanCallByPHC && isDoctor) || (patientCaseInfo == null && !CanCallByPHC && !isDoctor))
+                if ((patientCaseInfo == null && CanCallByPHC && isAccepter) || (patientCaseInfo == null && !CanCallByPHC && !isAccepter))
                 {
                     var roomFromTwilio = await _twilioVideoSDK.CreateRoomsAsync(meetingInstance, callBackUrlForTwilio);
                     var isSaved = await _twilioRoomDb.MeetingRoomInfoAdd(new TwilioMeetingRoomInfo()
