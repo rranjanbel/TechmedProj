@@ -102,14 +102,8 @@ namespace TechMed.API.Controllers
 
 
         [HttpGet("connecttomeetingroom")]
-        public async Task<IActionResult> ConnectToMeetingRoom([Required][FromQuery] int patientCaseId, [Required][FromQuery] string meetingInstance, [Required][FromQuery] bool isAccepter)
-        {
-            var user = User.Identity.Name;
-            bool role = User.IsInRole("PHCUser");
-            if (role)
-                CanCallByPHC = true;
-            else
-                CanCallByPHC = false;
+        public async Task<IActionResult> ConnectToMeetingRoom([Required][FromQuery] int patientCaseId, [Required][FromQuery] string meetingInstance, [Required][FromQuery] bool isDoctor)
+        {            
 
             ApiResponseModel<int> apiResponseModel = new ApiResponseModel<int>();
             PatientCase patientCase = await _patientCaseRepository.GetByID(patientCaseId);
@@ -126,8 +120,9 @@ namespace TechMed.API.Controllers
                 var patientCaseInfo = await _twilioRoomDb.MeetingRoomInfoGet(meetingInstance);
                 var patientInfo = await _twilioRoomDb.PatientQueueGet(patientCaseId);
                 // if ((patientCaseInfo == null && CanCallByPHC && isDoctor) || (patientCaseInfo == null && !CanCallByPHC && !isDoctor))
+                // if ((patientCaseInfo == null && CanCallByPHC && isAccepter) || (patientCaseInfo == null && !CanCallByPHC && !isAccepter))
 
-                if ((patientCaseInfo == null && CanCallByPHC && isAccepter) || (patientCaseInfo == null && !CanCallByPHC && !isAccepter))
+                if ((patientCaseInfo == null && isDoctor) || (patientCaseInfo == null && !isDoctor))
                 {
                     var roomFromTwilio = await _twilioVideoSDK.CreateRoomsAsync(meetingInstance, callBackUrlForTwilio);
                     var isSaved = await _twilioRoomDb.MeetingRoomInfoAdd(new TwilioMeetingRoomInfo()
@@ -138,21 +133,28 @@ namespace TechMed.API.Controllers
                         RoomStatusCallback = roomFromTwilio.StatusCallback.ToString(),
                         TwilioRoomStatus = roomFromTwilio.Status.ToString(),
                         AssignedBy = patientInfo.AssignedBy,
-                        AssignedDoctorId=patientInfo.AssignedDoctorId,
-                        
+                        AssignedDoctorId = patientInfo.AssignedDoctorId,
+
                     });
                     apiResponseModel.isSuccess = true;
                     apiResponseModel.data = patientCase.PatientId;
 
+                    //var user = User.Identity.Name;
+                    //bool role = User.IsInRole("PHCUser");
+                    //if (role)
+                    //    CanCallByPHC = true;
+                    //else
+                    //    CanCallByPHC = false;
+
                     await _hubContext.Clients.All.BroadcastMessage(new SignalRNotificationModel()
                     {
-                        receiverEmail = CanCallByPHC ? patientInfo.AssignedByNavigation.User.Email : patientInfo.AssignedDoctor.User.Email ,
-                        senderEmail = CanCallByPHC ? patientInfo.AssignedDoctor.User.Email : patientInfo.AssignedByNavigation.User.Email ,
+                        receiverEmail = CanCallByPHC ? patientInfo.AssignedByNavigation.User.Email : patientInfo.AssignedDoctor.User.Email,
+                        senderEmail = CanCallByPHC ? patientInfo.AssignedDoctor.User.Email : patientInfo.AssignedByNavigation.User.Email,
                         message = "",
                         messageType = enumSignRNotificationType.NotifyParticipientToJoin.ToString(),
                         patientCaseId = patientCaseId,
                         roomName = meetingInstance
-                       
+
                     });
 
 
