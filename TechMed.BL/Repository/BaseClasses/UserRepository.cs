@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using TechMed.BL.CommanClassesAndFunctions;
@@ -12,7 +14,7 @@ using TechMed.BL.Repository.Interfaces;
 using TechMed.BL.ViewModels;
 using TechMed.DL.Models;
 using TechMed.DL.ViewModel;
-
+using Microsoft.Net.Http.Headers;
 namespace TechMed.BL.Repository.BaseClasses
 {
     public class UserRepository : Repository<UserMaster>, IUserRepository
@@ -20,11 +22,14 @@ namespace TechMed.BL.Repository.BaseClasses
         private readonly TeleMedecineContext _teleMedecineContext;
         private readonly IMapper _mapper;
         private readonly ILogger<UserRepository> _logger;
-        public UserRepository(ILogger<UserRepository> logger, TeleMedecineContext teleMedecineContext, IMapper mapper) : base(teleMedecineContext)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public UserRepository(IHttpContextAccessor httpContextAccessor, ILogger<UserRepository> logger, TeleMedecineContext teleMedecineContext, IMapper mapper) : base(teleMedecineContext)
         {
             this._teleMedecineContext = teleMedecineContext;
             this._mapper = mapper;
             this._logger = logger;
+            _httpContextAccessor = httpContextAccessor;
 
         }
         public async Task<UserLoginDTO> LogedUserDetails(string userEmail)
@@ -179,7 +184,7 @@ namespace TechMed.BL.Repository.BaseClasses
                         change.UserNameOrEmail = changePassword.UserNameOrEmail;
                         return change;
                     }
-                       
+
                     else
                     {
                         change.ErrorMessage = "Did not update password";
@@ -189,7 +194,7 @@ namespace TechMed.BL.Repository.BaseClasses
                         change.UserNameOrEmail = changePassword.UserNameOrEmail;
                         return change;
                     }
-                        
+
                 }
                 else
                 {
@@ -396,9 +401,9 @@ namespace TechMed.BL.Repository.BaseClasses
         }
 
         public async Task<bool> LogoutUsers(string Token)
-        {            
+        {
             LoginHistory loginHistory = new LoginHistory();
-            loginHistory = await _teleMedecineContext.LoginHistories.FirstOrDefaultAsync(a => a.UserToken== Token);
+            loginHistory = await _teleMedecineContext.LoginHistories.FirstOrDefaultAsync(a => a.UserToken == Token);
 
             if (loginHistory != null)
             {
@@ -535,6 +540,29 @@ namespace TechMed.BL.Repository.BaseClasses
             }
             else
                 return false;
+        }
+        
+
+        public async Task<bool> UpdateUserLastAliveUpdate()
+        {
+            try
+            {
+                var _bearer_token = _httpContextAccessor.HttpContext.Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
+                var userEmail = _httpContextAccessor.HttpContext.User.Identities.First().Name;
+                var userId = await _teleMedecineContext.UserMasters.Where(a => a.Email.ToLower() == userEmail.ToLower()).FirstOrDefaultAsync();
+                LoginHistory loginHistorie = await _teleMedecineContext.LoginHistories.Where(a => a.UserToken == _bearer_token && a.UserId == userId.Id).FirstOrDefaultAsync();
+                loginHistorie.LastUpdateOn = UtilityMaster.GetLocalDateTime();
+                loginHistorie.LogedoutTime = null;
+                _teleMedecineContext.SaveChangesAsync();
+
+            }
+            catch (Exception)
+            {
+
+                return false;
+            }    
+           
+            return true;
         }
     }
 }

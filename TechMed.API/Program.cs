@@ -124,6 +124,7 @@ builder.Services.Configure<TwilioSettings>(
 var applicationRootUrl = builder.Configuration.GetSection("ApplicationRootUrl").Get<ApplicationRootUri>();
 builder.Services.AddSingleton(applicationRootUrl);
 builder.Services.AddSignalR();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "TechMed API", Version = "v1" });

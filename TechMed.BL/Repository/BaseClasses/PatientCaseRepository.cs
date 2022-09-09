@@ -24,13 +24,15 @@ namespace TechMed.BL.Repository.BaseClasses
         private readonly ILogger<PatientCaseRepository> _logger;
         //private readonly IDoctorRepository _doctorRepository;
         private readonly SMSSetting _smsSettings;
-        public PatientCaseRepository(ILogger<PatientCaseRepository> logger, TeleMedecineContext teleMedecineContext, IMapper mapper, IOptions<SMSSetting> smsSettings) : base(teleMedecineContext)
+        private readonly IUserRepository _userRepository;
+        public PatientCaseRepository(IUserRepository userRepository, ILogger<PatientCaseRepository> logger, TeleMedecineContext teleMedecineContext, IMapper mapper, IOptions<SMSSetting> smsSettings) : base(teleMedecineContext)
         {
             this._teleMedecineContext = teleMedecineContext;
             this._mapper = mapper;
             this._logger = logger;
             //this._doctorRepository = doctorRepository;
             this._smsSettings = smsSettings.Value;
+            _userRepository = userRepository;
         }
 
         public async Task<PatientCase> CreateAsync(PatientCase patientCase)
@@ -87,7 +89,7 @@ namespace TechMed.BL.Repository.BaseClasses
             PatientCaseVM patientCase = new PatientCaseVM();
             try
             {
-                
+
                 if (PHCID > 0 && PatientID > 0)
                 {
                     List<PatientCaseVitalsVM> vitals = new List<PatientCaseVitalsVM>();
@@ -109,7 +111,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     }
 
                     var phcresult = await (from pm in _teleMedecineContext.PatientMasters
-                                          
+
                                            join pc in _teleMedecineContext.PatientCases on pm.Id equals pc.PatientId into pcase
                                            from pcdet in pcase.DefaultIfEmpty()
                                            join pd in _teleMedecineContext.PatientCaseDocuments on pcdet.Id equals pd.PatientCaseId into pdoc
@@ -135,8 +137,8 @@ namespace TechMed.BL.Repository.BaseClasses
             catch (Exception ex)
             {
                 string exMessage = ex.Message;
-                
-            }          
+
+            }
 
             return patientCase;
         }
@@ -149,11 +151,12 @@ namespace TechMed.BL.Repository.BaseClasses
             PatientCaseMedicineDTO patientCaseMedicine;
             try
             {
+                await _userRepository.UpdateUserLastAliveUpdate();
                 if (PHCID > 0 && PatientID > 0)
                 {
 
                     var patientCaseQueueresult = await (from pm in _teleMedecineContext.PatientMasters
-                                                       
+
                                                         join phc in _teleMedecineContext.Phcmasters on pm.Phcid equals phc.Id
                                                         //join um in _teleMedecineContext.UserMasters on pm.CreatedBy equals um.Id
                                                         join pc in _teleMedecineContext.PatientCases on pm.Id equals pc.PatientId into pcase
@@ -162,7 +165,7 @@ namespace TechMed.BL.Repository.BaseClasses
                                                         from pques in pque.DefaultIfEmpty()
                                                         join dm in _teleMedecineContext.DoctorMasters on pques.AssignedDoctorId equals dm.Id into doc
                                                         from doct in doc.DefaultIfEmpty()
-                                                        join du in _teleMedecineContext.UserMasters on doct.UserId equals du.Id into user 
+                                                        join du in _teleMedecineContext.UserMasters on doct.UserId equals du.Id into user
                                                         from usr in user.DefaultIfEmpty()
                                                         join ud in _teleMedecineContext.UserDetails on usr.Id equals ud.UserId into udet
                                                         from userdet in udet.DefaultIfEmpty()
@@ -170,9 +173,9 @@ namespace TechMed.BL.Repository.BaseClasses
                                                         from cfsm in cfs.DefaultIfEmpty()
                                                         join sp in _teleMedecineContext.SpecializationMasters on doct.SpecializationId equals sp.Id into spm
                                                         from sepm in spm.DefaultIfEmpty()
-                                                        //join pcm in _teleMedecineContext.PatientCaseMedicines on pcdet.Id equals pcm.PatientCaseId into pcmed
-                                                        //from pcmedicine in pcmed.DefaultIfEmpty()
-                                                         where pm.Id == PatientID && pcdet.CreatedBy == PHCID
+                                                            //join pcm in _teleMedecineContext.PatientCaseMedicines on pcdet.Id equals pcm.PatientCaseId into pcmed
+                                                            //from pcmedicine in pcmed.DefaultIfEmpty()
+                                                        where pm.Id == PatientID && pcdet.CreatedBy == PHCID
                                                         select new PatientCaseWithDoctorVM
                                                         {
                                                             PatientID = pm.Id,
@@ -288,11 +291,11 @@ namespace TechMed.BL.Repository.BaseClasses
 
 
                             }
-                           
 
-                            if (i > 0 )
+
+                            if (i > 0)
                             {
-                                if(patientCaseVM.vitals.Count > 0)
+                                if (patientCaseVM.vitals.Count > 0)
                                 {
                                     foreach (var vital in patientCaseVM.vitals)
                                     {
@@ -392,9 +395,9 @@ namespace TechMed.BL.Repository.BaseClasses
                         //    {
                         //        _logger.LogError("SMS did not send to patient Id :" + patientinfo.Patient.Id); 
                         //    }
-                           
+
                         //}
-                       
+
                         return updatedFeedback;
                     }
                     else
@@ -425,7 +428,7 @@ namespace TechMed.BL.Repository.BaseClasses
             int caseCreatedBy = 0;
             DateTime? callInitiatedTime = UtilityMaster.GetLocalDateTime();
             DateTime currentTime = UtilityMaster.GetLocalDateTime();
-            caseCreatedBy = _teleMedecineContext.PatientCases.Where(a => a.Id == patientReferToDoctorVM.PatientCaseID).Select(s => s.CreatedBy).FirstOrDefault(); 
+            caseCreatedBy = _teleMedecineContext.PatientCases.Where(a => a.Id == patientReferToDoctorVM.PatientCaseID).Select(s => s.CreatedBy).FirstOrDefault();
 
             try
             {
@@ -444,7 +447,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 //    }
 
                 //}
-              
+
 
                 if (patientReferToDoctorVM != null)
                 {
@@ -457,7 +460,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     // TwilioMeetingRoomInfo videoCallStatus = await _teleMedecineContext.TwilioMeetingRoomInfos.Include(d => d.AssignedDoctor)
                     //.Where(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" && a.AssignedDoctorId == patientReferToDoctorVM.AssignedDocterID && a.AssignedDoctor.IsOnline == true).ToListAsync();
 
-                    if (videoCallStatus !=null)
+                    if (videoCallStatus != null)
                     {
                         //TwilioMeetingRoomInfo twilioMeeting = videoCallStatus.OrderByDescending(a => a.CloseDate).FirstOrDefault();
                         callInitiatedTime = videoCallStatus != null ? videoCallStatus.CloseDate : UtilityMaster.GetLocalDateTime();
@@ -473,13 +476,13 @@ namespace TechMed.BL.Repository.BaseClasses
                             return outPatientReferToDoctorVM;
                         }
                     }
-                  
+
 
                     if (patientReferToDoctorVM.AssignedDocterID > 0)
                     {
                         patientQueue.AssignedDoctorId = patientReferToDoctorVM.AssignedDocterID;
                         patientQueue.Comment = "Manually assign doctor";
-                    }                   
+                    }
                     else
                     {
                         autoAssignDoctorID = AutoAssignDoctor(patientReferToDoctorVM.PatientCaseID);
@@ -502,21 +505,21 @@ namespace TechMed.BL.Repository.BaseClasses
                     patientQueue.PatientCaseId = patientReferToDoctorVM.PatientCaseID;
                     patientQueue.AssignedBy = caseCreatedBy;
                     //patientQueue.AssignedBy = _teleMedecineContext.PatientCases.Where(a => a.Id == patientReferToDoctorVM.PatientCaseID).Select(s => s.CreatedBy).FirstOrDefault();
-                    patientQueue.CaseFileStatusId = await GetCaseFileStatus();                                      
+                    patientQueue.CaseFileStatusId = await GetCaseFileStatus();
                     patientQueue.StatusOn = UtilityMaster.GetLocalDateTime();
                     patientQueue.AssignedOn = UtilityMaster.GetLocalDateTime();
                     patientQueue.UpdatedOn = UtilityMaster.GetLocalDateTime();
                     patientQueue.IsQueueChanged = false;
-                    
+
                     //patientQueue.AssignedDoctorId = patientReferToDoctorVM.AssignedDocterID;
                     //patientQueue.Comment = "Assigned by PHC";
 
                     PatientQueue existingpatientQueue = _teleMedecineContext.PatientQueues.FirstOrDefault(a => a.PatientCaseId == patientReferToDoctorVM.PatientCaseID && a.CaseFileStatusId != 5);
-                    if(existingpatientQueue == null)
+                    if (existingpatientQueue == null)
                     {
                         //_teleMedecineContext.PatientQueues.Add(patientQueue);
                         _teleMedecineContext.Entry(patientQueue).State = EntityState.Added;
-                       
+
                     }
                     else
                     {
@@ -568,7 +571,7 @@ namespace TechMed.BL.Repository.BaseClasses
                             outPatientReferToDoctorVM.Message = "Assigned to doctor sucessfully ! but notification did not add";
                             _logger.LogError("Exception generate when going to add notification for patient case Id :" + patientQueue.PatientCaseId, ex);
                         }
-                        
+
 
                         return outPatientReferToDoctorVM;
                     }
@@ -581,7 +584,7 @@ namespace TechMed.BL.Repository.BaseClasses
                         outPatientReferToDoctorVM.Message = "Error: When assigned to doctor!";
                         return outPatientReferToDoctorVM;
                     }
-                        
+
 
                 }
                 else
@@ -600,13 +603,13 @@ namespace TechMed.BL.Repository.BaseClasses
                 _logger.LogError("Exception generate when going to assign doctor for patient case Id :" + patientQueue.PatientCaseId, ex);
                 throw;
             }
-           
+
         }
 
         private async Task<int> GetCaseFileStatus()
         {
             int caseFileStatus = 0;
-            caseFileStatus = await _teleMedecineContext.CaseFileStatusMasters.Where(a => a.FileStatus.Contains("Queued")).Select(a => a.Id).FirstOrDefaultAsync();          
+            caseFileStatus = await _teleMedecineContext.CaseFileStatusMasters.Where(a => a.FileStatus.Contains("Queued")).Select(a => a.Id).FirstOrDefaultAsync();
             return caseFileStatus;
         }
 
@@ -627,7 +630,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 patientCaseQue.PHCName = item.PHCName;
                 patientCaseQue.PatientName = item.PatientName;
                 patientCaseQue.Docter = item.Docter;
-                patientCaseQue.PHCID =item.PHCID;
+                patientCaseQue.PHCID = item.PHCID;
                 patientCaseQue.AssignedOn = item.AssignedOn;
                 patientCaseQue.Cluster = item.Cluster;
                 patientCaseQue.BlockName = item.BlockName;
@@ -673,10 +676,10 @@ namespace TechMed.BL.Repository.BaseClasses
         //        string message = ex.Message;
         //        return "";
         //    }
-            
 
 
-            
+
+
 
         //}
 
@@ -685,9 +688,9 @@ namespace TechMed.BL.Repository.BaseClasses
         //    PatientCaseDocument patientCaseDocument  ;       
         //    int l = 0;           
         //    string path = @"/MyFiles/CaseDocuments/";
-            
 
-           
+
+
         //    if (caseDocuments != null)
         //    {              
         //        foreach (var doc in caseDocuments)
@@ -720,9 +723,9 @@ namespace TechMed.BL.Repository.BaseClasses
         //                    }
         //                    l = this.Context.SaveChanges();
         //                }
-                                          
+
         //            }
-                   
+
         //        }
         //        if (l > 0)
         //        {
@@ -741,7 +744,7 @@ namespace TechMed.BL.Repository.BaseClasses
         //    }
 
         //}
-        public async Task<PatientCaseVM> GetPatientCaseDetailsByCaseID(Int64 PatientCaseID,string contentRootPath)
+        public async Task<PatientCaseVM> GetPatientCaseDetailsByCaseID(Int64 PatientCaseID, string contentRootPath)
         {
             PatientCaseVM patientCase = new PatientCaseVM();
             try
@@ -750,7 +753,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 if (PatientCaseID > 0)
                 {
                     List<PatientCaseVitalsVM> vitals = new List<PatientCaseVitalsVM>();
-                    PatientCaseMedicineDTO pcaseMedicine;                   
+                    PatientCaseMedicineDTO pcaseMedicine;
                     List<PatientCaseMedicineDTO> pcaseMedicineList = new List<PatientCaseMedicineDTO>();
                     PatientCaseDiagnosisTestsVM patientCaseDiagnosis = new PatientCaseDiagnosisTestsVM();
                     List<PatientCaseDiagnosisTestsVM> patientCaseDiagnosisList = new List<PatientCaseDiagnosisTestsVM>();
@@ -767,7 +770,7 @@ namespace TechMed.BL.Repository.BaseClasses
                         return null;
                     }
 
-                    if(patientCaseMedicine != null)
+                    if (patientCaseMedicine != null)
                     {
                         foreach (var item in patientCaseMedicine)
                         {
@@ -790,12 +793,12 @@ namespace TechMed.BL.Repository.BaseClasses
                                 pcaseMedicine.Qid = med.Qid;
                                 pcaseMedicine.Duration = med.Duration;
                                 pcaseMedicineList.Add(pcaseMedicine);
-                            }                         
+                            }
 
                         }
 
                         patientCase.caseMedicineList = pcaseMedicineList;
-                       
+
 
                     }
                     if (patientCaseDiagonisis != null)
@@ -815,14 +818,14 @@ namespace TechMed.BL.Repository.BaseClasses
                         }
                         patientCase.caseDiagnosisTestList = patientCaseDiagnosisList;
                     }
-                    if(IsVideoCallClosed != null)
+                    if (IsVideoCallClosed != null)
                     {
                         //IsVideoCallClosed = IsVideoCallClosed !=null? IsVideoCallClosed.FirstOrDefault();
                         foreach (var item in IsVideoCallClosed)
                         {
-                            patientCase.VideoCallStatus = item.TwilioRoomStatus !=null? item.TwilioRoomStatus : "status not avialble";
+                            patientCase.VideoCallStatus = item.TwilioRoomStatus != null ? item.TwilioRoomStatus : "status not avialble";
                         }
-                                              
+
                     }
                     else
                     {
@@ -836,13 +839,13 @@ namespace TechMed.BL.Repository.BaseClasses
                     patientCase.PHCMoname = patientCaseDetails.Patient.Phc.Moname;
                     patientCase.patientMaster = _mapper.Map<PatientMasterDTO>(patientCaseDetails.Patient);
                     patientCase.patientCase = _mapper.Map<PatientCaseDTO>(patientCaseDetails);
-                    if(patientDetails !=null)
+                    if (patientDetails != null)
                     {
                         patientCase.patientMaster.District = patientDetails.Patient.District.DistrictName;
                         patientCase.patientMaster.State = patientDetails.Patient.State.StateName;
                         patientCase.patientMaster.Block = patientDetails.Patient.Phc.Block.BlockName;
                     }
-                    if(patientQuue != null)
+                    if (patientQuue != null)
                     {
                         patientCase.DoctorName = patientQuue.AssignedDoctor.User.Name;
                         patientCase.DoctorMobileNo = patientQuue.AssignedDoctor.PhoneNumber;
@@ -854,7 +857,7 @@ namespace TechMed.BL.Repository.BaseClasses
                         string relativePath = patientQuue.AssignedDoctor.DigitalSignature;
                         try
                         {
-                            patientCase.DoctorSignature = UtilityMaster.DownloadFile(relativePath, contentRootPath,Path.GetFileName(patientQuue.AssignedDoctor.DigitalSignature));
+                            patientCase.DoctorSignature = UtilityMaster.DownloadFile(relativePath, contentRootPath, Path.GetFileName(patientQuue.AssignedDoctor.DigitalSignature));
                         }
                         catch (Exception ex)
                         {
@@ -868,7 +871,7 @@ namespace TechMed.BL.Repository.BaseClasses
                         patientCase.DoctorSpecialization = String.Empty;
                         patientCase.CaseFileStatusID = 0;
                     }
-                    
+
 
                     patientCase.vitals = patientCaseDetails.PatientCaseVitals.Select(vitals => new PatientCaseVitalsVM()
                     {
@@ -888,7 +891,7 @@ namespace TechMed.BL.Repository.BaseClasses
                         Id = doc.Id,
                         PatientCaseId = doc.PatientCaseId
                     }).ToList();
-                  
+
                     patientCase.patientMaster.Age = UtilityMaster.GetAgeOfPatient(patientCase.patientMaster.Dob);
 
                 }
@@ -923,21 +926,21 @@ namespace TechMed.BL.Repository.BaseClasses
 
             patientCaseLevel.caseLabelDTOs = getCaseLabelDTOs;
             var patientMaster = _teleMedecineContext.PatientMasters.FirstOrDefault(a => a.Id == patientID);
-            patientCaseLevel.patientMaster = _mapper.Map<PatientMasterDTO>(patientMaster) ;
+            patientCaseLevel.patientMaster = _mapper.Map<PatientMasterDTO>(patientMaster);
             patientCaseLevel.patientMaster.Age = UtilityMaster.GetAgeOfPatient(patientCaseLevel.patientMaster.Dob);
 
             return patientCaseLevel;
 
         }
 
-        public async Task<List<PatientCaseDocDTO>> GetPatientCaseDocList(int PatientCaseID,string rootUrl)
+        public async Task<List<PatientCaseDocDTO>> GetPatientCaseDocList(int PatientCaseID, string rootUrl)
         {
             PatientCaseDocDTO patientCaseDoc;
             List<PatientCaseDocDTO> patientCaseDocs = new List<PatientCaseDocDTO>();
             var resultDocList = await _teleMedecineContext.PatientCaseDocuments.Where(a => a.PatientCaseId == PatientCaseID).ToListAsync();
             foreach (var item in resultDocList)
             {
-               
+
                 patientCaseDoc = new PatientCaseDocDTO();
                 patientCaseDoc = _mapper.Map<PatientCaseDocDTO>(item);
                 //string absolutePath = rootUrl + patientCaseDoc.DocumentPath;
@@ -965,12 +968,12 @@ namespace TechMed.BL.Repository.BaseClasses
                         string saveFilename = String.Empty;
                         try
                         {
-                             
+
                             var fileType = Path.GetExtension(doc.file.FileName);
                             //Convert to base64
                             string base64Value = UtilityMaster.ConvertToBase64(doc.file);
                             //Save File in disk
-                             saveFilename = UtilityMaster.SaveFileFromBase64(base64Value, contentRootPath, relativePathSaveFile, fileType.ToLower(), doc.DocumentTypeId);
+                            saveFilename = UtilityMaster.SaveFileFromBase64(base64Value, contentRootPath, relativePathSaveFile, fileType.ToLower(), doc.DocumentTypeId);
 
                         }
                         catch (Exception)
@@ -978,10 +981,10 @@ namespace TechMed.BL.Repository.BaseClasses
 
                             throw;
                         }
-                      
+
                         //Save file in database
                         l = 0;
-                       
+
                         if (saveFilename != null)
                         {
                             string fullPath = Path.Combine(path, saveFilename);
@@ -1042,7 +1045,7 @@ namespace TechMed.BL.Repository.BaseClasses
                         try
                         {
 
-                            var fileType =".pdf";
+                            var fileType = ".pdf";
                             //Convert to base64
                             string base64Value = doc.file;
                             //Save File in disk
@@ -1103,28 +1106,28 @@ namespace TechMed.BL.Repository.BaseClasses
 
         public int AutoAssignDoctor(long PatientCaseID)
         {
-            int doctorId =0;
-            int[] drIDs ;
-            List<DoctorQueues> doctorQueues = new List<DoctorQueues> ();
+            int doctorId = 0;
+            int[] drIDs;
+            List<DoctorQueues> doctorQueues = new List<DoctorQueues>();
             DoctorQueues doctorque = new DoctorQueues();
 
             //1. Get online doctorlist
             int specializationID = _teleMedecineContext.PatientCases.Where(p => p.Id == PatientCaseID).Select(s => s.SpecializationId).FirstOrDefault();
-            drIDs =  _teleMedecineContext.DoctorMasters.Where(a => a.IsOnline == true && a.SpecializationId == specializationID).Select(d => d.Id).ToArray();
+            drIDs = _teleMedecineContext.DoctorMasters.Where(a => a.IsOnline == true && a.SpecializationId == specializationID).Select(d => d.Id).ToArray();
 
             //2. Get Doctor id who has minimum patient in Queue
-            if(drIDs.Length > 0)
+            if (drIDs.Length > 0)
             {
-                if(drIDs.Length > 1)
+                if (drIDs.Length > 1)
                 {
                     var queuePattients = _teleMedecineContext.PatientQueues.Where(a => drIDs.Contains(a.AssignedDoctorId) && a.CaseFileStatusId == 4).ToList();
-                   // var queuePatients = _teleMedecineContext.DoctorMasters.Include(p => p.PatientQueues).Where(a => drIDs.Contains(a.Id) && a.PatientQueues.Any( s => s.CaseFileStatusId == 4)).ToList();
+                    // var queuePatients = _teleMedecineContext.DoctorMasters.Include(p => p.PatientQueues).Where(a => drIDs.Contains(a.Id) && a.PatientQueues.Any( s => s.CaseFileStatusId == 4)).ToList();
                     var queuePatients = _teleMedecineContext.DoctorMasters.Include(p => p.PatientQueues).Where(a => drIDs.Contains(a.Id)).ToList();
-                    foreach(var queuePatient in queuePatients)
+                    foreach (var queuePatient in queuePatients)
                     {
                         doctorque = new DoctorQueues();
                         doctorque.DoctorId = queuePatient.Id;
-                        if(queuePatient.PatientQueues.Count >0)
+                        if (queuePatient.PatientQueues.Count > 0)
                         {
                             doctorque.PatientCount = queuePatient.PatientQueues.Where(q => q.CaseFileStatusId == 4).Count();
                         }
@@ -1134,18 +1137,18 @@ namespace TechMed.BL.Repository.BaseClasses
                         }
                         doctorQueues.Add(doctorque);
                     }
-                  
+
                     //3. Assign patient to the doctor who has minimum queue
                     var minimumCount = doctorQueues.Min(m => m.PatientCount);
                     doctorId = doctorQueues.Where(a => a.PatientCount == minimumCount).Select(s => s.DoctorId).FirstOrDefault();
-                    
+
                 }
                 else
                 {
                     doctorId = drIDs.FirstOrDefault();
                 }
-                
-            }  
+
+            }
             return doctorId;
         }
 
@@ -1153,17 +1156,17 @@ namespace TechMed.BL.Repository.BaseClasses
         {
             int i = 0;
             int j = 0;
-           
+
 
             using (TeleMedecineContext context = new TeleMedecineContext())
             {
                 using (var transaction = context.Database.BeginTransaction())
                 {
                     try
-                    {                        
+                    {
                         context.Entry(patientCase).State = EntityState.Modified;
                         i = context.SaveChanges();
-                        if (i > 0 )
+                        if (i > 0)
                         {
                             context.Entry(patientCaseVital).State = EntityState.Added;
                             j = context.SaveChanges(); ;
@@ -1187,14 +1190,14 @@ namespace TechMed.BL.Repository.BaseClasses
                     }
                 }
             }
-           
+
         }
 
         public int GetLoggedPHCID(string userId)
         {
             int PHCId = 0;
             var userDetail = _teleMedecineContext.Phcmasters.Include(u => u.User).Where(a => a.User.Email == userId).FirstOrDefault();
-            if(userDetail !=null)
+            if (userDetail != null)
             {
                 PHCId = userDetail.Id;
             }
@@ -1214,7 +1217,7 @@ namespace TechMed.BL.Repository.BaseClasses
 
                 //filter busy
 
-                if (doctors.Count > 0 )
+                if (doctors.Count > 0)
                 {
                     var Busydoctors = await _teleMedecineContext.TwilioMeetingRoomInfos.Include(d => d.AssignedDoctor)
                    .Where(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" && a.AssignedDoctorId != null && a.AssignedDoctor.SpecializationId == specilizationID && a.AssignedDoctor.IsOnline == true).ToListAsync();
@@ -1248,7 +1251,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     }
                     else
                     {
-                        
+
                         onlineDoctorList.OnlineDoctors = onlineDrLists;
                         onlineDoctorList.Status = "Success";
                         onlineDoctorList.StatusID = 0;
@@ -1270,9 +1273,9 @@ namespace TechMed.BL.Repository.BaseClasses
                 onlineDoctorList.Status = "Fail";
                 onlineDoctorList.StatusID = 3;
                 onlineDoctorList.Message = "Something went wrong when get online doctor list.";
-               
+
             }
-          
+
 
             return onlineDoctorList;
 
@@ -1280,26 +1283,28 @@ namespace TechMed.BL.Repository.BaseClasses
 
         public async Task<List<PatientQueueByDoctor>> GetPatientQueueByDoctor(int specializationID)
         {
+            await _userRepository.UpdateUserLastAliveUpdate();
             List<PatientQueueByDoctor> queueByDoctors = new List<PatientQueueByDoctor>();
-            PatientQueueByDoctor patientQueue ;
+            PatientQueueByDoctor patientQueue;
             var Results = _teleMedecineContext.PatientQueueByDoctorList.FromSqlInterpolated($"EXEC [dbo].[GetPatientQueueByDoctor] @SpecializationID={specializationID}");
-            
+
             foreach (var item in Results)
             {
-                patientQueue = new PatientQueueByDoctor();               
+                patientQueue = new PatientQueueByDoctor();
                 patientQueue.SrNo = item.SrNo;
                 patientQueue.NoOfPatientInQueue = item.NoOfPatientInQueue;
                 patientQueue.Doctor = item.Doctor;
                 patientQueue.DoctorID = item.DoctorID;
                 patientQueue.Gender = item.Gender;
-                patientQueue.AddToQueue = item.AddToQueue;               
-              
+                patientQueue.AddToQueue = item.AddToQueue;
+
                 queueByDoctors.Add(patientQueue);
             };
             return queueByDoctors;
         }
         public async Task<List<PatientQueueVM>> GetPatientQueue(int PHCID = 0)
         {
+            await _userRepository.UpdateUserLastAliveUpdate();
             List<PatientQueueVM> queueByDoctors = new List<PatientQueueVM>();
             PatientQueueVM patientQueue;
             var Results = await _teleMedecineContext.PatientQueuesList.FromSqlInterpolated($"EXEC [dbo].[GetAllPatientQueues]").ToListAsync();
@@ -1375,7 +1380,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     TwilioMeetingRoomInfo videoCallStatus = _teleMedecineContext.TwilioMeetingRoomInfos
                                    .Where(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" && a.AssignedDoctorId == patientQueueValue.AssignedDoctorId).OrderByDescending(x => x.CloseDate).FirstOrDefault();
 
-                    if (patientQueueValue != null &&  videoCallStatus == null)
+                    if (patientQueueValue != null && videoCallStatus == null)
                     {
                         //patientQueueValue.AssignedOn = UtilityMaster.GetLocalDateTime();
                         patientQueueValue.UpdatedOn = UtilityMaster.GetLocalDateTime();
@@ -1425,6 +1430,7 @@ namespace TechMed.BL.Repository.BaseClasses
 
         public async Task<List<PatientQueueVM>> GetPatientQueueByDocotorID(int doctorID = 0)
         {
+            await _userRepository.UpdateUserLastAliveUpdate();
             List<PatientQueueVM> queueByDoctors = new List<PatientQueueVM>();
             PatientQueueVM patientQueue;
             var Results = await _teleMedecineContext.PatientQueuesList.FromSqlInterpolated($"EXEC [dbo].[GetAllPatientQueues]").ToListAsync();
@@ -1465,9 +1471,9 @@ namespace TechMed.BL.Repository.BaseClasses
                         PatientQueue patientQueueChange = _teleMedecineContext.PatientQueues.FirstOrDefault(a => a.PatientCaseId == item.PatientCaseID && a.CaseFileStatusId == 4);
                         TwilioMeetingRoomInfo videoCallStatus = _teleMedecineContext.TwilioMeetingRoomInfos
                                     .Where(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" && a.PatientCaseId == item.PatientCaseID).OrderByDescending(x => x.CloseDate).FirstOrDefault();
-                        if(videoCallStatus != null)
+                        if (videoCallStatus != null)
                         {
-                            videoCallStatus.CloseDate = currentTime;        
+                            videoCallStatus.CloseDate = currentTime;
                         }
                         if (patientQueueChange != null && videoCallStatus == null)
                         {
@@ -1686,16 +1692,16 @@ namespace TechMed.BL.Repository.BaseClasses
         public async Task<RemovePatientFromQueueVM> RemovePatientFromDoctorsQueue(long patientCaseID)
         {
             int i = 0;
-           RemovePatientFromQueueVM removePatientFromQueue = new RemovePatientFromQueueVM();
+            RemovePatientFromQueueVM removePatientFromQueue = new RemovePatientFromQueueVM();
             PatientQueue patientQueue = await _teleMedecineContext.PatientQueues.FirstOrDefaultAsync(a => a.PatientCaseId == patientCaseID);
-            if(patientQueue != null)
+            if (patientQueue != null)
             {
-                patientQueue.UpdatedOn = UtilityMaster.GetLocalDateTime(); 
-                patientQueue.IsQueueChanged = true;               
+                patientQueue.UpdatedOn = UtilityMaster.GetLocalDateTime();
+                patientQueue.IsQueueChanged = true;
                 patientQueue.CaseFileStatusId = 6;
                 _teleMedecineContext.Entry(patientQueue).State = EntityState.Modified;
                 PatientCase patientCase = _teleMedecineContext.PatientCases.FirstOrDefault(a => a.Id == patientCaseID);
-                if(patientCase != null)
+                if (patientCase != null)
                 {
                     patientCase.CaseStatusID = 2;
                     _teleMedecineContext.Entry(patientCase).State = EntityState.Modified;
@@ -1708,13 +1714,13 @@ namespace TechMed.BL.Repository.BaseClasses
                 {
                     throw;
                 }
-               
-                if(i > 0)
+
+                if (i > 0)
                 {
                     removePatientFromQueue.Status = "success";
                     removePatientFromQueue.ErrorMessage = "";
                     removePatientFromQueue.PatientCaseID = patientCaseID;
-                    removePatientFromQueue.PatientID = patientCase!=null?patientCase.PatientId:0;
+                    removePatientFromQueue.PatientID = patientCase != null ? patientCase.PatientId : 0;
                 }
                 else
                 {
@@ -1746,7 +1752,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 patientQueue = new ALLPatientsQueueVM();
                 patientQueue.SrNo = item.SrNo;
                 patientQueue.Patient = item.Patient;
-                patientQueue.CaseHeading = item.CaseHeading;               
+                patientQueue.CaseHeading = item.CaseHeading;
                 patientQueue.PatientID = item.PatientID;
                 patientQueue.Doctor = item.Doctor;
                 patientQueue.Specialization = item.Specialization;
@@ -1777,10 +1783,10 @@ namespace TechMed.BL.Repository.BaseClasses
                 patientQueue.SrNo = item.SrNo;
                 patientQueue.Patient = item.Patient;
                 patientQueue.CaseHeading = item.CaseHeading;
-                patientQueue.PatientID = item.PatientID;              
-                patientQueue.Specialization = item.Specialization;               
-                patientQueue.PatientCaseID = item.PatientCaseID;              
-                patientQueue.PHCID = item.PHCID;               
+                patientQueue.PatientID = item.PatientID;
+                patientQueue.Specialization = item.Specialization;
+                patientQueue.PatientCaseID = item.PatientCaseID;
+                patientQueue.PHCID = item.PHCID;
                 patientQueue.PHCName = item.PHCName;
                 patientQueue.CreatedOn = item.CreatedOn;
                 patientQueue.RegID = item.RegID;
@@ -1807,7 +1813,7 @@ namespace TechMed.BL.Repository.BaseClasses
             caseCreatedBy = _teleMedecineContext.PatientCases.Where(a => a.Id == patientReferToDoctorVM.PatientCaseID).Select(s => s.CreatedBy).FirstOrDefault();
 
             try
-            { 
+            {
 
                 if (patientReferToDoctorVM != null)
                 {
@@ -1980,7 +1986,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 return false;
             else
                 return true;
-            
+
         }
 
         public async Task<bool> UpdateCallStatusTime(long patientCaseID)
@@ -1988,7 +1994,7 @@ namespace TechMed.BL.Repository.BaseClasses
             DateTime dateTime = UtilityMaster.GetLocalDateTime();
             int i = 0;
             PatientQueue patientQueue = await _teleMedecineContext.PatientQueues.FirstOrDefaultAsync(a => a.PatientCaseId == patientCaseID && a.CaseFileStatusId == 4);
-           
+
             if (patientQueue != null)
             {
                 patientQueue.StatusOn = dateTime;
@@ -2018,7 +2024,7 @@ namespace TechMed.BL.Repository.BaseClasses
     }
     public class DoctorQueues
     {
-        public int DoctorId { get; set; } 
+        public int DoctorId { get; set; }
         public int PatientCount { get; set; }
     }
 

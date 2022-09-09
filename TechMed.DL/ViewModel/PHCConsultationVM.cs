@@ -14,7 +14,7 @@ namespace TechMed.DL.ViewModel
         public string DistrictName { get; set; }
         public string BlockName { get; set; }
         public string PHCName { get; set; }
-        public DateTime ConsultationDate { get; set; }
-        public int NoOfConsultation { get; set; }
+        public DateTime? ConsultationDate { get; set; }
+        public int? NoOfConsultation { get; set; }
     }
 }

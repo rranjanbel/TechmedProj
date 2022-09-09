@@ -26,5 +26,6 @@ namespace TechMed.BL.Repository.Interfaces
         Task<Tuple<UserMaster?, UserUsertype?, bool>> LoginUser(LoginVM login);
         Task<bool> UpdateLoginHistory(string userEmail, bool logoutFromOtherDevice);
         Task<bool> InsertLoginHistory(string userEmail, LoginHistory loginHistory);
+        Task<bool> UpdateUserLastAliveUpdate();
     }
 }

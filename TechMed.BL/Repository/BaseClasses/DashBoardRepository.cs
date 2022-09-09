@@ -254,7 +254,7 @@ namespace TechMed.BL.Repository.BaseClasses
         {
             List<PHCConsultationVM> phcconsultationReports = new List<PHCConsultationVM>();
             PHCConsultationVM phcconsultationReport;
-            if (PHCId > 0)
+            if (PHCId >= 0)
             {
                 var Results = _teleMedecineContext.PHCConsultationResult.FromSqlInterpolated($"EXEC [dbo].[GetDashboardPHCConsultation] @PHCID ={PHCId}, @FromDate ={fromDate}, @ToDate ={toDate}");
                 foreach (var item in Results)
