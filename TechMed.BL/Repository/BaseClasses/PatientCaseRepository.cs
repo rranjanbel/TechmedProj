@@ -151,7 +151,7 @@ namespace TechMed.BL.Repository.BaseClasses
             PatientCaseMedicineDTO patientCaseMedicine;
             try
             {
-                await _userRepository.UpdateUserLastAliveUpdate();
+              
                 if (PHCID > 0 && PatientID > 0)
                 {
 
@@ -1282,8 +1282,7 @@ namespace TechMed.BL.Repository.BaseClasses
         }
 
         public async Task<List<PatientQueueByDoctor>> GetPatientQueueByDoctor(int specializationID)
-        {
-            await _userRepository.UpdateUserLastAliveUpdate();
+        {            
             List<PatientQueueByDoctor> queueByDoctors = new List<PatientQueueByDoctor>();
             PatientQueueByDoctor patientQueue;
             var Results = _teleMedecineContext.PatientQueueByDoctorList.FromSqlInterpolated($"EXEC [dbo].[GetPatientQueueByDoctor] @SpecializationID={specializationID}");
@@ -1304,7 +1303,7 @@ namespace TechMed.BL.Repository.BaseClasses
         }
         public async Task<List<PatientQueueVM>> GetPatientQueue(int PHCID = 0)
         {
-            await _userRepository.UpdateUserLastAliveUpdate();
+           // await _userRepository.UpdateUserLastAliveUpdate();
             List<PatientQueueVM> queueByDoctors = new List<PatientQueueVM>();
             PatientQueueVM patientQueue;
             var Results = await _teleMedecineContext.PatientQueuesList.FromSqlInterpolated($"EXEC [dbo].[GetAllPatientQueues]").ToListAsync();
@@ -1424,13 +1423,13 @@ namespace TechMed.BL.Repository.BaseClasses
             {
                 return queueByDoctors.Where(a => a.PHCID == PHCID).ToList();
             }
+           
 
 
         }
 
         public async Task<List<PatientQueueVM>> GetPatientQueueByDocotorID(int doctorID = 0)
-        {
-            await _userRepository.UpdateUserLastAliveUpdate();
+        {            
             List<PatientQueueVM> queueByDoctors = new List<PatientQueueVM>();
             PatientQueueVM patientQueue;
             var Results = await _teleMedecineContext.PatientQueuesList.FromSqlInterpolated($"EXEC [dbo].[GetAllPatientQueues]").ToListAsync();
