@@ -1326,6 +1326,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 patientQueue.StatusOn = item.StatusOn;
                 patientQueue.DoctorID = item.DoctorID;
                 patientQueue.RegID = item.RegID;
+                patientQueue.PHCName = item.PHCName;
 
                 queueByDoctors.Add(patientQueue);
             };
@@ -1410,6 +1411,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 patientQueue.StatusOn = item.StatusOn;
                 patientQueue.DoctorID = item.DoctorID;
                 patientQueue.RegID = item.RegID;
+                patientQueue.PHCName = item.PHCName;
 
                 queueByDoctors.Add(patientQueue);
             };
@@ -1450,6 +1452,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 patientQueue.StatusOn = item.StatusOn;
                 patientQueue.DoctorID = item.DoctorID;
                 patientQueue.RegID = item.RegID;
+                patientQueue.PHCName = item.PHCName;
 
                 queueByDoctors.Add(patientQueue);
             };
@@ -1533,6 +1536,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 patientQueue.StatusOn = item.StatusOn;
                 patientQueue.DoctorID = item.DoctorID;
                 patientQueue.RegID = item.RegID;
+                patientQueue.PHCName = item.PHCName;
 
                 queueByDoctors.Add(patientQueue);
             };

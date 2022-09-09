@@ -25,6 +25,7 @@ namespace TechMed.DL.ViewModel
         public DateTime StatusOn { get; set; }  
         public int DoctorID { get; set; }
         public long RegID { get; set; }
+        public string PHCName { get; set; } = null!;
 
     }
 }
