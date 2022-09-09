@@ -209,5 +209,36 @@ namespace TechMed.API.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("UpdateUserLastAliveUpdate")]
+        [ProducesResponseType(200, Type = typeof(bool))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdateUserLastAliveUpdate()
+        {
+            bool response = false;
+            try
+            {
+                response = await this._userRepository.UpdateUserLastAliveUpdate();
+                if (response)
+                {
+                    return Ok(response);
+                }
+                else
+                {
+                    ModelState.AddModelError("UpdateUserLastAliveUpdate", $"User validation fail");
+                    return StatusCode(404, ModelState);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("UpdateUserLastAliveUpdate", $"Something went wrong : {ex.Message}");
+                _logger.LogError("Exception in IsValidUser API " + ex);
+                return StatusCode(500, ModelState);
+            }
+
+        }
+
     }
 }
