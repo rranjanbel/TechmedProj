@@ -41,6 +41,7 @@ namespace TechMed.BL.Repository.Interfaces
         Task<List<PatientQueueVM>> GetPatientQueueByDocotorID(int doctorID = 0);
         Task<bool> IsDoctorFreeToReceiveCall(long patientCaseID);
         Task<bool> UpdateCallStatusTime(long patientCaseID);
+        Task<bool> IsPHCFreeToReceiveCall(long patientCaseID);
 
 
     }

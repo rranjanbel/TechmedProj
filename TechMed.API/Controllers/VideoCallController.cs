@@ -73,10 +73,12 @@ namespace TechMed.API.Controllers
             //need to check availability of doctor by checkin in queue and other           
             
             // Check Doctor is free to receive the call
-            bool isDoctorBusy = false;
-            isDoctorBusy = await _patientCaseRepository.IsDoctorFreeToReceiveCall(patientCaseId);
+            bool isDoctorFree = false;
+            isDoctorFree = await _patientCaseRepository.IsDoctorFreeToReceiveCall(patientCaseId);
+            bool isPhcFree = false;
+            isPhcFree = await _patientCaseRepository.IsPHCFreeToReceiveCall(patientCaseId);
 
-            if (isDoctorBusy) //is enduser available to have call
+            if (isDoctorFree && isPhcFree) //is enduser available to have call
             {
                 PatientCase patientCase = await  _patientCaseRepository.GetByID(patientCaseId);
                 apiResponseModel.isSuccess = true;
@@ -93,7 +95,17 @@ namespace TechMed.API.Controllers
             }
             else
             {
-                apiResponseModel.isSuccess = false;
+                if(!isDoctorFree)
+                {
+                    apiResponseModel.isSuccess = false;
+                    apiResponseModel.errorMessage = "Doctor is not free to receive a call.";
+                }
+                if (!isPhcFree)
+                {
+                    apiResponseModel.isSuccess = false;
+                    apiResponseModel.errorMessage = "PHC is not free to receive a call.";
+                }
+
 
             }
             return Ok(apiResponseModel);

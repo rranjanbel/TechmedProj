@@ -2000,6 +2000,21 @@ namespace TechMed.BL.Repository.BaseClasses
             else
                 return false;
         }
+
+        public async Task<bool> IsPHCFreeToReceiveCall(long patientCaseID)
+        {
+            bool isPHConCall = false;
+           DateTime localDate = UtilityMaster.GetLocalDateTime();
+            int phcID = await _teleMedecineContext.PatientCases.Where(a => a.Id == patientCaseID).Select(s => s.CreatedBy).FirstOrDefaultAsync();
+            var patientCaseIds = _teleMedecineContext.PatientQueues
+                .Include(p => p.PatientCase)
+                .Where(x => x.PatientCase.CreatedBy == phcID && x.AssignedOn.Year == localDate.Year && x.AssignedOn.Month == localDate.Month && x.AssignedOn.Day == localDate.Day && x.CaseFileStatusId == 4 ).Select(s => s.Id).ToList();
+             isPHConCall = _teleMedecineContext.TwilioMeetingRoomInfos.Any(x => patientCaseIds.Contains(x.PatientCaseId.Value) && x.IsClosed ==false && x.TwilioRoomStatus == "in-progress");
+            if (isPHConCall)
+                return false;
+            else
+                return true;
+        }
     }
     public class DoctorQueues
     {
