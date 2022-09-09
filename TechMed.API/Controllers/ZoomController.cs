@@ -83,7 +83,7 @@ namespace TechMed.API.Controllers
             }
 
         }
-        [HttpPost("CreateUser")]
+        [HttpPost("CreateNewMeeting")]
         public async Task<IActionResult> CreateNewMeeting(string HostUserMailID)
         {
             try
