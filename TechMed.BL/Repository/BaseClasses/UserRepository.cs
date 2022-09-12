@@ -414,8 +414,6 @@ namespace TechMed.BL.Repository.BaseClasses
                     doctor.IsOnline = false;
                     _teleMedecineContext.Entry(doctor).State = EntityState.Modified;
                 }
-
-
                 this._teleMedecineContext.Entry(loginHistory).State = EntityState.Modified;
                 int i = await this._teleMedecineContext.SaveChangesAsync();
             }
@@ -541,7 +539,7 @@ namespace TechMed.BL.Repository.BaseClasses
             else
                 return false;
         }
-        
+
 
         public async Task<bool> UpdateUserLastAliveUpdate()
         {
@@ -550,18 +548,22 @@ namespace TechMed.BL.Repository.BaseClasses
                 var _bearer_token = _httpContextAccessor.HttpContext.Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
                 var userEmail = _httpContextAccessor.HttpContext.User.Identities.First().Name;
                 var userId = await _teleMedecineContext.UserMasters.Where(a => a.Email.ToLower() == userEmail.ToLower()).FirstOrDefaultAsync();
-                LoginHistory loginHistorie = await _teleMedecineContext.LoginHistories.Where(a => a.UserToken == _bearer_token && a.UserId == userId.Id).FirstOrDefaultAsync();
-                loginHistorie.LastUpdateOn = UtilityMaster.GetLocalDateTime();
-                loginHistorie.LogedoutTime = null;
-                _teleMedecineContext.SaveChangesAsync();
-
+                if (userId != null)
+                {
+                    LoginHistory loginHistorie = await _teleMedecineContext.LoginHistories.Where(a => a.UserToken == _bearer_token && a.UserId == userId.Id).FirstOrDefaultAsync();
+                    if (loginHistorie != null)
+                    {
+                        loginHistorie.LastUpdateOn = UtilityMaster.GetLocalDateTime();
+                        loginHistorie.LogedoutTime = null;
+                        int i = await _teleMedecineContext.SaveChangesAsync();
+                    }
+                }
             }
             catch (Exception)
             {
-
                 return false;
-            }    
-           
+            }
+
             return true;
         }
     }

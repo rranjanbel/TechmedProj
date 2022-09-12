@@ -210,11 +210,11 @@ namespace TechMed.API.Controllers
         }
 
         [HttpGet]
-        [Route("UpdateUserLastAliveUpdate")]
+        [Route("UpdateUserLastAlive")]
         [ProducesResponseType(200, Type = typeof(bool))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateUserLastAliveUpdate()
+        public async Task<IActionResult> UpdateUserLastAlive()
         {
             bool response = false;
             try
