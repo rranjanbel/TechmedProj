@@ -49,6 +49,9 @@ namespace TechMed.API.Controllers
         public async Task<IActionResult> BeginDialingCallToUser([Required][FromQuery] Int64 patientCaseId)
         {
             //Check user role who is calling
+                    
+            bool isDoctorFree = false;
+            bool isPhcFree = false;
             var user = User.Identity.Name;
             bool role = User.IsInRole("PHCUser");
             if (role)            
@@ -58,7 +61,6 @@ namespace TechMed.API.Controllers
 
             //Add some time in call status check
             bool value = await _patientCaseRepository.UpdateCallStatusTime(patientCaseId);
-
 
             ApiResponseModel<int> apiResponseModel = new ApiResponseModel<int>();
             var patientInfo = await _twilioRoomDb.PatientQueueGet(patientCaseId);
@@ -70,42 +72,58 @@ namespace TechMed.API.Controllers
             }
 
 
-            //need to check availability of doctor by checkin in queue and other           
-            
-            // Check Doctor is free to receive the call
-            bool isDoctorFree = false;
-            isDoctorFree = await _patientCaseRepository.IsDoctorFreeToReceiveCall(patientCaseId);
-            bool isPhcFree = false;
-            isPhcFree = await _patientCaseRepository.IsPHCFreeToReceiveCall(patientCaseId);
+            //need to check availability of doctor by checkin in queue and other   
+            if(CanCallByPHC)
+            {
+                // Check Doctor is free to receive the call
+                isDoctorFree = await _patientCaseRepository.IsDoctorFreeToReceiveCall(patientCaseId);
 
-            if (isDoctorFree && isPhcFree) //is enduser available to have call
-            {
-                PatientCase patientCase = await  _patientCaseRepository.GetByID(patientCaseId);
-                apiResponseModel.isSuccess = true;
-                apiResponseModel.data = patientCase.PatientId;
-                await _hubContext.Clients.All.BroadcastMessage(new SignalRNotificationModel()
+                if (isDoctorFree) //is enduser available to have call
                 {
-                    receiverEmail = CanCallByPHC ? patientInfo.AssignedDoctor.User.Email : patientInfo.AssignedByNavigation.User.Email,
-                    senderEmail = CanCallByPHC ? patientInfo.AssignedByNavigation.User.Email : patientInfo.AssignedDoctor.User.Email,
-                    message = CanCallByPHC ? patientInfo.AssignedByNavigation.Phcname : patientInfo.AssignedDoctor.User.Name,
-                    messageType = enumSignRNotificationType.BeginDialingCall.ToString(),
-                    patientCaseId = patientCaseId
-                   
-                });
-            }
-            else
-            {
-                if(!isDoctorFree)
+                    PatientCase patientCase = await _patientCaseRepository.GetByID(patientCaseId);
+                    apiResponseModel.isSuccess = true;
+                    apiResponseModel.data = patientCase.PatientId;
+                    await _hubContext.Clients.All.BroadcastMessage(new SignalRNotificationModel()
+                    {
+                        receiverEmail = CanCallByPHC ? patientInfo.AssignedDoctor.User.Email : patientInfo.AssignedByNavigation.User.Email,
+                        senderEmail = CanCallByPHC ? patientInfo.AssignedByNavigation.User.Email : patientInfo.AssignedDoctor.User.Email,
+                        message = CanCallByPHC ? patientInfo.AssignedByNavigation.Phcname : patientInfo.AssignedDoctor.User.Name,
+                        messageType = enumSignRNotificationType.BeginDialingCall.ToString(),
+                        patientCaseId = patientCaseId
+
+                    });
+                }
+                else
                 {
                     apiResponseModel.isSuccess = false;
                     apiResponseModel.errorMessage = "Doctor is not free to receive a call.";
                 }
-                if (!isPhcFree)
+
+            }
+            else
+            {
+                // Check PHC is free to receive the call
+                isPhcFree = await _patientCaseRepository.IsPHCFreeToReceiveCall(patientCaseId);
+                if (isPhcFree) //is enduser available to have call
+                {
+                    PatientCase patientCase = await _patientCaseRepository.GetByID(patientCaseId);
+                    apiResponseModel.isSuccess = true;
+                    apiResponseModel.data = patientCase.PatientId;
+                    await _hubContext.Clients.All.BroadcastMessage(new SignalRNotificationModel()
+                    {
+                        receiverEmail = CanCallByPHC ? patientInfo.AssignedDoctor.User.Email : patientInfo.AssignedByNavigation.User.Email,
+                        senderEmail = CanCallByPHC ? patientInfo.AssignedByNavigation.User.Email : patientInfo.AssignedDoctor.User.Email,
+                        message = CanCallByPHC ? patientInfo.AssignedByNavigation.Phcname : patientInfo.AssignedDoctor.User.Name,
+                        messageType = enumSignRNotificationType.BeginDialingCall.ToString(),
+                        patientCaseId = patientCaseId
+
+                    });
+                }
+                else
                 {
                     apiResponseModel.isSuccess = false;
                     apiResponseModel.errorMessage = "PHC is not free to receive a call.";
                 }
-
 
             }
             return Ok(apiResponseModel);
