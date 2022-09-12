@@ -108,6 +108,32 @@ namespace TechMed.BL.Repository.BaseClasses
 
 
         }
+        public async Task<bool> UpdateLogout()
+        {
+            try
+            {
+
+                DateTime StartTime = UtilityMaster.GetLocalDateTime();
+                DateTime EndTime = UtilityMaster.GetLocalDateTime();
+           
+                var Results = _teleMedecineContext.UpdateLogout.FromSqlInterpolated($"EXEC [dbo].[UpdateLogout] ");
+                UpdateServerHealthVM data;
+                foreach (var item in Results)
+                {
+                    data = new UpdateServerHealthVM();
+                    data.Success = item.Success;
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                return false;
+            }
+            return true;
+
+
+        }
     }
 
 }

@@ -11,5 +11,7 @@ namespace TechMed.BL.Repository.Interfaces
         public Task<bool> GetAPIStatus(string APIHost);
         public Task<bool> GetANGStatus(string ANGHost);
         public Task<bool> SaveStatusInDB(string APIHost, string ANGHost);
+        public Task<bool> UpdateLogout();
+        
     }
 }
