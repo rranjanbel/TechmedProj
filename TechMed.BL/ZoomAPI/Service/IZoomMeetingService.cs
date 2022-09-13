@@ -4,12 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TechMed.BL.ZoomAPI.Model;
-using static TechMed.BL.ZoomAPI.Model.NewMeetingRequest;
+using TechMed.BL.ZoomAPI.Model.Response;
 
 namespace TechMed.BL.ZoomAPI.Service
 {
     public interface IZoomMeetingService
     {
-        Task<NewMeetingResponseModel> NewMeeting(NewMeetingRequestModel newMeetingRequestModel);
+        Task<NewMeetingResponseModel> NewMeeting(NewMeetingRequestModel newMeetingRequestModel, string HostAccountID);
+        Task<bool> DeleteMeeting(string meetingID);     
     }
 }

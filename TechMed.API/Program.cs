@@ -135,6 +135,9 @@ builder.Services.Configure<ZoomSettings>(
 builder.Services.AddScoped<IZoomUserService, ZoomUserService>();
 builder.Services.AddScoped<IZoomMeetingService, ZoomMeetingService>();
 builder.Services.AddScoped<IZoomRecordingService, ZoomRecordingService>();
+builder.Services.AddScoped<IZoomWebhook, ZoomWebhook>();
+builder.Services.AddScoped<IZoomService, ZoomService>();
+
 
 
 

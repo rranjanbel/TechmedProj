@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TechMed.BL.ZoomAPI.Model
+namespace TechMed.BL.ZoomAPI.Model.Response
 {
  
     // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);

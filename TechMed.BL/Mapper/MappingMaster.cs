@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using TechMed.BL.DTOMaster;
+using TechMed.BL.DTOMaster.Zoom;
 using TechMed.DL.Models;
 
 namespace TechMed.BL.Mapper
@@ -47,6 +48,7 @@ namespace TechMed.BL.Mapper
             CreateMap<MaritalStatus, MaritalStatusDTO>().ReverseMap();
             CreateMap<DivisionMaster, DivisionDTO>().ReverseMap();
             CreateMap<CityMaster, CityMasterDTO>().ReverseMap();
+            CreateMap<ZoomUserDetail, ZoomUserDetailDTO>().ReverseMap();
 
 
         }

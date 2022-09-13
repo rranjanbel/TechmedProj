@@ -130,8 +130,10 @@ namespace TechMed.DL.Models
         public virtual DbSet<ALLPatientsQueueVM> AllPatientQueueList { get; set; } = null!;
         public virtual DbSet<AllPendingPatient> AllPendingPatientList { get; set; } = null!;
         public virtual DbSet<Configuration> Configurations { get; set; } = null!;
-
+        public virtual DbSet<ZoomWebHookEvent> ZoomWebHookEvents { get; set; } = null!;
+        public virtual DbSet<ZoomUserDetail> ZoomUserDetails { get; set; } = null!;
         
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -687,6 +689,18 @@ namespace TechMed.DL.Models
                    .HasMaxLength(4000)
                    .IsUnicode(false);
                 entity.Property(e => e.UpdatedOn)
+             .HasColumnType("datetime");
+            });
+            modelBuilder.Entity<ZoomWebHookEvent>(entity =>
+            {
+                entity.ToTable("ZoomWebHookEvent");
+
+                entity.Property(e => e.ID).HasColumnName("ID");
+
+                entity.Property(e => e.RequestValue)
+                    .HasMaxLength(4000)
+                    .IsUnicode(false);
+                entity.Property(e => e.CreatedOn)
              .HasColumnType("datetime");
             });
 
@@ -1553,6 +1567,36 @@ namespace TechMed.DL.Models
                  .HasForeignKey(d => d.AssignedDoctorId)
                  .OnDelete(DeleteBehavior.ClientSetNull)
                  .HasConstraintName("FK_TwilioMeeting_DoctorMaster");
+            });
+
+            modelBuilder.Entity<ZoomUserDetail>(entity =>
+            {
+                entity.ToTable("ZoomUserDetail");
+
+                entity.Property(e => e.ID).HasColumnName("ID");
+
+                entity.Property(e => e.ZoomUserID)
+                   .HasMaxLength(50)
+                   .IsUnicode(false);
+                entity.Property(e => e.account_id)
+                   .HasMaxLength(150)
+                   .IsUnicode(false);
+                entity.Property(e => e.Account_number)
+                   .HasMaxLength(150)
+                   .IsUnicode(false);
+
+                entity.Property(e => e.Status)
+                    .HasMaxLength(150)
+                    .IsUnicode(false);
+
+  
+                entity.Property(e => e.UserId).HasColumnName("UserID");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.ZoomUserDetailUsers)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ZoomUserDetail_UserMaster");
             });
 
             modelBuilder.Entity<UserDetail>(entity =>
