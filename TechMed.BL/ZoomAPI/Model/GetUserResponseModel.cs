@@ -16,7 +16,7 @@ namespace TechMed.BL.ZoomAPI.Model
         public string email { get; set; }
         public int type { get; set; }
         public string role_name { get; set; }
-        public int pmi { get; set; }
+        public long pmi { get; set; }
         public bool use_pmi { get; set; }
         public string personal_meeting_url { get; set; }
         public string timezone { get; set; }

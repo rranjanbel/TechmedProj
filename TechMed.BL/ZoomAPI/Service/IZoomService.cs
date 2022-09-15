@@ -16,5 +16,7 @@ namespace TechMed.BL.ZoomAPI.Service
         Task<ZoomUserDetailDTO> GetUserStatusFromZoom(string Email);
         Task<NewMeetingResponseModel> CreateMeeting(string HostUserMailID, string HostAccountID);
         Task<bool> DeleteMeeting(string meetingID);
+        Task<bool> EndMeeting(string meetingID);
+        Task<bool> UpdateUserRecodingSetting(string ZoomUserID);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 using TechMed.BL.DTOMaster.Zoom;
 using TechMed.BL.ZoomAPI.Model;
 using TechMed.BL.ZoomAPI.Service;
@@ -171,18 +172,18 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(ZoomUserDetailDTO))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CreateNewMeeting(string HostUserMailID)
+        public async Task<IActionResult> CreateNewMeeting([FromBody] string HostUserMailID)
         {
             try
             {
-                ZoomUserDetail zoomUserDetail = await _teleMedecineContext.ZoomUserDetails.Include(a => a.User.Email.ToLower() == HostUserMailID).FirstOrDefaultAsync();
+                ZoomUserDetail zoomUserDetail = await _teleMedecineContext.ZoomUserDetails.Include(a=>a.User).Where(a => a.User.Email.ToLower() == HostUserMailID.ToLower()).FirstOrDefaultAsync();
                 if (zoomUserDetail != null)
                 {
                     if (zoomUserDetail.Status.ToLower() == "active")
                     {
                         _logger.LogInformation("Received GetToken ");
 
-                        var newUserResponse = await _zoomService.CreateMeeting(HostUserMailID, zoomUserDetail.account_id);
+                        var newUserResponse = await _zoomService.CreateMeeting(HostUserMailID, zoomUserDetail.ZoomUserID);
                         return Ok();
                     }
                     else
@@ -235,21 +236,50 @@ namespace TechMed.API.Controllers
 
         }
 
+        [Route("EndMeeting")]
+        [HttpPost]
+        [ProducesResponseType(200, Type = typeof(bool))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> EndMeeting(string MeetingID)
+        {
+            try
+            {
+                _logger.LogInformation("Received EndMeeting ");
+                var Response = await _zoomService.EndMeeting(MeetingID);
+                if (Response)
+                {
+                    return Ok(true);
+                }
+                else
+                {
+                    return Ok(false);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Exception in GetToken API " + ex);
+                throw;
+            }
+
+        }
+
         [Consumes("application/json")]
         [Route("ZoomWebhookService")]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> ZoomWebhookService([FromBody] string value)
+        public async Task<IActionResult> ZoomWebhookService([FromBody]JsonElement body)
         {
             _logger.LogInformation("Received ZoomWebhookService ");
 
             try
             {
+                string json = System.Text.Json.JsonSerializer.Serialize(body);
                 var bodyString = HttpContext.Items["request_body"];
                 // use the body, process the stuff...
                 //var content =HttpContext.Request.Content;
                 //string jsonContent = content.ReadAsStringAsync().Result;
-                var newUserResponse = await _zoomWebhook.ZoomWebhookService(value);
+                var newUserResponse = await _zoomWebhook.ZoomWebhookService(json);
                 return Ok();
             }
             catch (Exception ex)
@@ -260,7 +290,33 @@ namespace TechMed.API.Controllers
 
         }
 
+        [Route("UpdateUserRecodingSetting")]
+        [HttpPost]
+        [ProducesResponseType(200, Type = typeof(bool))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdateUserRecodingSetting(string ZoomUserID)
+        {
+            try
+            {
+                _logger.LogInformation("Received UpdateUserRecodingSetting ");
+                var Response = await _zoomService.UpdateUserRecodingSetting(ZoomUserID);
+                if (Response)
+                {
+                    return Ok(true);
+                }
+                else
+                {
+                    return Ok(false);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Exception in UpdateUserRecodingSetting API " + ex);
+                throw;
+            }
 
+        }
 
 
         [HttpPost("GetToken")]

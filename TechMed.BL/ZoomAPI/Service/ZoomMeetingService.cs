@@ -50,7 +50,37 @@ namespace TechMed.BL.ZoomAPI.Service
             return false;
         }
 
-        public async Task<NewMeetingResponseModel> NewMeeting(NewMeetingRequestModel newMeetingRequestModel, string HostAccountID)
+        public async Task<bool> EndMeeting(string meetingID)
+        {
+            EndMeetingModel endMeetingModel = new EndMeetingModel();
+            var token = _teleMedecineContext.Configurations.Where(a => a.Name == "ZoomToken").FirstOrDefault();
+            string json = JsonSerializer.Serialize<EndMeetingModel>(endMeetingModel);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            using (HttpClient _httpClient = new HttpClient())
+            {
+
+                _httpClient.DefaultRequestHeaders.Add("X-Version", "1");
+                _httpClient.DefaultRequestHeaders.Authorization =
+                 new AuthenticationHeaderValue("Bearer", token.Value);
+                var response = await _httpClient.PutAsync("https://api.zoom.us/v2/meetings/"+ meetingID + "/status", content);
+                if (response.IsSuccessStatusCode)
+                {
+                    //204 deleted 
+                    if (response.StatusCode == HttpStatusCode.NoContent)
+                    {
+                        return true;
+                    }
+
+                    var responseContent = await response.Content.ReadAsStringAsync();
+                    var responsevalue = JsonSerializer.Deserialize<bool>(responseContent);
+
+                }
+
+            }
+            return false;
+        }
+
+        public async Task<NewMeetingResponseModel> NewMeeting(NewMeetingRequestModel newMeetingRequestModel, string HostUserID)
         {
             //string token =await _zoomAccountService.GetTokenAsync();
             var token = _teleMedecineContext.Configurations.Where(a => a.Name == "ZoomToken").FirstOrDefault();
@@ -63,7 +93,7 @@ namespace TechMed.BL.ZoomAPI.Service
                 _httpClient.DefaultRequestHeaders.Add("X-Version", "1");
                 _httpClient.DefaultRequestHeaders.Authorization =
                  new AuthenticationHeaderValue("Bearer", token.Value);
-                var response = await _httpClient.PostAsync("https://api.zoom.us/v2/users/" + HostAccountID + "/meetings", content);
+                var response = await _httpClient.PostAsync("https://api.zoom.us/v2/users/" + HostUserID + "/meetings", content);
                 if (response.IsSuccessStatusCode)
                 {
                     //204 deleted/No content

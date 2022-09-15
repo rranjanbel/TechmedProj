@@ -43,6 +43,12 @@ namespace TechMed.BL.ZoomAPI.Service
             bool responseModel = await _zoomMeetingService.DeleteMeeting(meetingID);
             return responseModel;
         }
+        public async Task<bool> EndMeeting(string meetingID)
+        {
+
+            bool responseModel = await _zoomMeetingService.EndMeeting(meetingID);
+            return responseModel;
+        }
 
         public async Task<ZoomUserDetailDTO> CreateUser(string Email)
         {
@@ -67,7 +73,7 @@ namespace TechMed.BL.ZoomAPI.Service
             else
             {
                 var user = await _ZoomUserService.GetUser(Email);
-                if (string.IsNullOrEmpty(user.id))
+                if (!string.IsNullOrEmpty(user.id))
                 {
                     zoomUserDetailDTO.UserId = userMaster.Id;
                     zoomUserDetailDTO.Account_number = user.account_number.ToString();
@@ -172,5 +178,10 @@ namespace TechMed.BL.ZoomAPI.Service
             return zoomUserDetailDTO;
         }
 
+        public async Task<bool> UpdateUserRecodingSetting(string ZoomUserID)
+        {
+            bool responseModel = await _ZoomUserService.UpdateRecodingSetting(ZoomUserID);
+            return responseModel;
+        }
     }
 }

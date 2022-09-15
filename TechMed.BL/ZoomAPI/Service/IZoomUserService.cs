@@ -11,5 +11,6 @@ namespace TechMed.BL.ZoomAPI.Service
     {
         Task<NewUserResponseModel> CreateUser(NewUserRequestModel newUser);
         Task<GetUserResponseModel> GetUser(string EmailID);
+        Task<bool> UpdateRecodingSetting(string ZoomUserID);
     }
 }

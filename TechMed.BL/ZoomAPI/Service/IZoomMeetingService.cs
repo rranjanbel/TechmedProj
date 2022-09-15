@@ -11,6 +11,8 @@ namespace TechMed.BL.ZoomAPI.Service
     public interface IZoomMeetingService
     {
         Task<NewMeetingResponseModel> NewMeeting(NewMeetingRequestModel newMeetingRequestModel, string HostAccountID);
-        Task<bool> DeleteMeeting(string meetingID);     
+        Task<bool> DeleteMeeting(string meetingID);   
+        Task<bool> EndMeeting(string meetingID);   
+        
     }
 }
