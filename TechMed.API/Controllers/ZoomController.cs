@@ -279,6 +279,10 @@ namespace TechMed.API.Controllers
                 // use the body, process the stuff...
                 //var content =HttpContext.Request.Content;
                 //string jsonContent = content.ReadAsStringAsync().Result;
+
+
+                
+
                 var newUserResponse = await _zoomWebhook.ZoomWebhookService(json);
                 return Ok();
             }
@@ -319,6 +323,33 @@ namespace TechMed.API.Controllers
         }
 
 
+        [Route("GetRecording")]
+        [HttpPost]
+        [ProducesResponseType(200, Type = typeof(GetRecordingResponseModel))]
+        public async Task<IActionResult> GetRecording(string MeetingID)
+        {
+            try
+            {
+                GetRecordingResponseModel responseModel = await _zoomRecordingService.GetRecording(MeetingID);
+                if (responseModel!=null)
+                {
+                    return Ok(responseModel);
+                }
+                else
+                {
+                    return NotFound();
+                }
+               
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Exception in GetToken API " + ex);
+                throw;
+            }
+
+        }
+
+
         [HttpPost("GetToken")]
         public async Task<IActionResult> GetToken()
         {
@@ -326,7 +357,7 @@ namespace TechMed.API.Controllers
             {
                 _logger.LogInformation("Received GetToken ");
 
-                string str = await _zoomAccountService.GetTokenAsync();
+                string str = await _zoomAccountService.GetNewTokenFromZoomAsync();
 
                 return Ok();
             }
@@ -380,21 +411,7 @@ namespace TechMed.API.Controllers
 
         }
 
-        [HttpPost("GetRecording")]
-        public async Task<IActionResult> GetRecording(string MeetingID)
-        {
-            try
-            {
-                var newUserResponse = await _zoomRecordingService.GetRecording(MeetingID);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Exception in GetToken API " + ex);
-                throw;
-            }
-
-        }
+      
 
       
 

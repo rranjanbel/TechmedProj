@@ -8,6 +8,7 @@ namespace TechMed.BL.ZoomAPI.Service
 {
     public interface IZoomAccountService
     {
-        Task<string> GetTokenAsync();
+        Task<string> GetNewTokenFromZoomAsync();
+        Task<string> GetIssuedTokenAsync();
     }
 }

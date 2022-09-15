@@ -13,21 +13,25 @@ namespace TechMed.BL.ZoomAPI.Service
     public class ZoomRecordingService : IZoomRecordingService
     {
         readonly TeleMedecineContext _teleMedecineContext;
-        public ZoomRecordingService(TeleMedecineContext teleMedecineContext)
+        readonly IZoomAccountService _zoomAccountService;
+        public ZoomRecordingService(TeleMedecineContext teleMedecineContext, IZoomAccountService zoomAccountService)
         {
             _teleMedecineContext = teleMedecineContext;
+            _zoomAccountService = zoomAccountService;
+
         }
         public async Task<GetRecordingResponseModel> GetRecording(string MeetingID)
         {
             //string token =await _zoomAccountService.GetTokenAsync();
-            var token = _teleMedecineContext.Configurations.Where(a => a.Name == "ZoomToken").FirstOrDefault();
+            var token = await _zoomAccountService.GetIssuedTokenAsync();
+
             GetRecordingResponseModel responseModel = new GetRecordingResponseModel();
             using (HttpClient _httpClient = new HttpClient())
             {
                 _httpClient.DefaultRequestHeaders.Add("X-Version", "1");
                 _httpClient.DefaultRequestHeaders.Authorization =
-                 new AuthenticationHeaderValue("Bearer", token.Value);
-                var response = await _httpClient.GetAsync("https://api.zoom.us/v2/users/" + MeetingID.Trim());
+                 new AuthenticationHeaderValue("Bearer", token);
+                var response = await _httpClient.GetAsync("https://api.zoom.us/v2/meetings/"+ MeetingID.Trim() + "/recordings");
                 if (response.IsSuccessStatusCode)
                 {
                     //200 success response

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
@@ -6,33 +7,34 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using TechMed.BL.ZoomAPI.Model;
+using TechMed.DL.Models;
 
 namespace TechMed.BL.ZoomAPI.Service
 {
     public class ZoomAccountService : IZoomAccountService
     {
         readonly ZoomSettings _zoomSettings;
-        public ZoomAccountService(Microsoft.Extensions.Options.IOptions<ZoomSettings> zoomOptions)
+        readonly TeleMedecineContext _telemedecineContext;
+        public ZoomAccountService(TeleMedecineContext telemedecineContext, Microsoft.Extensions.Options.IOptions<ZoomSettings> zoomOptions)
         {
             _zoomSettings =
                 zoomOptions?.Value
              ?? throw new ArgumentNullException(nameof(zoomOptions));
+            _telemedecineContext = telemedecineContext;
         }
-        public async Task<string> GetTokenAsync()
+
+        public async Task<string> GetIssuedTokenAsync()
         {
-            //_zoomSettings.ZoomSSAccountId;
-            //_zoomSettings.ZoomSSClientID;
+            //var token = await _telemedecineContext.Configurations.Where(a => a.Name == "ZoomToken").FirstOrDefaultAsync();
+            //return token.Value;
 
+            string token = await GetNewTokenFromZoomAsync();
+            return token;
+        }
 
+        public async Task<string> GetNewTokenFromZoomAsync()
+        {
 
-
-            var values = new Dictionary<string, string>
-                          {
-                              { "thing1", "hello" },
-                              { "thing2", "world" }
-                          };
-
-            var content = new FormUrlEncodedContent(values);
             using (HttpClient _httpClient = new HttpClient())
             {
                 var plainTextBytes = Encoding.UTF8.GetBytes(_zoomSettings.ZoomSSClientID.Trim() + ":" + _zoomSettings.ZoomSSClientSecret.Trim());
@@ -48,7 +50,6 @@ namespace TechMed.BL.ZoomAPI.Service
                     var zoomToken = JsonSerializer.Deserialize<ZoomTokenModel>(responseContent);
                     return zoomToken.access_token.ToString();
                 }
-
             }
             return "";
         }

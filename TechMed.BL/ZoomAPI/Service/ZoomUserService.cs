@@ -15,19 +15,20 @@ namespace TechMed.BL.ZoomAPI.Service
     {
         readonly ZoomSettings _zoomSettings;
         readonly TeleMedecineContext _teleMedecineContext;
-        //readonly ZoomAccountService _zoomAccountService;
-        public ZoomUserService(/*Microsoft.Extensions.Options.IOptions<ZoomSettings> zoomOptions,*/ TeleMedecineContext teleMedecineContext)
+        readonly IZoomAccountService _zoomAccountService;
+
+        public ZoomUserService(/*Microsoft.Extensions.Options.IOptions<ZoomSettings> zoomOptions,*/ TeleMedecineContext teleMedecineContext, IZoomAccountService zoomAccountService)
         {
             _teleMedecineContext = teleMedecineContext;
             //_zoomSettings =
             //    zoomOptions?.Value
             // ?? throw new ArgumentNullException(nameof(zoomOptions));
-            //_zoomAccountService = zoomAccountService;
+            _zoomAccountService = zoomAccountService;
         }
         public async Task<NewUserResponseModel> CreateUser(NewUserRequestModel newUser)
         {
             //string token =await _zoomAccountService.GetTokenAsync();
-            var token = _teleMedecineContext.Configurations.Where(a => a.Name == "ZoomToken").FirstOrDefault();
+            var token = await _zoomAccountService.GetIssuedTokenAsync();
             NewUserResponseModel newUserResponse = new NewUserResponseModel();
             string json = JsonSerializer.Serialize<NewUserRequestModel>(newUser);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -36,7 +37,7 @@ namespace TechMed.BL.ZoomAPI.Service
 
                 _httpClient.DefaultRequestHeaders.Add("X-Version", "1");
                 _httpClient.DefaultRequestHeaders.Authorization =
-                 new AuthenticationHeaderValue("Bearer", token.Value);
+                 new AuthenticationHeaderValue("Bearer", token);
                 //_httpClient.DefaultRequestHeaders.Add("Authorization", "Basic " + AuthorizationString);
                 //var company = JsonSerializer.Serialize(companyForCreation);
                 //var requestContent = new StringContent(company, Encoding.UTF8, "application/json");
@@ -59,7 +60,7 @@ namespace TechMed.BL.ZoomAPI.Service
         public async Task<GetUserResponseModel> GetUser(string EmailID)
         {
             //string token =await _zoomAccountService.GetTokenAsync();
-            var token = _teleMedecineContext.Configurations.Where(a => a.Name == "ZoomToken").FirstOrDefault();
+            var token = await _zoomAccountService.GetIssuedTokenAsync();
             GetUserResponseModel newUserResponse = new GetUserResponseModel();
 
             using (HttpClient _httpClient = new HttpClient())
@@ -67,7 +68,7 @@ namespace TechMed.BL.ZoomAPI.Service
 
                 _httpClient.DefaultRequestHeaders.Add("X-Version", "1");
                 _httpClient.DefaultRequestHeaders.Authorization =
-                 new AuthenticationHeaderValue("Bearer", token.Value);
+                 new AuthenticationHeaderValue("Bearer", token);
                 var response = await _httpClient.GetAsync("https://api.zoom.us/v2/users/" + EmailID.Trim());
                 if (response.IsSuccessStatusCode)
                 {
@@ -89,7 +90,7 @@ namespace TechMed.BL.ZoomAPI.Service
         public async Task<bool> UpdateRecodingSetting(string ZoomUserID)
         {
             UpdateUserRecordingSettingModel model = new UpdateUserRecordingSettingModel();
-            var token = _teleMedecineContext.Configurations.Where(a => a.Name == "ZoomToken").FirstOrDefault();
+            var token = await _zoomAccountService.GetIssuedTokenAsync();
             string json = JsonSerializer.Serialize<UpdateUserRecordingSettingModel>(model);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             using (HttpClient _httpClient = new HttpClient())
@@ -97,7 +98,7 @@ namespace TechMed.BL.ZoomAPI.Service
 
                 _httpClient.DefaultRequestHeaders.Add("X-Version", "1");
                 _httpClient.DefaultRequestHeaders.Authorization =
-                 new AuthenticationHeaderValue("Bearer", token.Value);
+                 new AuthenticationHeaderValue("Bearer", token);
                 var response = await _httpClient.PatchAsync("https://api.zoom.us/v2/users/" + ZoomUserID + "/settings", content);
                 if (response.IsSuccessStatusCode)
                 {

@@ -37,9 +37,22 @@ namespace TechMed.BL.ZoomAPI.Service
             return responseModel;
         }
 
+        public async Task<NewMeetingResponseModel> CreateMeeting(int phcID)
+        {
+
+            Phcmaster phcmaster = await _teleMedecineContext.Phcmasters.Where(a => a.Id == phcID).FirstOrDefaultAsync();
+            ZoomUserDetail zoomUserDetail =await _teleMedecineContext.ZoomUserDetails.Include(a => a.User).Where(a => a.User.Id == phcmaster.UserId).FirstOrDefaultAsync();
+            if (zoomUserDetail!=null)
+            {
+                var responseModel = await CreateMeeting(zoomUserDetail.User.Email, zoomUserDetail.ZoomUserID);
+                return responseModel;
+            }
+
+            return null;
+        }
         public async Task<bool> DeleteMeeting(string meetingID)
         {
-           
+
             bool responseModel = await _zoomMeetingService.DeleteMeeting(meetingID);
             return responseModel;
         }

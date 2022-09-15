@@ -700,6 +700,10 @@ namespace TechMed.DL.Models
                 entity.Property(e => e.RequestValue)
                     .HasMaxLength(4000)
                     .IsUnicode(false);
+                entity.Property(e => e.EventName)
+                   .HasMaxLength(250)
+                   .IsUnicode(false);
+                
                 entity.Property(e => e.CreatedOn)
              .HasColumnType("datetime");
             });
@@ -1540,6 +1544,9 @@ namespace TechMed.DL.Models
                 entity.Property(e => e.MeetingSid)
                     .HasMaxLength(250)
                     .HasColumnName("MeetingSID");
+                entity.Property(e => e.Environment)
+                   .HasMaxLength(150)
+                   .HasColumnName("Environment");
 
                 entity.Property(e => e.PatientCaseId).HasColumnName("PatientCaseID");
 

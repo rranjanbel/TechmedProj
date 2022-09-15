@@ -12,5 +12,7 @@ namespace TechMed.DL.Models
         public string RequestValue { get; set; } = null!;
         public DateTime CreatedOn { get; set; }
 
+        public string EventName { get; set; } = null!; 
+
     }
 }

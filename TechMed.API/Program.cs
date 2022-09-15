@@ -131,12 +131,12 @@ builder.Services.Configure<ZoomSettings>(
         settings.ZoomSSClientSecret = builder.Configuration.GetValue<string>("Zoom:ZoomSSClientSecret");
     })
     .AddTransient<IZoomAccountService, ZoomAccountService>();
-
 builder.Services.AddScoped<IZoomUserService, ZoomUserService>();
 builder.Services.AddScoped<IZoomMeetingService, ZoomMeetingService>();
 builder.Services.AddScoped<IZoomRecordingService, ZoomRecordingService>();
 builder.Services.AddScoped<IZoomWebhook, ZoomWebhook>();
 builder.Services.AddScoped<IZoomService, ZoomService>();
+builder.Services.AddScoped<IConfigurationMasterRepository, ConfigurationMasterRepository>();
 
 
 

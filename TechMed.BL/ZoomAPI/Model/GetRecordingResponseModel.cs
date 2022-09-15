@@ -17,8 +17,8 @@ namespace TechMed.BL.ZoomAPI.Model
         public int recording_count { get; set; }
         public DateTime start_time { get; set; }
         public string topic { get; set; }
-        public int total_size { get; set; }
-        public string type { get; set; }
+        public long total_size { get; set; }
+        public int type { get; set; }
         public string uuid { get; set; }
         public List<RecordingFile> recording_files { get; set; }
         public string download_access_token { get; set; }
@@ -31,7 +31,7 @@ namespace TechMed.BL.ZoomAPI.Model
         public string download_url { get; set; }
         public string file_name { get; set; }
         public string file_path { get; set; }
-        public int file_size { get; set; }
+        public long file_size { get; set; }
         public string file_type { get; set; }
         public string id { get; set; }
         public string play_url { get; set; }
@@ -45,7 +45,7 @@ namespace TechMed.BL.ZoomAPI.Model
         public DateTime deleted_time { get; set; }
         public string download_url { get; set; }
         public string file_path { get; set; }
-        public string file_size { get; set; }
+        public long file_size { get; set; }
         public string file_type { get; set; }
         public string id { get; set; }
         public string meeting_id { get; set; }
