@@ -547,14 +547,23 @@ namespace TechMed.BL.Repository.BaseClasses
             {
                 var _bearer_token = _httpContextAccessor.HttpContext.Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
                 var userEmail = _httpContextAccessor.HttpContext.User.Identities.First().Name;
-                var userId = await _teleMedecineContext.UserMasters.Where(a => a.Email.ToLower() == userEmail.ToLower()).FirstOrDefaultAsync();
-                if (userId != null)
+                var user = await _teleMedecineContext.UserMasters.Where(a => a.Email.ToLower() == userEmail.ToLower()).FirstOrDefaultAsync();
+                var usertype = await _teleMedecineContext.UserUsertypes.Where(a => a.UserId == user.Id).FirstOrDefaultAsync();
+                if (user != null)
                 {
-                    LoginHistory loginHistorie = await _teleMedecineContext.LoginHistories.Where(a => a.UserToken == _bearer_token && a.UserId == userId.Id).FirstOrDefaultAsync();
+                    LoginHistory loginHistorie = await _teleMedecineContext.LoginHistories.Where(a => a.UserToken == _bearer_token && a.UserId == user.Id).FirstOrDefaultAsync();
                     if (loginHistorie != null)
                     {
                         loginHistorie.LastUpdateOn = UtilityMaster.GetLocalDateTime();
                         loginHistorie.LogedoutTime = null;
+                        if (usertype.UserTypeId==4)
+                        {
+                            var doctor = await _teleMedecineContext.DoctorMasters.Where(a => a.UserId == user.Id).FirstOrDefaultAsync();
+                            if (doctor!=null)
+                            {
+                                doctor.IsOnline = true;
+                            }
+                        }
                         int i = await _teleMedecineContext.SaveChangesAsync();
                     }
                 }
