@@ -280,21 +280,8 @@ namespace TechMed.BL.Repository.BaseClasses
                                 patientCase.ReferredTo = patientCaseVM.patientCase.ReferredTo;
                                 patientCase.CaseStatusID = 2;
 
-
                                 this._teleMedecineContext.Entry(patientCase).State = EntityState.Modified;
-                                i = await this.Context.SaveChangesAsync();
-                                patientcasecreateVM.patientCase = patientCaseVM.patientCase;
-                                if (i > 0)
-                                {
-                                    _logger.LogInformation($"update Patient case : sucessfully {patientCase.Id}");
-                                }
 
-
-                            }
-
-
-                            if (i > 0)
-                            {
                                 if (patientCaseVM.vitals.Count > 0)
                                 {
                                     foreach (var vital in patientCaseVM.vitals)
@@ -305,26 +292,24 @@ namespace TechMed.BL.Repository.BaseClasses
                                         patientCaseVital.PatientCaseId = vital.PatientCaseId;
                                         patientCaseVital.VitalId = vital.VitalId;
                                         patientCaseVital.Value = vital.Value;
-                                        this._teleMedecineContext.Entry(patientCaseVital).State = EntityState.Added;
-                                        k = await this.Context.SaveChangesAsync();
-                                        if (k > 0)
-                                        {
-                                            _logger.LogInformation($"Patient vital added : sucessfully");
-                                        }
+                                        this._teleMedecineContext.Entry(patientCaseVital).State = EntityState.Added;                                      
 
                                     }
-
-
+                                }
+                                k = await this.Context.SaveChangesAsync();
+                                if (k > 0)
+                                {
                                     patientcasecreateVM.vitals = patientCaseVM.vitals;
-
+                                    _logger.LogInformation($"Patient vital added : sucessfully");
                                 }
                                 patientcasecreateVM.PatientID = patientCaseVM.PatientID;
                                 patientcasecreateVM.PHCUserId = patientCaseVM.PHCUserId;
                                 patientcasecreateVM.PHCId = patientCaseVM.PHCId;
                                 patientcasecreateVM.PatientID = patientCaseVM.PatientID;
-
-
                             }
+
+
+                           
                         }
                         catch (Exception ex)
                         {

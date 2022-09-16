@@ -97,7 +97,6 @@ namespace TechMed.API.NotificationHub
         }
         public async Task onLogoutFromBrowser(string toUser)
         {
-
             var users = await _userService.LogoutUsers(toUser);
         }
     }

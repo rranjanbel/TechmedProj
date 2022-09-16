@@ -647,7 +647,8 @@ namespace TechMed.API.Controllers
                     _logger.LogError("PostTreatmentPlan : ModelState is invalid");
                     return BadRequest(treatmentVM.PatientCaseID);
                 }
-                var result = await _doctorRepository.PostTreatmentPlan(treatmentVM, _webHostEnvironment.ContentRootPath);
+               // var result = await _doctorRepository.PostTreatmentPlan(treatmentVM, _webHostEnvironment.ContentRootPath);
+                var result = await _doctorRepository.SaveTreatmentPlan(treatmentVM, _webHostEnvironment.ContentRootPath);
                 if (result)
                 {
                     _logger.LogInformation($"PostTreatmentPlan : Sucess response returned ");

@@ -30,6 +30,7 @@ namespace TechMed.BL.Repository.Interfaces
         public Task<List<SubSpecializationDTO>> GetListOfSubSpecializationMaster(int SpecializationID);
         public Task<bool> DeleteNotification(long NotificationID);
         public Task<bool> PostTreatmentPlan(TreatmentVM treatmentVM, string ContentRootPath);
+        Task<bool> SaveTreatmentPlan(TreatmentVM treatmentVM, string ContentRootPath);
         public Task<GetEHRDTO> GetEHR(GetEHRVM getEHRVM);
         public Task<bool> PatientAbsent(PatientAbsentVM patientAbsentVM);
         public Task<bool> ReferHigherFacility(PatientAbsentVM patientAbsentVM);

@@ -567,10 +567,94 @@ namespace TechMed.BL.Repository.BaseClasses
                 string expMesg = ex.Message;
                 throw;
             }
+            return false;
+        }
+
+        public async Task<bool> SaveTreatmentPlan(TreatmentVM treatmentVM, string ContentRootPath)
+        {
+            try
+            {
+                //check caseid
+                PatientQueue patientQueue = await _teleMedecineContext.PatientQueues.Include(a => a.PatientCase)         
+                  .Where(a => a.CaseFileStatusId == 4 && a.PatientCaseId == treatmentVM.PatientCaseID).FirstOrDefaultAsync();
+
+                if (patientQueue != null)
+                { 
+                    //update case table
+                    patientQueue.CaseFileStatusId = 5;
+                    patientQueue.StatusOn = UtilityMaster.GetLocalDateTime();                   
+                   
+
+                    var patientCase = patientQueue.PatientCase;
+                    patientCase.Instruction = treatmentVM.Instruction;
+                    patientCase.Finding = treatmentVM.Findings;
+                    patientCase.Prescription = treatmentVM.Prescription;
+                    patientCase.SuggestedDiagnosis = treatmentVM.SuggestedDiagnosis;
+                    patientCase.ProvisionalDiagnosis = treatmentVM.ProvisionalDiagnosis;
+                    patientCase.ReferredTo = treatmentVM.ReferredTo;
+                    patientCase.Comment = treatmentVM.Comment;
+                    patientCase.Observation = treatmentVM.Observation;
+                    if (treatmentVM.ReviewDate.HasValue)
+                    {
+                        patientCase.ReviewDate = treatmentVM.ReviewDate;
+                    }
+                    _teleMedecineContext.Entry(patientQueue).State = EntityState.Modified;
+                   
+                    foreach (var item in treatmentVM.medicineVMs)
+                    {
+                        _teleMedecineContext.PatientCaseMedicines.Add(
+                            new PatientCaseMedicine
+                            {
+                                AfterMeal = item.AfterMeal,
+                                Bd = item.BD,
+                                EmptyStomach = item.EmptyStomach,
+                                Morning = item.Morning,
+                                Night = item.Night,
+                                Noon = item.Noon,
+                                Od = item.OD,
+                                Td = item.TD,
+                                Qid = item.QID,
+                                DrugMasterId = item.DrugID,
+                                PatientCaseId = treatmentVM.PatientCaseID,
+                                Duration = item.Duration,
+
+                            });
+                    }
+                    //Add diagonistic PatientCaseDiagonosticTest
+                    PatientCaseDiagonosticTest patientCaseDiagonosticTest;
+                    foreach (var diagonist in treatmentVM.PatientCaseDiagonostics)
+                    {
+                        patientCaseDiagonosticTest = new PatientCaseDiagonosticTest();
+                        patientCaseDiagonosticTest.PatientCaseId = diagonist.PatientCaseID;
+                        patientCaseDiagonosticTest.DiagonosticTestId = diagonist.DiagonosticTestID;
+                        patientCaseDiagonosticTest.CreatedOn = UtilityMaster.GetLocalDateTime();
+                        _teleMedecineContext.Add(patientCaseDiagonosticTest);
+                    }
+                    int i = _teleMedecineContext.SaveChanges();
+                    if (i > 0)
+                    {  
+                        //Generate PDF
+                        try
+                        {
+                            await _reportService.GeneratePdfReport(treatmentVM.PatientCaseID, ContentRootPath);
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogError("Exception in GeneratePdfReport service " + ex);
+                        }
+                    }
 
 
 
+                    return true;
+                }
 
+            }
+            catch (Exception ex)
+            {
+                string expMesg = ex.Message;
+                throw;
+            }
             return false;
         }
         public async Task<bool> DeleteNotification(long NotificationID)

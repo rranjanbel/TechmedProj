@@ -102,9 +102,11 @@ namespace TechMed.API.Controllers
             }
             else
             {
+                // Check Doctor is free to receive the call
+                isDoctorFree = await _patientCaseRepository.IsDoctorFreeToReceiveCall(patientCaseId);
                 // Check PHC is free to receive the call
                 isPhcFree = await _patientCaseRepository.IsPHCFreeToReceiveCall(patientCaseId);
-                if (isPhcFree) //is enduser available to have call
+                if (isPhcFree && isDoctorFree) //is enduser available to have call
                 {
                     PatientCase patientCase = await _patientCaseRepository.GetByID(patientCaseId);
                     apiResponseModel.isSuccess = true;
