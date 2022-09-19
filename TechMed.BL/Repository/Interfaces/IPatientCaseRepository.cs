@@ -39,6 +39,7 @@ namespace TechMed.BL.Repository.Interfaces
         Task<List<AllPendingPatient>> GetAllPendingPatient();
         Task<PatientReferToDoctorVM> PatientReferToDoctorByAdmin(PatientReferToDoctorVM patientReferToDoctorVM);
         Task<List<PatientQueueVM>> GetPatientQueueByDocotorID(int doctorID = 0);
+        Task<Phcmaster> GetPHCByCaseID(long patientCaseid);
 
 
     }
