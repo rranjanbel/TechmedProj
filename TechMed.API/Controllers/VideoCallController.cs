@@ -109,6 +109,7 @@ namespace TechMed.API.Controllers
             string callBackUrlForTwilio = string.Format("{0}://{1}{2}/api/webhookcallback/twilioroomstatuscallback", Request.Scheme, Request.Host.Value, Request.PathBase);
             try
             {
+                VideoCallEnvironment env = await _configurationMasterRepository.GetVideoCallEnvironment();
 
                 if (patientCaseId == 0 || string.IsNullOrEmpty(meetingInstance))
                 {
@@ -122,14 +123,13 @@ namespace TechMed.API.Controllers
                 if ((patientCaseInfo == null && CanCallByPHC && isDoctor) || (patientCaseInfo == null && !CanCallByPHC && !isDoctor))
                 {
                     bool isSaved = false;
-                    VideoCallEnvironment env = await _configurationMasterRepository.GetVideoCallEnvironment();
                     if (VideoCallEnvironment.Twilio == env)
                     {
                         var roomFromTwilio = await _twilioVideoSDK.CreateRoomsAsync(meetingInstance, callBackUrlForTwilio);
                         isSaved = await _twilioRoomDb.MeetingRoomInfoAdd(new TwilioMeetingRoomInfo()
                         {
-                            MeetingSid = roomFromTwilio.Sid,
-                            RoomName = roomFromTwilio.UniqueName,
+                            MeetingSid = roomFromTwilio.UniqueName,
+                            RoomName = roomFromTwilio.Sid,
                             PatientCaseId = patientCaseId,
                             RoomStatusCallback = roomFromTwilio.StatusCallback.ToString(),
                             TwilioRoomStatus = roomFromTwilio.Status.ToString(),
@@ -146,7 +146,7 @@ namespace TechMed.API.Controllers
                         isSaved = await _twilioRoomDb.MeetingRoomInfoAdd(new TwilioMeetingRoomInfo()
                         {
                             MeetingSid = newMeeting.id.ToString(),
-                            RoomName = newMeeting.uuid,
+                            RoomName = newMeeting.id.ToString(),
                             PatientCaseId = patientCaseId,
                             RoomStatusCallback = "",
                             TwilioRoomStatus = "in-progress",
@@ -182,24 +182,57 @@ namespace TechMed.API.Controllers
                 }
                 else
                 {
-                    var roomFromTwilio = await _twilioVideoSDK.GetRoomDetailFromTwilio(patientCaseInfo.MeetingSid);
-                    if (roomFromTwilio == null)
+                    
+                    if (VideoCallEnvironment.Twilio == env)
                     {
-                        await _twilioRoomDb.MeetingRoomCloseFlagUpdate(patientCaseInfo.Id, true);
-                        apiResponseModel.isSuccess = false;
-                        apiResponseModel.errorMessage = "Room Closed";
-                        return BadRequest(apiResponseModel);
+                        var roomFromTwilio = await _twilioVideoSDK.GetRoomDetailFromTwilio(patientCaseInfo.MeetingSid);
+                        if (roomFromTwilio == null)
+                        {
+                            await _twilioRoomDb.MeetingRoomCloseFlagUpdate(patientCaseInfo.Id, true);
+                            apiResponseModel.isSuccess = false;
+                            apiResponseModel.errorMessage = "Room Closed";
+                            return BadRequest(apiResponseModel);
+                        }
+                        else if (roomFromTwilio.Status != RoomResource.RoomStatusEnum.InProgress)
+                        {
+                            await _twilioRoomDb.MeetingRoomCloseFlagUpdate(patientCaseInfo.Id, true);
+                            apiResponseModel.isSuccess = false;
+                            apiResponseModel.errorMessage = "Room Closed";
+                            return BadRequest(apiResponseModel);
+                        }
+                        apiResponseModel.isSuccess = true;
+                        apiResponseModel.data = patientCase.PatientId;
+                        return Ok(apiResponseModel);
                     }
-                    else if (roomFromTwilio.Status != RoomResource.RoomStatusEnum.InProgress)
+                    if (VideoCallEnvironment.Zoom == env)
                     {
-                        await _twilioRoomDb.MeetingRoomCloseFlagUpdate(patientCaseInfo.Id, true);
-                        apiResponseModel.isSuccess = false;
-                        apiResponseModel.errorMessage = "Room Closed";
-                        return BadRequest(apiResponseModel);
+                        //var roomFromTwilio = await _twilioVideoSDK.GetRoomDetailFromTwilio(patientCaseInfo.MeetingSid);
+                        //ToDo Check status
+                        var IsMeetingExist = await _zoomService.IsMeetingExist(patientCaseInfo.MeetingSid);
+                        if (IsMeetingExist == false)
+                        {
+                            await _twilioRoomDb.MeetingRoomCloseFlagUpdate(patientCaseInfo.Id, true);
+                            apiResponseModel.isSuccess = false;
+                            apiResponseModel.errorMessage = "Room Closed";
+                            return BadRequest(apiResponseModel);
+                        }
+                        //else if (roomFromTwilio.Status != RoomResource.RoomStatusEnum.InProgress)
+                        //{
+                        //    await _twilioRoomDb.MeetingRoomCloseFlagUpdate(patientCaseInfo.Id, true);
+                        //    apiResponseModel.isSuccess = false;
+                        //    apiResponseModel.errorMessage = "Room Closed";
+                        //    return BadRequest(apiResponseModel);
+                        //}
+                        apiResponseModel.isSuccess = true;
+                        apiResponseModel.data = patientCase.PatientId;
+                        return Ok(apiResponseModel);
                     }
-                    apiResponseModel.isSuccess = true;
-                    apiResponseModel.data = patientCase.PatientId;
-                    return Ok(apiResponseModel);
+                    else
+                    {
+                        return NotFound("VideoCallEnvironment not found!");
+                    }
+
+                   
                 }
             }
             catch (Exception ex)

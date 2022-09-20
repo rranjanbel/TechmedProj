@@ -12,7 +12,8 @@ namespace TechMed.BL.ZoomAPI.Service
     {
         Task<NewMeetingResponseModel> NewMeeting(NewMeetingRequestModel newMeetingRequestModel, string HostAccountID);
         Task<bool> DeleteMeeting(string meetingID);   
-        Task<bool> EndMeeting(string meetingID);   
+        Task<bool> EndMeeting(string meetingID);
+        Task<bool> IsMeetingExist(string meetingID);
         
     }
 }

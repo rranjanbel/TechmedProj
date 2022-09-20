@@ -52,8 +52,12 @@ namespace TechMed.BL.ZoomAPI.Service
         }
         public async Task<bool> DeleteMeeting(string meetingID)
         {
-
             bool responseModel = await _zoomMeetingService.DeleteMeeting(meetingID);
+            return responseModel;
+        }
+        public async Task<bool> IsMeetingExist(string meetingID)
+        {
+            bool responseModel = await _zoomMeetingService.IsMeetingExist(meetingID);
             return responseModel;
         }
         public async Task<bool> EndMeeting(string meetingID)

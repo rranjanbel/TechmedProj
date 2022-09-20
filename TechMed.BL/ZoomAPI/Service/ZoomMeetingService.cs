@@ -81,6 +81,35 @@ namespace TechMed.BL.ZoomAPI.Service
             }
             return false;
         }
+        public async Task<bool> IsMeetingExist(string meetingID)
+        {
+            EndMeetingModel endMeetingModel = new EndMeetingModel();
+            var token = await _zoomAccountService.GetIssuedTokenAsync();
+            string json = JsonSerializer.Serialize<EndMeetingModel>(endMeetingModel);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            using (HttpClient _httpClient = new HttpClient())
+            {
+
+                _httpClient.DefaultRequestHeaders.Add("X-Version", "1");
+                _httpClient.DefaultRequestHeaders.Authorization =
+                 new AuthenticationHeaderValue("Bearer", token);
+                var response = await _httpClient.GetAsync(" https://api.zoom.us/v2/meetings/" + meetingID + "");
+                if (response.IsSuccessStatusCode)
+                {
+                    //204 deleted 
+                    if (response.StatusCode == HttpStatusCode.OK)
+                    {
+                        return true;
+                    }
+                    
+                    //var responseContent = await response.Content.ReadAsStringAsync();
+                    //var responsevalue = JsonSerializer.Deserialize<bool>(responseContent);
+
+                }
+
+            }
+            return false;
+        }
 
         public async Task<NewMeetingResponseModel> NewMeeting(NewMeetingRequestModel newMeetingRequestModel, string HostUserID)
         {

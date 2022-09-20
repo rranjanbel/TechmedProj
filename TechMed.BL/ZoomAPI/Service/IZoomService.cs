@@ -18,6 +18,7 @@ namespace TechMed.BL.ZoomAPI.Service
         Task<NewMeetingResponseModel> CreateMeeting(int phcID);
         Task<bool> DeleteMeeting(string meetingID);
         Task<bool> EndMeeting(string meetingID);
+        Task<bool> IsMeetingExist(string meetingID);
         Task<bool> UpdateUserRecodingSetting(string ZoomUserID);
     }
 }
