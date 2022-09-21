@@ -547,24 +547,27 @@ namespace TechMed.BL.Repository.BaseClasses
             {
                 var _bearer_token = _httpContextAccessor.HttpContext.Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
                 var userEmail = _httpContextAccessor.HttpContext.User.Identities.First().Name;
-                var user = await _teleMedecineContext.UserMasters.Where(a => a.Email.ToLower() == userEmail.ToLower()).FirstOrDefaultAsync();
-                var usertype = await _teleMedecineContext.UserUsertypes.Where(a => a.UserId == user.Id).FirstOrDefaultAsync();
+                var user = await _teleMedecineContext.UserMasters.AsNoTracking().FirstOrDefaultAsync(a => a.Email.ToLower() == userEmail.ToLower());
                 if (user != null)
                 {
-                    LoginHistory loginHistorie = await _teleMedecineContext.LoginHistories.Where(a => a.UserToken == _bearer_token && a.UserId == user.Id).FirstOrDefaultAsync();
-                    if (loginHistorie != null)
+                    var usertype = await _teleMedecineContext.UserUsertypes.AsNoTracking().FirstOrDefaultAsync(a => a.UserId == user.Id);
+                    if (usertype!=null)
                     {
-                        loginHistorie.LastUpdateOn = UtilityMaster.GetLocalDateTime();
-                        loginHistorie.LogedoutTime = null;
-                        if (usertype.UserTypeId==4)
+                        LoginHistory loginHistorie = await _teleMedecineContext.LoginHistories.FirstOrDefaultAsync(a => a.UserToken == _bearer_token && a.UserId == user.Id);
+                        if (loginHistorie != null)
                         {
-                            var doctor = await _teleMedecineContext.DoctorMasters.Where(a => a.UserId == user.Id).FirstOrDefaultAsync();
-                            if (doctor!=null)
+                            loginHistorie.LastUpdateOn = UtilityMaster.GetLocalDateTime();
+                            loginHistorie.LogedoutTime = null;
+                            if (usertype.UserTypeId == 4)
                             {
-                                doctor.IsOnline = true;
+                                var doctor = await _teleMedecineContext.DoctorMasters.FirstOrDefaultAsync(a => a.UserId == user.Id);
+                                if (doctor != null)
+                                {
+                                    doctor.IsOnline = true;
+                                }
                             }
+                            int i = await _teleMedecineContext.SaveChangesAsync();
                         }
-                        int i = await _teleMedecineContext.SaveChangesAsync();
                     }
                 }
             }

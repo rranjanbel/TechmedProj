@@ -12,7 +12,7 @@ using TechMed.DL.ViewModel;
 
 namespace TechMed.BL.Repository.BaseClasses
 {
-    public class SystemHealthRepository : ISystemHealthRepository
+    public class SystemHealthRepository : ISystemHealthRepository,IDisposable
     {
         private readonly TeleMedecineContext _teleMedecineContext;
         public SystemHealthRepository(TeleMedecineContext teleMedecineContext)
@@ -20,10 +20,22 @@ namespace TechMed.BL.Repository.BaseClasses
             _teleMedecineContext = teleMedecineContext;
         }
 
+        public void Dispose()
+        {
+            try
+            {
+               // _teleMedecineContext.Dispose();
+            }
+            finally
+            {
+               
+            }
+        }
+
         public async Task<bool> GetANGStatus(string ANGHost)
         {
             //var v = _teleMedecineContext.ServerHealths.ToList();
-            bool result = await IsValidUri(new Uri("https://telemed-ang-dev.azurewebsites.net/"));
+            bool result = await IsValidUri(new Uri(ANGHost));
             return result;
         }
 
