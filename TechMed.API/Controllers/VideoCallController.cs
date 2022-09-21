@@ -137,6 +137,7 @@ namespace TechMed.API.Controllers
                             AssignedDoctorId = patientInfo.AssignedDoctorId,
                             Environment = "Twilio",
                         });
+                        apiResponseModel.meetingID = meetingInstance.ToString();
                     }
                     else if (VideoCallEnvironment.Zoom == env)
                     {
@@ -155,6 +156,7 @@ namespace TechMed.API.Controllers
                             Environment = "Zoom",
                             CreateDate = UtilityMaster.GetLocalDateTime()
                         });
+                        apiResponseModel.meetingID = newMeeting.id.ToString();
                     }
 
                     apiResponseModel.isSuccess = true;
@@ -214,6 +216,7 @@ namespace TechMed.API.Controllers
                             await _twilioRoomDb.MeetingRoomCloseFlagUpdate(patientCaseInfo.Id, true);
                             apiResponseModel.isSuccess = false;
                             apiResponseModel.errorMessage = "Room Closed";
+                            apiResponseModel.meetingID = patientCaseInfo.MeetingSid;
                             return BadRequest(apiResponseModel);
                         }
                         //else if (roomFromTwilio.Status != RoomResource.RoomStatusEnum.InProgress)
@@ -225,6 +228,7 @@ namespace TechMed.API.Controllers
                         //}
                         apiResponseModel.isSuccess = true;
                         apiResponseModel.data = patientCase.PatientId;
+                        apiResponseModel.meetingID = patientCaseInfo.MeetingSid;
                         return Ok(apiResponseModel);
                     }
                     else
