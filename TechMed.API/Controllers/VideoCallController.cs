@@ -207,6 +207,8 @@ namespace TechMed.API.Controllers
                             Environment = "Zoom",
                             CreateDate = UtilityMaster.GetLocalDateTime()
                         });
+                        apiResponseModel.isSuccess = true;
+                        apiResponseModel.data = patientCase.PatientId;
                         apiResponseModel.meetingID = newMeeting.id.ToString();
                     }
 
