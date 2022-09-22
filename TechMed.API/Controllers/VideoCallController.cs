@@ -43,7 +43,9 @@ namespace TechMed.API.Controllers
             _hubContext = hubContext;
             _twilioRoomDb = twilioRoomDb;
             _logger = logger;
-            _patientCaseRepository = patientCaseRepository; 
+            _patientCaseRepository = patientCaseRepository;
+            _configurationMasterRepository = configurationMasterRepository;
+            _zoomService=zoomService;
         }
 
         [HttpGet("token")]
