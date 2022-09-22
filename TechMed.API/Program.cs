@@ -19,7 +19,8 @@ using TechMed.API.NotificationHub;
 using TechMed.BL.ModelMaster;
 using TechMed.DL.ViewModel;
 using TechMed.BL.CommanClassesAndFunctions;
-
+using TechMed.BL.ZoomAPI.Model;
+using TechMed.BL.ZoomAPI.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -120,6 +121,24 @@ builder.Services.Configure<TwilioSettings>(
         settings.AuthToken = builder.Configuration.GetValue<string>("Twilio:TwilioAuthToken");
     })
     .AddTransient<ITwilioVideoSDKService, TwilioVideoSDKService>();
+
+builder.Services.Configure<ZoomSettings>(
+    settings =>
+    {
+        settings.ZoomSSAccountId = builder.Configuration.GetValue<string>("Zoom:ZoomSSAccountId");
+        settings.ZoomSSClientID = builder.Configuration.GetValue<string>("Zoom:ZoomSSClientID");
+        settings.ZoomSSClientSecret = builder.Configuration.GetValue<string>("Zoom:ZoomSSClientSecret");
+    })
+    .AddTransient<IZoomAccountService, ZoomAccountService>();
+builder.Services.AddScoped<IZoomUserService, ZoomUserService>();
+builder.Services.AddScoped<IZoomMeetingService, ZoomMeetingService>();
+builder.Services.AddScoped<IZoomRecordingService, ZoomRecordingService>();
+builder.Services.AddScoped<IZoomWebhook, ZoomWebhook>();
+builder.Services.AddScoped<IZoomService, ZoomService>();
+builder.Services.AddScoped<IConfigurationMasterRepository, ConfigurationMasterRepository>();
+
+
+
 // services.AddSingleton(Configuration.GetSection("myConfiguration").Get<MyConfiguration>());
 var applicationRootUrl = builder.Configuration.GetSection("ApplicationRootUrl").Get<ApplicationRootUri>();
 builder.Services.AddSingleton(applicationRootUrl);

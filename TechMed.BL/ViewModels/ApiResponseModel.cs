@@ -10,6 +10,7 @@ namespace TechMed.BL.ViewModels
     {
         public bool isSuccess { get; set; }
         public T data { get; set; }
+        public string meetingID { get; set; }
         public string errorMessage { get; set; }
     }
 }

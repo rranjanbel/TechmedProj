@@ -15,6 +15,8 @@ using TechMed.BL.TwilioAPI.Service;
 using Microsoft.AspNetCore.SignalR;
 using TechMed.API.NotificationHub;
 using Microsoft.AspNetCore.Authorization;
+using TechMed.BL.ZoomAPI.Service;
+using TechMed.DL.Enums;
 
 namespace TechMed.API.Controllers
 {
@@ -34,6 +36,8 @@ namespace TechMed.API.Controllers
         private readonly IHubContext<SignalRBroadcastHub, IHubClient> _hubContext;
         private readonly ITwilioMeetingRepository _twilioRoomDb;
         private readonly IPatientCaseRepository _patientCaseRepository;
+        private readonly IConfigurationMasterRepository _configurationMasterRepository;
+        private readonly IZoomService _zoomService;
         public DoctorController(IMapper mapper,
             ILogger<DoctorController> logger,
             TeleMedecineContext teleMedecineContext,
@@ -43,8 +47,11 @@ namespace TechMed.API.Controllers
             ApplicationRootUri applicationRootUrl,
             ITwilioVideoSDKService twilioVideoSDK,
             ITwilioMeetingRepository twilioRoomDb,
-            IHubContext<SignalRBroadcastHub,IHubClient> hubContext,
-            IPatientCaseRepository patientCaseRepository)
+            IHubContext<SignalRBroadcastHub, IHubClient> hubContext,
+            IPatientCaseRepository patientCaseRepository,
+            IConfigurationMasterRepository configurationMasterRepository,
+            IZoomService zoomService
+            )
         {
             doctorBusinessMaster = new DoctorBusinessMaster(teleMedecineContext, mapper);
             _doctorRepository = doctorRepository;
@@ -57,6 +64,8 @@ namespace TechMed.API.Controllers
             _hubContext = hubContext;
             _twilioRoomDb = twilioRoomDb;
             _patientCaseRepository = patientCaseRepository;
+            _configurationMasterRepository = configurationMasterRepository;
+            _zoomService = zoomService;
         }
         [Route("GetListOfNotification")]
         [HttpPost]
@@ -75,7 +84,7 @@ namespace TechMed.API.Controllers
                 var DTO = await _doctorRepository.GetListOfNotification(getListOfNotificationVM);
                 if (DTO.Count > 0)
                 {
-                    _logger.LogInformation($"GetListOfNotification : Sucess response returned " );
+                    _logger.LogInformation($"GetListOfNotification : Sucess response returned ");
                     return Ok(DTO);
                 }
                 else
@@ -414,7 +423,7 @@ namespace TechMed.API.Controllers
                 if (string.IsNullOrWhiteSpace(_webHostEnvironment.WebRootPath))
                 {
                     //_webHostEnvironment.WebRootPath = Path.Combine(Directory.GetCurrentDirectory(), "");
-                   
+
                 }
                 _webHostEnvironment.WebRootPath = "/MyFiles/Images/Doctor/";
                 webRootPath = _webHostEnvironment.WebRootPath;
@@ -431,7 +440,7 @@ namespace TechMed.API.Controllers
                     _logger.LogError("UpdateDoctorDetails : ModelState is invalid");
                     return BadRequest(ModelState);
                 }
-                var DTO = await _doctorRepository.UpdateDoctorDetails(doctorDTO, contentRootPath ,webRootPath);
+                var DTO = await _doctorRepository.UpdateDoctorDetails(doctorDTO, contentRootPath, webRootPath);
                 if (DTO)
                 {
                     _logger.LogInformation($"UpdateDoctorDetails : Sucess response returned ");
@@ -471,8 +480,8 @@ namespace TechMed.API.Controllers
                 var DTO = await _doctorRepository.GetTodayesPatients(doctorVM);
                 //if (DTO.Count > 0)
                 //{
-                    _logger.LogInformation($"GetTodayesPatients : Sucess response returned ");
-                    return Ok(DTO);
+                _logger.LogInformation($"GetTodayesPatients : Sucess response returned ");
+                return Ok(DTO);
                 //}
                 //else
                 //{
@@ -507,8 +516,8 @@ namespace TechMed.API.Controllers
                 var DTO = await _doctorRepository.GetCompletedConsultationPatientsHistory(doctorVM);
                 //if (DTO.Count > 0)
                 //{
-                    _logger.LogInformation($"GetCompletedConsultationPatientsHistory : Sucess response returned ");
-                    return Ok(DTO);
+                _logger.LogInformation($"GetCompletedConsultationPatientsHistory : Sucess response returned ");
+                return Ok(DTO);
                 //}
                 //else
                 //{
@@ -542,8 +551,8 @@ namespace TechMed.API.Controllers
                 var DTO = await _doctorRepository.GetYesterdayPatientsHistory(doctorVM);
                 //if (DTO.Count > 0)
                 //{
-                    _logger.LogInformation($"GetYesterdayPatientsHistory : Sucess response returned ");
-                    return Ok(DTO);
+                _logger.LogInformation($"GetYesterdayPatientsHistory : Sucess response returned ");
+                return Ok(DTO);
                 //}
                 //else
                 //{
@@ -647,7 +656,7 @@ namespace TechMed.API.Controllers
                     _logger.LogError("PostTreatmentPlan : ModelState is invalid");
                     return BadRequest(treatmentVM.PatientCaseID);
                 }
-               // var result = await _doctorRepository.PostTreatmentPlan(treatmentVM, _webHostEnvironment.ContentRootPath);
+                // var result = await _doctorRepository.PostTreatmentPlan(treatmentVM, _webHostEnvironment.ContentRootPath);
                 var result = await _doctorRepository.SaveTreatmentPlan(treatmentVM, _webHostEnvironment.ContentRootPath);
                 if (result)
                 {
@@ -776,7 +785,7 @@ namespace TechMed.API.Controllers
                 {
                     _logger.LogInformation($"PatientAbsent : Sucess response returned ");
                     //Check and End video call
-                   
+
                     string roomInstance = await _doctorRepository.GetTwilioReferenceID(patientAbsentVM.CaseID);
                     bool isPartiallyClosed = false;
                     bool isPatientAbsent = true;
@@ -1063,13 +1072,13 @@ namespace TechMed.API.Controllers
                 if (doctorVM.DoctorID < 1 || !ModelState.IsValid)
                 {
                     _logger.LogError("GetLatestReferredCount : ModelState is invalid");
-                    return BadRequest(doctorVM.DoctorID);                   
+                    return BadRequest(doctorVM.DoctorID);
                 }
                 var DTO = await _doctorRepository.GetLatestReferredCount(doctorVM);
                 //if (DTO > 0)
                 //{
-                    _logger.LogInformation($"GetLatestReferredCount : Sucess response returned ");
-                    return Ok(DTO);
+                _logger.LogInformation($"GetLatestReferredCount : Sucess response returned ");
+                return Ok(DTO);
                 //}
                 //else
                 //{
@@ -1164,7 +1173,7 @@ namespace TechMed.API.Controllers
         public async Task<IActionResult> OnlineDrList()
         {
             try
-            {               
+            {
                 var DTO = await _doctorRepository.OnlineDrList();
                 if (DTO.Count > 0)
                 {
@@ -1212,7 +1221,7 @@ namespace TechMed.API.Controllers
                 if (string.IsNullOrWhiteSpace(_webHostEnvironment.WebRootPath))
                 {
                     //_webHostEnvironment.WebRootPath = Path.Combine(Directory.GetCurrentDirectory(), "");
-                    
+
                 }
                 _webHostEnvironment.WebRootPath = "/MyFiles/Images/Doctor/";
                 webRootPath = _webHostEnvironment.WebRootPath;
@@ -1313,7 +1322,7 @@ namespace TechMed.API.Controllers
                     userDetail.UpdatedBy = doctorDTO.CreatedBy;
                     userDetail.UpdatedOn = UtilityMaster.GetLocalDateTime();
 
-                    doctorCreated = await this._doctorRepository.AddDoctor(doctor, userMaster, userDetail, doctorDTO, contentRootPath,webRootPath, Password);
+                    doctorCreated = await this._doctorRepository.AddDoctor(doctor, userMaster, userDetail, doctorDTO, contentRootPath, webRootPath, Password);
                 }
 
                 if (doctorCreated == null)
@@ -1358,7 +1367,7 @@ namespace TechMed.API.Controllers
                     doctorDTO1.detailsDTO.IdproofTypeId = userDetail.IdproofTypeId;
                     doctorDTO1.detailsDTO.IdproofNumber = userDetail.IdproofNumber;
                     doctorDTO1.detailsDTO.Address = userDetail.Address;
-                    
+
 
                     return CreatedAtRoute(200, doctorDTO1);
                 }
@@ -1418,7 +1427,7 @@ namespace TechMed.API.Controllers
             List<DoctorPatientSearchVM> patientSearchResults = new List<DoctorPatientSearchVM>();
             try
             {
-               
+
 
 
                 if (searchParameter == null)
@@ -1430,7 +1439,7 @@ namespace TechMed.API.Controllers
                 else
                 {
                     patientSearchResults = this._doctorRepository.GetAdvanceSearchDoctorsPatient(searchParameter);
-                    if(patientSearchResults != null)
+                    if (patientSearchResults != null)
                     {
                         _logger.LogInformation($"AdvanceSearchResult : Sucess response returned ");
                         return StatusCode(200, patientSearchResults.OrderByDescending(o => o.PatientID).ToList());
@@ -1441,7 +1450,7 @@ namespace TechMed.API.Controllers
                         _logger.LogError("AdvanceSearchResult : Data not found");
                         return StatusCode(404, ModelState);
                     }
-                   
+
                 }
             }
             catch (Exception ex)
@@ -1489,26 +1498,27 @@ namespace TechMed.API.Controllers
 
         }
 
-        private async Task<ApiResponseModel<dynamic>> DismissCall(string roomInstance, long patientCaseId, bool isPartiallyClosed,bool isPatientAbsent =false)
+        private async Task<ApiResponseModel<dynamic>> DismissCall(string roomInstance, long patientCaseId, bool isPartiallyClosed, bool isPatientAbsent = false)
         {
             _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, IsPatientabsent :" + isPatientAbsent);
             ApiResponseModel<dynamic> apiResponseModel = new ApiResponseModel<dynamic>();
             string callBackUrlForTwilio = string.Format("{0}://{1}{2}/api/webhookcallback/twiliocomposevideostatuscallback", Request.Scheme, Request.Host.Value, Request.PathBase);
             try
             {
+                VideoCallEnvironment env = await _configurationMasterRepository.GetVideoCallEnvironment();
                 //var patientInfo = await _twilioRoomDb.PatientQueueGet(patientCaseId);
                 var patientInfo = await _twilioRoomDb.PatientQueueAfterTretment(patientCaseId, isPartiallyClosed);
                 var nullResult = "No result in patient info";
-                if(patientInfo != null)
-                    _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, PatientInfo :"+ patientInfo.PatientCaseId);
+                if (patientInfo != null)
+                    _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, PatientInfo :" + patientInfo.PatientCaseId);
                 else
-                    _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, PatientInfo : return null data" );
+                    _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, PatientInfo : return null data");
                 if (isPatientAbsent)
                 {
                     patientInfo = null;
                     patientInfo = await _twilioRoomDb.PatientQueueAfterPatientAbsent(patientCaseId, isPartiallyClosed);
                 }
-                
+
                 var roomInfo = await _twilioRoomDb.MeetingRoomInfoGet(roomInstance);
                 if (patientInfo == null || roomInfo == null)
                 {
@@ -1520,19 +1530,27 @@ namespace TechMed.API.Controllers
                 await _twilioRoomDb.SetMeetingRoomClosed(roomInstance, isPartiallyClosed);
                 try
                 {
-                    _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, going to close the room :" );
-                    var roomInfoFromTwilio = await _twilioVideoSDK.CloseRoomAsync(roomInfo.MeetingSid);
-                    _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, going to compose video :"+ roomInfoFromTwilio);                   
-                    var composeVideo = await _twilioVideoSDK.ComposeVideo(roomInfoFromTwilio.Sid, callBackUrlForTwilio);
-                    _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, going to call MeetingRoomComposeVideoUpdate, compose details :" + composeVideo);
-                   // await _twilioRoomDb.MeetingRoomComposeVideoUpdate(composeVideo, roomInstance);
-                   // _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, going to call MeetingRoomComposeVideoUpdate, successfully" );
+                    if (VideoCallEnvironment.Twilio == env)
+                    {
+                        _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, going to close the room :");
+                        var roomInfoFromTwilio = await _twilioVideoSDK.CloseRoomAsync(roomInfo.MeetingSid);
+                        _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, going to compose video :" + roomInfoFromTwilio);
+                        var composeVideo = await _twilioVideoSDK.ComposeVideo(roomInfoFromTwilio.Sid, callBackUrlForTwilio);
+                        _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, going to call MeetingRoomComposeVideoUpdate, compose details :" + composeVideo);
+                        // await _twilioRoomDb.MeetingRoomComposeVideoUpdate(composeVideo, roomInstance);
+                        // _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, going to call MeetingRoomComposeVideoUpdate, successfully" );
+                    }
+                    else if (VideoCallEnvironment.Zoom == env)
+                    {
+                        bool resultEnd = await _zoomService.EndMeeting(roomInfo.MeetingSid);
+                        bool resultDelete = await _zoomService.DeleteMeeting(roomInfo.MeetingSid);
+                    }
                 }
                 catch (Exception ex)
                 {
                     apiResponseModel.isSuccess = false;
                     apiResponseModel.errorMessage = ex.Message;
-                    _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, Exception generated"+ex);
+                    _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, Exception generated" + ex);
                     _logger.LogError("Exception on DismissCall : Treatment plan or Patient Absent call DismissCall. " + ex);
                 }
                 //await _twilioRoomDb.SetMeetingRoomClosed(roomInstance, isPartiallyClosed);
@@ -1558,7 +1576,7 @@ namespace TechMed.API.Controllers
                     roomName = roomInstance
                 });
 
-                if(apiResponseModel.isSuccess == false)
+                if (apiResponseModel.isSuccess == false)
                 {
                     apiResponseModel.isSuccess = false;
                 }
@@ -1566,7 +1584,7 @@ namespace TechMed.API.Controllers
                 {
                     apiResponseModel.isSuccess = true;
                 }
-             
+
                 return apiResponseModel;
             }
             catch (Exception ex)
