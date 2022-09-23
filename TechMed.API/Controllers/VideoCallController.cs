@@ -484,6 +484,7 @@ namespace TechMed.API.Controllers
             string callBackUrlForTwilio = string.Format("{0}://{1}{2}/api/webhookcallback/twiliocomposevideostatuscallback", Request.Scheme, Request.Host.Value, Request.PathBase);
             try
             {
+                VideoCallEnvironment env = await _configurationMasterRepository.GetVideoCallEnvironment();
                 //var patientInfo = await _twilioRoomDb.PatientQueueGet(patientCaseId);
                 var patientInfo = await _twilioRoomDb.PatientQueueAfterTretment(patientCaseId, isPartiallyClosed);
                 var roomInfo = await _twilioRoomDb.MeetingRoomInfoGet(roomInstance);
@@ -495,9 +496,17 @@ namespace TechMed.API.Controllers
                 }
                 try
                 {
-                    var roomInfoFromTwilio = await _twilioVideoSDK.CloseRoomAsync(roomInfo.MeetingSid);
-                    var composeVideo = await _twilioVideoSDK.ComposeVideo(roomInfoFromTwilio.Sid, callBackUrlForTwilio);
-                    await _twilioRoomDb.MeetingRoomComposeVideoUpdate(composeVideo, roomInstance);
+                    if (VideoCallEnvironment.Twilio == env)
+                    {
+                        var roomInfoFromTwilio = await _twilioVideoSDK.CloseRoomAsync(roomInfo.MeetingSid);
+                        var composeVideo = await _twilioVideoSDK.ComposeVideo(roomInfoFromTwilio.Sid, callBackUrlForTwilio);
+                        await _twilioRoomDb.MeetingRoomComposeVideoUpdate(composeVideo, roomInstance);
+                    }
+                    else if (VideoCallEnvironment.Zoom == env)
+                    {
+                        bool resultEnd = await _zoomService.EndMeeting(roomInfo.MeetingSid);
+                        bool resultDelete = await _zoomService.DeleteMeeting(roomInfo.MeetingSid);
+                    }
                 }
                 catch (Exception ex)
                 {
