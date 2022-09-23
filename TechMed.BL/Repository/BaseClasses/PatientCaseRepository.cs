@@ -499,7 +499,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     //patientQueue.AssignedDoctorId = patientReferToDoctorVM.AssignedDocterID;
                     //patientQueue.Comment = "Assigned by PHC";
 
-                    PatientQueue existingpatientQueue = _teleMedecineContext.PatientQueues.FirstOrDefault(a => a.PatientCaseId == patientReferToDoctorVM.PatientCaseID && a.CaseFileStatusId != 5);
+                    PatientQueue existingpatientQueue = _teleMedecineContext.PatientQueues.FirstOrDefault(a => a.PatientCaseId == patientReferToDoctorVM.PatientCaseID );
                     if (existingpatientQueue == null)
                     {
                         //_teleMedecineContext.PatientQueues.Add(patientQueue);
