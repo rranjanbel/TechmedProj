@@ -113,6 +113,7 @@ namespace TechMed.BL.ZoomAPI.Service
                         _telemedecineContext.ZoomTokens.Add(zoomToken);
                         _telemedecineContext.Entry(zoomToken).State = EntityState.Modified;
                         await _telemedecineContext.SaveChangesAsync();
+                        return true;
                     }
                 }
                 if (zoomToken.ActiveTokenNumber == 2)
@@ -131,6 +132,7 @@ namespace TechMed.BL.ZoomAPI.Service
                         _telemedecineContext.ZoomTokens.Add(zoomToken);
                         _telemedecineContext.Entry(zoomToken).State = EntityState.Modified;
                         await _telemedecineContext.SaveChangesAsync();
+                        return true;
                     }
                 }
             }

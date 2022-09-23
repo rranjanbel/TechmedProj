@@ -400,8 +400,8 @@ namespace TechMed.API.Controllers
         {
             try
             {
-                var newUserResponse = await _zoomUserService.GetUser(Email);
-                return Ok();
+                var UserResponse = await _zoomUserService.GetUser(Email);
+                return Ok(UserResponse);
             }
             catch (Exception ex)
             {
