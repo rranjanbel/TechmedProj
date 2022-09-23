@@ -2,6 +2,8 @@ using HealthWorkerService;
 using Microsoft.EntityFrameworkCore;
 using TechMed.BL.Repository.BaseClasses;
 using TechMed.BL.Repository.Interfaces;
+using TechMed.BL.ZoomAPI.Model;
+using TechMed.BL.ZoomAPI.Service;
 using TechMed.DL.Models;
 
 
@@ -30,6 +32,13 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.AddHostedService<Worker>();
         services.AddSingleton<ISystemHealthRepository, SystemHealthRepository>();
         services.Configure<HostUrl>(Configuration.GetSection("HostUrl"));
+        services.Configure<ZoomSettings>(
+        settings =>
+        {
+            settings.ZoomSSAccountId = Configuration.GetValue<string>("Zoom:ZoomSSAccountId");
+            settings.ZoomSSClientID = Configuration.GetValue<string>("Zoom:ZoomSSClientID");
+            settings.ZoomSSClientSecret = Configuration.GetValue<string>("Zoom:ZoomSSClientSecret");
+        }).AddTransient<IZoomAccountService, ZoomAccountService>();
 
     }).UseWindowsService()
     .Build();

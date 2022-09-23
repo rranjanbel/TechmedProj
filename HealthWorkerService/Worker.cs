@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Options;
 using TechMed.BL.Repository.BaseClasses;
 using TechMed.BL.Repository.Interfaces;
+using TechMed.BL.ZoomAPI.Service;
 
 namespace HealthWorkerService
 {
@@ -9,12 +10,15 @@ namespace HealthWorkerService
         private readonly ILogger<Worker> _logger;
         private readonly ISystemHealthRepository _systemHealthRepository;
         private readonly IOptions<HostUrl> config;
-        public Worker(ILogger<Worker> logger, ISystemHealthRepository systemHealthRepository, IOptions<HostUrl> config)
+        private readonly IZoomAccountService _zoomAccountService;
+        public Worker(ILogger<Worker> logger, ISystemHealthRepository systemHealthRepository, IOptions<HostUrl> config, IZoomAccountService zoomAccountService)
         {
             _logger = logger;
             _systemHealthRepository = systemHealthRepository;
             this.config=config;
-            
+            _zoomAccountService = zoomAccountService; 
+
+
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -28,7 +32,7 @@ namespace HealthWorkerService
                     _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
                     await _systemHealthRepository.SaveStatusInDB(APIHost, AngHost);
                     await _systemHealthRepository.UpdateLogout();
-                    
+                    await _zoomAccountService.RotateTokenAsync();
                     //_logger.LogInformation("ANG Status : " + await _systemHealthRepository.GetANGStatus());
                     //_logger.LogInformation("API Status : " + await _systemHealthRepository.GetAPIStatus());
                 }
