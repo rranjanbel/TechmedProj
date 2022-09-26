@@ -357,9 +357,9 @@ namespace TechMed.API.Controllers
             {
                 _logger.LogInformation("Received GetToken ");
 
-                string str = await _zoomAccountService.GetNewTokenFromZoomAsync();
+                string str = await _zoomAccountService.GetIssuedTokenAsync();
 
-                return Ok();
+                return Ok(str);
             }
             catch (Exception ex)
             {
