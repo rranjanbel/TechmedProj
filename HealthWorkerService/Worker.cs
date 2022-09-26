@@ -15,8 +15,8 @@ namespace HealthWorkerService
         {
             _logger = logger;
             _systemHealthRepository = systemHealthRepository;
-            this.config=config;
-            _zoomAccountService = zoomAccountService; 
+            this.config = config;
+            _zoomAccountService = zoomAccountService;
 
 
         }
@@ -30,19 +30,19 @@ namespace HealthWorkerService
                     var APIHost = config.Value.APIHost;
                     var AngHost = config.Value.AngHost;
                     _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-                    await _systemHealthRepository.SaveStatusInDB(APIHost, AngHost);
-                    await _systemHealthRepository.UpdateLogout();
-                    await _zoomAccountService.RotateTokenAsync();
+                    bool SaveStatusInDB = await _systemHealthRepository.SaveStatusInDB(APIHost, AngHost);
+                    bool UpdateLogout = await _systemHealthRepository.UpdateLogout();
+                    bool RotateTokenAsyncResult = await _zoomAccountService.RotateTokenAsync();
                     //_logger.LogInformation("ANG Status : " + await _systemHealthRepository.GetANGStatus());
                     //_logger.LogInformation("API Status : " + await _systemHealthRepository.GetAPIStatus());
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Exception : " , ex);
+                    _logger.LogError("Exception : ", ex);
 
                 }
 
-                await Task.Delay(2000, stoppingToken);
+                await Task.Delay(1000 * 5, stoppingToken);
             }
         }
     }
