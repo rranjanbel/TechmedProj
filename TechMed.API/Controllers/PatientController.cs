@@ -32,66 +32,107 @@ namespace TechMed.API.Controllers
         }        
         [HttpPost]
         [Route("AddPatient")]
-        [ProducesResponseType(201, Type = typeof(PatientMasterDTO))]
+        [ProducesResponseType(201, Type = typeof(PatientAddStatusVM))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> AddPatient([FromBody] PatientMasterDTO patientdto)
         {
-            PatientMaster newCreatedPatient = new PatientMaster();
+            //PatientMaster newCreatedPatient = new PatientMaster();
+            //try
+            //{
+            //    string contentRootPath = _webHostEnvironment.ContentRootPath;
+            //    string webRootPath = _webHostEnvironment.WebRootPath;
+            //    if (string.IsNullOrWhiteSpace(_webHostEnvironment.WebRootPath))
+            //    {
+            //        //_webHostEnvironment.WebRootPath = Path.Combine(Directory.GetCurrentDirectory(), "");
+            //        _webHostEnvironment.WebRootPath = "/MyFiles/Images/Patients/";
+            //        webRootPath = _webHostEnvironment.WebRootPath;
+            //    }
+            //    if (webRootPath == String.Empty || webRootPath == null)
+            //    {
+            //        ModelState.AddModelError("AddPatient", "Path did not get proper " + webRootPath);
+            //        return StatusCode(404, ModelState);
+            //    }
+            //    _logger.LogInformation($"Add Patient : relative Path : " + webRootPath);
+            //    _logger.LogInformation($"Add Patient : call web api add patient {patientdto.FirstName}");
+
+            //    if (!ModelState.IsValid)
+            //    {
+            //        _logger.LogInformation($"Add Patient : model state is invalid {patientdto}");
+            //        return BadRequest(ModelState);
+            //    }
+            //    var patientDetails = _mapper.Map<PatientMaster>(patientdto);
+            //    _logger.LogInformation($"Add Patient : going to check Is Patient Exist.{patientdto.FirstName}");
+            //    if (_patientRepository.IsPatientExist(patientDetails))
+            //    {
+            //        _logger.LogInformation($"Add Patient : Patient is already in system.{patientdto.FirstName}");
+            //        ModelState.AddModelError("AddPatient", "Patient name or mobile number is already in system");
+            //        return StatusCode(404, ModelState);
+            //    }
+            //    //newCreatedPatient = await this._patientRepository.Create(patientDetails);
+            //    _logger.LogInformation($"Add Patient : call get patient unique id. {patientdto.FirstName}");
+            //    patientDetails.PatientId = this._patientRepository.GetPatientId();
+            //    _logger.LogInformation($"Add Patient : Patient unique id is : " + patientDetails.PatientId);
+            //    _logger.LogInformation($"Add Patient : call method save image : " + patientDetails.PatientId);
+            //    string fileName = _patientRepository.SaveImage(patientdto.Photo, contentRootPath);
+            //    webRootPath = @"/MyFiles/Images/Patients/";
+            //    patientDetails.Photo = webRootPath + fileName;
+            //    _logger.LogInformation($"Add Patient : saved patinet image : " + patientDetails.Photo);
+            //    newCreatedPatient = await this._patientRepository.AddPatient(patientDetails);
+            //    if (newCreatedPatient == null)
+            //    {
+            //        _logger.LogInformation($"Add Patient : Patient did not added in the database {patientdto.FirstName}");
+            //        ModelState.AddModelError("AddPatient", $"Something went wrong when create Patient {patientdto.FirstName}");
+            //        return StatusCode(404, ModelState);
+            //    }
+            //    else
+            //    {
+            //        var createdPatient = _mapper.Map<PatientMasterDTO>(newCreatedPatient);
+            //        createdPatient.Age = UtilityMaster.GetAgeOfPatient(createdPatient.Dob);
+            //        _logger.LogInformation($"Add Patient : Sucess response returned  {patientdto.FirstName}");
+            //        return CreatedAtRoute(201, createdPatient);
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+
+            //    ModelState.AddModelError("AddPatient", $"Exception :Something went wrong when create Patient {ex.Message}");
+            //    _logger.LogError("Exception in Add Patient module " + ex);
+            //    return StatusCode(500, ModelState);
+            //}
             try
             {
-                string contentRootPath = _webHostEnvironment.ContentRootPath;
-                string webRootPath = _webHostEnvironment.WebRootPath;
-                if (string.IsNullOrWhiteSpace(_webHostEnvironment.WebRootPath))
-                {
-                    //_webHostEnvironment.WebRootPath = Path.Combine(Directory.GetCurrentDirectory(), "");
-                    _webHostEnvironment.WebRootPath = "/MyFiles/Images/Patients/";
-                    webRootPath = _webHostEnvironment.WebRootPath;
-                }
-                if (webRootPath == String.Empty || webRootPath == null)
-                {
-                    ModelState.AddModelError("AddPatient", "Path did not get proper " + webRootPath);
-                    return StatusCode(404, ModelState);
-                }
-                _logger.LogInformation($"Add Patient : relative Path : " + webRootPath);
-                _logger.LogInformation($"Add Patient : call web api add patient {patientdto.FirstName}");
-                
                 if (!ModelState.IsValid)
                 {
                     _logger.LogInformation($"Add Patient : model state is invalid {patientdto}");
                     return BadRequest(ModelState);
                 }
-                var patientDetails = _mapper.Map<PatientMaster>(patientdto);
-                _logger.LogInformation($"Add Patient : going to check Is Patient Exist.{patientdto.FirstName}");
-                if (_patientRepository.IsPatientExist(patientDetails))
-                {
-                    _logger.LogInformation($"Add Patient : Patient is already in system.{patientdto.FirstName}");
-                    ModelState.AddModelError("AddPatient", "Patient name or mobile number is already in system");
-                    return StatusCode(404, ModelState);
-                }
-                //newCreatedPatient = await this._patientRepository.Create(patientDetails);
-                _logger.LogInformation($"Add Patient : call get patient unique id. {patientdto.FirstName}");
-                patientDetails.PatientId = this._patientRepository.GetPatientId();
-                _logger.LogInformation($"Add Patient : Patient unique id is : " + patientDetails.PatientId);
-                _logger.LogInformation($"Add Patient : call method save image : " + patientDetails.PatientId);
-                string fileName = _patientRepository.SaveImage(patientdto.Photo, contentRootPath);
-                webRootPath = @"/MyFiles/Images/Patients/";
-                patientDetails.Photo = webRootPath + fileName;
-                _logger.LogInformation($"Add Patient : saved patinet image : " + patientDetails.Photo);
-                newCreatedPatient = await this._patientRepository.AddPatient(patientDetails);
-                if (newCreatedPatient == null)
-                {
-                    _logger.LogInformation($"Add Patient : Patient did not added in the database {patientdto.FirstName}");
-                    ModelState.AddModelError("AddPatient", $"Something went wrong when create Patient {patientdto.FirstName}");
-                    return StatusCode(404, ModelState);
-                }
                 else
-                {                   
-                    var createdPatient = _mapper.Map<PatientMasterDTO>(newCreatedPatient);
-                    createdPatient.Age = UtilityMaster.GetAgeOfPatient(createdPatient.Dob);
-                    _logger.LogInformation($"Add Patient : Sucess response returned  {patientdto.FirstName}");
-                    return CreatedAtRoute(201, createdPatient);
+                {
+                    string contentRootPath = _webHostEnvironment.ContentRootPath;
+                    PatientAddStatusVM addedPatient = new PatientAddStatusVM();
+                    addedPatient = await _patientRepository.CreatePatient(patientdto, contentRootPath);
+                    if(addedPatient != null)
+                    {
+                        if(addedPatient.Status.ToLower() == "sucess")
+                        {
+                            _logger.LogInformation($"Add Patient : Sucess response returned  {patientdto.FirstName}");
+                            return CreatedAtRoute(201, addedPatient);
+                        }
+                        else
+                        {
+                            _logger.LogInformation($"Add Patient : Fail response returned  {patientdto.FirstName}");
+                            return StatusCode(404, addedPatient);
+                        }
+                    }
+                    else
+                    {
+                        _logger.LogInformation($"Add Patient : Fail response returned  {patientdto.FirstName}");
+                        return StatusCode(404, addedPatient);
+                    }
+
                 }
+                
             }
             catch (Exception ex)
             {
@@ -99,7 +140,7 @@ namespace TechMed.API.Controllers
                 ModelState.AddModelError("AddPatient", $"Exception :Something went wrong when create Patient {ex.Message}");
                 _logger.LogError("Exception in Add Patient module " + ex);
                 return StatusCode(500, ModelState);
-            }  
+            }
         }
 
         [HttpGet]

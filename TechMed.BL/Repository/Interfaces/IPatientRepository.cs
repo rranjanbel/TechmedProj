@@ -30,5 +30,7 @@ namespace TechMed.BL.Repository.Interfaces
         long GetPatientId();
         public int GetAge(DateTime dateofbirth);
         string SaveImage(string ImgBase64Str, string rootPath);
+        Task<PatientAddStatusVM> CreatePatient(PatientMasterDTO patientMaster, string webRootPath);
+        
     }
 }

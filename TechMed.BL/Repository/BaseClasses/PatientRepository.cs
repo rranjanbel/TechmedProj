@@ -95,6 +95,118 @@ namespace TechMed.BL.Repository.BaseClasses
 
         }
 
+        public async Task<PatientAddStatusVM> CreatePatient(PatientMasterDTO patientMasterDTO,string webRootPath)
+        {
+            PatientMaster patientMaster = new PatientMaster();
+            PatientAddStatusVM addStatusVM = new PatientAddStatusVM();
+            string relativePathOfPatientImage = @"/MyFiles/Image/Patients/";
+            try
+            {
+
+                //Setting setting = new Setting(); 
+                if (patientMasterDTO != null)
+                {
+                    patientMaster = _mapper.Map<PatientMaster>(patientMasterDTO);
+                    if (IsPatientExist(patientMaster))
+                    {
+                        addStatusVM.Status = "Fail";
+                        addStatusVM.Message = "Patient already in system.";
+                        addStatusVM.PatientMasterDTO = patientMasterDTO;
+                        return addStatusVM;
+                    }
+                    else
+                    {
+                        if (webRootPath == String.Empty || webRootPath == null)
+                        {
+                            addStatusVM.Status = "Fail";
+                            addStatusVM.Message = "webRootPath does not contain path.";
+                            addStatusVM.PatientMasterDTO = patientMasterDTO;
+                            return addStatusVM;
+                        }
+                        else
+                        {
+                            patientMaster.CreatedOn = UtilityMaster.GetLocalDateTime();
+                            patientMaster.UpdatedOn = UtilityMaster.GetLocalDateTime();
+                            if (patientMasterDTO.Dob != null)
+                            {
+                                patientMaster.Dob = UtilityMaster.ConvertToLocalDateTime(patientMaster.Dob);
+                            }
+                            
+                            if (patientMaster.MobileNo == null || patientMaster.MobileNo == "")
+                            {
+                                patientMaster.MobileNo = " ";
+                            }
+                            // Save image of Patient 
+                            string fileName = SaveImage(patientMasterDTO.Photo, webRootPath);
+                            patientMaster.Photo = relativePathOfPatientImage + fileName;
+                            // Get unique patient ID
+                            patientMaster.PatientId = this.GetPatientId();
+
+                            if( await _teleMedecineContext.PatientMasters.AnyAsync(a => a.PatientId == patientMaster.PatientId))
+                            {
+                                patientMaster.PatientId = this.GetPatientId();
+                            }
+                            
+                            if (patientMaster.Id == 0)
+                            {
+                                _logger.LogInformation($"Add Patient : call save method");
+                                _teleMedecineContext.Entry(patientMaster).State = EntityState.Added;
+                                int i =  _teleMedecineContext.SaveChanges();                              
+
+                                if (i > 0)
+                                {
+                                    patientMasterDTO = _mapper.Map<PatientMasterDTO>(patientMaster);
+                                    _logger.LogInformation($"Add Patient : Patient added successfully.");
+                                    patientMasterDTO.Age = UtilityMaster.GetAgeOfPatient(patientMaster.Dob);
+                                    addStatusVM.Status = "Sucess";
+                                    addStatusVM.Message = "Patient added successfully.";
+                                    addStatusVM.PatientMasterDTO = patientMasterDTO;
+                                    return addStatusVM;
+                                }
+                                else
+                                {
+                                    _logger.LogInformation($"Add Patient : Patient did not add");
+                                    addStatusVM.Status = "Fail";
+                                    addStatusVM.Message = "Patient did not add,Please contact admin.";
+                                    addStatusVM.PatientMasterDTO = patientMasterDTO;
+                                    return addStatusVM;
+                                }
+                            }
+                            else
+                            {
+                                _logger.LogInformation($"Add Patient : Patient did not add.");
+                                addStatusVM.Status = "Fail";
+                                addStatusVM.Message = "Patient Id has value.Patient did not add.";
+                                addStatusVM.PatientMasterDTO = patientMasterDTO;
+                                return addStatusVM;
+                            }
+                        }
+                    }
+                }  
+                else
+                {
+                    _logger.LogInformation($"Add Patient : model get null value");
+                    PatientMasterDTO dto = new PatientMasterDTO();
+                    addStatusVM.Status = "Fail";
+                    addStatusVM.Message = "Add Patient : model get null value.";
+                    addStatusVM.PatientMasterDTO = dto;
+                    return addStatusVM;
+                }
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogInformation($"Add Patient : get exception " +ex.Message);
+                //return updatedPatientMaster;
+                _logger.LogError("Add Patient got exception when adding patient " + ex.Message);                
+                addStatusVM.Status = "Fail";
+                addStatusVM.Message = "Add Patient got exception when adding patient.";
+                addStatusVM.PatientMasterDTO = patientMasterDTO;
+                return addStatusVM;
+
+            }
+
+        }
+
         public Task<bool> DeletePatient(int Id)
         {
             throw new NotImplementedException();
@@ -499,31 +611,56 @@ namespace TechMed.BL.Repository.BaseClasses
 
         public long GetPatientId()
         {
-            Setting setting = new Setting();
             Int64 currentNo = 0;
-            Int64 patientSerNo = 0;
-            patientSerNo = _teleMedecineContext.Settings.Select(a => a.PatientNumber).FirstOrDefault();
-            if (patientSerNo >= 0)
+            int result = 0;
+           Setting setting = new Setting();
+            try
             {
-                currentNo = patientSerNo;
-                setting = _teleMedecineContext.Settings.FirstOrDefault();
-                if (setting != null)
+                setting = _teleMedecineContext.Settings.FirstOrDefault( a => a.Id ==1);
+                setting.PatientNumber = setting.PatientNumber + 1;
+                _teleMedecineContext.Entry(setting).State = EntityState.Modified;
+                result = _teleMedecineContext.SaveChanges();
+                if (result > 0)
                 {
-                    setting.PatientNumber = currentNo + 1;
+                    setting = _teleMedecineContext.Settings.FirstOrDefault();
+                    currentNo = setting.PatientNumber;
                 }
-                try
+                else
                 {
-                    _teleMedecineContext.Entry(setting).State = EntityState.Modified;
-                    var result = _teleMedecineContext.SaveChangesAsync();
+                    currentNo = 0;
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.ToString());
-                    throw;
-                }
-                return (currentNo + 1);
+                return currentNo;
             }
-            return 0;
+            catch (Exception)
+            {
+                throw;
+            }
+           
+
+            
+            //Int64 patientSerNo = 0;
+            //patientSerNo = _teleMedecineContext.Settings.Select(a => a.PatientNumber).FirstOrDefault();
+            //if (patientSerNo >= 0)
+            //{
+            //    currentNo = patientSerNo;
+            //    setting = _teleMedecineContext.Settings.FirstOrDefault();
+            //    if (setting != null)
+            //    {
+            //        setting.PatientNumber = currentNo + 1;
+            //    }
+            //    try
+            //    {
+            //        _teleMedecineContext.Entry(setting).State = EntityState.Modified;
+            //        var result = _teleMedecineContext.SaveChangesAsync();
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        Console.WriteLine(ex.ToString());
+            //        throw;
+            //    }
+            //    return (currentNo + 1);
+            //}
+            //return 0;
         }
 
         public List<SPResultGetPatientDetails> GetSPResult(int patientId)

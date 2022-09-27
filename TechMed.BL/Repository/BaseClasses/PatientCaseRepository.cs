@@ -2018,6 +2018,15 @@ namespace TechMed.BL.Repository.BaseClasses
             else
                 return true;
         }
+
+        public async Task<string> GetTwilioRoomInstance(long patientCaseID)
+        {
+            string roomInstance = "";
+
+            var result = await _teleMedecineContext.TwilioMeetingRoomInfos.FirstOrDefaultAsync(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" && a.PatientCaseId == patientCaseID);
+            roomInstance = result!=null?result.RoomName:"";
+            return roomInstance;
+        }
     }
     public class DoctorQueues
     {
