@@ -104,7 +104,7 @@ namespace TechMed.BL.ZoomAPI.Service
                     // create token2
                     // set ActiveTokenNumber 2 
                     var result = UtilityMaster.GetLocalDateTime().Subtract(zoomToken.Token1CreatedOn).TotalMinutes;
-                    if (result > 30)
+                    if (result > 20)
                     {
                         string token2 = await GetNewTokenFromZoomAsync(1);
                         zoomToken.Token2 = token2;
@@ -123,7 +123,7 @@ namespace TechMed.BL.ZoomAPI.Service
                     // create token1
                     // se1 ActiveTokenNumber 1
                     var result = UtilityMaster.GetLocalDateTime().Subtract(zoomToken.Token2CreatedOn).TotalMinutes;
-                    if (result > 30)
+                    if (result > 20)
                     {
                         string token1 = await GetNewTokenFromZoomAsync(0);
                         zoomToken.Token1 = token1;
