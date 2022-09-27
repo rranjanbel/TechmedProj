@@ -30,6 +30,7 @@ IHost host = Host.CreateDefaultBuilder(args)
     {
         services.AddDbContext<TeleMedecineContext>(o => o.UseSqlServer(connectionString), ServiceLifetime.Singleton);
         services.AddHostedService<Worker>();
+        services.AddHostedService<TokenWorker>();
         services.AddSingleton<ISystemHealthRepository, SystemHealthRepository>();
         services.Configure<HostUrl>(Configuration.GetSection("HostUrl"));
         services.Configure<ZoomSettings>(

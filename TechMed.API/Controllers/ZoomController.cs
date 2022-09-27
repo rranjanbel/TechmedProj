@@ -279,7 +279,7 @@ namespace TechMed.API.Controllers
                 // use the body, process the stuff...
                 //var content =HttpContext.Request.Content;
                 //string jsonContent = content.ReadAsStringAsync().Result;
-
+                //
 
                 
 
@@ -411,9 +411,40 @@ namespace TechMed.API.Controllers
 
         }
 
-      
 
-      
+
+        [Route("CreateDoctorAsZoomUser")]
+        [HttpPost]
+        [ProducesResponseType(200, Type = typeof(List<ZoomUserDetailDTO>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> CreateDoctorAsZoomUser([FromBody] string Email)
+        {
+            try
+            {
+                _logger.LogInformation("Received CreateUser ");
+                ZoomUserDetailDTO response = await _zoomService.CreateUser(Email);
+                if (response != null)
+                {
+                    _logger.LogInformation($"CreateUser : Sucess response returned ");
+                    return Ok(response);
+                }
+                else
+                {
+                    ModelState.AddModelError("", $"Data not found!");
+                    _logger.LogError("CreateUser :  Data not found ");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError("", $"Something went wrong {ex.Message}");
+                _logger.LogError("Exception in CreateUser API " + ex);
+                return StatusCode(500, ModelState);
+            }
+
+        }
 
     }
 }

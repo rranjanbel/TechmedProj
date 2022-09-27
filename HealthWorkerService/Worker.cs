@@ -32,7 +32,7 @@ namespace HealthWorkerService
                     _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
                     bool SaveStatusInDB = await _systemHealthRepository.SaveStatusInDB(APIHost, AngHost);
                     bool UpdateLogout = await _systemHealthRepository.UpdateLogout();
-                    bool RotateTokenAsyncResult = await _zoomAccountService.RotateTokenAsync();
+                    //bool RotateTokenAsyncResult = await _zoomAccountService.RotateTokenAsync();
                     //_logger.LogInformation("ANG Status : " + await _systemHealthRepository.GetANGStatus());
                     //_logger.LogInformation("API Status : " + await _systemHealthRepository.GetAPIStatus());
                 }
