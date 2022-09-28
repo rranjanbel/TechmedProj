@@ -16,10 +16,12 @@ namespace TechMed.BL.ZoomAPI.Service
     {
         readonly TeleMedecineContext _teleMedecineContext;
         readonly ITwilioMeetingRepository _twilioMeetingRepository;
-        public ZoomWebhook(TeleMedecineContext teleMedecineContext, ITwilioMeetingRepository twilioMeetingRepository)
+        readonly IZoomRecordingService _zoomRecordingService;
+        public ZoomWebhook(IZoomRecordingService zoomRecordingService, TeleMedecineContext teleMedecineContext, ITwilioMeetingRepository twilioMeetingRepository)
         {
             _teleMedecineContext = teleMedecineContext;
             _twilioMeetingRepository = twilioMeetingRepository;
+            _zoomRecordingService = zoomRecordingService;
         }
         public async Task<bool> ZoomWebhookService(string value)
         {
@@ -58,7 +60,33 @@ namespace TechMed.BL.ZoomAPI.Service
             }
             if (myDeserializedClass.@event.ToLower() == "recording.stopped")
             {
-                //clear queue
+                //save recording
+                var response = JsonSerializer.Deserialize<WebHookEndMeetingResponse.WebHookEndMeetingModel>(value);
+                if (response != null)
+                {
+                    if (response.payload.@object != null)
+                    {
+                        TwilioMeetingRoomInfo twilioMeetingRoomInfo = await _teleMedecineContext.TwilioMeetingRoomInfos.AsNoTracking().FirstOrDefaultAsync(a => a.MeetingSid == response.payload.@object.id);
+                        if (twilioMeetingRoomInfo != null)
+                        {
+                            var recording = await _zoomRecordingService.GetRecording(response.payload.@object.id);
+                            if (recording != null)
+                            {
+                                RecordingFile recordingFile = recording.recording_files.FirstOrDefault(a => a.file_type == ".mp4");
+                                if (recordingFile != null)
+                                {
+                                    await _twilioMeetingRepository.MeetingRoomComposeVideoUpdate(response.payload.@object.id, recordingFile.file_size, recordingFile.download_url);
+                                }
+                            }
+                            if (twilioMeetingRoomInfo.IsClosed == false)
+                            {
+                                bool result = await _twilioMeetingRepository.SetMeetingRoomClosed(response.payload.@object.id, true);
+
+                            }
+                        }
+                    }
+                }
+
             }
 
             return true;

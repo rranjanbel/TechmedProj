@@ -71,8 +71,8 @@ namespace TechMed.BL.ZoomAPI.Service
             ZoomUserDetailDTO zoomUserDetailDTO = new ZoomUserDetailDTO();
             NewUserRequestModel NewUsermodel = new NewUserRequestModel();
 
-            UserMaster userMaster = await _teleMedecineContext.UserMasters.Where(a => a.Email.ToLower() == Email.ToLower()).FirstOrDefaultAsync();
-            ZoomUserDetail zoomUserDetail = await _teleMedecineContext.ZoomUserDetails.Include(a => a.User).Where(a => a.User.Email.ToLower() == Email.ToLower()).FirstOrDefaultAsync();
+            UserMaster userMaster = await _teleMedecineContext.UserMasters.AsNoTracking().FirstOrDefaultAsync(a => a.Email.ToLower() == Email.ToLower());
+            ZoomUserDetail zoomUserDetail = await _teleMedecineContext.ZoomUserDetails.AsNoTracking().Include(a => a.User).FirstOrDefaultAsync(a => a.User.Email.ToLower() == Email.ToLower());
             if (userMaster == null)
             {
                 return null;

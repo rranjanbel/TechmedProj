@@ -46,7 +46,7 @@ namespace TechMed.BL.ZoomAPI.Service
                     throw new Exception("ActiveTokenNumber value is not in '1' or '2' in database!");
                 }
             }
-           
+
             //string token = await GetNewTokenFromZoomAsync();
             //return token;
         }
@@ -78,7 +78,7 @@ namespace TechMed.BL.ZoomAPI.Service
         public async Task<bool> RotateTokenAsync()
         {
             bool response = false;
-            ZoomToken zoomToken = await _telemedecineContext.ZoomTokens.AsNoTracking().FirstOrDefaultAsync();
+            ZoomToken zoomToken = await _telemedecineContext.ZoomTokens.FirstOrDefaultAsync();
             if (zoomToken == null)
             {
                 //insert first record
@@ -110,8 +110,8 @@ namespace TechMed.BL.ZoomAPI.Service
                         zoomToken.Token2 = token2;
                         zoomToken.Token2CreatedOn = UtilityMaster.GetLocalDateTime();
                         zoomToken.ActiveTokenNumber = 2;
-                        _telemedecineContext.ZoomTokens.Add(zoomToken);
-                        _telemedecineContext.Entry(zoomToken).State = EntityState.Modified;
+                        //await _telemedecineContext.ZoomTokens.AddAsync(zoomToken);
+                        //_telemedecineContext.Entry(zoomToken).State = EntityState.Modified;
                         await _telemedecineContext.SaveChangesAsync();
                         return true;
                     }
@@ -129,8 +129,8 @@ namespace TechMed.BL.ZoomAPI.Service
                         zoomToken.Token1 = token1;
                         zoomToken.Token1CreatedOn = UtilityMaster.GetLocalDateTime();
                         zoomToken.ActiveTokenNumber = 1;
-                        _telemedecineContext.ZoomTokens.Add(zoomToken);
-                        _telemedecineContext.Entry(zoomToken).State = EntityState.Modified;
+                        //await _telemedecineContext.ZoomTokens.AddAsync(zoomToken);
+                        //_telemedecineContext.Entry(zoomToken).State = EntityState.Modified;
                         await _telemedecineContext.SaveChangesAsync();
                         return true;
                     }

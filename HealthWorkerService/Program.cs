@@ -22,7 +22,6 @@ var t=Configuration.GetSection("HostUrl").Get<HostUrl>();
 //services.AddScoped<IUserRepository, UserRepository>();
 //services.AddScoped<ISystemHealthRepository, SystemHealthRepository>();
 
-
 //var serviceProvider = services.BuildServiceProvider();
 
 IHost host = Host.CreateDefaultBuilder(args)
@@ -39,7 +38,7 @@ IHost host = Host.CreateDefaultBuilder(args)
             settings.ZoomSSAccountId = Configuration.GetValue<string>("Zoom:ZoomSSAccountId");
             settings.ZoomSSClientID = Configuration.GetValue<string>("Zoom:ZoomSSClientID");
             settings.ZoomSSClientSecret = Configuration.GetValue<string>("Zoom:ZoomSSClientSecret");
-        }).AddTransient<IZoomAccountService, ZoomAccountService>();
+        }).AddSingleton<IZoomAccountService, ZoomAccountService>();
 
     }).UseWindowsService()
     .Build();

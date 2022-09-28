@@ -117,6 +117,28 @@ namespace TechMed.BL.Repository.BaseClasses
                 return true;
             }
         }
+        public async Task<bool> MeetingRoomComposeVideoUpdate(string compositionResourceSid,long compositionResourceSize, string roomName)
+        {
+
+            var meetInfo = await _teleMedecineContext.TwilioMeetingRoomInfos.FirstOrDefaultAsync(x => x.RoomName == roomName);
+            if (meetInfo != null)
+            {
+                meetInfo.IsClosed = true;
+                meetInfo.TwilioRoomStatus = meetInfo.TwilioRoomStatus == "Completed" ? "Completed" : "Disconnected";
+
+                //meetInfo.Duration = !compositionResource.Duration.HasValue? Convert.ToDecimal(UtilityMaster.GetLocalDateTime().Subtract(meetInfo.CreateDate.Value).TotalMinutes):compositionResource.Duration;
+
+                meetInfo.CompositeVideoSid = compositionResourceSid;
+                meetInfo.CompositeVideoSize = compositionResourceSize;
+                _teleMedecineContext.TwilioMeetingRoomInfos.Add(meetInfo);
+                _teleMedecineContext.Entry(meetInfo).State = EntityState.Modified;
+                return (await _teleMedecineContext.SaveChangesAsync()) > 0;
+            }
+            else
+            {
+                return true;
+            }
+        }
         public async Task<bool> UpdateRoomStatusFromTwilioWebHook(RoomStatusRequest roomStatusRequest)
         {
 

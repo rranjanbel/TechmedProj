@@ -176,7 +176,7 @@ namespace TechMed.API.Controllers
         {
             try
             {
-                ZoomUserDetail zoomUserDetail = await _teleMedecineContext.ZoomUserDetails.Include(a=>a.User).Where(a => a.User.Email.ToLower() == HostUserMailID.ToLower()).FirstOrDefaultAsync();
+                ZoomUserDetail zoomUserDetail = await _teleMedecineContext.ZoomUserDetails.Include(a => a.User).Where(a => a.User.Email.ToLower() == HostUserMailID.ToLower()).FirstOrDefaultAsync();
                 if (zoomUserDetail != null)
                 {
                     if (zoomUserDetail.Status.ToLower() == "active")
@@ -268,7 +268,7 @@ namespace TechMed.API.Controllers
         [Route("ZoomWebhookService")]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> ZoomWebhookService([FromBody]JsonElement body)
+        public async Task<IActionResult> ZoomWebhookService([FromBody] JsonElement body)
         {
             _logger.LogInformation("Received ZoomWebhookService ");
 
@@ -281,7 +281,7 @@ namespace TechMed.API.Controllers
                 //string jsonContent = content.ReadAsStringAsync().Result;
                 //
 
-                
+
 
                 var newUserResponse = await _zoomWebhook.ZoomWebhookService(json);
                 return Ok();
@@ -331,7 +331,7 @@ namespace TechMed.API.Controllers
             try
             {
                 GetRecordingResponseModel responseModel = await _zoomRecordingService.GetRecording(MeetingID);
-                if (responseModel!=null)
+                if (responseModel != null)
                 {
                     return Ok(responseModel);
                 }
@@ -339,7 +339,7 @@ namespace TechMed.API.Controllers
                 {
                     return NotFound();
                 }
-               
+
             }
             catch (Exception ex)
             {
@@ -422,12 +422,21 @@ namespace TechMed.API.Controllers
         {
             try
             {
-                _logger.LogInformation("Received CreateUser ");
-                ZoomUserDetailDTO response = await _zoomService.CreateUser(Email);
-                if (response != null)
+                List<ZoomUserDetailDTO> zoomUserDetails = new List<ZoomUserDetailDTO>();
+
+                var doctors =await _teleMedecineContext.DoctorMasters.ToListAsync();
+                foreach (var item in doctors)
+                {
+                    _logger.LogInformation("Received CreateUser ");
+                    ZoomUserDetailDTO response = await _zoomService.CreateUser(item.User.Email);
+                    zoomUserDetails.Add(response);
+                }
+
+              
+                if (zoomUserDetails != null)
                 {
                     _logger.LogInformation($"CreateUser : Sucess response returned ");
-                    return Ok(response);
+                    return Ok(zoomUserDetails);
                 }
                 else
                 {
