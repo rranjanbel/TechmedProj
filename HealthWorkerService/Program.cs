@@ -28,6 +28,7 @@ IHost host = Host.CreateDefaultBuilder(args)
     {
         services.AddDbContext<TeleMedecineContext>(o => o.UseSqlServer(connectionString), ServiceLifetime.Singleton);
         services.AddHostedService<Worker>();
+        services.AddHostedService<PatientCaseWorker>();
         services.AddSingleton<ISystemHealthRepository, SystemHealthRepository>();
         services.Configure<HostUrl>(Configuration.GetSection("HostUrl"));
 

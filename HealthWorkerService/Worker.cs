@@ -28,7 +28,7 @@ namespace HealthWorkerService
                     _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
                     await _systemHealthRepository.SaveStatusInDB(APIHost, AngHost);
                     await _systemHealthRepository.UpdateLogout();
-                    
+
                     //_logger.LogInformation("ANG Status : " + await _systemHealthRepository.GetANGStatus());
                     //_logger.LogInformation("API Status : " + await _systemHealthRepository.GetAPIStatus());
                 }
