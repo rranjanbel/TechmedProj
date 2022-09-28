@@ -34,13 +34,13 @@ namespace HealthWorkerService
 
                     if (now.Date== hardcodedTime.Date)
                     {
-                        if (now.Hour == 16)
+                        if (now.Hour == 0)
                         {
-                            if (now.Minute == 31)
+                            if (now.Minute == 1)
                             {
                                 isexecuted = false;
                             }
-                            if (now.Minute == 32 && !isexecuted)
+                            if (now.Minute == 2 && !isexecuted)
                             {
                                 isexecuted = true;
                                 _logger.LogInformation("PatientCaseWorker running at: {time}", DateTimeOffset.Now);
@@ -56,7 +56,7 @@ namespace HealthWorkerService
 
                 }
 
-                await Task.Delay(2000, stoppingToken);
+                await Task.Delay(5000, stoppingToken);
             }
         }
     }
