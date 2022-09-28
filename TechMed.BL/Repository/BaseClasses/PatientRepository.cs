@@ -99,7 +99,7 @@ namespace TechMed.BL.Repository.BaseClasses
         {
             PatientMaster patientMaster = new PatientMaster();
             PatientAddStatusVM addStatusVM = new PatientAddStatusVM();
-            string relativePathOfPatientImage = @"/MyFiles/Image/Patients/";
+            string relativePathOfPatientImage = @"/MyFiles/Images/Patients/"; 
             try
             {
 
