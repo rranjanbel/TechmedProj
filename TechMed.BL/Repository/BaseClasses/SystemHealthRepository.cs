@@ -146,6 +146,30 @@ namespace TechMed.BL.Repository.BaseClasses
 
 
         }
+        public async Task<bool> UpdateYesterdayPedingCaseToOrphan()
+        {
+            try
+            {
+
+               
+                var Results = _teleMedecineContext.UpdateYesterdayPedingCaseToOrphan.FromSqlInterpolated($"EXEC [dbo].[UpdateYesterdayPedingCaseToOrphan] ");
+                UpdateServerHealthVM data;
+                foreach (var item in Results)
+                {
+                    data = new UpdateServerHealthVM();
+                    data.Success = item.Success;
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                return false;
+            }
+            return true;
+
+
+        }
     }
 
 }
