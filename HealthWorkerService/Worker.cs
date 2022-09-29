@@ -27,6 +27,7 @@ namespace HealthWorkerService
             {
                 try
                 {
+                   // File.AppendAllLines(@"C:\Users\ADMIN\source\repos\Dashboard_Changes\TechmedProj\HealthWorkerService\bin\Release\net6.0\publish\test.txt", new List<string>() { "Worker running at: "+ DateTimeOffset.Now.ToString() });
                     var APIHost = config.Value.APIHost;
                     var AngHost = config.Value.AngHost;
                     _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
