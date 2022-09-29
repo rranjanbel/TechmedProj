@@ -102,24 +102,8 @@ namespace TechMed.API.Controllers
             }
             else
             {
-                // Check Doctor is free to receive the call
-                isDoctorFree = await _patientCaseRepository.IsDoctorFreeToReceiveCall(patientCaseId);
-
-                //int intPatientCaseID = Convert.ToInt32( patientCaseId);
-                //string roomInstances = "";
-                //if (!isDoctorFree)
-                //{
-                //    try
-                //    {
-                //        roomInstances = await _patientCaseRepository.GetTwilioRoomInstance(patientCaseId);
-                //        await DismissCall(roomInstances, intPatientCaseID, true);
-                //    }
-                //    catch (Exception)
-                //    {
-                //        //throw;
-                //    }
-                    
-                //}
+                // Check Doctor room is free to receive the call
+                isDoctorFree = await _patientCaseRepository.IsDoctorRoomBusy(patientCaseId); 
 
                 // Check PHC is free to receive the call
                 isPhcFree = await _patientCaseRepository.IsPHCFreeToReceiveCall(patientCaseId);

@@ -43,6 +43,7 @@ namespace TechMed.BL.Repository.Interfaces
         Task<bool> UpdateCallStatusTime(long patientCaseID);
         Task<bool> IsPHCFreeToReceiveCall(long patientCaseID);
         Task<string> GetTwilioRoomInstance(long patientCaseID);
+        Task<bool> IsDoctorRoomBusy(long patientCaseID);
 
 
     }
