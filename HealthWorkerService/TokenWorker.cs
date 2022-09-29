@@ -71,7 +71,7 @@ namespace HealthWorkerService
                                 // create token2
                                 // set ActiveTokenNumber 2 
                                 var result = UtilityMaster.GetLocalDateTime().Subtract(zoomToken.Token1CreatedOn).TotalMinutes;
-                                if (result > 1)
+                                if (result > 15)
                                 {
                                     string token2 = await _zoomAccountService.GetNewTokenFromZoomAsync(1);
                                     zoomToken.Token2 = token2;
@@ -90,7 +90,7 @@ namespace HealthWorkerService
                                 // create token1
                                 // se1 ActiveTokenNumber 1
                                 var result = UtilityMaster.GetLocalDateTime().Subtract(zoomToken.Token2CreatedOn).TotalMinutes;
-                                if (result > 1)
+                                if (result > 15)
                                 {
                                     string token1 = await _zoomAccountService.GetNewTokenFromZoomAsync(0);
                                     zoomToken.Token1 = token1;
