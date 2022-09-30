@@ -48,12 +48,17 @@ namespace TechMed.BL.Repository.BaseClasses
         {
             //
             DoctorMaster doctorMaster = await _teleMedecineContext.DoctorMasters.Where(o => o.User.Email.ToLower() == getDoctorDetailVM.UserEmailID.ToLower()).FirstOrDefaultAsync();
-            UserDetail userDetail = await _teleMedecineContext.UserDetails.Where(o => o.UserId == doctorMaster.UserId).FirstOrDefaultAsync();
+            UserDetail userDetail = await _teleMedecineContext.UserDetails.Include(a=>a.Gender).Where(o => o.UserId == doctorMaster.UserId).FirstOrDefaultAsync();
             var DTO = new DoctorDTO();
             if (doctorMaster != null && userDetail != null)
             {
                 DTO = _mapper.Map<DoctorDTO>(doctorMaster);
                 DTO.detailsDTO = _mapper.Map<DetailsDTO>(userDetail);
+                if (userDetail.Gender!=null)
+                {
+                    DTO.detailsDTO.Gender = userDetail.Gender.Gender;
+                }
+                
             }
             return DTO;
         }
