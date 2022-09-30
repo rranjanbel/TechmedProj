@@ -1966,18 +1966,28 @@ namespace TechMed.BL.Repository.BaseClasses
         }
 
         public async Task<bool> IsDoctorFreeToReceiveCall(long patientCaseID)
-        {            
+        {
+            TwilioMeetingRoomInfo meetingRoomInfo = new TwilioMeetingRoomInfo();
             bool IsDoctorFree = true;
             DateTime localDate = UtilityMaster.GetLocalDateTime();
+            var patientCase = await _teleMedecineContext.PatientCases.FirstOrDefaultAsync(a => a.Id == patientCaseID);
             var patientQueue = await _teleMedecineContext.PatientQueues.FirstOrDefaultAsync(a => a.PatientCaseId == patientCaseID && a.CaseFileStatusId == 4 && a.AssignedOn.Day == localDate.Day && a.AssignedOn.Month == localDate.Month && a.AssignedOn.Year == localDate.Year);
            
-            if (patientQueue != null)
+            if (patientQueue != null && patientCase != null)
             {
                 //IsDoctorFree = _teleMedecineContext.TwilioMeetingRoomInfos.Any(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" && a.AssignedDoctorId == patientQueue.AssignedDoctorId);
-                var meetingRoomInfo = await _teleMedecineContext.TwilioMeetingRoomInfos.AnyAsync(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" && a.AssignedDoctorId == patientQueue.AssignedDoctorId );
-                if (meetingRoomInfo)
+                meetingRoomInfo = await _teleMedecineContext.TwilioMeetingRoomInfos.FirstOrDefaultAsync(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" && a.AssignedDoctorId == patientQueue.AssignedDoctorId && a.AssignedBy == patientCase.CreatedBy);
+                if (meetingRoomInfo != null)
                 {
-                    IsDoctorFree = false;
+                    meetingRoomInfo.IsClosed = true;
+                    meetingRoomInfo.CloseDate = localDate;
+                    meetingRoomInfo.TwilioRoomStatus = "Disconnected";
+                    _teleMedecineContext.Entry(meetingRoomInfo).State = EntityState.Modified;
+                    int i = _teleMedecineContext.SaveChanges();
+                    if (i > 0)
+                        IsDoctorFree = true;
+                    else
+                        IsDoctorFree = false;
                 }
                 else
                 {
