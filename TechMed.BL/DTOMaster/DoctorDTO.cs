@@ -65,6 +65,7 @@ namespace TechMed.BL.DTOMaster
         public DateTime? Dob { get; set; }
         [Required]
         public int GenderId { get; set; }
+        public string? Gender { get; set; }
         [Required]
         public string EmailId { get; set; } = null!;
         [Required]
