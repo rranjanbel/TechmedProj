@@ -193,7 +193,7 @@ namespace TechMed.API.Controllers
                     else if (VideoCallEnvironment.Zoom == env)
                     {
                         //TODO: Add PHCID
-                        var newMeeting = await _zoomService.CreateMeeting(patientCase.CreatedBy);
+                        var newMeeting = await _zoomService.CreateMeeting(patientInfo.AssignedDoctorId);
                         meetingInstance = newMeeting.id.ToString();
                         var isSaved = await _twilioRoomDb.MeetingRoomInfoAdd(new TwilioMeetingRoomInfo()
                         {

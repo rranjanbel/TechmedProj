@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,12 +17,14 @@ namespace HealthWorkerService
         private readonly IZoomAccountService _zoomAccountService;
         //private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly TeleMedecineContext _telemedecineContext;
-        public TokenWorker(ILogger<Worker> logger, IZoomAccountService zoomAccountService, TeleMedecineContext telemedecineContext)
+        private readonly IOptions<ConnectionStrings> config;
+        public TokenWorker(ILogger<Worker> logger, IZoomAccountService zoomAccountService, IOptions<ConnectionStrings> config)
         {
             _logger = logger;
             _zoomAccountService = zoomAccountService;
             //_serviceScopeFactory = serviceScopeFactory;
-            _telemedecineContext = telemedecineContext;
+            //_telemedecineContext = telemedecineContext;
+            this.config=config;
 
         }
 
@@ -36,96 +39,100 @@ namespace HealthWorkerService
 
             while (!stoppingToken.IsCancellationRequested)
             {
+                var optionsBuilder = new DbContextOptionsBuilder<TeleMedecineContext>();
+                //optionsBuilder.UseSqlServer(Configuration.GetConnectionStringSecureValue("DefaultConnection"));
+                optionsBuilder.UseSqlServer(config.Value.TeliMedConn);
 
+                TeleMedecineContext _telemedecineContext = new TeleMedecineContext(optionsBuilder.Options);
                 try
                 {
                     //File.AppendAllLines(filepath, new List<string>() { "TokenWorker running at: " + DateTimeOffset.Now.ToString() });
                     //using (var scope = _serviceScopeFactory.CreateScope())
                     //{
                     //var _telemedecineContext = new TeleMedecineContext();
-                    //using (_telemedecineContext)
-                    //{
-                    bool response = false;
-                    ZoomToken zoomToken = _telemedecineContext.ZoomTokens.AsNoTracking().FirstOrDefault();
-
-                    if (zoomToken == null)
+                    using (_telemedecineContext)
                     {
-                        //insert first record
-                        //add token1
-                        string token1 = await _zoomAccountService.GetNewTokenFromZoomAsync(0);
-                        zoomToken = new ZoomToken
-                        {
-                            ActiveTokenNumber = 1,
-                            Token1CreatedOn = UtilityMaster.GetLocalDateTime(),
-                            Token1 = token1,
-                            Token2CreatedOn = UtilityMaster.GetLocalDateTime(),
-                            Token2 = token1
-                        };
-                        _telemedecineContext.ZoomTokens.Add(zoomToken);
-                        _telemedecineContext.SaveChanges();
+                        bool response = false;
+                        ZoomToken zoomToken = _telemedecineContext.ZoomTokens.AsNoTracking().FirstOrDefault();
 
-                    }
-                    else
-                    {
-                        if (zoomToken.ActiveTokenNumber == 1)
+                        if (zoomToken == null)
                         {
-                            //File.AppendAllLines(filepath, new List<string>() { "TokenWorker at: " + DateTimeOffset.Now + "zoomToken.ActiveTokenNumber == 1" });
-
-                            // check time duration
-                            // if more tha 50 min old
-                            // create token2
-                            // set ActiveTokenNumber 2 
-                            var result = UtilityMaster.GetLocalDateTime().Subtract(zoomToken.Token1CreatedOn).TotalMinutes;
-                            if (result > 15)
+                            //insert first record
+                            //add token1
+                            string token1 = await _zoomAccountService.GetNewTokenFromZoomAsync(0);
+                            zoomToken = new ZoomToken
                             {
-                                //File.AppendAllLines(filepath, new List<string>() { "TokenWorker at: " + DateTimeOffset.Now + "result > 15" });
+                                ActiveTokenNumber = 1,
+                                Token1CreatedOn = UtilityMaster.GetLocalDateTime(),
+                                Token1 = token1,
+                                Token2CreatedOn = UtilityMaster.GetLocalDateTime(),
+                                Token2 = token1
+                            };
+                            _telemedecineContext.ZoomTokens.Add(zoomToken);
+                            _telemedecineContext.SaveChanges();
 
-                                string token2 = await _zoomAccountService.GetNewTokenFromZoomAsync(1);
-                                //File.AppendAllLines(filepath, new List<string>() { "TokenWorker at: " + DateTimeOffset.Now + "GetNewTokenFromZoomAsync(1)" });
+                        }
+                        else
+                        {
+                            if (zoomToken.ActiveTokenNumber == 1)
+                            {
+                                //File.AppendAllLines(filepath, new List<string>() { "TokenWorker at: " + DateTimeOffset.Now + "zoomToken.ActiveTokenNumber == 1" });
 
-                                zoomToken.Token2 = token2;
-                                zoomToken.Token2CreatedOn = UtilityMaster.GetLocalDateTime();
-                                zoomToken.ActiveTokenNumber = 2;
-                                _telemedecineContext.ZoomTokens.Add(zoomToken);
-                                _telemedecineContext.Entry(zoomToken).State = EntityState.Modified;
-                                _telemedecineContext.SaveChanges();
-                                _telemedecineContext.Entry(zoomToken).State = EntityState.Detached;
+                                // check time duration
+                                // if more tha 50 min old
+                                // create token2
+                                // set ActiveTokenNumber 2 
+                                var result = UtilityMaster.GetLocalDateTime().Subtract(zoomToken.Token1CreatedOn).TotalMinutes;
+                                if (result > 15)
+                                {
+                                    //File.AppendAllLines(filepath, new List<string>() { "TokenWorker at: " + DateTimeOffset.Now + "result > 15" });
 
-                                //File.AppendAllLines(filepath, new List<string>() { "TokenWorker at: " + DateTimeOffset.Now + "SaveChanges()" });
+                                    string token2 = await _zoomAccountService.GetNewTokenFromZoomAsync(1);
+                                    //File.AppendAllLines(filepath, new List<string>() { "TokenWorker at: " + DateTimeOffset.Now + "GetNewTokenFromZoomAsync(1)" });
+
+                                    zoomToken.Token2 = token2;
+                                    zoomToken.Token2CreatedOn = UtilityMaster.GetLocalDateTime();
+                                    zoomToken.ActiveTokenNumber = 2;
+                                    _telemedecineContext.ZoomTokens.Add(zoomToken);
+                                    _telemedecineContext.Entry(zoomToken).State = EntityState.Modified;
+                                    _telemedecineContext.SaveChanges();
+                                    _telemedecineContext.Entry(zoomToken).State = EntityState.Detached;
+
+                                    //File.AppendAllLines(filepath, new List<string>() { "TokenWorker at: " + DateTimeOffset.Now + "SaveChanges()" });
 
 
+                                }
+                            }
+                            if (zoomToken.ActiveTokenNumber == 2)
+                            {
+                                //File.AppendAllLines(filepath, new List<string>() { "TokenWorker at: " + DateTimeOffset.Now + "zoomToken.ActiveTokenNumber == 2" });
+                                // check time duration
+                                // if more tha 50 min old
+                                // create token1
+                                // se1 ActiveTokenNumber 1
+                                var result = UtilityMaster.GetLocalDateTime().Subtract(zoomToken.Token2CreatedOn).TotalMinutes;
+                                if (result > 15)
+                                {
+                                    //File.AppendAllLines(filepath, new List<string>() { "TokenWorker at: " + DateTimeOffset.Now + "result > 15" });
+
+                                    string token1 = await _zoomAccountService.GetNewTokenFromZoomAsync(0);
+                                    //File.AppendAllLines(filepath, new List<string>() { "TokenWorker at: " + DateTimeOffset.Now + "GetNewTokenFromZoomAsync(1)" });
+
+                                    zoomToken.Token1 = token1;
+                                    zoomToken.Token1CreatedOn = UtilityMaster.GetLocalDateTime();
+                                    zoomToken.ActiveTokenNumber = 1;
+                                    _telemedecineContext.ZoomTokens.Add(zoomToken);
+                                    _telemedecineContext.Entry(zoomToken).State = EntityState.Modified;
+                                    _telemedecineContext.SaveChanges();
+                                    _telemedecineContext.Entry(zoomToken).State = EntityState.Detached;
+                                    //File.AppendAllLines(filepath, new List<string>() { "TokenWorker at: " + DateTimeOffset.Now + "SaveChanges()" });
+
+                                }
                             }
                         }
-                        if (zoomToken.ActiveTokenNumber == 2)
-                        {
-                            //File.AppendAllLines(filepath, new List<string>() { "TokenWorker at: " + DateTimeOffset.Now + "zoomToken.ActiveTokenNumber == 2" });
-                            // check time duration
-                            // if more tha 50 min old
-                            // create token1
-                            // se1 ActiveTokenNumber 1
-                            var result = UtilityMaster.GetLocalDateTime().Subtract(zoomToken.Token2CreatedOn).TotalMinutes;
-                            if (result > 15)
-                            {
-                                //File.AppendAllLines(filepath, new List<string>() { "TokenWorker at: " + DateTimeOffset.Now + "result > 15" });
+                        //}
 
-                                string token1 = await _zoomAccountService.GetNewTokenFromZoomAsync(0);
-                                //File.AppendAllLines(filepath, new List<string>() { "TokenWorker at: " + DateTimeOffset.Now + "GetNewTokenFromZoomAsync(1)" });
-
-                                zoomToken.Token1 = token1;
-                                zoomToken.Token1CreatedOn = UtilityMaster.GetLocalDateTime();
-                                zoomToken.ActiveTokenNumber = 1;
-                                _telemedecineContext.ZoomTokens.Add(zoomToken);
-                                _telemedecineContext.Entry(zoomToken).State = EntityState.Modified;
-                                _telemedecineContext.SaveChanges();
-                                _telemedecineContext.Entry(zoomToken).State = EntityState.Detached;
-                                //File.AppendAllLines(filepath, new List<string>() { "TokenWorker at: " + DateTimeOffset.Now + "SaveChanges()" });
-
-                            }
-                        }
                     }
-                    //}
-
-                    //}
 
                     //File.AppendAllLines(filepath, new List<string>() { "TokenWorker EndLine at: " + DateTimeOffset.Now });
                     _logger.LogInformation("TokenWorker running at: {time}", DateTimeOffset.Now);
@@ -133,7 +140,7 @@ namespace HealthWorkerService
                 }
                 catch (Exception ex)
                 {
-                    //File.AppendAllLines(filepath, new List<string>() { "TokenWorker Exception at: " + ex.StackTrace });
+                    File.AppendAllLines(filepath, new List<string>() { "TokenWorker Exception at: " + ex.StackTrace });
 
                     _logger.LogError("Exception : ", ex);
 
@@ -144,6 +151,10 @@ namespace HealthWorkerService
         }
 
 
+    }
+    public class ConnectionStrings 
+    {
+        public string? TeliMedConn { get; set; }
     }
 
 }

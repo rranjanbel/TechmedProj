@@ -16,10 +16,10 @@ namespace TechMed.BL.ZoomAPI.Model
             public string host_id { get; set; }
             public string topic { get; set; }
             public int type { get; set; }
-            public DateTime start_time { get; set; }
+            public string start_time { get; set; }
             public string timezone { get; set; }
             public long duration { get; set; }
-            public RecordingFile recording_file { get; set; }
+            public RecordingFile? recording_file { get; set; }
         }
 
         public class Payload
@@ -30,8 +30,8 @@ namespace TechMed.BL.ZoomAPI.Model
 
         public class RecordingFile
         {
-            public DateTime recording_start { get; set; }
-            public DateTime recording_end { get; set; }
+            public string? recording_start { get; set; }
+            public string? recording_end { get; set; }
         }
 
         public class Root

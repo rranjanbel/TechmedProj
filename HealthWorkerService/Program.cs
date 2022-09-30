@@ -32,6 +32,7 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.AddHostedService<TokenWorker>();
         services.AddSingleton<ISystemHealthRepository, SystemHealthRepository>();
         services.Configure<HostUrl>(Configuration.GetSection("HostUrl"));
+        services.Configure<ConnectionStrings>(Configuration.GetSection("ConnectionStrings"));
         services.Configure<ZoomSettings>(
         settings =>
         {

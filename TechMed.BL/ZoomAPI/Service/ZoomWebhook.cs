@@ -75,7 +75,7 @@ namespace TechMed.BL.ZoomAPI.Service
                                 RecordingFile recordingFile = recording.recording_files.FirstOrDefault(a => a.file_type.ToLower() == "mp4");
                                 if (recordingFile != null)
                                 {
-                                    await _twilioMeetingRepository.MeetingRoomComposeVideoUpdate(response.payload.@object.id.ToString(), recordingFile.file_size, recordingFile.download_url);
+                                    await _twilioMeetingRepository.MeetingRoomComposeVideoUpdate(response.payload.@object.id.ToString(), recordingFile.file_size, recordingFile.download_url, response.payload.@object.id.ToString());
                                 }
                             }
                             if (twilioMeetingRoomInfo.IsClosed == false)

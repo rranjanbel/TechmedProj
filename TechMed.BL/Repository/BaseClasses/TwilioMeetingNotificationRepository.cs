@@ -117,7 +117,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 return true;
             }
         }
-        public async Task<bool> MeetingRoomComposeVideoUpdate(string compositionResourceSid,long compositionResourceSize, string roomName)
+        public async Task<bool> MeetingRoomComposeVideoUpdate(string compositionResourceSid,long compositionResourceSize,string DownloadURL, string roomName)
         {
 
             var meetInfo = await _teleMedecineContext.TwilioMeetingRoomInfos.FirstOrDefaultAsync(x => x.RoomName == roomName);
@@ -130,6 +130,7 @@ namespace TechMed.BL.Repository.BaseClasses
 
                 meetInfo.CompositeVideoSid = compositionResourceSid;
                 meetInfo.CompositeVideoSize = compositionResourceSize;
+                meetInfo.MediaUri = DownloadURL;
                 _teleMedecineContext.TwilioMeetingRoomInfos.Add(meetInfo);
                 _teleMedecineContext.Entry(meetInfo).State = EntityState.Modified;
                 return (await _teleMedecineContext.SaveChangesAsync()) > 0;
