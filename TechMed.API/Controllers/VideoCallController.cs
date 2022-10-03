@@ -205,11 +205,13 @@ namespace TechMed.API.Controllers
                             AssignedBy = patientInfo.AssignedBy,
                             AssignedDoctorId = patientInfo.AssignedDoctorId,
                             Environment = "Zoom",
+                            MeetingStartURL = newMeeting.start_url,
                             CreateDate = UtilityMaster.GetLocalDateTime()
                         });
                         apiResponseModel.isSuccess = true;
                         apiResponseModel.data = patientCase.PatientId;
                         apiResponseModel.meetingID = newMeeting.id.ToString();
+                        apiResponseModel.meetingStartURL = newMeeting.start_url;
                     }
 
 
@@ -281,6 +283,7 @@ namespace TechMed.API.Controllers
                         apiResponseModel.isSuccess = true;
                         apiResponseModel.data = patientCase.PatientId;
                         apiResponseModel.meetingID = patientCaseInfo.MeetingSid;
+                        apiResponseModel.meetingStartURL = patientCaseInfo.MeetingStartURL;
                         return Ok(apiResponseModel);
                     }
                     else

@@ -1550,6 +1550,9 @@ namespace TechMed.DL.Models
                 entity.Property(e => e.Environment)
                .HasMaxLength(150)
                .HasColumnName("Environment");
+                entity.Property(e => e.MeetingStartURL)
+                .HasMaxLength(1000)
+                .HasColumnName("MeetingStartURL");
                 entity.Property(e => e.PatientCaseId).HasColumnName("PatientCaseID");
 
                 entity.Property(e => e.RoomName).HasMaxLength(500);

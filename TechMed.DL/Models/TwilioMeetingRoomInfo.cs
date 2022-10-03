@@ -21,6 +21,7 @@ namespace TechMed.DL.Models
         public string? MediaUri { get; set; }
         public string? CompositionStatus { get; set; }
         public string? Environment { get; set; }
+        public string? MeetingStartURL { get; set; }
         public virtual PatientCase? PatientCase { get; set; }
 
         public int? AssignedDoctorId { get; set; } = null!;
