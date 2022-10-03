@@ -35,7 +35,7 @@ namespace HealthWorkerService
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            string filepath = @"C:\Users\ADMIN\source\repos\Dashboard_Changes\TechmedProj\HealthWorkerService\bin\Release\net6.0\publish\test.txt";
+            //string filepath = @"C:\Users\ADMIN\source\repos\Dashboard_Changes\TechmedProj\HealthWorkerService\bin\Release\net6.0\publish\test.txt";
 
             while (!stoppingToken.IsCancellationRequested)
             {
@@ -83,7 +83,7 @@ namespace HealthWorkerService
                                 // create token2
                                 // set ActiveTokenNumber 2 
                                 var result = UtilityMaster.GetLocalDateTime().Subtract(zoomToken.Token1CreatedOn).TotalMinutes;
-                                if (result > 15)
+                                if (result > 50)
                                 {
                                     //File.AppendAllLines(filepath, new List<string>() { "TokenWorker at: " + DateTimeOffset.Now + "result > 15" });
 
@@ -111,7 +111,7 @@ namespace HealthWorkerService
                                 // create token1
                                 // se1 ActiveTokenNumber 1
                                 var result = UtilityMaster.GetLocalDateTime().Subtract(zoomToken.Token2CreatedOn).TotalMinutes;
-                                if (result > 15)
+                                if (result > 50)
                                 {
                                     //File.AppendAllLines(filepath, new List<string>() { "TokenWorker at: " + DateTimeOffset.Now + "result > 15" });
 
@@ -140,7 +140,7 @@ namespace HealthWorkerService
                 }
                 catch (Exception ex)
                 {
-                    File.AppendAllLines(filepath, new List<string>() { "TokenWorker Exception at: " + ex.StackTrace });
+                    //File.AppendAllLines(filepath, new List<string>() { "TokenWorker Exception at: " + ex.StackTrace });
 
                     _logger.LogError("Exception : ", ex);
 
