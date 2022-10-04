@@ -18,6 +18,7 @@ namespace TechMed.DL.Models
         public bool Td { get; set; }
         public bool? Qid { get; set; }
         public int Duration { get; set; }
+        public string? Comment { get; set; }
 
         public virtual DrugsMaster DrugMaster { get; set; } = null!;
         public virtual PatientCase PatientCase { get; set; } = null!;
