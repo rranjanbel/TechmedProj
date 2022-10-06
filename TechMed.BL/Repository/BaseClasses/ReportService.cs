@@ -164,7 +164,7 @@ namespace TechMed.API.Services
             //html = html.Replace("{{createdOndateTime}}", Convert.ToDateTime(patientCaseVM.patientCase.CreatedOn).ToString("dd/MMM/yyyy HH:mm:ss"));
             Footer = Footer.Replace("{{createdOndateTime}}", Convert.ToDateTime(patientCaseVM.patientCase.CreatedOn).ToString("dd/MMM/yyyy HH:mm:ss"));
 
-            string MedicineTemplate = "  <tr>                    <td style=\"text-align:left\">{{medicineName}}</td>                    <td style=\"text-align:center\">{{Quantity}}</td>                    <td style=\"text-align:center\">{{dose}}</td>                    <td style=\"text-align:center\">{{duration}}</td>                    <td style=\"text-align:left\">{{doseDuration}}</td>                </tr>";
+            string MedicineTemplate = "  <tr>                    <td style=\"text-align:left\">{{medicineName}}</td>                    <td style=\"text-align:center\">{{Quantity}}</td>                    <td style=\"text-align:center\">{{dose}}</td>                    <td style=\"text-align:center\">{{duration}}</td>                    <td style=\"text-align:left\">{{doseDuration}}</td>                <td style=\"text-align:left\">{{Comment}}</td>              </tr>";
             string Medicine = "";
             foreach (var item in patientCaseVM.caseMedicineList)
             {
@@ -174,6 +174,7 @@ namespace TechMed.API.Services
                 Medicine = Medicine.Replace("{{dose}}", (item.Od == true ? "O.D" : " ") + (item.Bd == true ? "B.I.D" : " ") + (item.Td == true ? "T.D.S" : " ") + (item.Qid == true ? "Q.I.D" : " "));
                 Medicine = Medicine.Replace("{{duration}}", item.Duration.ToString());
                 Medicine = Medicine.Replace("{{doseDuration}}", (item.EmptyStomach == true ? "EmptyStomach" : " ") + (item.AfterMeal == true ? "AfterMeal" : " "));
+                Medicine = Medicine.Replace("{{Comment}}", item.Comment);
             }
             html = html.Replace("{{medicine}}", Medicine);
             html = html.Replace("{{doctorSignature}}", patientCaseVM.DoctorSignature);

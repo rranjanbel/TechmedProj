@@ -24,5 +24,6 @@ namespace TechMed.BL.DTOMaster
         public string? DrugformAndStrength { get; set; }
         public string DrugFormAndVolume { get; set; }
         public int Duration { get; set; } = 0;
+        public string? Comment { get; set; }
     }
 }

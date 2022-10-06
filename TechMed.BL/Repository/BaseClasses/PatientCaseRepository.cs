@@ -790,6 +790,7 @@ namespace TechMed.BL.Repository.BaseClasses
                                 pcaseMedicine.Td = med.Td;
                                 pcaseMedicine.Qid = med.Qid;
                                 pcaseMedicine.Duration = med.Duration;
+                                pcaseMedicine.Comment = med.Comment;
                                 pcaseMedicineList.Add(pcaseMedicine);
                             }
 

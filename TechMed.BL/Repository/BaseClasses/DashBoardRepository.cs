@@ -1078,10 +1078,12 @@ namespace TechMed.BL.Repository.BaseClasses
                     data.WorkingHours = item.WorkingHours;
                     data.WorkingTime = item.WorkingTime;
                     data.ServerUpTime = item.ServerUpTime;
-                    data.ServerUpTime = item.ServerUpTime;
                     data.ServerDownTime = item.ServerDownTime;
                     data.DownTimings = item.DownTimings;
                     data.Availability = item.Availability;
+                    data.ServerDownTimeSS = item.ServerDownTimeSS;
+                    data.ServerUpTimeSS = item.ServerUpTimeSS;
+                    data.WorkingTimeSS = item.WorkingTimeSS;
                     prescribedMedicinesList.Add(data);
                 }
 
