@@ -55,7 +55,7 @@ namespace TechMed.DL.ViewModel
         [Required]
         public bool QID { get; set; }
         public int Duration { get; set; } = 0;
-        public string? Comment { get; set; }
+        public string? MedicineComments { get; set; }
 
     }
 
