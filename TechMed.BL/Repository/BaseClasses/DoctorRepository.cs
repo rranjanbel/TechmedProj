@@ -47,7 +47,7 @@ namespace TechMed.BL.Repository.BaseClasses
         public async Task<DoctorDTO> GetDoctorDetails(GetDoctorDetailVM getDoctorDetailVM)
         {
             //
-            DoctorMaster doctorMaster = await _teleMedecineContext.DoctorMasters.Where(o => o.User.Email.ToLower() == getDoctorDetailVM.UserEmailID.ToLower()).FirstOrDefaultAsync();
+            DoctorMaster doctorMaster = await _teleMedecineContext.DoctorMasters.Include(a=>a.Specialization).Include(b=>b.SubSpecialization).Where(o => o.User.Email.ToLower() == getDoctorDetailVM.UserEmailID.ToLower()).FirstOrDefaultAsync();
             UserDetail userDetail = await _teleMedecineContext.UserDetails.Include(a=>a.Gender).Where(o => o.UserId == doctorMaster.UserId).FirstOrDefaultAsync();
             var DTO = new DoctorDTO();
             if (doctorMaster != null && userDetail != null)
@@ -58,7 +58,15 @@ namespace TechMed.BL.Repository.BaseClasses
                 {
                     DTO.detailsDTO.Gender = userDetail.Gender.Gender;
                 }
-                
+                if (doctorMaster.Specialization!=null)
+                {
+                    DTO.Specialization = doctorMaster.Specialization.Specialization;
+                }
+                if (doctorMaster.SubSpecialization != null)
+                {
+                    DTO.SubSpecialization = doctorMaster.SubSpecialization.SubSpecialization;
+                }
+
             }
             return DTO;
         }
@@ -1103,15 +1111,28 @@ namespace TechMed.BL.Repository.BaseClasses
         public async Task<DoctorDTO> GetDoctorDetailsByUserID(GetDoctorDetailByUserIDVM getDoctorDetailByUserIDVM)
         {
             //
-            DoctorMaster doctorMaster = await _teleMedecineContext.DoctorMasters.Where(o => o.UserId == getDoctorDetailByUserIDVM.UserID).FirstOrDefaultAsync();
+            DoctorMaster doctorMaster = await _teleMedecineContext.DoctorMasters.Include(a=>a.Specialization).Include(b=>b.SubSpecialization).Where(o => o.UserId == getDoctorDetailByUserIDVM.UserID).FirstOrDefaultAsync();
             var DTO = new DoctorDTO();
             if (doctorMaster != null)
             {
-                UserDetail userDetail = await _teleMedecineContext.UserDetails.Where(o => o.UserId == doctorMaster.UserId).FirstOrDefaultAsync();
+                UserDetail userDetail = await _teleMedecineContext.UserDetails.Include(a=>a.Gender).Where(o => o.UserId == doctorMaster.UserId).FirstOrDefaultAsync();
                 if (userDetail != null)
                 {
                     DTO = _mapper.Map<DoctorDTO>(doctorMaster);
                     DTO.detailsDTO = _mapper.Map<DetailsDTO>(userDetail);
+                    if (userDetail.Gender != null)
+                    {
+                        DTO.detailsDTO.Gender = userDetail.Gender.Gender;
+                    }
+                }
+               
+                if (doctorMaster.Specialization != null)
+                {
+                    DTO.Specialization = doctorMaster.Specialization.Specialization;
+                }
+                if (doctorMaster.SubSpecialization != null)
+                {
+                    DTO.SubSpecialization = doctorMaster.SubSpecialization.SubSpecialization;
                 }
 
             }
