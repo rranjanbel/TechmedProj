@@ -22,7 +22,9 @@ namespace TechMed.BL.DTOMaster
         public int UserId { get; set; }
         [Required]
         public int SpecializationId { get; set; }
+        public string? Specialization { get; set; }
         public int? SubSpecializationId { get; set; }
+        public string? SubSpecialization { get; set; }
         [Required]
         public string Mciid { get; set; } = null!;
         [Required]
