@@ -1030,6 +1030,10 @@ namespace TechMed.DL.Models
                 entity.Property(e => e.Td).HasColumnName("TD");
                 entity.Property(e => e.Qid).HasColumnName("QID");
 
+                entity.Property(e => e.Comment).HasColumnName("Comment")
+                .HasMaxLength(150)
+                .IsUnicode(false);
+
                 entity.HasOne(d => d.DrugMaster)
                     .WithMany(p => p.PatientCaseMedicines)
                     .HasForeignKey(d => d.DrugMasterId)
