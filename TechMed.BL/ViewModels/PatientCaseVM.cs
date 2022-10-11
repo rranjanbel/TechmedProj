@@ -34,6 +34,7 @@ namespace TechMed.BL.ViewModels
         public int CaseFileStatusID { get; set; }
         public string VideoCallStatus { get; set; }
         public DateTime? ReviewDate { get; set; }
+        public DateTime? AssignedOn { get; set; }
         public PatientMasterDTO patientMaster { get; set; }
         public PatientCaseDTO patientCase { get; set; }
         public List<PatientCaseVitalsVM> vitals { get; set; }

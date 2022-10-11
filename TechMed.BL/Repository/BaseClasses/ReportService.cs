@@ -54,7 +54,7 @@ namespace TechMed.API.Services
             html = html.Replace("{{mobileNo}}", patientCaseVM.patientMaster.MobileNo);
             html = html.Replace("{{guardianName}}", patientCaseVM.patientMaster.GuardianName);
             html = html.Replace("{{address}}", patientCaseVM.patientMaster.Address);
-            html = html.Replace("{{createdOn}}", Convert.ToDateTime(patientCaseVM.patientMaster.CreatedOn).ToString("dd/MM/yyyy HH:mm:ss"));
+            html = html.Replace("{{createdOn}}", Convert.ToDateTime(patientCaseVM.AssignedOn).ToString("dd/MM/yyyy HH:mm:ss"));
             html = html.Replace("{{patientId}}", patientCaseVM.patientMaster.PatientId.ToString());
             html = html.Replace("{{opdno}}", patientCaseVM.patientCase.Opdno);
             html = html.Replace("{{caseFileNumber}}", patientCaseVM.patientCase.CaseFileNumber);
