@@ -80,9 +80,9 @@ namespace TechMed.BL.DTOMaster
         public string? PinCode { get; set; }
         public string Photo { get; set; } = null!;
         public string PhotoNewUpdate { get; set; } = null!;
-        [Required]
+        //[Required]
         public int? IdproofTypeId { get; set; }
-        [Required]
+        //[Required]
         public string IdproofNumber { get; set; } = null!;
         public string? Address { get; set; }
     }
