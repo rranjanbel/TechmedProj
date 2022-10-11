@@ -431,7 +431,8 @@ namespace TechMed.API.Controllers
                     _logger.LogError("UpdateDoctorDetails : ModelState is invalid");
                     return BadRequest(ModelState);
                 }
-                var DTO = await _doctorRepository.UpdateDoctorDetails(doctorDTO, contentRootPath ,webRootPath);
+               string user= User.Identity.Name;
+                var DTO = await _doctorRepository.UpdateDoctorDetails(doctorDTO, user.Trim(), contentRootPath ,webRootPath);
                 if (DTO)
                 {
                     _logger.LogInformation($"UpdateDoctorDetails : Sucess response returned ");

@@ -178,8 +178,10 @@ namespace TechMed.BL.Repository.BaseClasses
             }
             return DTOList;
         }
-        public async Task<bool> UpdateDoctorDetails(DoctorDTO doctorDTO, string rootPath, string webRootPath)
+        public async Task<bool> UpdateDoctorDetails(DoctorDTO doctorDTO,string user, string rootPath, string webRootPath)
         {
+            UserMaster Usermasters = await _teleMedecineContext.UserMasters.AsNoTracking().FirstOrDefaultAsync(a => a.Email.ToLower() == user.ToLower());
+
             if (doctorDTO != null)
             {
                 DoctorMaster masters = await _teleMedecineContext.DoctorMasters.Where(a => a.Id == doctorDTO.Id).FirstOrDefaultAsync();
@@ -202,7 +204,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 masters.Ifsccode = doctorDTO.Ifsccode;
                 //masters.CreatedBy { get; set; }
                 //masters.CreatedOn { get; set; }
-                masters.UpdatedBy = doctorDTO.UpdatedBy;
+                masters.UpdatedBy = Usermasters.Id;
                 masters.UpdatedOn = UtilityMaster.GetLocalDateTime();
                 await _teleMedecineContext.SaveChangesAsync();
 
