@@ -14,7 +14,7 @@ namespace TechMed.BL.Repository.Interfaces
     {
         void AddDoctorDetails();
         public Task<DoctorDTO> GetDoctorDetails(GetDoctorDetailVM getDoctorDetailVM);
-        public Task<bool> UpdateDoctorDetails(DoctorDTO doctorDTO, string rootPath, string webRootPath);
+        public Task<bool> UpdateDoctorDetails(DoctorDTO doctorDTO, string user, string rootPath, string webRootPath);
         public Task<bool> IsEmailExists(string Email);
         public Task<List<PHCHospitalDTO>> GetListOfPHCHospital();
         public Task<List<PHCHospitalDTO>> GetListOfPHCHospitalBlockWise(GetListOfPHCHospitalVM getListOfPHCHospitalVM);

@@ -40,15 +40,15 @@ namespace TechMed.BL.DTOMaster
 
         //[Required]
         public string DigitalSignatureNewUpdate { get; set; } = null!;
-        [Required]
+        //[Required]
         public string PanNo { get; set; } = null!;
-        [Required]
+        //[Required]
         public string BankName { get; set; } = null!;
-        [Required]
+        //[Required]
         public string BranchName { get; set; } = null!;
-        [Required]
+        //[Required]
         public string AccountNumber { get; set; } = null!;
-        [Required]
+        //[Required]
         public string Ifsccode { get; set; } = null!;
         [Required]
         public int? UpdatedBy { get; set; }
