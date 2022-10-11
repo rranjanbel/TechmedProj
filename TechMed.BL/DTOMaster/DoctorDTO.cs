@@ -83,7 +83,7 @@ namespace TechMed.BL.DTOMaster
         //[Required]
         public int? IdproofTypeId { get; set; }
         //[Required]
-        public string IdproofNumber { get; set; } = null!;
+        public string? IdproofNumber { get; set; } = null!;
         public string? Address { get; set; }
     }
 }
