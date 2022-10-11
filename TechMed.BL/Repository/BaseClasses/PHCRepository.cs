@@ -457,10 +457,12 @@ namespace TechMed.BL.Repository.BaseClasses
 
         }
 
-        public async Task<bool> UpdatePHCDetails(UpdatePHCDTO updatePHCDTO)
+        public async Task<bool> UpdatePHCDetails(UpdatePHCDTO updatePHCDTO,string userEmail)
         {
             if (updatePHCDTO != null)
             {
+                UserMaster Usermasters = await _teleMedecineContext.UserMasters.AsNoTracking().FirstOrDefaultAsync(a => a.Email.ToLower() == userEmail.ToLower());
+
                 Phcmaster masters = await _teleMedecineContext.Phcmasters.Where(a => a.Id == updatePHCDTO.Id).FirstOrDefaultAsync();
                 if (masters != null)
                 {
@@ -476,7 +478,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     masters.Moname = updatePHCDTO.Moname;
                     //masters.Address = updatePHCDTO.Address;
                     masters.EmployeeName = updatePHCDTO.EmployeeName;
-                    masters.UpdatedBy = updatePHCDTO.UpdatedBy;
+                    masters.UpdatedBy = Usermasters.Id;
                     masters.UpdatedOn = UtilityMaster.GetLocalDateTime();
                     await _teleMedecineContext.SaveChangesAsync();
                     return true;

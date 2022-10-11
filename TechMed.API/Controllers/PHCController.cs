@@ -491,7 +491,8 @@ namespace TechMed.API.Controllers
                     _logger.LogError("UpdatePHCDetails : ModelState is invalid");
                     return BadRequest(ModelState);
                 }
-                var DTO = await _phcRepository.UpdatePHCDetails(updatePHCDTO);
+                string user = User.Identity.Name;
+                var DTO = await _phcRepository.UpdatePHCDetails(updatePHCDTO, user.Trim());
                 if (DTO)
                 {
                     _logger.LogInformation($"UpdatePHCDetails : Sucess response returned ");
