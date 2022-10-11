@@ -440,7 +440,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     //                .Where(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" && a.AssignedDoctorId == patientReferToDoctorVM.AssignedDocterID).Count();
 
                     TwilioMeetingRoomInfo videoCallStatus = _teleMedecineContext.TwilioMeetingRoomInfos
-                                    .Where(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" && a.AssignedDoctorId == patientReferToDoctorVM.AssignedDocterID).OrderByDescending(x => x.CloseDate).FirstOrDefault();
+                                    .Where(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" && a.PatientCaseId == patientReferToDoctorVM.PatientCaseID).OrderByDescending(x => x.CloseDate).FirstOrDefault();
 
                     // TwilioMeetingRoomInfo videoCallStatus = await _teleMedecineContext.TwilioMeetingRoomInfos.Include(d => d.AssignedDoctor)
                     //.Where(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" && a.AssignedDoctorId == patientReferToDoctorVM.AssignedDocterID && a.AssignedDoctor.IsOnline == true).ToListAsync();
@@ -448,10 +448,10 @@ namespace TechMed.BL.Repository.BaseClasses
                     if (videoCallStatus != null)
                     {
                         //TwilioMeetingRoomInfo twilioMeeting = videoCallStatus.OrderByDescending(a => a.CloseDate).FirstOrDefault();
-                        callInitiatedTime = videoCallStatus != null ? videoCallStatus.CloseDate : UtilityMaster.GetLocalDateTime();
-                        double diffInMin = UtilityMaster.TimeDifferenceInMin(callInitiatedTime.Value, currentTime);
+                        //callInitiatedTime = videoCallStatus != null ? videoCallStatus.CloseDate : UtilityMaster.GetLocalDateTime();
+                        //double diffInMin = UtilityMaster.TimeDifferenceInMin(callInitiatedTime.Value, currentTime);
 
-                        if (diffInMin < 30)
+                        if (videoCallStatus.AssignedDoctorId == patientReferToDoctorVM.AssignedDocterID)
                         {
                             outPatientReferToDoctorVM.AssignedDocterID = 0;
                             outPatientReferToDoctorVM.PatientCaseID = patientReferToDoctorVM.PatientCaseID;
@@ -510,7 +510,31 @@ namespace TechMed.BL.Repository.BaseClasses
                     {
                         if (existingpatientQueue.PatientCaseId != 5)
                         {
-                            if (videoCallStatus.PatientCaseId != patientReferToDoctorVM.PatientCaseID)
+                            if (videoCallStatus != null)
+                            {
+                                if (videoCallStatus.PatientCaseId != patientReferToDoctorVM.PatientCaseID)
+                                {
+                                    existingpatientQueue.AssignedDoctorId = patientQueue.AssignedDoctorId;
+                                    //existingpatientQueue.StatusOn = UtilityMaster.GetLocalDateTime();
+                                    existingpatientQueue.AssignedOn = UtilityMaster.GetLocalDateTime();
+                                    existingpatientQueue.AssignedBy = caseCreatedBy;
+                                    existingpatientQueue.CaseFileStatusId = await GetCaseFileStatus();
+                                    existingpatientQueue.Comment = "Reassign the doctor";
+                                    existingpatientQueue.UpdatedOn = UtilityMaster.GetLocalDateTime();
+                                    existingpatientQueue.IsQueueChanged = false;
+                                    _teleMedecineContext.Entry(existingpatientQueue).State = EntityState.Modified;
+                                }
+                                else
+                                {
+                                    outPatientReferToDoctorVM.AssignedDocterID = patientQueue.AssignedDoctorId;
+                                    outPatientReferToDoctorVM.PatientCaseID = patientQueue.PatientCaseId;
+                                    outPatientReferToDoctorVM.PHCID = patientQueue.AssignedBy;
+                                    outPatientReferToDoctorVM.Status = "Fail";
+                                    outPatientReferToDoctorVM.Message = "Error: Patient is in call, you can not change queue.";
+                                    return outPatientReferToDoctorVM;
+                                }
+                            }
+                            else
                             {
                                 existingpatientQueue.AssignedDoctorId = patientQueue.AssignedDoctorId;
                                 //existingpatientQueue.StatusOn = UtilityMaster.GetLocalDateTime();
@@ -521,18 +545,7 @@ namespace TechMed.BL.Repository.BaseClasses
                                 existingpatientQueue.UpdatedOn = UtilityMaster.GetLocalDateTime();
                                 existingpatientQueue.IsQueueChanged = false;
                                 _teleMedecineContext.Entry(existingpatientQueue).State = EntityState.Modified;
-                            }
-                            else
-                            {
-                                outPatientReferToDoctorVM.AssignedDocterID = patientQueue.AssignedDoctorId;
-                                outPatientReferToDoctorVM.PatientCaseID = patientQueue.PatientCaseId;
-                                outPatientReferToDoctorVM.PHCID = patientQueue.AssignedBy;
-                                outPatientReferToDoctorVM.Status = "Fail";
-                                outPatientReferToDoctorVM.Message = "Error: Patient is in call, you can not change queue.";
-                                return outPatientReferToDoctorVM;
-                            }
-
-
+                            }  
                         }
                         else
                         {
