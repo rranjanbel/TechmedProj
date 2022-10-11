@@ -2009,28 +2009,35 @@ namespace TechMed.BL.Repository.BaseClasses
 
         public async Task<bool> IsDoctorFreeToReceiveCall(long patientCaseID)
         {
-            TwilioMeetingRoomInfo meetingRoomInfo = new TwilioMeetingRoomInfo();
+            //TwilioMeetingRoomInfo meetingRoomInfo = new TwilioMeetingRoomInfo();
+            
             bool IsDoctorFree = true;
             DateTime localDate = UtilityMaster.GetLocalDateTime();
             var patientCase = await _teleMedecineContext.PatientCases.FirstOrDefaultAsync(a => a.Id == patientCaseID);
             var patientQueue = await _teleMedecineContext.PatientQueues.FirstOrDefaultAsync(a => a.PatientCaseId == patientCaseID && a.CaseFileStatusId == 4 && a.AssignedOn.Day == localDate.Day && a.AssignedOn.Month == localDate.Month && a.AssignedOn.Year == localDate.Year);
+
+            TwilioMeetingRoomInfo meetingRoomInfo = await _teleMedecineContext.TwilioMeetingRoomInfos.FirstOrDefaultAsync(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" && a.AssignedDoctorId == patientQueue.AssignedDoctorId);
            
             if (patientQueue != null && patientCase != null)
             {
                 //IsDoctorFree = _teleMedecineContext.TwilioMeetingRoomInfos.Any(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" && a.AssignedDoctorId == patientQueue.AssignedDoctorId);
-                meetingRoomInfo = await _teleMedecineContext.TwilioMeetingRoomInfos.FirstOrDefaultAsync(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" && a.AssignedDoctorId == patientQueue.AssignedDoctorId && a.AssignedBy == patientCase.CreatedBy);
-                if (meetingRoomInfo != null)
+               if(meetingRoomInfo != null)
                 {
-                    meetingRoomInfo.IsClosed = true;
-                    meetingRoomInfo.CloseDate = localDate;
-                    meetingRoomInfo.TwilioRoomStatus = "Disconnected";
-                    _teleMedecineContext.Entry(meetingRoomInfo).State = EntityState.Modified;
-                    int i = _teleMedecineContext.SaveChanges();
-                    if (i > 0)
-                        IsDoctorFree = true;
+                    if (meetingRoomInfo.AssignedBy == patientCase.CreatedBy)
+                    {
+                        meetingRoomInfo.IsClosed = true;
+                        meetingRoomInfo.CloseDate = localDate;
+                        meetingRoomInfo.TwilioRoomStatus = "Disconnected";
+                        _teleMedecineContext.Entry(meetingRoomInfo).State = EntityState.Modified;
+                        int i = _teleMedecineContext.SaveChanges();
+                        if (i > 0)
+                            IsDoctorFree = true;
+                        else
+                            IsDoctorFree = false;
+                    }
                     else
                         IsDoctorFree = false;
-                }
+                }               
                 else
                 {
                     IsDoctorFree = true;
@@ -2041,23 +2048,29 @@ namespace TechMed.BL.Repository.BaseClasses
 
         public async Task<bool> IsDoctorRoomBusy(long patientCaseID)
         {
-            TwilioMeetingRoomInfo meetingRoomInfo = new TwilioMeetingRoomInfo();
+            //TwilioMeetingRoomInfo meetingRoomInfo = new TwilioMeetingRoomInfo();
             DateTime localDate = UtilityMaster.GetLocalDateTime();
             bool IsDoctorroomFree = true;
             var patientQueue = await _teleMedecineContext.PatientQueues.FirstOrDefaultAsync(a => a.PatientCaseId == patientCaseID && a.CaseFileStatusId == 4 && a.AssignedOn.Day == localDate.Day && a.AssignedOn.Month == localDate.Month && a.AssignedOn.Year == localDate.Year);
 
+            TwilioMeetingRoomInfo meetingRoomInfo = await _teleMedecineContext.TwilioMeetingRoomInfos.FirstOrDefaultAsync(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" && a.AssignedDoctorId == patientQueue.AssignedDoctorId );
             if (patientQueue != null)
             {
-                meetingRoomInfo = await _teleMedecineContext.TwilioMeetingRoomInfos.FirstOrDefaultAsync(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" && a.AssignedDoctorId == patientQueue.AssignedDoctorId && a.PatientCaseId == patientCaseID);
+                
                 if (meetingRoomInfo != null)
                 {
-                    meetingRoomInfo.IsClosed = true;
-                    meetingRoomInfo.CloseDate = localDate;
-                    meetingRoomInfo.TwilioRoomStatus = "Disconnected";
-                    _teleMedecineContext.Entry(meetingRoomInfo).State = EntityState.Modified;
-                    int i = _teleMedecineContext.SaveChanges();
-                    if (i > 0)
-                        IsDoctorroomFree = true;
+                    if(meetingRoomInfo.PatientCaseId == patientCaseID)
+                    {
+                        meetingRoomInfo.IsClosed = true;
+                        meetingRoomInfo.CloseDate = localDate;
+                        meetingRoomInfo.TwilioRoomStatus = "Disconnected";
+                        _teleMedecineContext.Entry(meetingRoomInfo).State = EntityState.Modified;
+                        int i = _teleMedecineContext.SaveChanges();
+                        if (i > 0)
+                            IsDoctorroomFree = true;
+                        else
+                            IsDoctorroomFree = false;
+                    }
                     else
                         IsDoctorroomFree = false;
                 }
