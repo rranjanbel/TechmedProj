@@ -510,15 +510,29 @@ namespace TechMed.BL.Repository.BaseClasses
                     {
                         if (existingpatientQueue.PatientCaseId != 5)
                         {
-                            existingpatientQueue.AssignedDoctorId = patientQueue.AssignedDoctorId;
-                            //existingpatientQueue.StatusOn = UtilityMaster.GetLocalDateTime();
-                            existingpatientQueue.AssignedOn = UtilityMaster.GetLocalDateTime();
-                            existingpatientQueue.AssignedBy = caseCreatedBy;
-                            existingpatientQueue.CaseFileStatusId = await GetCaseFileStatus();
-                            existingpatientQueue.Comment = "Reassign the doctor";
-                            existingpatientQueue.UpdatedOn = UtilityMaster.GetLocalDateTime();
-                            existingpatientQueue.IsQueueChanged = false;
-                            _teleMedecineContext.Entry(existingpatientQueue).State = EntityState.Modified;
+                           if(videoCallStatus.PatientCaseId != patientReferToDoctorVM.PatientCaseID)
+                            {
+                                existingpatientQueue.AssignedDoctorId = patientQueue.AssignedDoctorId;
+                                //existingpatientQueue.StatusOn = UtilityMaster.GetLocalDateTime();
+                                existingpatientQueue.AssignedOn = UtilityMaster.GetLocalDateTime();
+                                existingpatientQueue.AssignedBy = caseCreatedBy;
+                                existingpatientQueue.CaseFileStatusId = await GetCaseFileStatus();
+                                existingpatientQueue.Comment = "Reassign the doctor";
+                                existingpatientQueue.UpdatedOn = UtilityMaster.GetLocalDateTime();
+                                existingpatientQueue.IsQueueChanged = false;
+                                _teleMedecineContext.Entry(existingpatientQueue).State = EntityState.Modified;
+                            }
+                            else
+                            {
+                                outPatientReferToDoctorVM.AssignedDocterID = patientQueue.AssignedDoctorId;
+                                outPatientReferToDoctorVM.PatientCaseID = patientQueue.PatientCaseId;
+                                outPatientReferToDoctorVM.PHCID = patientQueue.AssignedBy;
+                                outPatientReferToDoctorVM.Status = "Fail";
+                                outPatientReferToDoctorVM.Message = "Error: Patient is in call, you can not change queue.";
+                                return outPatientReferToDoctorVM;
+                            }
+
+
                         }
                         else
                         {
@@ -1606,14 +1620,28 @@ namespace TechMed.BL.Repository.BaseClasses
 
                     }
                     else
-                    {
-                        existingpatientQueue.AssignedDoctorId = patientQueue.AssignedDoctorId;
-                        existingpatientQueue.StatusOn = UtilityMaster.GetLocalDateTime();
-                        existingpatientQueue.AssignedOn = UtilityMaster.GetLocalDateTime();
-                        existingpatientQueue.AssignedBy = patientReferToDoctorVM.PHCID;
-                        existingpatientQueue.CaseFileStatusId = await GetCaseFileStatus();
-                        existingpatientQueue.Comment = "Reassign the doctor";
-                        _teleMedecineContext.Entry(existingpatientQueue).State = EntityState.Modified;
+                    { 
+                        TwilioMeetingRoomInfo twilioMeetingRoom = _teleMedecineContext.TwilioMeetingRoomInfos.FirstOrDefault(a => a.PatientCaseId == patientReferToDoctorVM.PatientCaseID && a.IsClosed == false && a.TwilioRoomStatus == "in -progress");
+                        if(twilioMeetingRoom == null)
+                        {
+                            existingpatientQueue.AssignedDoctorId = patientQueue.AssignedDoctorId;
+                            existingpatientQueue.StatusOn = UtilityMaster.GetLocalDateTime();
+                            existingpatientQueue.AssignedOn = UtilityMaster.GetLocalDateTime();
+                            existingpatientQueue.AssignedBy = patientReferToDoctorVM.PHCID;
+                            existingpatientQueue.CaseFileStatusId = await GetCaseFileStatus();
+                            existingpatientQueue.Comment = "Reassign the doctor";
+                            _teleMedecineContext.Entry(existingpatientQueue).State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            outPatientReferToDoctorVM.AssignedDocterID = 0;
+                            outPatientReferToDoctorVM.PatientCaseID = patientQueue.PatientCaseId;
+                            outPatientReferToDoctorVM.PHCID = patientQueue.AssignedBy;
+                            outPatientReferToDoctorVM.Status = "Fail";
+                            outPatientReferToDoctorVM.Message = "Error: Patient is in call, you can not change the queue";
+                            return outPatientReferToDoctorVM;
+                        }
+
                     }
 
                     PatientCase patientCase = _teleMedecineContext.PatientCases.FirstOrDefault(a => a.Id == patientReferToDoctorVM.PatientCaseID);
@@ -1885,15 +1913,28 @@ namespace TechMed.BL.Repository.BaseClasses
                     }
                     else
                     {
-                        existingpatientQueue.AssignedDoctorId = patientQueue.AssignedDoctorId;
-                        //existingpatientQueue.StatusOn = UtilityMaster.GetLocalDateTime();
-                        existingpatientQueue.AssignedOn = UtilityMaster.GetLocalDateTime();
-                        existingpatientQueue.AssignedBy = caseCreatedBy;
-                        existingpatientQueue.CaseFileStatusId = await GetCaseFileStatus();
-                        existingpatientQueue.Comment = "Reassign the doctor";
-                        existingpatientQueue.UpdatedOn = UtilityMaster.GetLocalDateTime();
-                        existingpatientQueue.IsQueueChanged = false;
-                        _teleMedecineContext.Entry(existingpatientQueue).State = EntityState.Modified;
+                        if(videoCallStatus.PatientCaseId != patientReferToDoctorVM.PatientCaseID)
+                        {
+                            existingpatientQueue.AssignedDoctorId = patientQueue.AssignedDoctorId;
+                            //existingpatientQueue.StatusOn = UtilityMaster.GetLocalDateTime();
+                            existingpatientQueue.AssignedOn = UtilityMaster.GetLocalDateTime();
+                            existingpatientQueue.AssignedBy = caseCreatedBy;
+                            existingpatientQueue.CaseFileStatusId = await GetCaseFileStatus();
+                            existingpatientQueue.Comment = "Reassign the doctor";
+                            existingpatientQueue.UpdatedOn = UtilityMaster.GetLocalDateTime();
+                            existingpatientQueue.IsQueueChanged = false;
+                            _teleMedecineContext.Entry(existingpatientQueue).State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            outPatientReferToDoctorVM.AssignedDocterID = patientQueue.AssignedDoctorId;
+                            outPatientReferToDoctorVM.PatientCaseID = patientQueue.PatientCaseId;
+                            outPatientReferToDoctorVM.PHCID = patientQueue.AssignedBy;
+                            outPatientReferToDoctorVM.Status = "Fail";
+                            outPatientReferToDoctorVM.Message = "Patient is already in call, you cannot change a queue.";
+                            return outPatientReferToDoctorVM;
+                        }
+                       
                     }
 
                     PatientCase patientCase = _teleMedecineContext.PatientCases.FirstOrDefault(a => a.Id == patientReferToDoctorVM.PatientCaseID);
@@ -1969,28 +2010,33 @@ namespace TechMed.BL.Repository.BaseClasses
 
         public async Task<bool> IsDoctorFreeToReceiveCall(long patientCaseID)
         {
-            TwilioMeetingRoomInfo meetingRoomInfo = new TwilioMeetingRoomInfo();
+            //TwilioMeetingRoomInfo meetingRoomInfo = new TwilioMeetingRoomInfo();
+            
             bool IsDoctorFree = true;
             DateTime localDate = UtilityMaster.GetLocalDateTime();
             var patientCase = await _teleMedecineContext.PatientCases.FirstOrDefaultAsync(a => a.Id == patientCaseID);
             var patientQueue = await _teleMedecineContext.PatientQueues.FirstOrDefaultAsync(a => a.PatientCaseId == patientCaseID && a.CaseFileStatusId == 4 && a.AssignedOn.Day == localDate.Day && a.AssignedOn.Month == localDate.Month && a.AssignedOn.Year == localDate.Year);
-
+           
             if (patientQueue != null && patientCase != null)
             {
                 //IsDoctorFree = _teleMedecineContext.TwilioMeetingRoomInfos.Any(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" && a.AssignedDoctorId == patientQueue.AssignedDoctorId);
-                meetingRoomInfo = await _teleMedecineContext.TwilioMeetingRoomInfos.FirstOrDefaultAsync(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" && a.AssignedDoctorId == patientQueue.AssignedDoctorId && a.AssignedBy == patientCase.CreatedBy);
-                if (meetingRoomInfo != null)
+               if(meetingRoomInfo != null)
                 {
-                    meetingRoomInfo.IsClosed = true;
-                    meetingRoomInfo.CloseDate = localDate;
-                    meetingRoomInfo.TwilioRoomStatus = "Disconnected";
-                    _teleMedecineContext.Entry(meetingRoomInfo).State = EntityState.Modified;
-                    int i = _teleMedecineContext.SaveChanges();
-                    if (i > 0)
-                        IsDoctorFree = true;
+                    if (meetingRoomInfo.AssignedBy == patientCase.CreatedBy)
+                    {
+                        meetingRoomInfo.IsClosed = true;
+                        meetingRoomInfo.CloseDate = localDate;
+                        meetingRoomInfo.TwilioRoomStatus = "Disconnected";
+                        _teleMedecineContext.Entry(meetingRoomInfo).State = EntityState.Modified;
+                        int i = _teleMedecineContext.SaveChanges();
+                        if (i > 0)
+                            IsDoctorFree = true;
+                        else
+                            IsDoctorFree = false;
+                    }
                     else
                         IsDoctorFree = false;
-                }
+                }               
                 else
                 {
                     IsDoctorFree = true;
@@ -2001,23 +2047,29 @@ namespace TechMed.BL.Repository.BaseClasses
 
         public async Task<bool> IsDoctorRoomBusy(long patientCaseID)
         {
-            TwilioMeetingRoomInfo meetingRoomInfo = new TwilioMeetingRoomInfo();
+            //TwilioMeetingRoomInfo meetingRoomInfo = new TwilioMeetingRoomInfo();
             DateTime localDate = UtilityMaster.GetLocalDateTime();
             bool IsDoctorroomFree = true;
             var patientQueue = await _teleMedecineContext.PatientQueues.FirstOrDefaultAsync(a => a.PatientCaseId == patientCaseID && a.CaseFileStatusId == 4 && a.AssignedOn.Day == localDate.Day && a.AssignedOn.Month == localDate.Month && a.AssignedOn.Year == localDate.Year);
 
+            TwilioMeetingRoomInfo meetingRoomInfo = await _teleMedecineContext.TwilioMeetingRoomInfos.FirstOrDefaultAsync(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" && a.AssignedDoctorId == patientQueue.AssignedDoctorId );
             if (patientQueue != null)
             {
-                meetingRoomInfo = await _teleMedecineContext.TwilioMeetingRoomInfos.FirstOrDefaultAsync(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" && a.AssignedDoctorId == patientQueue.AssignedDoctorId && a.PatientCaseId == patientCaseID);
+                
                 if (meetingRoomInfo != null)
                 {
-                    meetingRoomInfo.IsClosed = true;
-                    meetingRoomInfo.CloseDate = localDate;
-                    meetingRoomInfo.TwilioRoomStatus = "Disconnected";
-                    _teleMedecineContext.Entry(meetingRoomInfo).State = EntityState.Modified;
-                    int i = _teleMedecineContext.SaveChanges();
-                    if (i > 0)
-                        IsDoctorroomFree = true;
+                    if(meetingRoomInfo.PatientCaseId == patientCaseID)
+                    {
+                        meetingRoomInfo.IsClosed = true;
+                        meetingRoomInfo.CloseDate = localDate;
+                        meetingRoomInfo.TwilioRoomStatus = "Disconnected";
+                        _teleMedecineContext.Entry(meetingRoomInfo).State = EntityState.Modified;
+                        int i = _teleMedecineContext.SaveChanges();
+                        if (i > 0)
+                            IsDoctorroomFree = true;
+                        else
+                            IsDoctorroomFree = false;
+                    }
                     else
                         IsDoctorroomFree = false;
                 }
