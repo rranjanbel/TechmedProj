@@ -880,7 +880,7 @@ namespace TechMed.BL.Repository.BaseClasses
                         patientCase.DoctorMCINo = patientQuue.AssignedDoctor.Mciid;
                         patientCase.DoctorQalification = patientQuue.AssignedDoctor.Qualification;
                         patientCase.ReviewDate = patientCase.patientCase.ReviewDate;
-                        patientCase.AssignedOn = patientCase.AssignedOn;
+                        patientCase.AssignedOn = patientQuue.AssignedOn;
                         string relativePath = patientQuue.AssignedDoctor.DigitalSignature;
                         try
                         {
