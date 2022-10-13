@@ -17,7 +17,7 @@ namespace TechMed.BL.Repository.BaseClasses
         private readonly TeleMedecineContext _teleMedecineContext;
         private readonly IMapper _mapper;
         private readonly ILogger<MasterRepository> _logger;
-        public MasterRepository(ILogger<MasterRepository> logger, TeleMedecineContext teleMedecineContext, IMapper mapper) 
+        public MasterRepository(ILogger<MasterRepository> logger, TeleMedecineContext teleMedecineContext, IMapper mapper)
         {
             this._teleMedecineContext = teleMedecineContext;
             this._mapper = mapper;
@@ -26,11 +26,11 @@ namespace TechMed.BL.Repository.BaseClasses
 
         public async Task<List<DivisionDTO>> GetAllDivision()
         {
-            
+
             DivisionDTO divisionDTO = new DivisionDTO();
             List<DivisionDTO> divisionDTOs = new List<DivisionDTO>();
             var divisionList = await _teleMedecineContext.DivisionMasters.ToListAsync();
-            if(divisionList != null)
+            if (divisionList != null)
             {
                 foreach (var item in divisionList)
                 {
@@ -39,11 +39,11 @@ namespace TechMed.BL.Repository.BaseClasses
 
                 }
             }
-            
+
             return divisionDTOs.OrderBy(o => o.Name).ToList();
         }
 
-       
+
 
         public async Task<List<DivisionDTO>> GetDivisionByClusterID(int clusterId)
         {
@@ -66,7 +66,7 @@ namespace TechMed.BL.Repository.BaseClasses
         public async Task<DivisionDTO> GetDivisionById(int Id)
         {
             DivisionDTO divisionDTO = new DivisionDTO();
-           
+
             var divisionList = await this._teleMedecineContext.DivisionMasters.FirstOrDefaultAsync(s => s.Id == Id);
             if (divisionList != null)
             {
@@ -91,14 +91,14 @@ namespace TechMed.BL.Repository.BaseClasses
                 }
             }
 
-            return blockDTOs.OrderBy(o=> o.BlockName).ToList();
+            return blockDTOs.OrderBy(o => o.BlockName).ToList();
         }
 
         public async Task<List<DistrictMasterDTO>> GetDistrictsByDivisionID(int divisionId)
         {
             DistrictMasterDTO districtMasterDTO = new DistrictMasterDTO();
             List<DistrictMasterDTO> districtMasterDTOs = new List<DistrictMasterDTO>();
-            var districts = await this._teleMedecineContext.DistrictMasters.Where(s => s.DivisionId== divisionId).ToListAsync();
+            var districts = await this._teleMedecineContext.DistrictMasters.Where(s => s.DivisionId == divisionId).ToListAsync();
             if (districts != null)
             {
                 foreach (var item in districts)
@@ -110,6 +110,12 @@ namespace TechMed.BL.Repository.BaseClasses
             }
 
             return districtMasterDTOs.OrderBy(o => o.DistrictName).ToList();
+        }
+
+        public async Task<string> GetVideoCallEnvironment()
+        {
+            string VideoCallEnvironment = this._teleMedecineContext.Configurations.FirstOrDefault(s => s.Name.ToLower() == "VideoCallEnvironment").Value;
+            return VideoCallEnvironment;
         }
     }
 }

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using TechMed.BL.DTOMaster;
+using TechMed.BL.DTOMaster.Zoom;
 using TechMed.BL.Repository.Interfaces;
 using TechMed.DL.Models;
 
@@ -806,6 +807,38 @@ namespace TechMed.API.Controllers
             {
                 ModelState.AddModelError("GetBlocksByDistrictID", $"Something went wrong when get all block {ex.Message}");
                 _logger.LogError("Exception in GetBlocksByDistrictID API " + ex);
+                return StatusCode(500, ModelState);
+            }
+        }
+
+        [HttpGet]
+        [Route("GetVideoCallEnvironment")]
+        [ProducesResponseType(200, Type = typeof(GetVideoCallEnvironmentDTO))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetVideoCallEnvironment()
+        {
+            GetVideoCallEnvironmentDTO getVideoCallEnvironmentDTO = new GetVideoCallEnvironmentDTO()
+;            try
+            {
+                string result = await this._masterRepository.GetVideoCallEnvironment();
+
+                if (result != null)
+                {
+                    getVideoCallEnvironmentDTO.VideoCallEnvironment = result;
+                    return Ok(getVideoCallEnvironmentDTO);
+                }
+                else
+                {
+                    ModelState.AddModelError("GetVideoCallEnvironment", "VideoCallEnvironment did not find");
+                    return StatusCode(404, ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("GetVideoCallEnvironment", $"Something went wrong when get VideoCallEnvironment {ex.Message}");
+                _logger.LogError("Exception in GetVideoCallEnvironment API " + ex);
                 return StatusCode(500, ModelState);
             }
         }
