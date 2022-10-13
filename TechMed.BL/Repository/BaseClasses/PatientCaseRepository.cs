@@ -12,6 +12,8 @@ using TechMed.BL.CommanClassesAndFunctions;
 using TechMed.BL.DTOMaster;
 using TechMed.BL.Repository.Interfaces;
 using TechMed.BL.ViewModels;
+using TechMed.BL.ZoomAPI.Service;
+using TechMed.DL.Enums;
 using TechMed.DL.Models;
 using TechMed.DL.ViewModel;
 
@@ -25,7 +27,13 @@ namespace TechMed.BL.Repository.BaseClasses
         //private readonly IDoctorRepository _doctorRepository;
         private readonly SMSSetting _smsSettings;
         private readonly IUserRepository _userRepository;
-        public PatientCaseRepository(IUserRepository userRepository, ILogger<PatientCaseRepository> logger, TeleMedecineContext teleMedecineContext, IMapper mapper, IOptions<SMSSetting> smsSettings) : base(teleMedecineContext)
+        private readonly IConfigurationMasterRepository _configurationMasterRepository;
+        private readonly IZoomService _zoomService;
+        public PatientCaseRepository(IUserRepository userRepository, ILogger<PatientCaseRepository> logger, TeleMedecineContext teleMedecineContext, IMapper mapper, IOptions<SMSSetting> smsSettings
+            ,
+            IConfigurationMasterRepository configurationMasterRepository,
+            IZoomService zoomService
+            ) : base(teleMedecineContext)
         {
             this._teleMedecineContext = teleMedecineContext;
             this._mapper = mapper;
@@ -33,6 +41,8 @@ namespace TechMed.BL.Repository.BaseClasses
             //this._doctorRepository = doctorRepository;
             this._smsSettings = smsSettings.Value;
             _userRepository = userRepository;
+            _configurationMasterRepository = configurationMasterRepository;
+            _zoomService = zoomService;
         }
 
         public async Task<PatientCase> CreateAsync(PatientCase patientCase)
@@ -2031,12 +2041,18 @@ namespace TechMed.BL.Repository.BaseClasses
             var patientQueue = await _teleMedecineContext.PatientQueues.FirstOrDefaultAsync(a => a.PatientCaseId == patientCaseID && a.CaseFileStatusId == 4 && a.AssignedOn.Day == localDate.Day && a.AssignedOn.Month == localDate.Month && a.AssignedOn.Year == localDate.Year);
 
             TwilioMeetingRoomInfo meetingRoomInfo = await _teleMedecineContext.TwilioMeetingRoomInfos.FirstOrDefaultAsync(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" && a.AssignedDoctorId == patientQueue.AssignedDoctorId);
-
+            //VideoCallEnvironment env = await _configurationMasterRepository.GetVideoCallEnvironment();
             if (patientQueue != null && patientCase != null)
             {
                 //IsDoctorFree = _teleMedecineContext.TwilioMeetingRoomInfos.Any(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" && a.AssignedDoctorId == patientQueue.AssignedDoctorId);
                 if (meetingRoomInfo != null)
                 {
+
+                    if (meetingRoomInfo.Environment.ToLower() == "zoom")
+                    {
+                        bool resultEnd = await _zoomService.EndMeeting(meetingRoomInfo.MeetingSid);
+                        bool resultDelete = await _zoomService.DeleteMeeting(meetingRoomInfo.MeetingSid);
+                    }
                     if (meetingRoomInfo.AssignedBy == patientCase.CreatedBy)
                     {
                         meetingRoomInfo.IsClosed = true;
@@ -2073,6 +2089,11 @@ namespace TechMed.BL.Repository.BaseClasses
 
                 if (meetingRoomInfo != null)
                 {
+                    if (meetingRoomInfo.Environment.ToLower() == "zoom")
+                    {
+                        bool resultEnd = await _zoomService.EndMeeting(meetingRoomInfo.MeetingSid);
+                        bool resultDelete = await _zoomService.DeleteMeeting(meetingRoomInfo.MeetingSid);
+                    }
                     if (meetingRoomInfo.PatientCaseId == patientCaseID)
                     {
                         meetingRoomInfo.IsClosed = true;
