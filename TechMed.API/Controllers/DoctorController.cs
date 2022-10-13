@@ -15,6 +15,8 @@ using TechMed.BL.TwilioAPI.Service;
 using Microsoft.AspNetCore.SignalR;
 using TechMed.API.NotificationHub;
 using Microsoft.AspNetCore.Authorization;
+using TechMed.BL.ZoomAPI.Service;
+using TechMed.DL.Enums;
 
 namespace TechMed.API.Controllers
 {
@@ -34,6 +36,8 @@ namespace TechMed.API.Controllers
         private readonly IHubContext<SignalRBroadcastHub, IHubClient> _hubContext;
         private readonly ITwilioMeetingRepository _twilioRoomDb;
         private readonly IPatientCaseRepository _patientCaseRepository;
+        private readonly IConfigurationMasterRepository _configurationMasterRepository;
+        private readonly IZoomService _zoomService;
         public DoctorController(IMapper mapper,
             ILogger<DoctorController> logger,
             TeleMedecineContext teleMedecineContext,
@@ -44,7 +48,10 @@ namespace TechMed.API.Controllers
             ITwilioVideoSDKService twilioVideoSDK,
             ITwilioMeetingRepository twilioRoomDb,
             IHubContext<SignalRBroadcastHub,IHubClient> hubContext,
-            IPatientCaseRepository patientCaseRepository)
+            IPatientCaseRepository patientCaseRepository,
+            IConfigurationMasterRepository configurationMasterRepository,
+            IZoomService zoomService
+            )
         {
             doctorBusinessMaster = new DoctorBusinessMaster(teleMedecineContext, mapper);
             _doctorRepository = doctorRepository;
@@ -57,6 +64,8 @@ namespace TechMed.API.Controllers
             _hubContext = hubContext;
             _twilioRoomDb = twilioRoomDb;
             _patientCaseRepository = patientCaseRepository;
+            _configurationMasterRepository = configurationMasterRepository;
+            _zoomService = zoomService;
         }
         [Route("GetListOfNotification")]
         [HttpPost]
@@ -1516,6 +1525,7 @@ namespace TechMed.API.Controllers
             string callBackUrlForTwilio = string.Format("{0}://{1}{2}/api/webhookcallback/twiliocomposevideostatuscallback", Request.Scheme, Request.Host.Value, Request.PathBase);
             try
             {
+                VideoCallEnvironment env = await _configurationMasterRepository.GetVideoCallEnvironment();
                 //var patientInfo = await _twilioRoomDb.PatientQueueGet(patientCaseId);
                 var patientInfo = await _twilioRoomDb.PatientQueueAfterTretment(patientCaseId, isPartiallyClosed);
                 var nullResult = "No result in patient info";
@@ -1540,13 +1550,21 @@ namespace TechMed.API.Controllers
                 await _twilioRoomDb.SetMeetingRoomClosed(roomInstance, isPartiallyClosed);
                 try
                 {
-                    _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, going to close the room :" );
+                    if (VideoCallEnvironment.Twilio == env)
+                    {
+                        _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, going to close the room :" );
                     var roomInfoFromTwilio = await _twilioVideoSDK.CloseRoomAsync(roomInfo.MeetingSid);
                     _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, going to compose video :"+ roomInfoFromTwilio);                   
                     var composeVideo = await _twilioVideoSDK.ComposeVideo(roomInfoFromTwilio.Sid, callBackUrlForTwilio);
                     _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, going to call MeetingRoomComposeVideoUpdate, compose details :" + composeVideo);
-                   // await _twilioRoomDb.MeetingRoomComposeVideoUpdate(composeVideo, roomInstance);
-                   // _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, going to call MeetingRoomComposeVideoUpdate, successfully" );
+                        // await _twilioRoomDb.MeetingRoomComposeVideoUpdate(composeVideo, roomInstance);
+                        // _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, going to call MeetingRoomComposeVideoUpdate, successfully" );
+                    }
+                    else if (VideoCallEnvironment.Zoom == env)
+                    {
+                        bool resultEnd = await _zoomService.EndMeeting(roomInfo.MeetingSid);
+                        bool resultDelete = await _zoomService.DeleteMeeting(roomInfo.MeetingSid);
+                    }
                 }
                 catch (Exception ex)
                 {

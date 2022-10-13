@@ -111,5 +111,10 @@ namespace TechMed.BL.Repository.BaseClasses
 
             return districtMasterDTOs.OrderBy(o => o.DistrictName).ToList();
         }
+        public async Task<string> GetVideoCallEnvironment()
+        {
+            string VideoCallEnvironment = this._teleMedecineContext.Configurations.FirstOrDefault(s => s.Name.ToLower() == "VideoCallEnvironment").Value;
+            return VideoCallEnvironment;
+        }
     }
 }

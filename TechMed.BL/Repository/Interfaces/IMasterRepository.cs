@@ -15,5 +15,6 @@ namespace TechMed.BL.Repository.Interfaces
         Task<DivisionDTO> GetDivisionById(int Id);
         Task<List<DistrictMasterDTO>> GetDistrictsByDivisionID(int divisionId);
         Task<List<BlockMasterDTO>> GetBlocksByDistrictID(int districtId);
+        Task<string> GetVideoCallEnvironment();
     }
 }

@@ -3,9 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using System.ComponentModel.DataAnnotations;
 using TechMed.API.NotificationHub;
+using TechMed.BL.CommanClassesAndFunctions;
 using TechMed.BL.Repository.Interfaces;
 using TechMed.BL.TwilioAPI.Service;
 using TechMed.BL.ViewModels;
+using TechMed.BL.ZoomAPI.Service;
+using TechMed.DL.Enums;
 using TechMed.DL.Models;
 using TechMed.DL.ViewModel;
 using Twilio.Base;
@@ -23,19 +26,26 @@ namespace TechMed.API.Controllers
         private readonly ILogger<VideoCallController> _logger;
         private bool CanCallByPHC = true;
         private readonly IPatientCaseRepository _patientCaseRepository;
+        private readonly IConfigurationMasterRepository _configurationMasterRepository;
+        private readonly IZoomService _zoomService;
         public VideoCallController(IMapper mapper,
             ITwilioVideoSDKService twilioVideoSDK,
             ITwilioMeetingRepository twilioRoomDb,
             IHubContext<SignalRBroadcastHub,
                 IHubClient> hubContext,
             ILogger<VideoCallController> logger,
-            IPatientCaseRepository patientCaseRepository)
+            IPatientCaseRepository patientCaseRepository,
+            IConfigurationMasterRepository configurationMasterRepository,
+            IZoomService zoomService
+            )
         {
             _twilioVideoSDK = twilioVideoSDK;
             _hubContext = hubContext;
             _twilioRoomDb = twilioRoomDb;
             _logger = logger;
-            _patientCaseRepository = patientCaseRepository; 
+            _patientCaseRepository = patientCaseRepository;
+            _configurationMasterRepository = configurationMasterRepository;
+            _zoomService = zoomService;
         }
 
         [HttpGet("token")]
@@ -49,14 +59,14 @@ namespace TechMed.API.Controllers
         public async Task<IActionResult> BeginDialingCallToUser([Required][FromQuery] Int64 patientCaseId)
         {
             //Check user role who is calling
-                    
+
             bool isDoctorFree = false;
             bool isPhcFree = false;
             var user = User.Identity.Name;
             bool role = User.IsInRole("PHCUser");
-            if (role)            
-                CanCallByPHC = true;      
-            else          
+            if (role)
+                CanCallByPHC = true;
+            else
                 CanCallByPHC = false;
 
             //Add some time in call status check
@@ -64,7 +74,7 @@ namespace TechMed.API.Controllers
 
             ApiResponseModel<int> apiResponseModel = new ApiResponseModel<int>();
             var patientInfo = await _twilioRoomDb.PatientQueueGet(patientCaseId);
-            
+
             if (patientInfo == null)
             {
                 apiResponseModel.isSuccess = false;
@@ -73,7 +83,7 @@ namespace TechMed.API.Controllers
 
 
             //need to check availability of doctor by checkin in queue and other   
-            if(CanCallByPHC)
+            if (CanCallByPHC)
             {
                 // Check Doctor is free to receive the call
                 isDoctorFree = await _patientCaseRepository.IsDoctorFreeToReceiveCall(patientCaseId);
@@ -103,7 +113,7 @@ namespace TechMed.API.Controllers
             else
             {
                 // Check Doctor room is free to receive the call
-                isDoctorFree = await _patientCaseRepository.IsDoctorRoomBusy(patientCaseId); 
+                isDoctorFree = await _patientCaseRepository.IsDoctorRoomBusy(patientCaseId);
 
                 // Check PHC is free to receive the call
                 isPhcFree = await _patientCaseRepository.IsPHCFreeToReceiveCall(patientCaseId);
@@ -135,7 +145,7 @@ namespace TechMed.API.Controllers
 
 
         [HttpGet("connecttomeetingroom")]
-        public async Task<IActionResult> ConnectToMeetingRoom([Required][FromQuery] int patientCaseId, [Required][FromQuery] string meetingInstance, [Required][FromQuery] bool isDoctor, [Required][FromQuery]  bool isInitiator)
+        public async Task<IActionResult> ConnectToMeetingRoom([Required][FromQuery] int patientCaseId, [Required][FromQuery] string meetingInstance, [Required][FromQuery] bool isDoctor, [Required][FromQuery] bool isInitiator)
         {
             var user = User.Identity.Name;
             bool role = User.IsInRole("PHCUser");
@@ -148,7 +158,7 @@ namespace TechMed.API.Controllers
             string callBackUrlForTwilio = string.Format("{0}://{1}{2}/api/webhookcallback/twilioroomstatuscallback", Request.Scheme, Request.Host.Value, Request.PathBase);
             try
             {
-
+                VideoCallEnvironment env = await _configurationMasterRepository.GetVideoCallEnvironment();
                 if (patientCaseId == 0 || string.IsNullOrEmpty(meetingInstance))
                 {
                     apiResponseModel.isSuccess = false;
@@ -160,24 +170,52 @@ namespace TechMed.API.Controllers
                 // if ((patientCaseInfo == null && CanCallByPHC && isDoctor) || (patientCaseInfo == null && !CanCallByPHC && !isDoctor))
                 // if ((patientCaseInfo == null && CanCallByPHC && isAccepter) || (patientCaseInfo == null && !CanCallByPHC && !isAccepter))
 
-                if (patientCaseInfo == null && isInitiator) 
+                if (patientCaseInfo == null && isInitiator)
                 {
-                    var roomFromTwilio = await _twilioVideoSDK.CreateRoomsAsync(meetingInstance, callBackUrlForTwilio);
-                    var isSaved = await _twilioRoomDb.MeetingRoomInfoAdd(new TwilioMeetingRoomInfo()
-                    {
-                        MeetingSid = roomFromTwilio.Sid,
-                        RoomName = roomFromTwilio.UniqueName,
-                        PatientCaseId = patientCaseId,
-                        RoomStatusCallback = roomFromTwilio.StatusCallback.ToString(),
-                        TwilioRoomStatus = roomFromTwilio.Status.ToString(),
-                        AssignedBy = patientInfo.AssignedBy,
-                        AssignedDoctorId = patientInfo.AssignedDoctorId,
 
-                    });
+                    if (VideoCallEnvironment.Twilio == env)
+                    {
+                        var roomFromTwilio = await _twilioVideoSDK.CreateRoomsAsync(meetingInstance, callBackUrlForTwilio);
+                        var isSaved = await _twilioRoomDb.MeetingRoomInfoAdd(new TwilioMeetingRoomInfo()
+                        {
+                            MeetingSid = roomFromTwilio.Sid,
+                            RoomName = roomFromTwilio.UniqueName,
+                            PatientCaseId = patientCaseId,
+                            RoomStatusCallback = roomFromTwilio.StatusCallback.ToString(),
+                            TwilioRoomStatus = roomFromTwilio.Status.ToString(),
+                            AssignedBy = patientInfo.AssignedBy,
+                            AssignedDoctorId = patientInfo.AssignedDoctorId,
+
+                        });
+                    }
+                    else if (VideoCallEnvironment.Zoom == env)
+                    {
+                        //TODO: Add PHCID
+                        var newMeeting = await _zoomService.CreateMeeting(patientInfo.AssignedDoctorId);
+                        meetingInstance = newMeeting.id.ToString();
+                        var isSaved = await _twilioRoomDb.MeetingRoomInfoAdd(new TwilioMeetingRoomInfo()
+                        {
+                            MeetingSid = newMeeting.id.ToString(),
+                            RoomName = newMeeting.id.ToString(),
+                            PatientCaseId = patientCaseId,
+                            RoomStatusCallback = "",
+                            TwilioRoomStatus = "in-progress",
+                            AssignedBy = patientInfo.AssignedBy,
+                            AssignedDoctorId = patientInfo.AssignedDoctorId,
+                            Environment = "Zoom",
+                            MeetingStartURL = newMeeting.start_url,
+                            CreateDate = UtilityMaster.GetLocalDateTime()
+                        });
+                        apiResponseModel.isSuccess = true;
+                        apiResponseModel.data = patientCase.PatientId;
+                        apiResponseModel.meetingID = newMeeting.id.ToString();
+                        apiResponseModel.meetingStartURL = newMeeting.start_url;
+                    }
+
                     apiResponseModel.isSuccess = true;
                     apiResponseModel.data = patientCase.PatientId;
 
-                  
+
 
                     await _hubContext.Clients.All.BroadcastMessage(new SignalRNotificationModel()
                     {
@@ -201,24 +239,60 @@ namespace TechMed.API.Controllers
                 }
                 else
                 {
-                    var roomFromTwilio = await _twilioVideoSDK.GetRoomDetailFromTwilio(patientCaseInfo.MeetingSid);
-                    if (roomFromTwilio == null)
+                    if (VideoCallEnvironment.Twilio == env)
                     {
-                        await _twilioRoomDb.MeetingRoomCloseFlagUpdate(patientCaseInfo.Id, true);
-                        apiResponseModel.isSuccess = false;
-                        apiResponseModel.errorMessage = "Room Closed";
-                        return BadRequest(apiResponseModel);
+                        var roomFromTwilio = await _twilioVideoSDK.GetRoomDetailFromTwilio(patientCaseInfo.MeetingSid);
+                        if (roomFromTwilio == null)
+                        {
+                            await _twilioRoomDb.MeetingRoomCloseFlagUpdate(patientCaseInfo.Id, true);
+                            apiResponseModel.isSuccess = false;
+                            apiResponseModel.errorMessage = "Room Closed";
+                            return BadRequest(apiResponseModel);
+                        }
+                        else if (roomFromTwilio.Status != RoomResource.RoomStatusEnum.InProgress)
+                        {
+                            await _twilioRoomDb.MeetingRoomCloseFlagUpdate(patientCaseInfo.Id, true);
+                            apiResponseModel.isSuccess = false;
+                            apiResponseModel.errorMessage = "Room Closed";
+                            return BadRequest(apiResponseModel);
+                        }
+                        apiResponseModel.isSuccess = true;
+                        apiResponseModel.data = patientCase.PatientId;
+                        apiResponseModel.meetingID = patientCaseInfo.MeetingSid;
+
+                        return Ok(apiResponseModel);
                     }
-                    else if (roomFromTwilio.Status != RoomResource.RoomStatusEnum.InProgress)
+                    if (VideoCallEnvironment.Zoom == env)
                     {
-                        await _twilioRoomDb.MeetingRoomCloseFlagUpdate(patientCaseInfo.Id, true);
-                        apiResponseModel.isSuccess = false;
-                        apiResponseModel.errorMessage = "Room Closed";
-                        return BadRequest(apiResponseModel);
+                        //var roomFromTwilio = await _twilioVideoSDK.GetRoomDetailFromTwilio(patientCaseInfo.MeetingSid);
+                        //ToDo Check status
+                        var IsMeetingExist = await _zoomService.IsMeetingExist(patientCaseInfo.MeetingSid);
+                        if (IsMeetingExist == false)
+                        {
+                            await _twilioRoomDb.MeetingRoomCloseFlagUpdate(patientCaseInfo.Id, true);
+                            apiResponseModel.isSuccess = false;
+                            apiResponseModel.errorMessage = "Room Closed";
+                            apiResponseModel.meetingID = patientCaseInfo.MeetingSid;
+                            return BadRequest(apiResponseModel);
+                        }
+                        //else if (roomFromTwilio.Status != RoomResource.RoomStatusEnum.InProgress)
+                        //{
+                        //    await _twilioRoomDb.MeetingRoomCloseFlagUpdate(patientCaseInfo.Id, true);
+                        //    apiResponseModel.isSuccess = false;
+                        //    apiResponseModel.errorMessage = "Room Closed";
+                        //    return BadRequest(apiResponseModel);
+                        //}
+                        apiResponseModel.isSuccess = true;
+                        apiResponseModel.data = patientCase.PatientId;
+                        apiResponseModel.meetingID = patientCaseInfo.MeetingSid;
+                        apiResponseModel.meetingStartURL = patientCaseInfo.MeetingStartURL;
+                        return Ok(apiResponseModel);
                     }
-                    apiResponseModel.isSuccess = true;
-                    apiResponseModel.data = patientCase.PatientId;
-                    return Ok(apiResponseModel);
+                    else
+                    {
+                        return NotFound("VideoCallEnvironment not found!");
+                    }
+
                 }
             }
             catch (Exception ex)
@@ -409,12 +483,13 @@ namespace TechMed.API.Controllers
 
 
         [HttpPost("dismisscall")]
-        public async Task<IActionResult> DismissCall([Required][FromForm] string roomInstance, [Required][FromForm] int patientCaseId,[Required][FromForm] bool isPartiallyClosed)
+        public async Task<IActionResult> DismissCall([Required][FromForm] string roomInstance, [Required][FromForm] int patientCaseId, [Required][FromForm] bool isPartiallyClosed)
         {
             ApiResponseModel<dynamic> apiResponseModel = new ApiResponseModel<dynamic>();
             string callBackUrlForTwilio = string.Format("{0}://{1}{2}/api/webhookcallback/twiliocomposevideostatuscallback", Request.Scheme, Request.Host.Value, Request.PathBase);
             try
             {
+                VideoCallEnvironment env = await _configurationMasterRepository.GetVideoCallEnvironment();
                 //var patientInfo = await _twilioRoomDb.PatientQueueGet(patientCaseId);
                 var patientInfo = await _twilioRoomDb.PatientQueueAfterTretment(patientCaseId, isPartiallyClosed);
                 var roomInfo = await _twilioRoomDb.MeetingRoomInfoGet(roomInstance);
@@ -422,13 +497,21 @@ namespace TechMed.API.Controllers
                 {
                     apiResponseModel.isSuccess = false;
                     apiResponseModel.errorMessage = "Invalid Information";
-                   return BadRequest(apiResponseModel);
+                    return BadRequest(apiResponseModel);
                 }
                 try
                 {
-                    var roomInfoFromTwilio = await _twilioVideoSDK.CloseRoomAsync(roomInfo.MeetingSid);
-                    var composeVideo = await _twilioVideoSDK.ComposeVideo(roomInfoFromTwilio.Sid, callBackUrlForTwilio);
-                    await _twilioRoomDb.MeetingRoomComposeVideoUpdate(composeVideo, roomInstance);
+                    if (VideoCallEnvironment.Twilio == env)
+                    {
+                        var roomInfoFromTwilio = await _twilioVideoSDK.CloseRoomAsync(roomInfo.MeetingSid);
+                        var composeVideo = await _twilioVideoSDK.ComposeVideo(roomInfoFromTwilio.Sid, callBackUrlForTwilio);
+                        await _twilioRoomDb.MeetingRoomComposeVideoUpdate(composeVideo, roomInstance);
+                    }
+                    else if (VideoCallEnvironment.Zoom == env)
+                    {
+                        bool resultEnd = await _zoomService.EndMeeting(roomInfo.MeetingSid);
+                        bool resultDelete = await _zoomService.DeleteMeeting(roomInfo.MeetingSid);
+                    }
                 }
                 catch (Exception ex)
                 {

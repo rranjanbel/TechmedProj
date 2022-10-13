@@ -2,6 +2,8 @@ using HealthWorkerService;
 using Microsoft.EntityFrameworkCore;
 using TechMed.BL.Repository.BaseClasses;
 using TechMed.BL.Repository.Interfaces;
+using TechMed.BL.ZoomAPI.Model;
+using TechMed.BL.ZoomAPI.Service;
 using TechMed.DL.Models;
 
 
@@ -20,7 +22,6 @@ var t=Configuration.GetSection("HostUrl").Get<HostUrl>();
 //services.AddScoped<IUserRepository, UserRepository>();
 //services.AddScoped<ISystemHealthRepository, SystemHealthRepository>();
 
-
 //var serviceProvider = services.BuildServiceProvider();
 
 IHost host = Host.CreateDefaultBuilder(args)
@@ -28,9 +29,18 @@ IHost host = Host.CreateDefaultBuilder(args)
     {
         services.AddDbContext<TeleMedecineContext>(o => o.UseSqlServer(connectionString), ServiceLifetime.Singleton);
         services.AddHostedService<Worker>();
+        services.AddHostedService<TokenWorker>();
         services.AddHostedService<PatientCaseWorker>();
         services.AddSingleton<ISystemHealthRepository, SystemHealthRepository>();
         services.Configure<HostUrl>(Configuration.GetSection("HostUrl"));
+        services.Configure<ConnectionStrings>(Configuration.GetSection("ConnectionStrings"));
+        services.Configure<ZoomSettings>(
+        settings =>
+        {
+            settings.ZoomSSAccountId = Configuration.GetValue<string>("Zoom:ZoomSSAccountId");
+            settings.ZoomSSClientID = Configuration.GetValue<string>("Zoom:ZoomSSClientID");
+            settings.ZoomSSClientSecret = Configuration.GetValue<string>("Zoom:ZoomSSClientSecret");
+        }).AddSingleton<IZoomAccountService, ZoomAccountService>();
 
     }).UseWindowsService()
     .Build();

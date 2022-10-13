@@ -36,6 +36,7 @@ namespace TechMed.DL.Models
             UserDetailUsers = new HashSet<UserDetail>();
             VideoCallTransactionFromUsers = new HashSet<VideoCallTransaction>();
             VideoCallTransactionToUsers = new HashSet<VideoCallTransaction>();
+            ZoomUserDetailUsers = new HashSet<ZoomUserDetail>();
         }
 
         public int Id { get; set; }
@@ -83,5 +84,7 @@ namespace TechMed.DL.Models
         public virtual ICollection<UserDetail> UserDetailUsers { get; set; }
         public virtual ICollection<VideoCallTransaction> VideoCallTransactionFromUsers { get; set; }
         public virtual ICollection<VideoCallTransaction> VideoCallTransactionToUsers { get; set; }
+        public virtual ICollection<ZoomUserDetail> ZoomUserDetailUsers { get; set; }
+
     }
 }
