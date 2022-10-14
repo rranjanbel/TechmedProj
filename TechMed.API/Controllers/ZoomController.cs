@@ -424,7 +424,7 @@ namespace TechMed.API.Controllers
             {
                 List<ZoomUserDetailDTO> zoomUserDetails = new List<ZoomUserDetailDTO>();
 
-                var doctors =await _teleMedecineContext.DoctorMasters.ToListAsync();
+                var doctors =await _teleMedecineContext.DoctorMasters.Include(a=>a.User).ToListAsync();
                 foreach (var item in doctors)
                 {
                     _logger.LogInformation("Received CreateUser ");

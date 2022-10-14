@@ -59,7 +59,7 @@ namespace HealthWorkerService
                         {
                             //insert first record
                             //add token1
-                            string token1 = await _zoomAccountService.GetNewTokenFromZoomAsync(0);
+                            string token1 = await _zoomAccountService.GetNewTokenFromZoomAsync(2);
                             zoomToken = new ZoomToken
                             {
                                 ActiveTokenNumber = 1,
@@ -87,7 +87,7 @@ namespace HealthWorkerService
                                 {
                                     //File.AppendAllLines(filepath, new List<string>() { "TokenWorker at: " + DateTimeOffset.Now + "result > 15" });
 
-                                    string token2 = await _zoomAccountService.GetNewTokenFromZoomAsync(1);
+                                    string token2 = await _zoomAccountService.GetNewTokenFromZoomAsync(3);
                                     //File.AppendAllLines(filepath, new List<string>() { "TokenWorker at: " + DateTimeOffset.Now + "GetNewTokenFromZoomAsync(1)" });
 
                                     zoomToken.Token2 = token2;
@@ -140,7 +140,7 @@ namespace HealthWorkerService
                 }
                 catch (Exception ex)
                 {
-                    //File.AppendAllLines(filepath, new List<string>() { "TokenWorker Exception at: " + ex.StackTrace });
+                    //File.AppendAllLines(filepath, new List<string>() { "TokenWorker Exception at: "+ex.Message + ex.StackTrace });
 
                     _logger.LogError("Exception : ", ex);
 
