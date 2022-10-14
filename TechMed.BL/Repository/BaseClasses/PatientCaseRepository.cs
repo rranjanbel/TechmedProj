@@ -555,7 +555,7 @@ namespace TechMed.BL.Repository.BaseClasses
                                 existingpatientQueue.UpdatedOn = UtilityMaster.GetLocalDateTime();
                                 existingpatientQueue.IsQueueChanged = false;
                                 _teleMedecineContext.Entry(existingpatientQueue).State = EntityState.Modified;
-                            }  
+                            }
                         }
                         else
                         {
@@ -2048,11 +2048,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 if (meetingRoomInfo != null)
                 {
 
-                    if (meetingRoomInfo.Environment.ToLower() == "zoom")
-                    {
-                        bool resultEnd = await _zoomService.EndMeeting(meetingRoomInfo.MeetingSid);
-                        bool resultDelete = await _zoomService.DeleteMeeting(meetingRoomInfo.MeetingSid);
-                    }
+
                     if (meetingRoomInfo.AssignedBy == patientCase.CreatedBy)
                     {
                         meetingRoomInfo.IsClosed = true;
@@ -2061,7 +2057,14 @@ namespace TechMed.BL.Repository.BaseClasses
                         _teleMedecineContext.Entry(meetingRoomInfo).State = EntityState.Modified;
                         int i = _teleMedecineContext.SaveChanges();
                         if (i > 0)
+                        {
                             IsDoctorFree = true;
+                            if (meetingRoomInfo.Environment.ToLower() == "zoom")
+                            {
+                                bool resultEnd = await _zoomService.EndMeeting(meetingRoomInfo.MeetingSid);
+                                bool resultDelete = await _zoomService.DeleteMeeting(meetingRoomInfo.MeetingSid);
+                            }
+                        }
                         else
                             IsDoctorFree = false;
                     }
@@ -2089,11 +2092,7 @@ namespace TechMed.BL.Repository.BaseClasses
 
                 if (meetingRoomInfo != null)
                 {
-                    if (meetingRoomInfo.Environment.ToLower() == "zoom")
-                    {
-                        bool resultEnd = await _zoomService.EndMeeting(meetingRoomInfo.MeetingSid);
-                        bool resultDelete = await _zoomService.DeleteMeeting(meetingRoomInfo.MeetingSid);
-                    }
+                   
                     if (meetingRoomInfo.PatientCaseId == patientCaseID)
                     {
                         meetingRoomInfo.IsClosed = true;
@@ -2102,7 +2101,14 @@ namespace TechMed.BL.Repository.BaseClasses
                         _teleMedecineContext.Entry(meetingRoomInfo).State = EntityState.Modified;
                         int i = _teleMedecineContext.SaveChanges();
                         if (i > 0)
+                        {
                             IsDoctorroomFree = true;
+                            if (meetingRoomInfo.Environment.ToLower() == "zoom")
+                            {
+                                bool resultEnd = await _zoomService.EndMeeting(meetingRoomInfo.MeetingSid);
+                                bool resultDelete = await _zoomService.DeleteMeeting(meetingRoomInfo.MeetingSid);
+                            }
+                        }
                         else
                             IsDoctorroomFree = false;
                     }
