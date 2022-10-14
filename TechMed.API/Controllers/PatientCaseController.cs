@@ -622,17 +622,18 @@ namespace TechMed.API.Controllers
             try
             {
                 patientQueues = await _patientCaeRepository.GetPatientQueue(PHCID);
-                if (patientQueues != null && patientQueues.Count > 0)
-                {
-                    _logger.LogInformation($"GetSelectedOnlineDoctors : Sucess response returned ");
-                    return StatusCode(200, patientQueues);
-                }
-                else
-                {
-                    ModelState.AddModelError("GetSelectedOnlineDoctors", $"did not get doctor list for PatientcaseID ");
-                    _logger.LogError("GetSelectedOnlineDoctors : did not get patient Queue : ");
-                    return StatusCode(404, new { Message = "Did not get patient Queue" });
-                }
+                return StatusCode(200, patientQueues);
+                //if (patientQueues != null && patientQueues.Count > 0)
+                //{
+                //    _logger.LogInformation($"GetSelectedOnlineDoctors : Sucess response returned ");
+                //    return StatusCode(200, patientQueues);
+                //}
+                //else
+                //{
+                //    ModelState.AddModelError("GetSelectedOnlineDoctors", $"did not get doctor list for PatientcaseID ");
+                //    _logger.LogError("GetSelectedOnlineDoctors : did not get patient Queue : ");
+                //    return StatusCode(404, new { Message = "Did not get patient Queue" });
+                //}
             }
             catch (Exception ex)
             {
@@ -654,17 +655,18 @@ namespace TechMed.API.Controllers
             try
             {
                 patientQueues = await _patientCaeRepository.GetPatientQueueByDocotorID(doctorID);
-                if (patientQueues != null && patientQueues.Count > 0)
-                {
-                    _logger.LogInformation($"GetPatientQueueByDoctorID : Sucess response returned ");
-                    return StatusCode(200, patientQueues);
-                }
-                else
-                {
-                    ModelState.AddModelError("GetPatientQueueByDoctorID", $"did not get doctor list for PatientcaseID ");
-                    _logger.LogError("GetPatientQueueByDoctorID : did not get patient Queue : ");
-                    return StatusCode(404, new { Message = "Did not get patient Queue" });
-                }
+                return StatusCode(200, patientQueues);
+                //if (patientQueues != null && patientQueues.Count > 0)
+                //{
+                //    _logger.LogInformation($"GetPatientQueueByDoctorID : Sucess response returned ");
+                //    return StatusCode(200, patientQueues);
+                //}
+                //else
+                //{
+                //    ModelState.AddModelError("GetPatientQueueByDoctorID", $"did not get doctor list for PatientcaseID ");
+                //    _logger.LogError("GetPatientQueueByDoctorID : did not get patient Queue : ");
+                //    return StatusCode(404, new { Message = "Did not get patient Queue" });
+                //}
             }
             catch (Exception ex)
             {
