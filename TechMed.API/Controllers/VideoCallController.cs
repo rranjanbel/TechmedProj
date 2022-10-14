@@ -185,6 +185,7 @@ namespace TechMed.API.Controllers
                             TwilioRoomStatus = roomFromTwilio.Status.ToString(),
                             AssignedBy = patientInfo.AssignedBy,
                             AssignedDoctorId = patientInfo.AssignedDoctorId,
+                            Environment = "Twilio",
 
                         });
                     }
