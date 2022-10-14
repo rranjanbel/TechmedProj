@@ -1457,7 +1457,7 @@ namespace TechMed.API.Controllers
 
         [HttpGet]
         [Route("GetPrescription")]
-        public async Task<IActionResult> GetPrescription(int caseid = 10703)
+        public async Task<IActionResult> GetPrescription(int caseid)
         {
             //using (var ms = new MemoryStream(testFileBytes))
             //{
@@ -1489,7 +1489,26 @@ namespace TechMed.API.Controllers
             }
 
         }
+        
+        [HttpGet]
+        [Route("CreatePrescription")]
+        public async Task<IActionResult> CreatePrescription(long caseid)
+        {
+            
+            try
+            {
+                var pdfFile = await _reportService.GeneratePdfReport(caseid, _webHostEnvironment.ContentRootPath);
+                //return File(pdfFile,
+                //"application/octet-stream", "SimplePdf.pdf");
+                return Ok();
+            }
+            catch (Exception ex)
+            {
 
+                throw ex;
+            }
+
+        }
         private async Task<ApiResponseModel<dynamic>> DismissCall(string roomInstance, long patientCaseId, bool isPartiallyClosed,bool isPatientAbsent =false)
         {
             _logger.LogInformation($"DismissCall : Treatment plan or Patient Absent call DismissCall, IsPatientabsent :" + isPatientAbsent);

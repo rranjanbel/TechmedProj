@@ -70,20 +70,20 @@ namespace TechMed.BL.DTOMaster
         public string? Gender { get; set; }
         [Required]
         public string EmailId { get; set; } = null!;
-        [Required]
+        //[Required]
         public int? CountryId { get; set; }
-        [Required]
+        //[Required]
         public int? StateId { get; set; }
-        [Required]
+        //[Required]
         public string City { get; set; } = null!;
-        [Required]
+        //[Required]
         public string? PinCode { get; set; }
         public string Photo { get; set; } = null!;
         public string PhotoNewUpdate { get; set; } = null!;
-        [Required]
+        //[Required]
         public int? IdproofTypeId { get; set; }
-        [Required]
-        public string IdproofNumber { get; set; } = null!;
+        //[Required]
+        public string? IdproofNumber { get; set; } = null!;
         public string? Address { get; set; }
     }
 }
