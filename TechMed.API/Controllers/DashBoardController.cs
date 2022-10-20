@@ -283,22 +283,15 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetDashboardReportConsultation(GetDashboardReportConsultationVM dashboardReportConsultationVM)
         {
+            List<DashboardReportConsultationVM> reportConsultationVMs = new List<DashboardReportConsultationVM>();
             try
             {
                 if (dashboardReportConsultationVM == null)
                 {
                     return BadRequest(ModelState);
                 }
-                var DTO = await _dashBoardRepository.GetDashboardReportConsultation(dashboardReportConsultationVM);
-                if (DTO.Count > 0)
-                {
-                    return Ok(DTO);
-                }
-                else
-                {
-                    ModelState.AddModelError("", $"Data not found!");
-                    return StatusCode(404, ModelState);
-                }
+                reportConsultationVMs  = await _dashBoardRepository.GetDashboardReportConsultation(dashboardReportConsultationVM);
+                return Ok(reportConsultationVMs);              
             }
             catch (Exception ex)
             {
@@ -324,20 +317,12 @@ namespace TechMed.API.Controllers
                 if (year > 0 && month > 0)
                 {
                     phcmanpowerReport = _dashBoardRepository.GetPHCManpowerReport(year,month);
-                    if (phcmanpowerReport != null)
-                    {
-                        return Ok(phcmanpowerReport);
-                    }
-                    else
-                    {
-                        ModelState.AddModelError("GetPHCManpowerReport", $"Data not found!");
-                        return StatusCode(404, ModelState);
-                    }
+                    return Ok(phcmanpowerReport);                   
                 }
                 else
                 {
                     ModelState.AddModelError("GetPHCManpowerReport", $"year and month should not null.");                    
-                    return StatusCode(404, ModelState);
+                    return BadRequest();
                 }
             }
             catch (Exception ex)
@@ -357,24 +342,12 @@ namespace TechMed.API.Controllers
         public IActionResult GetPatientRegisterReport(DateTime? fromDate = null, DateTime? toDate = null)
         {
             List<RegisterPatientVM> patientResiter = new List<RegisterPatientVM>();
-            //DateTime? fromDateUtc = null;
-            //if (fromDate != null)
-            //    fromDateUtc = fromDate.Value;
-            //DateTime? toDateUtc = null;
-            //if (toDate != null)
-            //    toDateUtc = toDate.Value;
+           
             try
             {
                 patientResiter = _dashBoardRepository.GetRegisterPatientReport(fromDate, toDate);
-                if (patientResiter != null)
-                {
-                    return Ok(patientResiter);
-                }
-                else
-                {
-                    ModelState.AddModelError("GetPatientRegisterReport", $"Data not found!");
-                    return StatusCode(404, ModelState);
-                }
+                return Ok(patientResiter);
+               
             }
             catch (Exception ex)
             {
@@ -415,7 +388,7 @@ namespace TechMed.API.Controllers
                             }
                             else
                             {
-                                ModelState.AddModelError("AddEquipmentUptimeReport", $"Something went wrong when add equipment Uptime ");
+                                ModelState.AddModelError("AddEquipmentUptimeReport", $"Something went wrong when add equipment Uptime data ");
                                 return StatusCode(404, ModelState);
                             }
                         }
@@ -451,24 +424,11 @@ namespace TechMed.API.Controllers
         public IActionResult GetReferredPatientReport(DateTime? fromDate = null, DateTime? toDate = null)
         {
             List<GetReferredPatientVM> patientResiter = new List<GetReferredPatientVM>();
-            //DateTime? fromDateUtc = null;
-            //if (fromDate != null)
-            //    fromDateUtc = fromDate.Value;
-            //DateTime? toDateUtc = null;
-            //if (toDate != null)
-            //    toDateUtc = toDate.Value;
+           
             try
             {
                 patientResiter = _dashBoardRepository.GetReferredPatientReport(fromDate, toDate);
-                if (patientResiter != null)
-                {
-                    return Ok(patientResiter);
-                }
-                else
-                {
-                    ModelState.AddModelError("GetReferredPatientReport", $"Data not found!");
-                    return StatusCode(404, ModelState);
-                }
+                return Ok(patientResiter);
             }
             catch (Exception ex)
             {
@@ -487,24 +447,11 @@ namespace TechMed.API.Controllers
         public IActionResult GetReviewPatientReport(DateTime? fromDate = null, DateTime? toDate = null)
         {
             List<GetReviewPatientVM> patientResiter = new List<GetReviewPatientVM>();
-            //DateTime? fromDateUtc = null;
-            //if (fromDate != null)
-            //    fromDateUtc = fromDate.Value;
-            //DateTime? toDateUtc = null;
-            //if (toDate != null)
-            //    toDateUtc = toDate.Value;
+         
             try
             {
                 patientResiter = _dashBoardRepository.GetReviewPatientReport(fromDate, toDate);
-                if (patientResiter != null)
-                {
-                    return Ok(patientResiter);
-                }
-                else
-                {
-                    ModelState.AddModelError("GetReviewPatientReport", $"Data not found!");
-                    return StatusCode(404, ModelState);
-                }
+                return Ok(patientResiter);
             }
             catch (Exception ex)
             {
@@ -534,15 +481,7 @@ namespace TechMed.API.Controllers
             try
             {
                 patientResiter = _dashBoardRepository.GetDashboardSpokeMaintenance(fromDateUtc, toDateUtc);
-                if (patientResiter != null)
-                {
-                    return Ok(patientResiter);
-                }
-                else
-                {
-                    ModelState.AddModelError("GetDashboardSpokeMaintenance", $"Data not found!");
-                    return StatusCode(404, ModelState);
-                }
+                return Ok(patientResiter);
             }
             catch (Exception ex)
             {
@@ -561,12 +500,7 @@ namespace TechMed.API.Controllers
         public IActionResult GetDashboardEmployeeFeedback(int? Fromyear, string qtr)
         {
             List<GetDashboardEmployeeFeedbackVM> patientResiter = new List<GetDashboardEmployeeFeedbackVM>();
-            //DateTime? fromDateUtc = null;
-            //if (fromDate != null)
-            //    fromDateUtc = fromDate.Value;
-            //DateTime? toDateUtc = null;
-            //if (toDate != null)
-            //    toDateUtc = toDate.Value;
+          
             try
             {
                 patientResiter = _dashBoardRepository.GetDashboardEmployeeFeedback(Fromyear, qtr);

@@ -55,25 +55,17 @@ namespace TechMed.API.Controllers
         public async Task<IActionResult> GetAllSpecialization()
         {
             SpecializationDTO mapdata = new SpecializationDTO();
+            List<SpecializationDTO> specializations = new List<SpecializationDTO>();
             try
             {
                 var spemasters = await _specializationRepository.Get();
-
-                var DTOList = new List<SpecializationDTO>();
+                
                 foreach (var item in spemasters)
                 {
                     mapdata = _mapper.Map<SpecializationDTO>(item);
-                    DTOList.Add(mapdata);
+                    specializations.Add(mapdata);
                 }
-                if (DTOList != null)
-                {
-                    return Ok(DTOList.OrderBy(o=> o.Specialization).ToList());
-                }
-                else
-                {
-                    ModelState.AddModelError("GetAllSpecialization", "Specialization detail did not find");
-                    return StatusCode(404, ModelState);
-                }
+                return Ok(specializations.OrderBy(o => o.Specialization).ToList());
             }
             catch (Exception ex)
             {
@@ -91,25 +83,18 @@ namespace TechMed.API.Controllers
         public async Task<IActionResult> GetAllCaseFileStatusMaster()
         {
             CaseFileStatusMasterDTO mapdata = new CaseFileStatusMasterDTO();
+            List<CaseFileStatusMasterDTO> caseFileStatusMasters = new List<CaseFileStatusMasterDTO>();
             try
             {
                 var spemasters = await _CaseFileStatusMasterRpository.GetAll();
-
-                var DTOList = new List<CaseFileStatusMasterDTO>();
                 foreach (var item in spemasters)
                 {
                     mapdata = _mapper.Map<CaseFileStatusMasterDTO>(item);
-                    DTOList.Add(mapdata);
+                    caseFileStatusMasters.Add(mapdata);
                 }
-                if (DTOList != null)
-                {
-                    return Ok(DTOList.OrderBy(o => o.FileStatus).ToList());
-                }
-                else
-                {
-                    ModelState.AddModelError("GetAllCaseFileStatusMaster", "GetAllCaseFileStatusMaster did not find");
-                    return StatusCode(404, ModelState);
-                }
+               
+                return Ok(caseFileStatusMasters.OrderBy(o => o.FileStatus).ToList());
+              
             }
             catch (Exception ex)
             {
@@ -127,25 +112,18 @@ namespace TechMed.API.Controllers
         public async Task<IActionResult> GetAllCountryMaster()
         {
             CountryMasterDTO mapdata = new CountryMasterDTO();
+            List<CountryMasterDTO> countryMasters = new List<CountryMasterDTO>();
             try
             {
                 var spemasters = await _teleMedecineContext.CountryMasters.ToListAsync();
-
-                var DTOList = new List<CountryMasterDTO>();
+              
                 foreach (var item in spemasters)
                 {
                     mapdata = _mapper.Map<CountryMasterDTO>(item);
-                    DTOList.Add(mapdata);
+                    countryMasters.Add(mapdata);
                 }
-                if (DTOList != null)
-                {
-                    return Ok(DTOList.OrderBy(o => o.CountryName).ToList());
-                }
-                else
-                {
-                    ModelState.AddModelError("GetAllCountryMaster", "GetAllCountryMaster did not find");
-                    return StatusCode(404, ModelState);
-                }
+                return Ok(countryMasters.OrderBy(o => o.CountryName).ToList());
+                
             }
             catch (Exception ex)
             {
@@ -163,25 +141,18 @@ namespace TechMed.API.Controllers
         public async Task<IActionResult> GetAllMaritalStatus()
         {
             MaritalStatusDTO mapdata = new MaritalStatusDTO();
+            List < MaritalStatusDTO > maritalStatuses = new List<MaritalStatusDTO>();   
             try
             {
                 var spemasters = await _teleMedecineContext.MaritalStatuses.ToListAsync();
-
-                var DTOList = new List<MaritalStatusDTO>();
+              
                 foreach (var item in spemasters)
                 {
                     mapdata = _mapper.Map<MaritalStatusDTO>(item);
-                    DTOList.Add(mapdata);
+                    maritalStatuses.Add(mapdata);
                 }
-                if (DTOList != null)
-                {
-                    return Ok(DTOList.OrderBy(o => o.Name).ToList());
-                }
-                else
-                {
-                    ModelState.AddModelError("GetAllCountryMaster", "GetAllCountryMaster did not find");
-                    return StatusCode(404, ModelState);
-                }
+                return Ok(maritalStatuses.OrderBy(o => o.Name).ToList());
+               
             }
             catch (Exception ex)
             {
@@ -199,25 +170,17 @@ namespace TechMed.API.Controllers
         public async Task<IActionResult> GetAllDistrictMaster()
         {
             DistrictMasterDTO mapdata = new DistrictMasterDTO();
+            List<DistrictMasterDTO> districtMasters = new List<DistrictMasterDTO>();
             try
             {
                 var spemasters = await _teleMedecineContext.DistrictMasters.ToListAsync();
-
-                var DTOList = new List<DistrictMasterDTO>();
+               
                 foreach (var item in spemasters)
                 {
                     mapdata = _mapper.Map<DistrictMasterDTO>(item);
-                    DTOList.Add(mapdata);
+                    districtMasters.Add(mapdata);
                 }
-                if (DTOList != null)
-                {
-                    return Ok(DTOList.OrderBy(o => o.DistrictName).ToList());
-                }
-                else
-                {
-                    ModelState.AddModelError("GetAllDistrictMaster", "GetAllDistrictMaster did not find");
-                    return StatusCode(404, ModelState);
-                }
+                return Ok(districtMasters.OrderBy(o => o.DistrictName).ToList());
             }
             catch (Exception ex)
             {
@@ -235,25 +198,17 @@ namespace TechMed.API.Controllers
         public async Task<IActionResult> GetAllCityMaster()
         {
             CityMasterDTO mapdata = new CityMasterDTO();
+            List < CityMasterDTO > citymasters = new List<CityMasterDTO>(); 
             try
             {
                 var spemasters = await _teleMedecineContext.CityMasters.ToListAsync();
-
-                var DTOList = new List<CityMasterDTO>();
+               
                 foreach (var item in spemasters)
                 {
                     mapdata = _mapper.Map<CityMasterDTO>(item);
-                    DTOList.Add(mapdata);
+                    citymasters.Add(mapdata);
                 }
-                if (DTOList != null)
-                {
-                    return Ok(DTOList.OrderBy(o => o.CityName).ToList());
-                }
-                else
-                {
-                    ModelState.AddModelError("GetAllCityMaster", "GetAllCityMaster did not find");
-                    return StatusCode(404, ModelState);
-                }
+                return Ok(citymasters.OrderBy(o => o.CityName).ToList());
             }
             catch (Exception ex)
             {
@@ -271,6 +226,7 @@ namespace TechMed.API.Controllers
         public async Task<IActionResult> GetAllGenderMaster()
         {
             GenderMasterDTO mapdata = new GenderMasterDTO();
+            List < GenderMasterDTO > genders = new List<GenderMasterDTO>();
             try
             {
                 var spemasters = await _teleMedecineContext.GenderMasters.ToListAsync();
@@ -279,17 +235,9 @@ namespace TechMed.API.Controllers
                 foreach (var item in spemasters)
                 {
                     mapdata = _mapper.Map<GenderMasterDTO>(item);
-                    DTOList.Add(mapdata);
+                    genders.Add(mapdata);
                 }
-                if (DTOList != null)
-                {
-                    return Ok(DTOList.OrderBy(o => o.Gender).ToList());
-                }
-                else
-                {
-                    ModelState.AddModelError("GetAllGenderMaster", "GetAllGenderMaster did not find");
-                    return StatusCode(404, ModelState);
-                }
+                return Ok(genders.OrderBy(o => o.Gender).ToList());
             }
             catch (Exception ex)
             {
