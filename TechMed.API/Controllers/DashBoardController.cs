@@ -31,22 +31,15 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> DoctorsLoggedInToday(DoctorsLoggedInTodayVM doctorsLoggedInTodayVM)
         {
+            List<DoctorDTO> doctors = new List<DoctorDTO>();
             try
             {
                 if (doctorsLoggedInTodayVM == null)
                 {
                     return BadRequest(ModelState);
                 }
-                var DTO = await _dashBoardRepository.DoctorsLoggedInToday(doctorsLoggedInTodayVM);
-                if (DTO.Count > 0)
-                {
-                    return Ok(DTO);
-                }
-                else
-                {
-                    ModelState.AddModelError("", $"Data not found!");
-                    return StatusCode(404, ModelState);
-                }
+                doctors = await _dashBoardRepository.DoctorsLoggedInToday(doctorsLoggedInTodayVM);
+                return Ok(doctors);               
             }
             catch (Exception ex)
             {
@@ -69,15 +62,7 @@ namespace TechMed.API.Controllers
             try
             {
                 loggedUserCounts = await _dashBoardRepository.GetTodaysLoggedUsersCount();
-                if (loggedUserCounts.Count > 0)
-                {
-                    return Ok(loggedUserCounts);
-                }
-                else
-                {
-                    ModelState.AddModelError("LoggedUserInToday", $"Data not found!");
-                    return StatusCode(404, ModelState);
-                }
+                return Ok(loggedUserCounts);               
             }
             catch (Exception ex)
             {
@@ -105,15 +90,8 @@ namespace TechMed.API.Controllers
                     return BadRequest(ModelState);
                 }
                 loggedUserCountVM = _dashBoardRepository.GetLoggedUserTypeCount(userTypeId);
-                if (loggedUserCountVM != null)
-                {
-                    return Ok(loggedUserCountVM);
-                }
-                else
-                {
-                    ModelState.AddModelError("GetLoggedUserCount", $"Data not found!");
-                    return StatusCode(404, ModelState);
-                }
+                return Ok(loggedUserCountVM);
+              
             }
             catch (Exception ex)
             {
@@ -135,15 +113,7 @@ namespace TechMed.API.Controllers
             try
             {
                 todaysRegistorCase = await _dashBoardRepository.GetTodaysRegistoredPatientList();
-                if (todaysRegistorCase != null)
-                {
-                    return Ok(todaysRegistorCase);
-                }
-                else
-                {
-                    ModelState.AddModelError("GetLoggedUserCount", $"Data not found!");
-                    return StatusCode(404, ModelState);
-                }
+                return Ok(todaysRegistorCase);               
             }
             catch (Exception ex)
             {
@@ -165,15 +135,8 @@ namespace TechMed.API.Controllers
             try
             {
                 todaysRegistorCase = await _dashBoardRepository.GetTodaysConsultedPatientList();
-                if (todaysRegistorCase != null)
-                {
-                    return Ok(todaysRegistorCase);
-                }
-                else
-                {
-                    ModelState.AddModelError("GetLoggedUserCount", $"Data not found!");
-                    return StatusCode(404, ModelState);
-                }
+                return Ok(todaysRegistorCase);
+                
             }
             catch (Exception ex)
             {
@@ -191,22 +154,15 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetDashboardConsultation(GetDashboardConsultationVM getDashboardConsultationVM)
         {
+            List<DashboardConsultationVM> todaysRegistorCase = new List<DashboardConsultationVM>();
             try
             {
                 if (getDashboardConsultationVM == null)
                 {
                     return BadRequest(ModelState);
                 }
-                var DTO = await _dashBoardRepository.GetDashboardConsultation(getDashboardConsultationVM);
-                if (DTO.Count > 0)
-                {
-                    return Ok(DTO);
-                }
-                else
-                {
-                    ModelState.AddModelError("", $"Data not found!");
-                    return StatusCode(404, ModelState);
-                }
+                todaysRegistorCase = await _dashBoardRepository.GetDashboardConsultation(getDashboardConsultationVM);
+                return Ok(todaysRegistorCase);                
             }
             catch (Exception ex)
             {
@@ -234,15 +190,7 @@ namespace TechMed.API.Controllers
             try
             {
                 loginHistoryPHC = _dashBoardRepository.GetPHCLoginHistoryReport(PHCId, fromDate, toDate);
-                if (loginHistoryPHC != null)
-                {
-                    return Ok(loginHistoryPHC);
-                }
-                else
-                {
-                    ModelState.AddModelError("GetPHCLoginHistoryReport", $"Data not found!");
-                    return StatusCode(404, ModelState);
-                }
+                return Ok(loginHistoryPHC);              
             }
             catch (Exception ex)
             {
@@ -260,25 +208,11 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult GetPHCConsultationReport(int PHCId, DateTime? fromDate =null, DateTime? toDate =null)
         {
-            List<PHCConsultationVM> phcConsultation = new List<PHCConsultationVM>();
-            //DateTime? fromDateUtc = null;
-            //if(fromDate != null)
-            //    fromDateUtc = fromDate.Value;
-            //DateTime? toDateUtc = null;
-            //if (toDateUtc != null)
-            //    toDateUtc = toDateUtc.Value;
+            List<PHCConsultationVM> phcConsultation = new List<PHCConsultationVM>();            
             try
             {
                 phcConsultation = _dashBoardRepository.GetPHCConsultationReport(PHCId, fromDate, toDate);
-                if (phcConsultation != null)
-                {
-                    return Ok(phcConsultation);
-                }
-                else
-                {
-                    ModelState.AddModelError("GetPHCConsultationReport", $"Data not found!");
-                    return StatusCode(404, ModelState);
-                }
+                return Ok(phcConsultation);                
             }
             catch (Exception ex)
             {
@@ -296,22 +230,16 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetDashboardReportSummary(GetDashboardReportSummaryVM getDashboardReportSummaryVM)
         {
+            List<DashboardReportSummaryVM> reportSummaryVMs = new List<DashboardReportSummaryVM>();
             try
             {
                 if (getDashboardReportSummaryVM == null)
                 {
                     return BadRequest(ModelState);
                 }
-                var DTO = await _dashBoardRepository.GetDashboardReportSummary(getDashboardReportSummaryVM);
-                if (DTO.Count > 0)
-                {
-                    return Ok(DTO);
-                }
-                else
-                {
-                    ModelState.AddModelError("", $"Data not found!");
-                    return StatusCode(404, ModelState);
-                }
+                reportSummaryVMs = await _dashBoardRepository.GetDashboardReportSummary(getDashboardReportSummaryVM);
+                return Ok(reportSummaryVMs);
+              
             }
             catch (Exception ex)
             {
@@ -330,22 +258,15 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetDashboardReportSummaryMonthly(GetDashboardReportSummaryMonthVM getDashboardReportSummaryVM)
         {
+            List<DashboardReportSummaryVM> reportSummaryVMs = new List<DashboardReportSummaryVM>();
             try
             {
                 if (getDashboardReportSummaryVM == null)
                 {
                     return BadRequest(ModelState);
                 }
-                var DTO = await _dashBoardRepository.GetDashboardReportSummaryMonthly(getDashboardReportSummaryVM);
-                if (DTO.Count > 0)
-                {
-                    return Ok(DTO);
-                }
-                else
-                {
-                    ModelState.AddModelError("", $"Data not found!");
-                    return StatusCode(404, ModelState);
-                }
+                reportSummaryVMs = await _dashBoardRepository.GetDashboardReportSummaryMonthly(getDashboardReportSummaryVM);
+                return Ok(reportSummaryVMs);               
             }
             catch (Exception ex)
             {
