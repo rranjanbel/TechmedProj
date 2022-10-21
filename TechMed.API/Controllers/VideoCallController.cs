@@ -135,7 +135,7 @@ namespace TechMed.API.Controllers
 
 
         [HttpGet("connecttomeetingroom")]
-        public async Task<IActionResult> ConnectToMeetingRoom([Required][FromQuery] int patientCaseId, [Required][FromQuery] string meetingInstance, [Required][FromQuery] bool isDoctor, [Required][FromQuery]  bool isInitiator, int doctorId)
+        public async Task<IActionResult> ConnectToMeetingRoom([Required][FromQuery] int patientCaseId, [Required][FromQuery] string meetingInstance, [Required][FromQuery] bool isDoctor, [Required][FromQuery]  bool isInitiator, int doctorId =0)
         {
             var user = User.Identity.Name;
             bool role = User.IsInRole("PHCUser");
