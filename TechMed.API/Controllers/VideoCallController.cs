@@ -135,7 +135,7 @@ namespace TechMed.API.Controllers
 
 
         [HttpGet("connecttomeetingroom")]
-        public async Task<IActionResult> ConnectToMeetingRoom([Required][FromQuery] int patientCaseId, [Required][FromQuery] string meetingInstance, [Required][FromQuery] bool isDoctor, [Required][FromQuery]  bool isInitiator)
+        public async Task<IActionResult> ConnectToMeetingRoom([Required][FromQuery] int patientCaseId, [Required][FromQuery] string meetingInstance, [Required][FromQuery] bool isDoctor, [Required][FromQuery]  bool isInitiator, int doctorId)
         {
             var user = User.Identity.Name;
             bool role = User.IsInRole("PHCUser");
@@ -159,66 +159,74 @@ namespace TechMed.API.Controllers
                 var patientInfo = await _twilioRoomDb.PatientQueueGet(patientCaseId);
                 // if ((patientCaseInfo == null && CanCallByPHC && isDoctor) || (patientCaseInfo == null && !CanCallByPHC && !isDoctor))
                 // if ((patientCaseInfo == null && CanCallByPHC && isAccepter) || (patientCaseInfo == null && !CanCallByPHC && !isAccepter))
-
-                if (patientCaseInfo == null && isInitiator) 
+                if (patientInfo.AssignedDoctorId == doctorId)
                 {
-                    var roomFromTwilio = await _twilioVideoSDK.CreateRoomsAsync(meetingInstance, callBackUrlForTwilio);
-                    var isSaved = await _twilioRoomDb.MeetingRoomInfoAdd(new TwilioMeetingRoomInfo()
+                    if (patientCaseInfo == null && isInitiator)
                     {
-                        MeetingSid = roomFromTwilio.Sid,
-                        RoomName = roomFromTwilio.UniqueName,
-                        PatientCaseId = patientCaseId,
-                        RoomStatusCallback = roomFromTwilio.StatusCallback.ToString(),
-                        TwilioRoomStatus = roomFromTwilio.Status.ToString(),
-                        AssignedBy = patientInfo.AssignedBy,
-                        AssignedDoctorId = patientInfo.AssignedDoctorId,
+                        var roomFromTwilio = await _twilioVideoSDK.CreateRoomsAsync(meetingInstance, callBackUrlForTwilio);
+                        var isSaved = await _twilioRoomDb.MeetingRoomInfoAdd(new TwilioMeetingRoomInfo()
+                        {
+                            MeetingSid = roomFromTwilio.Sid,
+                            RoomName = roomFromTwilio.UniqueName,
+                            PatientCaseId = patientCaseId,
+                            RoomStatusCallback = roomFromTwilio.StatusCallback.ToString(),
+                            TwilioRoomStatus = roomFromTwilio.Status.ToString(),
+                            AssignedBy = patientInfo.AssignedBy,
+                            AssignedDoctorId = patientInfo.AssignedDoctorId,
 
-                    });
-                    apiResponseModel.isSuccess = true;
-                    apiResponseModel.data = patientCase.PatientId;
+                        });
+                        apiResponseModel.isSuccess = true;
+                        apiResponseModel.data = patientCase.PatientId;
 
-                  
 
-                    await _hubContext.Clients.All.BroadcastMessage(new SignalRNotificationModel()
+
+                        await _hubContext.Clients.All.BroadcastMessage(new SignalRNotificationModel()
+                        {
+                            receiverEmail = !role ? patientInfo.AssignedByNavigation.User.Email : patientInfo.AssignedDoctor.User.Email,
+                            senderEmail = !role ? patientInfo.AssignedDoctor.User.Email : patientInfo.AssignedByNavigation.User.Email,
+                            message = "",
+                            messageType = enumSignRNotificationType.NotifyParticipientToJoin.ToString(),
+                            patientCaseId = patientCaseId,
+                            roomName = meetingInstance
+
+                        });
+
+
+                        return Ok(apiResponseModel);
+                    }
+                    else if (patientCaseInfo == null)
                     {
-                        receiverEmail = !role ? patientInfo.AssignedByNavigation.User.Email : patientInfo.AssignedDoctor.User.Email,
-                        senderEmail = !role ? patientInfo.AssignedDoctor.User.Email : patientInfo.AssignedByNavigation.User.Email,
-                        message = "",
-                        messageType = enumSignRNotificationType.NotifyParticipientToJoin.ToString(),
-                        patientCaseId = patientCaseId,
-                        roomName = meetingInstance
-
-                    });
-
-
-                    return Ok(apiResponseModel);
-                }
-                else if (patientCaseInfo == null)
-                {
-                    apiResponseModel.isSuccess = false;
-                    apiResponseModel.errorMessage = "Invalid Patient Or Call Info";
-                    return BadRequest(apiResponseModel);
+                        apiResponseModel.isSuccess = false;
+                        apiResponseModel.errorMessage = "Invalid Patient Or Call Info";
+                        return BadRequest(apiResponseModel);
+                    }
+                    else
+                    {
+                        var roomFromTwilio = await _twilioVideoSDK.GetRoomDetailFromTwilio(patientCaseInfo.MeetingSid);
+                        if (roomFromTwilio == null)
+                        {
+                            await _twilioRoomDb.MeetingRoomCloseFlagUpdate(patientCaseInfo.Id, true);
+                            apiResponseModel.isSuccess = false;
+                            apiResponseModel.errorMessage = "Room Closed";
+                            return BadRequest(apiResponseModel);
+                        }
+                        else if (roomFromTwilio.Status != RoomResource.RoomStatusEnum.InProgress)
+                        {
+                            await _twilioRoomDb.MeetingRoomCloseFlagUpdate(patientCaseInfo.Id, true);
+                            apiResponseModel.isSuccess = false;
+                            apiResponseModel.errorMessage = "Room Closed";
+                            return BadRequest(apiResponseModel);
+                        }
+                        apiResponseModel.isSuccess = true;
+                        apiResponseModel.data = patientCase.PatientId;
+                        return Ok(apiResponseModel);
+                    }
                 }
                 else
                 {
-                    var roomFromTwilio = await _twilioVideoSDK.GetRoomDetailFromTwilio(patientCaseInfo.MeetingSid);
-                    if (roomFromTwilio == null)
-                    {
-                        await _twilioRoomDb.MeetingRoomCloseFlagUpdate(patientCaseInfo.Id, true);
-                        apiResponseModel.isSuccess = false;
-                        apiResponseModel.errorMessage = "Room Closed";
-                        return BadRequest(apiResponseModel);
-                    }
-                    else if (roomFromTwilio.Status != RoomResource.RoomStatusEnum.InProgress)
-                    {
-                        await _twilioRoomDb.MeetingRoomCloseFlagUpdate(patientCaseInfo.Id, true);
-                        apiResponseModel.isSuccess = false;
-                        apiResponseModel.errorMessage = "Room Closed";
-                        return BadRequest(apiResponseModel);
-                    }
-                    apiResponseModel.isSuccess = true;
-                    apiResponseModel.data = patientCase.PatientId;
-                    return Ok(apiResponseModel);
+                    apiResponseModel.isSuccess = false;
+                    apiResponseModel.errorMessage = "Please check, Assigned doctor has been changed.";
+                    return BadRequest(apiResponseModel);
                 }
             }
             catch (Exception ex)
