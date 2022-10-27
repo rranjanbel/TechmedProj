@@ -9,6 +9,7 @@ using TechMed.BL.Repository.Interfaces;
 using TechMed.DL.ViewModel;
 using TechMed.BL.ViewModels;
 using Microsoft.Net.Http.Headers;
+using TechMed.BL.DTOMaster;
 
 namespace TechMed.API.Controllers
 {
@@ -16,12 +17,14 @@ namespace TechMed.API.Controllers
     {
         private readonly ILogger<AuthUserController> _logger;
         private readonly IUserService _userService;
+        private readonly IUserRepository _userRepository;
         //private readonly IJwtAuthManager _jwtAuthManager;
         //private readonly IDoctorRepository _doctorRepository;
-        public AuthUserController(ILogger<AuthUserController> logger, IDoctorRepository doctorRepository, IUserService userService, IJwtAuthManager jwtAuthManager)
+        public AuthUserController(ILogger<AuthUserController> logger, IDoctorRepository doctorRepository, IUserService userService, IJwtAuthManager jwtAuthManager, IUserRepository userRepository)
         {
             _logger = logger;
             _userService = userService;
+            _userRepository = userRepository;
             //_jwtAuthManager = jwtAuthManager;
             //_doctorRepository = doctorRepository;
         }
@@ -92,7 +95,7 @@ namespace TechMed.API.Controllers
 
 
         //}
-     
+
         //[HttpPost("api/refresh-token")]
         //[Authorize]
         //public async Task<ActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
@@ -220,6 +223,28 @@ namespace TechMed.API.Controllers
            
 
             
+        }
+
+        [HttpGet("api/GetUserDetails")]
+        [AllowAnonymous]        
+        [ProducesResponseType(200, Type = typeof(UserDetailsVM))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult> GetUserDetails(string email)
+        {
+            try
+            {
+                UserDetailsVM userDetails = new UserDetailsVM();              
+                userDetails = await _userRepository.GetUserDetails(email);
+                
+                return Ok(userDetails);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Exception in Logout module ");
+                return BadRequest(new { status = "Fail" });
+            }
+
         }
     }
 }

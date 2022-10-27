@@ -107,6 +107,32 @@ namespace TechMed.BL.Repository.BaseClasses
         //    return false;
         //}
 
+        public async Task<UserDetailsVM> GetUserDetails(string userEmail)
+        {
+            UserDetailsVM userDetail = new UserDetailsVM();
+            try
+            {
+
+                var user = await _teleMedecineContext.UserUsertypes.Include(a => a.User).Include(a => a.UserType).Where(x => x.User.Email == userEmail && x.User.IsActive == true).FirstOrDefaultAsync();
+                if (user != null)
+                {
+                    userDetail.Name = user.User.Name;
+                    userDetail.UserType = user.UserType.UserType;
+
+                    return userDetail;
+                }
+                else
+                {
+                    return userDetail;
+                }
+            }
+            catch (Exception ex)
+            {               
+                return userDetail;
+            }
+
+        }
+
         public bool ResetUserPassword(int UserID)
         {
             var existingUser = _teleMedecineContext.UserMasters.Where(x => x.Id == UserID).FirstOrDefault();

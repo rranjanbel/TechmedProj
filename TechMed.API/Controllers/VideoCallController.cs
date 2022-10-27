@@ -135,7 +135,7 @@ namespace TechMed.API.Controllers
 
 
         [HttpGet("connecttomeetingroom")]
-        public async Task<IActionResult> ConnectToMeetingRoom([Required][FromQuery] int patientCaseId, [Required][FromQuery] string meetingInstance, [Required][FromQuery] bool isDoctor, [Required][FromQuery]  bool isInitiator, int doctorId =0)
+        public async Task<IActionResult> ConnectToMeetingRoom([Required][FromQuery] int patientCaseId, [Required][FromQuery] string meetingInstance, [Required][FromQuery] bool isDoctor, [Required][FromQuery]  bool isInitiator)
         {
             var user = User.Identity.Name;
             bool role = User.IsInRole("PHCUser");
@@ -159,8 +159,8 @@ namespace TechMed.API.Controllers
                 var patientInfo = await _twilioRoomDb.PatientQueueGet(patientCaseId);
                 // if ((patientCaseInfo == null && CanCallByPHC && isDoctor) || (patientCaseInfo == null && !CanCallByPHC && !isDoctor))
                 // if ((patientCaseInfo == null && CanCallByPHC && isAccepter) || (patientCaseInfo == null && !CanCallByPHC && !isAccepter))
-                if (patientInfo.AssignedDoctorId == doctorId)
-                {
+                //if (patientInfo.AssignedDoctorId == doctorId)
+                //{
                     if (patientCaseInfo == null && isInitiator)
                     {
                         var roomFromTwilio = await _twilioVideoSDK.CreateRoomsAsync(meetingInstance, callBackUrlForTwilio);
@@ -221,13 +221,13 @@ namespace TechMed.API.Controllers
                         apiResponseModel.data = patientCase.PatientId;
                         return Ok(apiResponseModel);
                     }
-                }
-                else
-                {
-                    apiResponseModel.isSuccess = false;
-                    apiResponseModel.errorMessage = "Please check, Assigned doctor has been changed.";
-                    return BadRequest(apiResponseModel);
-                }
+                //}
+                //else
+                //{
+                //    apiResponseModel.isSuccess = false;
+                //    apiResponseModel.errorMessage = "Please check, Assigned doctor has been changed.";
+                //    return BadRequest(apiResponseModel);
+                //}
             }
             catch (Exception ex)
             {
