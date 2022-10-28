@@ -23,13 +23,15 @@ namespace TechMed.BL.Repository.BaseClasses
         private readonly IMapper _mapper;
         private readonly ILogger<UserRepository> _logger;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IMailService _mailService;
 
-        public UserRepository(IHttpContextAccessor httpContextAccessor, ILogger<UserRepository> logger, TeleMedecineContext teleMedecineContext, IMapper mapper) : base(teleMedecineContext)
+        public UserRepository(IHttpContextAccessor httpContextAccessor, ILogger<UserRepository> logger, TeleMedecineContext teleMedecineContext, IMapper mapper, IMailService mailService) : base(teleMedecineContext)
         {
             this._teleMedecineContext = teleMedecineContext;
             this._mapper = mapper;
             this._logger = logger;
             _httpContextAccessor = httpContextAccessor;
+            _mailService = mailService;
 
         }
         public async Task<UserLoginDTO> LogedUserDetails(string userEmail)
@@ -127,7 +129,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 }
             }
             catch (Exception ex)
-            {               
+            {
                 return userDetail;
             }
 
@@ -577,7 +579,7 @@ namespace TechMed.BL.Repository.BaseClasses
                 if (user != null)
                 {
                     var usertype = await _teleMedecineContext.UserUsertypes.AsNoTracking().FirstOrDefaultAsync(a => a.UserId == user.Id);
-                    if (usertype!=null)
+                    if (usertype != null)
                     {
                         LoginHistory loginHistorie = await _teleMedecineContext.LoginHistories.FirstOrDefaultAsync(a => a.UserToken == _bearer_token && a.UserId == user.Id);
                         if (loginHistorie != null)
@@ -603,6 +605,64 @@ namespace TechMed.BL.Repository.BaseClasses
             }
 
             return true;
+        }
+
+        public async Task<bool> UpdateUserPassword(UpdateUserPasswordVM updateUserPasswordVM)
+        {
+            try
+            {
+
+                var user = await _teleMedecineContext.UserMasters.AsNoTracking().FirstOrDefaultAsync(a => a.Id == updateUserPasswordVM.UserID);
+                if (user != null)
+                {
+                    //string OldPassword = EncodeAndDecordPassword.EncodePassword(updateUserPasswordVM.OldPassword);
+                    string Password = UtilityMaster.CreateRandomPassword(12);
+                    string NewPassword = EncodeAndDecordPassword.EncodePassword(Password);
+                    //if (OldPassword== user.HashPassword)
+                    //{
+                    //    //update user password
+                    //}
+                    user.HashPassword = NewPassword;
+                    _teleMedecineContext.UserMasters.Attach(user);
+                    _teleMedecineContext.Entry(user).State = EntityState.Modified;
+                    int i = _teleMedecineContext.SaveChanges();
+                    if (i > 0)
+                    {
+                        bool response = await SendMail(user.Email, Password);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            return true;
+        }
+        public async Task<bool> SendMail(string userID, string Password)
+        {
+            try
+            {
+                // EmailTemplate emailTemplate = _teleMedecineContext.EmailTemplates.FirstOrDefault(a => a.UsertTypeID == userTypeID);
+                //if (emailTemplate != null)
+                //{
+                //List<IFormFile> formFiles;
+                MailRequest mailrequest = new MailRequest();
+                mailrequest.Subject = "Password updated";
+                mailrequest.Body = "Welcome!" + Environment.NewLine + "Your account password has been updated, refer below for details:  " + Environment.NewLine + "User ID: " + userID + "," + Environment.NewLine + "Password: " + Password
+                    + Environment.NewLine
+                    + Environment.NewLine
+                    + "Warm Regards.";
+                mailrequest.ToEmail = userID;
+                mailrequest.Attachments = null;
+                await _mailService.SendEmailAsync(mailrequest);
+                //}
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
         }
     }
 }
