@@ -10,7 +10,7 @@ namespace TechMed.BL.ViewModels
     {
         //public string OldPassword { get; set; }
         //public string NewPassword { get; set; }
-        public int UserID { get; set; }
+        public string UserMailID { get; set; }
 
     }
 }

@@ -612,7 +612,7 @@ namespace TechMed.BL.Repository.BaseClasses
             try
             {
 
-                var user = await _teleMedecineContext.UserMasters.AsNoTracking().FirstOrDefaultAsync(a => a.Id == updateUserPasswordVM.UserID);
+                var user = await _teleMedecineContext.UserMasters.AsNoTracking().FirstOrDefaultAsync(a => a.Email.ToLower() == updateUserPasswordVM.UserMailID.ToLower());
                 if (user != null)
                 {
                     //string OldPassword = EncodeAndDecordPassword.EncodePassword(updateUserPasswordVM.OldPassword);
