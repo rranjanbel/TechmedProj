@@ -700,13 +700,13 @@ namespace TechMed.BL.Repository.BaseClasses
             return registerPatientReports;
         }
 
-        public List<GetDashboardDoctorAvgTimeVM> GetDashboardDoctorAvgTime(DateTime? fromDate, DateTime? toDate)
+        public List<GetDashboardDoctorAvgTimeVM> GetDashboardDoctorAvgTime(DateTime? fromDate)
         {
             List<GetDashboardDoctorAvgTimeVM> registerPatientReports = new List<GetDashboardDoctorAvgTimeVM>();
             GetDashboardDoctorAvgTimeVM registerPatientReport;
             try
             {
-                var Results = _teleMedecineContext.GetDashboardDoctorAvgTime.FromSqlInterpolated($"EXEC [dbo].[GetDashboardDoctorAvgTime] @FromDate ={fromDate}, @ToDate ={toDate}");
+                var Results = _teleMedecineContext.GetDashboardDoctorAvgTime.FromSqlInterpolated($"EXEC [dbo].[GetDashboardDoctorAvgTime] @FromDate ={fromDate}");
                 foreach (var item in Results)
                 {
                     registerPatientReport = new GetDashboardDoctorAvgTimeVM();

@@ -597,7 +597,7 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<GetDashboardDoctorAvgTimeVM>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult GetDashboardDoctorAvgTime(DateTime? fromDate = null, DateTime? toDate = null)
+        public IActionResult GetDashboardDoctorAvgTime(DateTime? fromDate = null)
         {
             List<GetDashboardDoctorAvgTimeVM> patientResiter = new List<GetDashboardDoctorAvgTimeVM>();
             //DateTime? fromDateUtc = null;
@@ -608,7 +608,7 @@ namespace TechMed.API.Controllers
             //    toDateUtc = toDate.Value;
             try
             {
-                patientResiter = _dashBoardRepository.GetDashboardDoctorAvgTime(fromDate, toDate);
+                patientResiter = _dashBoardRepository.GetDashboardDoctorAvgTime(fromDate);
                 if (patientResiter != null)
                 {
                     return Ok(patientResiter);
