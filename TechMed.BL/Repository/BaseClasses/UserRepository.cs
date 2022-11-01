@@ -623,6 +623,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     //    //update user password
                     //}
                     user.HashPassword = NewPassword;
+                    user.IsPasswordChanged = false;
                     _teleMedecineContext.UserMasters.Attach(user);
                     _teleMedecineContext.Entry(user).State = EntityState.Modified;
                     int i = _teleMedecineContext.SaveChanges();
