@@ -181,6 +181,8 @@ namespace TechMed.BL.Repository.BaseClasses
         public async Task<bool> UpdateDoctorDetails(DoctorDTO doctorDTO,string user, string rootPath, string webRootPath)
         {
             UserMaster Usermasters = await _teleMedecineContext.UserMasters.AsNoTracking().FirstOrDefaultAsync(a => a.Email.ToLower() == user.ToLower());
+            SubSpecializationMaster subSpecializationMaster = await _teleMedecineContext.SubSpecializationMasters.AsNoTracking().FirstOrDefaultAsync(a => a.Id == doctorDTO.SubSpecializationId);
+
 
             if (doctorDTO != null)
             {
@@ -189,6 +191,10 @@ namespace TechMed.BL.Repository.BaseClasses
                 //public int ZoneId { get; set; }
                 //public int ClusterId { get; set; }
                 //masters.UserId { get; set; }
+                if (subSpecializationMaster != null)
+                {
+                    masters.Qualification = subSpecializationMaster.SubSpecialization;
+                }
                 masters.SpecializationId = doctorDTO.SpecializationId;
                 masters.SubSpecializationId = doctorDTO.SpecializationId;
                 masters.Mciid = doctorDTO.Mciid;
@@ -1022,6 +1028,12 @@ namespace TechMed.BL.Repository.BaseClasses
                 try
                 {
                     UserMaster user=await _teleMedecineContext.UserMasters.AsNoTracking().FirstOrDefaultAsync(a=>a.Email.ToLower().Trim()== userEmail.ToLower().Trim());
+                    SubSpecializationMaster subSpecializationMaster =await _teleMedecineContext.SubSpecializationMasters.AsNoTracking().FirstOrDefaultAsync(a=>a.Id== doctorMaster.SubSpecializationId);
+                    if (subSpecializationMaster!=null)
+                    {
+                        doctorMaster.Qualification = subSpecializationMaster.SubSpecialization;
+                    }
+                    
                     userMaster.CreatedBy = user.Id;
                     await _teleMedecineContext.UserMasters.AddAsync(userMaster);
                     i = await _teleMedecineContext.SaveChangesAsync();
