@@ -246,5 +246,26 @@ namespace TechMed.API.Controllers
             }
 
         }
+
+        [HttpPost("api/UpdateUserPassword")]
+        [AllowAnonymous]
+        [ProducesResponseType(200, Type = typeof(bool))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult> UpdateUserPassword(UpdateUserPasswordVM updateUserPasswordVM)
+        {
+            try
+            {
+              bool UpdateUserPasswordResult = await _userRepository.UpdateUserPassword(updateUserPasswordVM);
+
+                return Ok(UpdateUserPasswordResult);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Exception in UpdateUserPassword module ");
+                return BadRequest(new { status = "Fail" });
+            }
+
+        }
     }
 }

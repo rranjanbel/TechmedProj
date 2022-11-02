@@ -256,9 +256,30 @@ namespace TechMed.API.Controllers
             try
             {
                 var phcMaster = _mapper.Map<Phcmaster>(phcdto);
-
-                if (!ModelState.IsValid)
+                string userEmail = User.Identity.Name;
+                if (!ModelState.IsValid
+                    ||string.IsNullOrEmpty(phcdto.Phcname) 
+                    || string.IsNullOrEmpty(phcdto.MailId)
+                    || string.IsNullOrEmpty(phcdto.Moname)
+                    || string.IsNullOrEmpty(phcdto.PhoneNo)
+                    )
                 {
+                    if (string.IsNullOrEmpty(phcdto.Phcname))
+                    {
+                        ModelState.AddModelError("AddPHC", "PHCName required!");
+                    }
+                    if (string.IsNullOrEmpty(phcdto.MailId))
+                    {
+                        ModelState.AddModelError("AddPHC", "MailId required!");
+                    }
+                    if (string.IsNullOrEmpty(phcdto.Moname))
+                    {
+                        ModelState.AddModelError("AddPHC", "Moname required!");
+                    }
+                    if (string.IsNullOrEmpty(phcdto.PhoneNo))
+                    {
+                        ModelState.AddModelError("AddPHC", "PhoneNo required!");
+                    }
                     return BadRequest(ModelState);
                 }
                 if (await _phcRepository.IsPHCExit(phcdto.Phcname))
@@ -304,7 +325,7 @@ namespace TechMed.API.Controllers
                     userMaster.CreatedOn = UtilityMaster.GetLocalDateTime();
                     userMaster.UpdatedOn = UtilityMaster.GetLocalDateTime();
 
-                    newCreatedPHC = await this._phcRepository.AddPHCUser(phcMaster, userMaster, password);
+                    newCreatedPHC = await this._phcRepository.AddPHCUser(phcMaster, userMaster, password, userEmail);
 
                    // newCreatedPHC = await this._phcRepository.Create(phcMaster);
                 }

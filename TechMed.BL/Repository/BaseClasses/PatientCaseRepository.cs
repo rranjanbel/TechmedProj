@@ -873,7 +873,22 @@ namespace TechMed.BL.Repository.BaseClasses
                     }
                     if (patientQuue != null)
                     {
-                        patientCase.DoctorName = patientQuue.AssignedDoctor.User.Name;
+                        var doctorUserDetails = _teleMedecineContext.UserDetails.AsNoTracking().FirstOrDefault(a => a.UserId == patientQuue.AssignedDoctor.UserId);
+
+                        //patientCase.DoctorName = patientQuue.AssignedDoctor.User.Name;
+                        if (doctorUserDetails!=null)
+                        {
+                            string middleName = "";
+                            if (!string.IsNullOrEmpty(doctorUserDetails.MiddleName))
+                            {
+                                if (!string.IsNullOrEmpty(doctorUserDetails.MiddleName.Trim()))
+                                {
+                                    middleName = doctorUserDetails.MiddleName.Trim() + ' ';
+                                }
+                               
+                            }
+                            patientCase.DoctorName = doctorUserDetails.FirstName + ' ' + middleName +  doctorUserDetails.LastName;
+                        }
                         patientCase.DoctorMobileNo = patientQuue.AssignedDoctor.PhoneNumber;
                         patientCase.CaseFileStatusID = patientQuue.CaseFileStatusId;
                         patientCase.DoctorSpecialization = patientQuue.AssignedDoctor.Specialization.Specialization;

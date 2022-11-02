@@ -28,5 +28,6 @@ namespace TechMed.BL.Repository.Interfaces
         Task<bool> InsertLoginHistory(string userEmail, LoginHistory loginHistory);
         Task<bool> UpdateUserLastAliveUpdate();
         Task<UserDetailsVM> GetUserDetails(string userEmail);
+        Task<bool> UpdateUserPassword(UpdateUserPasswordVM updateUserPasswordVM);
     }
 }

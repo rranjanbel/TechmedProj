@@ -32,7 +32,7 @@ namespace TechMed.BL.Repository.BaseClasses
             _mailService = mailService;
         }
 
-        public async Task<Phcmaster> AddPHCUser(Phcmaster phcmaster, UserMaster userMaster, string password)
+        public async Task<Phcmaster> AddPHCUser(Phcmaster phcmaster, UserMaster userMaster, string password, string userEmail)
         {
             int i = 0;
             int j = 0;
@@ -40,15 +40,19 @@ namespace TechMed.BL.Repository.BaseClasses
 
             using (TeleMedecineContext context = new TeleMedecineContext())
             {
+                UserMaster user = await context.UserMasters.AsNoTracking().FirstOrDefaultAsync(a => a.Email.ToLower().Trim() == userEmail.ToLower().Trim());
                 using (var transaction = context.Database.BeginTransaction())
                 {
                     try
                     {
+
+                        userMaster.CreatedBy = user.Id;
                         context.UserMasters.AddAsync(userMaster);
                         i = await context.SaveChangesAsync();
                         if (i > 0 && userMaster.Id > 0)
                         {
                             phcmaster.UserId = userMaster.Id;
+                            phcmaster.CreatedBy = user.Id;
                             context.Phcmasters.AddAsync(phcmaster);
                             j = await context.SaveChangesAsync(); ;
                         }
@@ -197,7 +201,7 @@ namespace TechMed.BL.Repository.BaseClasses
                                 join cm in _teleMedecineContext.ClusterMasters on pm.ClusterId equals cm.Id
                                 join zo in _teleMedecineContext.BlockMasters on pm.BlockId equals zo.Id
                                 join ur in _teleMedecineContext.UserMasters on pm.UserId equals ur.Id
-                                
+
                                 join ds in _teleMedecineContext.DistrictMasters on pm.DistrictId equals ds.Id
                                 join div in _teleMedecineContext.DivisionMasters on pm.DivisionId equals div.Id
                                 join stm in _teleMedecineContext.StateMasters on ds.StateId equals stm.Id
@@ -439,7 +443,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     //List<IFormFile> formFiles;
                     MailRequest mailrequest = new MailRequest();
                     mailrequest.Subject = emailTemplate.Subject;
-                    mailrequest.Body = emailTemplate.Body + Environment.NewLine + "User ID: " + userID +","+ Environment.NewLine + "Password: " + password
+                    mailrequest.Body = emailTemplate.Body + Environment.NewLine + "User ID: " + userID + "," + Environment.NewLine + "Password: " + password
                         + Environment.NewLine
                         + Environment.NewLine
                         + "Warm Regards.";
@@ -457,7 +461,7 @@ namespace TechMed.BL.Repository.BaseClasses
 
         }
 
-        public async Task<bool> UpdatePHCDetails(UpdatePHCDTO updatePHCDTO,string userEmail)
+        public async Task<bool> UpdatePHCDetails(UpdatePHCDTO updatePHCDTO, string userEmail)
         {
             if (updatePHCDTO != null)
             {
