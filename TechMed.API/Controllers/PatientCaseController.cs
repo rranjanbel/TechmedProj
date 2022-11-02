@@ -833,12 +833,12 @@ namespace TechMed.API.Controllers
         [ProducesResponseType(200, Type = typeof(List<AllPendingPatient>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAllPandingPatientQueue()
+        public async Task<IActionResult> GetAllPandingPatientQueue(DateTime? fromDate = null, DateTime? toDate = null)
         {
             List<AllPendingPatient> patientQueues = new List<AllPendingPatient>();
             try
             {
-                patientQueues = await _patientCaeRepository.GetAllPendingPatient();
+                patientQueues = await _patientCaeRepository.GetAllPendingPatient(fromDate, toDate);
                 if (patientQueues != null && patientQueues.Count > 0)
                 {
                     _logger.LogInformation($"GetAllPandingPatientQueue : Sucess response returned ");

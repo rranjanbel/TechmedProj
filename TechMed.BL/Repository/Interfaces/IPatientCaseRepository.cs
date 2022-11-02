@@ -36,7 +36,7 @@ namespace TechMed.BL.Repository.Interfaces
         Task<PatientReferToDoctorVM> AddPatientInDoctorsQueue(PatientReferToDoctorVM patientReferToDoctorVM);
         Task<RemovePatientFromQueueVM> RemovePatientFromDoctorsQueue(long patientCaseID);
         Task<List<ALLPatientsQueueVM>> GetAllPatientQueue();
-        Task<List<AllPendingPatient>> GetAllPendingPatient();
+        Task<List<AllPendingPatient>> GetAllPendingPatient(DateTime? fromDate = null, DateTime? toDate = null);
         Task<PatientReferToDoctorVM> PatientReferToDoctorByAdmin(PatientReferToDoctorVM patientReferToDoctorVM);
         Task<List<PatientQueueVM>> GetPatientQueueByDocotorID(int doctorID = 0);
         Task<bool> IsDoctorFreeToReceiveCall(long patientCaseID);

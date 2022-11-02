@@ -1827,11 +1827,11 @@ namespace TechMed.BL.Repository.BaseClasses
             return queueByDoctors;
         }
 
-        public async Task<List<AllPendingPatient>> GetAllPendingPatient()
+        public async Task<List<AllPendingPatient>> GetAllPendingPatient(DateTime? fromDate =null , DateTime? toDate = null)
         {
             List<AllPendingPatient> queueByDoctors = new List<AllPendingPatient>();
             AllPendingPatient patientQueue;
-            var Results = await _teleMedecineContext.AllPendingPatientList.FromSqlInterpolated($"EXEC [dbo].[GetAllPandingPatientList]").ToListAsync();
+            var Results = await _teleMedecineContext.AllPendingPatientList.FromSqlInterpolated($"EXEC [dbo].[GetAllPandingPatientList] @FromDate ={fromDate}, @ToDate ={toDate}").ToListAsync();
             foreach (var item in Results)
             {
                 patientQueue = new AllPendingPatient();
