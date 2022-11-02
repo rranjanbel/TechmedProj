@@ -103,7 +103,7 @@ namespace TechMed.API.Controllers
             else
             {
                 // Check Doctor room is free to receive the call
-                isDoctorFree = await _patientCaseRepository.IsDoctorRoomBusy(patientCaseId); 
+                isDoctorFree = await _patientCaseRepository.IsDoctorRoomBusy(patientCaseId, user.ToLower()); 
 
                 // Check PHC is free to receive the call
                 isPhcFree = await _patientCaseRepository.IsPHCFreeToReceiveCall(patientCaseId);

@@ -2044,12 +2044,14 @@ namespace TechMed.BL.Repository.BaseClasses
             DateTime localDate = UtilityMaster.GetLocalDateTime();
             var patientCase = await _teleMedecineContext.PatientCases.FirstOrDefaultAsync(a => a.Id == patientCaseID);
             var patientQueue = await _teleMedecineContext.PatientQueues.FirstOrDefaultAsync(a => a.PatientCaseId == patientCaseID && a.CaseFileStatusId == 4 && a.AssignedOn.Day == localDate.Day && a.AssignedOn.Month == localDate.Month && a.AssignedOn.Year == localDate.Year);
-
-            TwilioMeetingRoomInfo meetingRoomInfo = await _teleMedecineContext.TwilioMeetingRoomInfos.FirstOrDefaultAsync(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" && a.AssignedDoctorId == patientQueue.AssignedDoctorId);
+            //&& a.AssignedDoctorId == patientQueue.AssignedDoctorId
+            List<TwilioMeetingRoomInfo> meetingRoomInfos = await _teleMedecineContext.TwilioMeetingRoomInfos.Where(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" ).ToListAsync();
 
             if (patientQueue != null && patientCase != null)
             {
                 //IsDoctorFree = _teleMedecineContext.TwilioMeetingRoomInfos.Any(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" && a.AssignedDoctorId == patientQueue.AssignedDoctorId);
+                TwilioMeetingRoomInfo meetingRoomInfo = meetingRoomInfos.FirstOrDefault(a => a.AssignedDoctorId == patientQueue.AssignedDoctorId);
+                TwilioMeetingRoomInfo meetingRoomPHCInfo = meetingRoomInfos.FirstOrDefault(a => a.AssignedBy == patientQueue.AssignedBy);
                 if (meetingRoomInfo != null)
                 {
                     if (meetingRoomInfo.AssignedBy == patientCase.CreatedBy)
@@ -2067,7 +2069,24 @@ namespace TechMed.BL.Repository.BaseClasses
                     else
                         IsDoctorFree = false;
                 }
-                else
+                if (meetingRoomPHCInfo != null)
+                {
+                    if (meetingRoomPHCInfo.AssignedBy == patientCase.CreatedBy)
+                    {
+                        meetingRoomPHCInfo.IsClosed = true;
+                        meetingRoomPHCInfo.CloseDate = localDate;
+                        meetingRoomPHCInfo.TwilioRoomStatus = "Disconnected";
+                        _teleMedecineContext.Entry(meetingRoomPHCInfo).State = EntityState.Modified;
+                        int i = _teleMedecineContext.SaveChanges();
+                        if (i > 0)
+                            IsDoctorFree = true;
+                        else
+                            IsDoctorFree = false;
+                    }
+                    else
+                        IsDoctorFree = false;
+                }
+                if (meetingRoomPHCInfo != null && meetingRoomInfo != null)
                 {
                     IsDoctorFree = true;
                 }
@@ -2075,17 +2094,21 @@ namespace TechMed.BL.Repository.BaseClasses
             return IsDoctorFree;
         }
 
-        public async Task<bool> IsDoctorRoomBusy(long patientCaseID)
+        public async Task<bool> IsDoctorRoomBusy(long patientCaseID, string drEmail)
         {
             //TwilioMeetingRoomInfo meetingRoomInfo = new TwilioMeetingRoomInfo();
             DateTime localDate = UtilityMaster.GetLocalDateTime();
             bool IsDoctorroomFree = true;
+
+            int doctorId = 0;
+            doctorId = _teleMedecineContext.DoctorMasters.Include(a => a.User).FirstOrDefault(a => a.User.Email.ToLower() == drEmail.ToLower()).Id;
             var patientQueue = await _teleMedecineContext.PatientQueues.FirstOrDefaultAsync(a => a.PatientCaseId == patientCaseID && a.CaseFileStatusId == 4 && a.AssignedOn.Day == localDate.Day && a.AssignedOn.Month == localDate.Month && a.AssignedOn.Year == localDate.Year);
-
-            TwilioMeetingRoomInfo meetingRoomInfo = await _teleMedecineContext.TwilioMeetingRoomInfos.FirstOrDefaultAsync(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" && a.AssignedDoctorId == patientQueue.AssignedDoctorId);
-            if (patientQueue != null)
+          
+            List<TwilioMeetingRoomInfo> meetingRoomInfos = await _teleMedecineContext.TwilioMeetingRoomInfos.Where(a => a.IsClosed == false && a.TwilioRoomStatus == "in-progress" ).ToListAsync();
+            if (patientQueue != null && meetingRoomInfos != null)
             {
-
+                TwilioMeetingRoomInfo meetingRoomInfo = meetingRoomInfos.FirstOrDefault(a => a.AssignedDoctorId == patientQueue.AssignedDoctorId);
+                TwilioMeetingRoomInfo meetingRoomDoctorInfo = meetingRoomInfos.FirstOrDefault(a => a.AssignedDoctorId == doctorId);
                 if (meetingRoomInfo != null)
                 {
                     if (meetingRoomInfo.PatientCaseId == patientCaseID)
@@ -2099,11 +2122,28 @@ namespace TechMed.BL.Repository.BaseClasses
                             IsDoctorroomFree = true;
                         else
                             IsDoctorroomFree = false;
+                    }                  
+                   
+                }
+                if (meetingRoomDoctorInfo != null)
+                {
+                    if (meetingRoomDoctorInfo.AssignedDoctorId == doctorId)
+                    {
+                        meetingRoomDoctorInfo.IsClosed = true;
+                        meetingRoomDoctorInfo.CloseDate = localDate;
+                        meetingRoomDoctorInfo.TwilioRoomStatus = "Disconnected";
+                        _teleMedecineContext.Entry(meetingRoomDoctorInfo).State = EntityState.Modified;
+                        int i = _teleMedecineContext.SaveChanges();
+                        if (i > 0)
+                            IsDoctorroomFree = true;
+                        else
+                            IsDoctorroomFree = false;
                     }
                     else
                         IsDoctorroomFree = false;
+
                 }
-                else
+                if (meetingRoomDoctorInfo != null && meetingRoomInfo != null)
                 {
                     IsDoctorroomFree = true;
                 }
