@@ -41,16 +41,16 @@ namespace TechMed.BL.DTOMaster
         //[Required]
         public string DigitalSignatureNewUpdate { get; set; } = null!;
         //[Required]
-        public string PanNo { get; set; } = null!;
+        public string? PanNo { get; set; } = null!;
         //[Required]
-        public string BankName { get; set; } = null!;
+        public string? BankName { get; set; } = null!;
         //[Required]
-        public string BranchName { get; set; } = null!;
+        public string? BranchName { get; set; } = null!;
         //[Required]
-        public string AccountNumber { get; set; } = null!;
+        public string? AccountNumber { get; set; } = null!;
         //[Required]
-        public string Ifsccode { get; set; } = null!;
-        [Required]
+        public string? Ifsccode { get; set; } = null!;
+        //[Required]
         public int? UpdatedBy { get; set; }
         public DetailsDTO detailsDTO { get; set; } = null!;
     }
