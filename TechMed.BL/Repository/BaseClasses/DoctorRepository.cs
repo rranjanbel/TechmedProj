@@ -196,7 +196,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     masters.Qualification = subSpecializationMaster.SubSpecialization;
                 }
                 masters.SpecializationId = doctorDTO.SpecializationId;
-                masters.SubSpecializationId = doctorDTO.SpecializationId;
+                masters.SubSpecializationId = doctorDTO.SubSpecializationId;
                 masters.Mciid = doctorDTO.Mciid;
                 masters.RegistrationNumber = doctorDTO.RegistrationNumber;
                 masters.Qualification = doctorDTO.Qualification;
