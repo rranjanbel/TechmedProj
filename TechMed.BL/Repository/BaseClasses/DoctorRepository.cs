@@ -1004,7 +1004,7 @@ namespace TechMed.BL.Repository.BaseClasses
             bool isExist = await _teleMedecineContext.UserMasters.AnyAsync(a => a.Email.Trim().ToLower() == Email.Trim().ToLower());
             return isExist;
         }
-        public async Task<DoctorMaster> AddDoctor(DoctorMaster doctorMaster, UserMaster userMaster, UserDetail userDetail, AddDoctorDTO doctorDTO, string RootPath, string webRootPath, string Password)
+        public async Task<DoctorMaster> AddDoctor(DoctorMaster doctorMaster, UserMaster userMaster, UserDetail userDetail, AddDoctorDTO doctorDTO, string RootPath, string webRootPath, string Password,string userEmail)
         {
             int i = 0;
             int j = 0;
@@ -1021,11 +1021,14 @@ namespace TechMed.BL.Repository.BaseClasses
             {
                 try
                 {
+                    UserMaster user=await _teleMedecineContext.UserMasters.AsNoTracking().FirstOrDefaultAsync(a=>a.Email.ToLower().Trim()== userEmail.ToLower().Trim());
+                    userMaster.CreatedBy = user.Id;
                     await _teleMedecineContext.UserMasters.AddAsync(userMaster);
                     i = await _teleMedecineContext.SaveChangesAsync();
                     if (i > 0 && userMaster.Id > 0)
                     {
                         doctorMaster.UserId = userMaster.Id;
+                        doctorMaster.CreatedBy = user.Id;
                         if (!string.IsNullOrEmpty(doctorDTO.DigitalSignature))
                         {
                             doctorMaster.DigitalSignature = webRootPath + SaveImage(doctorDTO.DigitalSignature, RootPath);
@@ -1034,6 +1037,7 @@ namespace TechMed.BL.Repository.BaseClasses
                         j = await _teleMedecineContext.SaveChangesAsync();
 
                         userDetail.UserId = userMaster.Id;
+                        userDetail.CreatedBy=user.Id;
                         if (!string.IsNullOrEmpty(doctorDTO.detailsDTO.Photo))
                         {
                             userDetail.Photo = webRootPath + SaveImage(doctorDTO.detailsDTO.Photo, RootPath);
