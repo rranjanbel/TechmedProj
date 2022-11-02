@@ -75,7 +75,7 @@ namespace TechMed.BL.DTOMaster
         //[Required]
         public int? StateId { get; set; }
         //[Required]
-        public string City { get; set; } = null!;
+        public string? City { get; set; } = null!;
         //[Required]
         public string? PinCode { get; set; }
         public string Photo { get; set; } = null!;

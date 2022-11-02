@@ -1314,7 +1314,8 @@ namespace TechMed.API.Controllers
                     userDetail.UpdatedBy = doctorDTO.CreatedBy;
                     userDetail.UpdatedOn = UtilityMaster.GetLocalDateTime();
 
-                    doctorCreated = await this._doctorRepository.AddDoctor(doctor, userMaster, userDetail, doctorDTO, contentRootPath,webRootPath, Password);
+                    string userEmail = User.Identity.Name;
+                    doctorCreated = await this._doctorRepository.AddDoctor(doctor, userMaster, userDetail, doctorDTO, contentRootPath,webRootPath, Password, userEmail);
                 }
 
                 if (doctorCreated == null)
