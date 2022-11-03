@@ -1480,7 +1480,7 @@ namespace TechMed.API.Controllers
             try
             {
                 var pdfFile = await _reportService.GeneratePdfReport(caseid, _webHostEnvironment.ContentRootPath);
-                return File(pdfFile,
+                return File(pdfFile.PrescriptionFile,
                 "application/octet-stream", "SimplePdf.pdf");
             }
             catch (Exception ex)
@@ -1493,6 +1493,9 @@ namespace TechMed.API.Controllers
         
         [HttpGet]
         [Route("CreatePrescription")]
+        [ProducesResponseType(200, Type = typeof(ReportResponseDTO))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreatePrescription(long caseid)
         {
             
@@ -1501,7 +1504,9 @@ namespace TechMed.API.Controllers
                 var pdfFile = await _reportService.GeneratePdfReport(caseid, _webHostEnvironment.ContentRootPath);
                 //return File(pdfFile,
                 //"application/octet-stream", "SimplePdf.pdf");
-                return Ok();
+                ReportResponseDTO reportResponseDTO = new ReportResponseDTO();
+                reportResponseDTO.PrescriptionFilePath = pdfFile.PrescriptionFilePath;
+                return Ok(reportResponseDTO);
             }
             catch (Exception ex)
             {

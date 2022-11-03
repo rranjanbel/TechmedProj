@@ -863,6 +863,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     patientCase.PHCUserId = patientCaseDetails.Patient.CreatedBy;
                     patientCase.PHCName = patientCaseDetails.Patient.Phc.Phcname;
                     patientCase.PHCMoname = patientCaseDetails.Patient.Phc.Moname;
+                    patientCase.Prescription = patientCaseDetails.Prescription;
                     patientCase.patientMaster = _mapper.Map<PatientMasterDTO>(patientCaseDetails.Patient);
                     patientCase.patientCase = _mapper.Map<PatientCaseDTO>(patientCaseDetails);
                     if (patientDetails != null)
@@ -1069,12 +1070,12 @@ namespace TechMed.BL.Repository.BaseClasses
                 return false;
             }
         }
-        public bool UploadCaseDocFromByte(List<CaseDocumentBase64VM> caseDocuments, string contentRootPath)
+        public bool UploadCaseDocFromByte(List<CaseDocumentBase64VM> caseDocuments, string contentRootPath, out string file)
         {
             PatientCaseDocument patientCaseDocument;
             int l = 0;
             string path = @"/MyFiles/CaseDocuments/";
-
+            file = "";
             string relativePathSaveFile = @"\\MyStaticFiles\\CaseDocuments\\";
 
             if (caseDocuments != null)
@@ -1092,7 +1093,7 @@ namespace TechMed.BL.Repository.BaseClasses
                             string base64Value = doc.file;
                             //Save File in disk
                             saveFilename = UtilityMaster.SaveFileFromBase64(base64Value, contentRootPath, relativePathSaveFile, fileType.ToLower(), doc.DocumentTypeId);
-
+                            file = saveFilename;
                         }
                         catch (Exception)
                         {
@@ -1106,6 +1107,7 @@ namespace TechMed.BL.Repository.BaseClasses
                         if (saveFilename != null)
                         {
                             string fullPath = Path.Combine(path, saveFilename);
+                            file=fullPath;
                             patientCaseDocument = new PatientCaseDocument();
                             patientCaseDocument.PatientCaseId = doc.patientCaseId;
                             patientCaseDocument.DocumentPath = fullPath;

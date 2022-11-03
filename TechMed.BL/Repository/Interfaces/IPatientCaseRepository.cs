@@ -32,7 +32,7 @@ namespace TechMed.BL.Repository.Interfaces
         Task<List<PatientQueueByDoctor>> GetPatientQueueByDoctor(int specializationID);
         Task<List<PatientQueueVM>> GetPatientQueue(int PHCID);
 
-        bool UploadCaseDocFromByte(List<CaseDocumentBase64VM> caseDocuments, string contentRootPath);
+        bool UploadCaseDocFromByte(List<CaseDocumentBase64VM> caseDocuments, string contentRootPath, out string file);
         Task<PatientReferToDoctorVM> AddPatientInDoctorsQueue(PatientReferToDoctorVM patientReferToDoctorVM);
         Task<RemovePatientFromQueueVM> RemovePatientFromDoctorsQueue(long patientCaseID);
         Task<List<ALLPatientsQueueVM>> GetAllPatientQueue();

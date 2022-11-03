@@ -566,15 +566,15 @@ namespace TechMed.BL.Repository.BaseClasses
                         //End video call
 
                         //Generate PDF
-                        try
-                        {
-                            await _reportService.GeneratePdfReport(treatmentVM.PatientCaseID, ContentRootPath);
+                        //try
+                        //{
+                        //    await _reportService.GeneratePdfReport(treatmentVM.PatientCaseID, ContentRootPath);
 
-                        }
-                        catch (Exception ex)
-                        {
-                            _logger.LogError("Exception in GeneratePdfReport service " + ex);
-                        }
+                        //}
+                        //catch (Exception ex)
+                        //{
+                        //    _logger.LogError("Exception in GeneratePdfReport service " + ex);
+                        //}
                     }
 
 
@@ -652,18 +652,18 @@ namespace TechMed.BL.Repository.BaseClasses
                         _teleMedecineContext.Add(patientCaseDiagonosticTest);
                     }
                     int i = _teleMedecineContext.SaveChanges();
-                    if (i > 0)
-                    {  
-                        //Generate PDF
-                        try
-                        {
-                            await _reportService.GeneratePdfReport(treatmentVM.PatientCaseID, ContentRootPath);
-                        }
-                        catch (Exception ex)
-                        {
-                            _logger.LogError("Exception in GeneratePdfReport service " + ex);
-                        }
-                    }
+                    //if (i > 0)
+                    //{  
+                    //    //Generate PDF
+                    //    try
+                    //    {
+                    //        await _reportService.GeneratePdfReport(treatmentVM.PatientCaseID, ContentRootPath);
+                    //    }
+                    //    catch (Exception ex)
+                    //    {
+                    //        _logger.LogError("Exception in GeneratePdfReport service " + ex);
+                    //    }
+                    //}
 
 
 
