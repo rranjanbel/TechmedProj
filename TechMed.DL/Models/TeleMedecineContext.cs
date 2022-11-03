@@ -131,8 +131,10 @@ namespace TechMed.DL.Models
         public virtual DbSet<ALLPatientsQueueVM> AllPatientQueueList { get; set; } = null!;
         public virtual DbSet<AllPendingPatient> AllPendingPatientList { get; set; } = null!;
         public virtual DbSet<UpdateServerHealthVM> UpdateYesterdayPedingCaseToOrphan { get; set; } = null!;
+        public virtual DbSet<UpdatePrescriptionDocumentFlagVM> UpdatePrescriptionDocumentFlag { get; set; } = null!;
 
         
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

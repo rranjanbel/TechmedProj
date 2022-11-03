@@ -33,6 +33,7 @@ namespace TechMed.BL.ViewModels
         public string DoctorSignature { get; set; }
         public int CaseFileStatusID { get; set; }
         public string VideoCallStatus { get; set; }
+        public string? Prescription { get; set; }
         public DateTime? ReviewDate { get; set; }
         public DateTime? AssignedOn { get; set; }
         public PatientMasterDTO patientMaster { get; set; }
