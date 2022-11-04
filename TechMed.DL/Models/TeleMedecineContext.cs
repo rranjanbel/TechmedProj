@@ -132,6 +132,7 @@ namespace TechMed.DL.Models
         public virtual DbSet<AllPendingPatient> AllPendingPatientList { get; set; } = null!;
         public virtual DbSet<UpdateServerHealthVM> UpdateYesterdayPedingCaseToOrphan { get; set; } = null!;
         public virtual DbSet<UpdatePrescriptionDocumentFlagVM> UpdatePrescriptionDocumentFlag { get; set; } = null!;
+        public virtual DbSet<TwilioVideoDownloadStatus> TwilioVideoDownloadStatus { get; set; } = null!;
 
         
 
@@ -1524,6 +1525,8 @@ namespace TechMed.DL.Models
                 entity.Property(e => e.PatientCaseId).HasColumnName("PatientCaseID");
 
                 entity.Property(e => e.RoomName).HasMaxLength(500);
+                entity.Property(e => e.Duration).HasColumnType("decimal(12, 2)");
+
 
                 entity.Property(e => e.RoomStatusCallback).HasMaxLength(1000);
 

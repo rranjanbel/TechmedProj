@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TechMed.DL", "TechMed.DL\Te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TechMed.API", "TechMed.API\TechMed.API.csproj", "{11A0BCDF-006C-4E3B-94AF-8763318B158A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HealthWorkerService", "HealthWorkerService\HealthWorkerService.csproj", "{606A437A-32D5-4018-8F2C-C650F5877C36}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HealthWorkerService", "HealthWorkerService\HealthWorkerService.csproj", "{606A437A-32D5-4018-8F2C-C650F5877C36}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwilioWorkerService", "TwilioWorkerService\TwilioWorkerService.csproj", "{8BDAF96C-6352-4F8C-8726-AC29A1A446E5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{606A437A-32D5-4018-8F2C-C650F5877C36}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{606A437A-32D5-4018-8F2C-C650F5877C36}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{606A437A-32D5-4018-8F2C-C650F5877C36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8BDAF96C-6352-4F8C-8726-AC29A1A446E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8BDAF96C-6352-4F8C-8726-AC29A1A446E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8BDAF96C-6352-4F8C-8726-AC29A1A446E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8BDAF96C-6352-4F8C-8726-AC29A1A446E5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

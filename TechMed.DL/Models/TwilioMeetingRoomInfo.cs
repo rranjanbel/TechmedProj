@@ -5,6 +5,10 @@ namespace TechMed.DL.Models
 {
     public partial class TwilioMeetingRoomInfo
     {
+        public TwilioMeetingRoomInfo()
+        {
+            TwilioVideoDownloadStatuses = new HashSet<TwilioVideoDownloadStatus>();
+        }
         public long Id { get; set; }
         public long? PatientCaseId { get; set; }
         public string RoomName { get; set; } = null!;
@@ -22,10 +26,10 @@ namespace TechMed.DL.Models
         public string? CompositionStatus { get; set; }
 
         public virtual PatientCase? PatientCase { get; set; }
-
         public int? AssignedDoctorId { get; set; } = null!;
         public int? AssignedBy { get; set; } = null!;
         public virtual Phcmaster AssignedByNavigation { get; set; } = null!;
         public virtual DoctorMaster AssignedDoctor { get; set; } = null!;
+        public virtual ICollection<TwilioVideoDownloadStatus> TwilioVideoDownloadStatuses { get; set; }
     }
 }
