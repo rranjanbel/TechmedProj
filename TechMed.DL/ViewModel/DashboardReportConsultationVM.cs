@@ -38,6 +38,7 @@ namespace TechMed.DL.ViewModel
         public int CreatedBy { get; set; }
         public string? PatientCreatedBy { get; set; }
         public string? Prescription { get; set; }
+        public long? PatientCaseID { get; set; }
 
     }
 }

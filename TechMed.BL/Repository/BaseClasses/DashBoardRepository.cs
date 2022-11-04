@@ -374,6 +374,7 @@ namespace TechMed.BL.Repository.BaseClasses
                     dashboardReportConsultationVM.CreatedBy = item.CreatedBy;
                     dashboardReportConsultationVM.PatientCreatedBy = item.PatientCreatedBy;
                     dashboardReportConsultationVM.Prescription = item.Prescription;
+                    dashboardReportConsultationVM.PatientCaseID = item.PatientCaseID;
                     dashboardConsultations.Add(dashboardReportConsultationVM);
                 }
             }
