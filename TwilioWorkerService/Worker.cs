@@ -1,7 +1,15 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using System.Net;
+using System.Reflection;
+using System.Text;
+using TechMed.BL.CommanClassesAndFunctions;
 using TechMed.BL.Repository.Interfaces;
 using TechMed.DL.Models;
+using TechMed.DL.ViewModel;
+using Twilio;
+using Twilio.Rest.Api.V2010.Account;
 
 namespace TwilioWorkerService
 {
@@ -24,13 +32,75 @@ namespace TwilioWorkerService
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+
             while (!stoppingToken.IsCancellationRequested)
             {
-                string str=twilioConfig.Value.TwilioAuthToken;
-                var data = _teleMedecineContext.TwilioVideoDownloadStatus.Include(a=>a.TwilioMeetingRoomInfo).ToList();
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+                //insert in to status table
+                //select top (100) completed consulation with uncomplete download status
+                //loop for each
+                //download video
+                //create folder of date if not exits and download to them
+                //update staus 
+                //on error update attempt
+
+                var Results = _teleMedecineContext.InsertIntoTwilioVideoDownloadStatus.FromSqlInterpolated($"EXEC [dbo].[InsertIntoTwilioVideoDownloadStatus] ");
+                InsertIntoTwilioVideoDownloadStatusVM Spdata;
+                foreach (var item in Results)
+                {
+                    Spdata = new InsertIntoTwilioVideoDownloadStatusVM();
+                    Spdata.Success = item.Success;
+                }
+
+                var data = _teleMedecineContext.TwilioVideoDownloadStatus.Include(a=>a.TwilioMeetingRoomInfo)
+                    .Where(a=>a.Status!= "Completed" && a.Attempt<3).Take(2)
+                    .ToList();
+                //string accountSid = (twilioConfig.Value.TwilioAccountSid);
+                //string authToken = (twilioConfig.Value.TwilioAuthToken);
+                string FolderPath=Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+                foreach (var item in data)
+                {
+                    item.Attempt = item.Attempt+1;
+                    item.Status = "Completed";
+                    item.StatusAt = UtilityMaster.GetLocalDateTime();
+                    try
+                    {
+
+                        string uri = "https://video.twilio.com/v1/Compositions/" + item.TwilioMeetingRoomInfo.CompositeVideoSid + "/Media?Ttl=3600";
+                        var request = (HttpWebRequest)WebRequest.Create(uri);
+                        request.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(Encoding.ASCII.GetBytes(twilioConfig.Value.TwilioApiKey + ":" + twilioConfig.Value.TwilioApiSecret)));
+                        request.AllowAutoRedirect = false;
+                        string responseBody = new StreamReader(request.GetResponse().GetResponseStream()).ReadToEnd();
+                        var mediaLocation = await
+                            Task.Factory.StartNew(() => JsonConvert.DeserializeObject<Dictionary<string, string>>(responseBody)["redirect_to"]);
+
+                        await HttpDownloadFileAsync(new HttpClient(), mediaLocation, FolderPath +"\\"+ item.TwilioMeetingRoomInfo.RoomName+".mp4");
+
+                        //TwilioClient.Init(accountSid, authToken);
+                        //var recording = RecordingResource.Fetch(
+                        //    pathSid: "CJ925b2ec5f7827dbeaa26bd50c1b9be4d"
+                        //);
+                        //Console.WriteLine(recording.CallSid);
+
+                    }
+                    catch (Exception ex)
+                    {
+                        item.Status = "Exception";
+                        item.Message = ex.Message;
+                        item.StatusAt = UtilityMaster.GetLocalDateTime();
+
+                    }
+                    _teleMedecineContext.SaveChanges();
+                }
                 await Task.Delay(1000, stoppingToken);
             }
+        }
+        static public async Task HttpDownloadFileAsync(HttpClient httpClient, string url, string fileToWriteTo)
+        {
+            using HttpResponseMessage response = await httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
+            using Stream streamToReadFrom = await response.Content.ReadAsStreamAsync();
+            using Stream streamToWriteTo = File.Open(fileToWriteTo, FileMode.Create);
+            await streamToReadFrom.CopyToAsync(streamToWriteTo);
         }
     }
     public class HostUrl

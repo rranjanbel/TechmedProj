@@ -133,6 +133,7 @@ namespace TechMed.DL.Models
         public virtual DbSet<UpdateServerHealthVM> UpdateYesterdayPedingCaseToOrphan { get; set; } = null!;
         public virtual DbSet<UpdatePrescriptionDocumentFlagVM> UpdatePrescriptionDocumentFlag { get; set; } = null!;
         public virtual DbSet<TwilioVideoDownloadStatus> TwilioVideoDownloadStatus { get; set; } = null!;
+        public virtual DbSet<InsertIntoTwilioVideoDownloadStatusVM> InsertIntoTwilioVideoDownloadStatus { get; set; } = null!;
 
         
 

@@ -18,6 +18,7 @@ namespace TechMed.DL.Models
         public string? Status { get; set; }
         public DateTime StatusAt { get; set; }
         public string? Message { get; set; }
+        public string? DownloadURL { get; set; }
         public virtual TwilioMeetingRoomInfo TwilioMeetingRoomInfo { get; set; }
     }
 }
