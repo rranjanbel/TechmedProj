@@ -26,7 +26,8 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.AddSingleton<ISystemHealthRepository, SystemHealthRepository>();
         services.Configure<HostUrl>(Configuration.GetSection("HostUrl"));
         services.Configure<TwilioConfig>(Configuration.GetSection("Twilio"));
-        
+        services.Configure<ConnectionStrings>(Configuration.GetSection("ConnectionStrings"));
+
     }).UseWindowsService()
     .Build();
 

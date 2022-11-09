@@ -19,15 +19,16 @@ namespace TwilioWorkerService
         private readonly ISystemHealthRepository _systemHealthRepository;
         private readonly IOptions<HostUrl> config;
         private readonly IOptions<TwilioConfig> twilioConfig;
-        private readonly TeleMedecineContext _teleMedecineContext;
-        public Worker(ILogger<Worker> logger, ISystemHealthRepository systemHealthRepository, IOptions<HostUrl> config, TeleMedecineContext teleMedecineContext, IOptions<TwilioConfig> twilioConfig)
+        //private readonly TeleMedecineContext _teleMedecineContext;
+        private readonly IOptions<ConnectionStrings> _configConnectionStr;
+        public Worker(ILogger<Worker> logger, ISystemHealthRepository systemHealthRepository, IOptions<HostUrl> config/*, TeleMedecineContext teleMedecineContext*/, IOptions<TwilioConfig> twilioConfig, IOptions<ConnectionStrings> configConnectionStr)
         {
             _logger = logger;
             _systemHealthRepository = systemHealthRepository;
             this.config = config;
             this.twilioConfig = twilioConfig;
-            _teleMedecineContext = teleMedecineContext;
-
+            //_teleMedecineContext = teleMedecineContext;
+            _configConnectionStr = configConnectionStr;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -43,54 +44,66 @@ namespace TwilioWorkerService
                 //create folder of date if not exits and download to them
                 //update staus 
                 //on error update attempt
+                var optionsBuilder = new DbContextOptionsBuilder<TeleMedecineContext>();
+                //optionsBuilder.UseSqlServer(Configuration.GetConnectionStringSecureValue("DefaultConnection"));
+                optionsBuilder.UseSqlServer(_configConnectionStr.Value.TeliMedConn);
 
-                var Results = _teleMedecineContext.InsertIntoTwilioVideoDownloadStatus.FromSqlInterpolated($"EXEC [dbo].[InsertIntoTwilioVideoDownloadStatus] ");
-                InsertIntoTwilioVideoDownloadStatusVM Spdata;
-                foreach (var item in Results)
+                TeleMedecineContext _telemedecineContext = new TeleMedecineContext(optionsBuilder.Options);
+                using (_telemedecineContext)
                 {
-                    Spdata = new InsertIntoTwilioVideoDownloadStatusVM();
-                    Spdata.Success = item.Success;
-                }
-
-                var data = _teleMedecineContext.TwilioVideoDownloadStatus.Include(a=>a.TwilioMeetingRoomInfo)
-                    .Where(a=>a.Status!= "Completed" && a.Attempt<3).Take(2)
-                    .ToList();
-                //string accountSid = (twilioConfig.Value.TwilioAccountSid);
-                //string authToken = (twilioConfig.Value.TwilioAuthToken);
-                string FolderPath=Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-                foreach (var item in data)
-                {
-                    item.Attempt = item.Attempt+1;
-                    item.Status = "Completed";
-                    item.StatusAt = UtilityMaster.GetLocalDateTime();
-                    try
+                    var Results = _telemedecineContext.InsertIntoTwilioVideoDownloadStatus.FromSqlInterpolated($"EXEC [dbo].[InsertIntoTwilioVideoDownloadStatus] ");
+                    InsertIntoTwilioVideoDownloadStatusVM Spdata;
+                    foreach (var item in Results)
                     {
-
-                        string uri = "https://video.twilio.com/v1/Compositions/" + item.TwilioMeetingRoomInfo.CompositeVideoSid + "/Media?Ttl=3600";
-                        var request = (HttpWebRequest)WebRequest.Create(uri);
-                        request.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(Encoding.ASCII.GetBytes(twilioConfig.Value.TwilioApiKey + ":" + twilioConfig.Value.TwilioApiSecret)));
-                        request.AllowAutoRedirect = false;
-                        string responseBody = new StreamReader(request.GetResponse().GetResponseStream()).ReadToEnd();
-                        var mediaLocation = await
-                            Task.Factory.StartNew(() => JsonConvert.DeserializeObject<Dictionary<string, string>>(responseBody)["redirect_to"]);
-
-                        await HttpDownloadFileAsync(new HttpClient(), mediaLocation, FolderPath +"\\"+ item.TwilioMeetingRoomInfo.RoomName+".mp4");
-
-                        //TwilioClient.Init(accountSid, authToken);
-                        //var recording = RecordingResource.Fetch(
-                        //    pathSid: "CJ925b2ec5f7827dbeaa26bd50c1b9be4d"
-                        //);
-                        //Console.WriteLine(recording.CallSid);
-
+                        Spdata = new InsertIntoTwilioVideoDownloadStatusVM();
+                        Spdata.Success = item.Success;
                     }
-                    catch (Exception ex)
+
+                    var data = _telemedecineContext.TwilioVideoDownloadStatus.Include(a => a.TwilioMeetingRoomInfo)
+                        .Where(a => a.Status != "Completed" && a.Attempt < 1).Take(2)
+                        .ToList();
+                    //string accountSid = (twilioConfig.Value.TwilioAccountSid);
+                    //string authToken = (twilioConfig.Value.TwilioAuthToken);
+                    string FolderPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+                    foreach (var item in data)
                     {
-                        item.Status = "Exception";
-                        item.Message = ex.Message;
+                       string  fullpath=FolderPath + "\\" +Convert.ToDateTime( item.TwilioMeetingRoomInfo.CreateDate).ToString("yyyy-MM-dd");
+                        DirectoryInfo directoryInfo = new DirectoryInfo(fullpath);
+                        if (!directoryInfo.Exists)
+                        {
+                            directoryInfo.Create();
+                        }
+                        item.Attempt = item.Attempt + 1;
+                        item.Status = "Completed";
                         item.StatusAt = UtilityMaster.GetLocalDateTime();
+                        try
+                        {
 
+                            string uri = "https://video.twilio.com/v1/Compositions/" + item.TwilioMeetingRoomInfo.CompositeVideoSid + "/Media?Ttl=3600";
+                            var request = (HttpWebRequest)WebRequest.Create(uri);
+                            request.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(Encoding.ASCII.GetBytes(twilioConfig.Value.TwilioApiKey + ":" + twilioConfig.Value.TwilioApiSecret)));
+                            request.AllowAutoRedirect = false;
+                            string responseBody = new StreamReader(request.GetResponse().GetResponseStream()).ReadToEnd();
+                            var mediaLocation = await
+                                Task.Factory.StartNew(() => JsonConvert.DeserializeObject<Dictionary<string, string>>(responseBody)["redirect_to"]);
+
+                            await HttpDownloadFileAsync(new HttpClient(), mediaLocation, fullpath + "\\" + item.TwilioMeetingRoomInfo.RoomName + ".mp4");
+
+                            //TwilioClient.Init(accountSid, authToken);
+                            //var recording = RecordingResource.Fetch(
+                            //    pathSid: "CJ925b2ec5f7827dbeaa26bd50c1b9be4d"
+                            //);
+                            //Console.WriteLine(recording.CallSid);
+
+                        }
+                        catch (Exception ex)
+                        {
+                            item.Status = "Exception";
+                            item.Message = ex.Message;
+                        }
+                        _telemedecineContext.SaveChanges();
+                        _telemedecineContext.Entry(item).State = EntityState.Detached;
                     }
-                    _teleMedecineContext.SaveChanges();
                 }
                 await Task.Delay(1000, stoppingToken);
             }
@@ -114,5 +127,9 @@ namespace TwilioWorkerService
         public string? TwilioApiSecret { get; set; }
         public string? TwilioApiKey { get; set; }
         public string? TwilioAuthToken { get; set; }
+    }
+    public class ConnectionStrings
+    {
+        public string? TeliMedConn { get; set; }
     }
 }
